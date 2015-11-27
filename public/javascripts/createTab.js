@@ -41,7 +41,7 @@ $(document).ready(function() {
             currentLi.append(link);
             tabLi.push(currentLi);
 		}	
-        $(".articleMainContent_AlphabeticalIndex_tabs").append(tabLi);
+        $("#articleMainContent_AlphabeticalIndex_tabs").append(tabLi);
 	}	
     //création de la liste alphabétique
 	function createAlphabeticList(){
@@ -64,7 +64,7 @@ $(document).ready(function() {
                     tabLi.push(currentLi);
 				}
             currentUl.append(tabLi);
-            $(".articleMainContent_AlphabeticalIndex_letters>fieldset>legend").append(currentUl);
+            $("#articleMainContent_AlphabeticalIndex_letters>fieldset>legend").append(currentUl);
         }
     }
 

@@ -2,7 +2,7 @@ html {
 	height: auto;
 }
 body{
-	font-family: 'Roboto', sans-serif;	
+	font-family: 'Roboto', sans-serif !important;	
 	width:100%;
 	position: absolute;
     top: 0;
@@ -21,13 +21,13 @@ header {
     top: 0;
     height: 72px;
 	box-shadow: 0 4px 5px 0 rgba(0,0,0,0.14),0 1px 10px 0 rgba(0,0,0,0.12),0 2px 4px -1px rgba(0,0,0,0.2);
-	width:100%
-    z-index: 200;
+	width:100%;
+    z-index: 100;
 }
 	/*----------------------------------------------------------------------------------------*/
 	/*------------------------------------CSS headerNavLeft-----------------------------------*/
 	/*----------------------------------------------------------------------------------------*/
-	.headerNavLeft {
+	#headerNavLeft {
 		-webkit-box-sizing: border-box;
 		box-sizing: border-box;
 		-webkit-box-flex: 0 1 auto;
@@ -42,7 +42,7 @@ header {
 	/*----------------------------------------------------------------------------------------*/
 	/*-----------------------------------CSS headerNavCenter----------------------------------*/
 	/*----------------------------------------------------------------------------------------*/
-	.headerNavCenter {
+	#headerNavCenter {
 		-webkit-align-items: center;
 		align-items: center;
 		-webkit-box-sizing: border-box;
@@ -66,7 +66,7 @@ header {
 		
 	}
 
-		.headerNavCenter_InputSearch {
+		#headerNavCenter_InputSearch {
 			display: -webkit-box;
 			display: -moz-box;
 			display: -webkit-flex;
@@ -83,16 +83,16 @@ header {
 			height: 40px;
 			white-space: nowrap;
 		}
-		.headerNavCenter_InputSearch:hover {
+		#headerNavCenter_InputSearch:hover {
 			background:#E6E6E6;
 		}
 
-			.headerNavCenter_InputSearch_Icon {
+			#headerNavCenter_InputSearch_Icon {
 				fill: rgba(0,0,0,0.54);
 				margin: 8px 24px 0;
 				vertical-align: top;
 			}
-			.headerNavCenter_InputSearch_Input {
+			#headerNavCenter_InputSearch_Input {
 				display: -webkit-box;
 				display: -moz-box;
 				display: -webkit-flex;
@@ -102,7 +102,7 @@ header {
 				-webkit-flex: 1;
 				flex: 1;
 			}
-				.headerNavCenter_InputSearch_Input_Text {
+				#headerNavCenter_InputSearch_Input_Text {
 					-webkit-box-flex: 1;
 					box-flex: 1;
 					-webkit-flex-grow: 1;
@@ -122,7 +122,7 @@ header {
 	/*----------------------------------------------------------------------------------------*/
 	/*-----------------------------------CSS headerNavRight-----------------------------------*/
 	/*----------------------------------------------------------------------------------------*/
-	.headerNavRight {
+	#headerNavRight {
 		-webkit-box-sizing: border-box;
 		box-sizing: border-box;
 		-webkit-box-flex: 0 1 auto;
@@ -145,10 +145,10 @@ header {
 /*----------------------------------------------------------------------------------------*/
 /*---------------------------------CSS articleMainContent---------------------------------*/
 /*----------------------------------------------------------------------------------------*/
-.articleMainContent {
+#articleMainContent {
 	margin-top: 100px;
-	min-width: 512px;
-	padding: 56px 0 1px;
+    min-width: 830px;
+    padding: 56px 0 1px;
 	width: 60%;
 	margin-left: auto;
 	margin-right: auto;
@@ -157,7 +157,7 @@ header {
 	/*----------------------------------------------------------------------------------------*/
 	/*------------------------CSS articleMainContentAlphabeticalIndex-------------------------*/
 	/*----------------------------------------------------------------------------------------*/
-	.articleMainContent_AlphabeticalIndex {
+	#articleMainContent_AlphabeticalIndex {
 		bottom: 0;
 		box-shadow: 0 0 3px rgba(0,0,0,.16),0 3px 12px rgba(0,0,0,.32);
 		border-bottom: 1px solid rgba(255,255,255,0.01);
@@ -168,35 +168,62 @@ header {
 		border-radius: 3px;
 	}
 
-	.articleMainContent_AlphabeticalIndex:hover{
+	#articleMainContent_AlphabeticalIndex:hover{
     	box-shadow: 2px 3px 20px rgb(190, 189, 189);
-
 	}
-        .articleMainContent_AlphabeticalIndex_tabs {
+        #articleMainContent_AlphabeticalIndex_tabs {
             font-size: 14px;
             cursor: pointer;
         }
-        .articleMainContent_AlphabeticalIndex_letters {
+        #articleMainContent_AlphabeticalIndex_letters {
             margin-left: 5%;
             margin-right: 5%;
         }
-            .articleMainContent_AlphabeticalIndex_letters ul{
+            #articleMainContent_AlphabeticalIndex_letters ul{
                 list-style: none;
                 display: inline-flex;
                 width:60%;
             }
 
-                .articleMainContent_AlphabeticalIndex_letters ul>li{
+                #articleMainContent_AlphabeticalIndex_letters ul>li{
                     padding-left: 1%;
                     padding-right: 1%;
                     font-size: 18px;
                 }
+/*----------------------------------------------------------------------------------------*/
+/*------------------------CSS articleMainContent_listCategorie-------------------------*/
+/*----------------------------------------------------------------------------------------*/
+
+#articleMainContent_listCategorie{
+    background-color: whitesmoke;
+    margin-top: 5%;
+    margin-left: 15px;
+    margin-right: 15px;
+    border-radius: 3px;
+    box-shadow: 0 0 3px rgba(0,0,0,.16),0 3px 12px rgba(0,0,0,.32);
+    border-bottom: 1px solid rgba(255,255,255,0.01);
+}
+#articleMainContent_listCategorie:hover{
+    box-shadow: 2px 3px 20px rgb(190, 189, 189);
+}
+    #articleMainContent_listCategorie_column table{
+        width: 100%;
+    }
+    #articleMainContent_listCategorie_column td{
+        width :33%;
+        margin: 3%;    
+        font-size:15px;
+    }
+    #articleMainContent_listCategorie_column li{
+        margin-top: 5px;    
+    }
+
 /*----------------------------------------------------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------------------------------------------------*/
 /*-----------------------------------------------------CSS TRANSITION---------------------------------------------------*/
 /*----------------------------------------------------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------------------------------------------------*/
-.articleMainContent_AlphabeticalIndex,.headerNavCenter_InputSearch{
+#articleMainContent_AlphabeticalIndex,#headerNavCenter_InputSearch,#articleMainContent_listCategorie{
 	-o-transition: all 0.5s linear;
     -moz-transition: all 0.5s linear;
     -khtml-transition: all 0.5s linear;

@@ -7,53 +7,45 @@ var path = require('path');
 var sanitize = require("sanitize-filename");
 
 
-var getLyricsFromWikiaPageURL = function(url) {
-    return Q.Promise(function(resolve, reject, notify) {
-        var request = new XMLHttpRequest();
-        console.log("URL getLyricsFromWikiaPageURL = "+url);
-        request.open("GET", url, true);
-        request.onload = onload;
-        request.onerror = onerror;
-        request.onprogress = onprogress;
-        request.send();
+//var getLyricsFromWikiaPageURL = function(url) {
+//    return Q.Promise(function(resolve, reject, notify) {
+//        var request = new XMLHttpRequest();
+//        console.log("URL getLyricsFromWikiaPageURL = "+url);
+//        request.open("GET", url, true);
+//        request.onload = onload;
+//        request.onerror = onerror;
+//        request.onprogress = onprogress;
+//        request.send();
+//
+//        function onload() {
+//            if (request.status === 200) 
+//            {
+//                this.response = this.response.replace(/\<a+s*(.*?)\>+/g,"");
+//                $ = cheerio.load(this.response);
+//                var x = $(".lyricbox")[0];
+//                var y = $(x).find("script").remove();
+//                var z = $(x).find("div").first().remove();
+//                console.log("########## lyricbox var x = "+ $(x).html());
+//                $(x).html();
+//                console.log(""+$(x).html());
+//            } 
+//            else 
+//            {
+//                reject(new Error("Status code was " + request.status));
+//            }
+//        }
+//        function onerror() {
+//            reject(new Error("Can't XHR " + JSON.stringify(url)));
+//        }
+//        function onprogress(event) {
+//            notify(event.loaded / event.total);
+//        }
+//    });
+//};
 
-        function onload() {
-            if (request.status === 200) 
-            {
-                this.response = this.response.replace(/\<a+s*(.*?)\>+/g,"");
-                $ = cheerio.load(this.response);
-                var x = $(".lyricbox")[0];
-                var y = $(x).find("script").remove();
-                var z = $(x).find("div").first().remove();
-                console.log("########## lyricbox var x = "+ $(x).html());
-                $(x).html();
-                console.log(""+$(x).html());
-            } 
-            else 
-            {
-                reject(new Error("Status code was " + request.status));
-            }
-        }
-        function onerror() {
-            reject(new Error("Can't XHR " + JSON.stringify(url)));
-        }
-        function onprogress(event) {
-            notify(event.loaded / event.total);
-        }
-    });
-};
-
-var writeArtistFileIndex = function(rootDir,fileName,tabIndexArtist){
-    fs.writeFile(rootDir+fileName, tabIndexArtist, function(err) {
-        if(err) {
-            return console.log(err);
-        }
-        console.log("The file was saved!");
-    }); 
-    
-};
 
 //Si le répertoire n'existe pas il est crée
+//param 1 : répertoire a vérifier (déja crée ou à créer)
 var dirExistOrCreate = function(dir){
     if (!fs.existsSync(dir)){
         fs.mkdirSync(dir, function (err) {
@@ -86,8 +78,10 @@ var createDirArtist = function(dirArtist,valLinks,removeStr,isIndexed){
         console.log("Directory created successfully !");
     return tabIndexArtist;
 };
+
 //Si on rencontre un probleme avec un char situé en fin de nom de dossier
 //Ici le '.' situé en fin de dossier empêche la suppression du dossier
+//param 1 : string a nettoyer
 var sanitizeLastChar = function (sanitizeStr){
     while(sanitizeStr.charAt(sanitizeStr.length-1) == '.'){ 
         //on supprime le dernier caractère qui est un '.'
@@ -96,7 +90,9 @@ var sanitizeLastChar = function (sanitizeStr){
     return sanitizeStr;
 };
 
-
+//param 1 : url de la page a récupérer
+//param 2 : selecteur pour récupérer la partie qui nous interesse dans leur page html
+//param 3 : valeur de l'attribut à récupérer
 var getArtistFromCategorie = function(url,selector,attr){
     // La fonction de résolution est appelée avec la capacité de tenir ou de rompre la promesse
     var promise = new Promise(function(resolve, reject) { 
@@ -119,7 +115,22 @@ var getArtistFromCategorie = function(url,selector,attr){
     return promise;
 };
 
+//recupére les albums des artists via l'api de lyrics wikia
+//param 1 : url de la page a récupérer
+//param 2 : tableau de répertoire représentant les artistes, on mettra les albums dedans
+var getAlbumsFromArtists = function(url,tabDirArtist){
+    //faire comme la fonction getArtistFromCategorie
+};
+
+//récupére les lyrics de chaque album via l'api de lyrics wikia
+//param 1 : tableau de répertoire représentant les albums, on mettra les lyrics dedans
+var getLyricsFromAlbums = function(tabDirAlbum){
+    
+};
+
 exports.getArtistFromCategorie      = getArtistFromCategorie;
-exports.writeArtistFileIndex        = writeArtistFileIndex;
-exports.getLyricsFromWikiaPageURL   = getLyricsFromWikiaPageURL;
+exports.getAlbumsFromArtists        = getAlbumsFromArtists;
+exports.getLyricsFromAlbums         = getLyricsFromAlbums;
+
+//exports.getLyricsFromWikiaPageURL   = getLyricsFromWikiaPageURL;
 exports.createDirArtist             = createDirArtist;

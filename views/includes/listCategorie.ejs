@@ -1,0 +1,31 @@
+ <div id="articleMainContent_listCategorie_column">
+    <table>
+        <tbody>
+            <tr>
+            <% 
+                var j = 0;
+                var nbLinksByColumn = Math.round(artistNames.length/3);
+                var nbColumn = 3;
+                for(var i=0; i < nbColumn; i++){ %>
+                <td>
+                    <ul>
+                        <% 
+                        while(j < nbLinksByColumn) { 
+                            if (j<artistNames.length){
+                        %>
+                                <li>
+                                    <a href="/artist/<%= artistNames[j] %>"><%= artistNames[j]%> </a>
+                                </li>
+                        <% 
+                            }
+                            j++;
+                        }
+                        nbLinksByColumn+=Math.round(artistNames.length/3);
+                        %>
+                    </ul>
+                </td>
+            <% } %>
+            </tr>
+        </tbody>
+    </table>
+</div>  
