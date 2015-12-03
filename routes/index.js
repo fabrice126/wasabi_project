@@ -14,8 +14,9 @@ var lyricsWikia     = require('./handler/lyricsWikia.js');
 router.get('/', function (req, res) {
     res.setHeader('Content-Type', conf.http.mime.html);
     console.log("test");
-    res.render('index',{artistNames:[]});//on initialise artistNames avec un tableau vide
+    res.render('index',{categorieFile:[]});//on initialise categorieFile avec un tableau vide
 });
+
 router.get('/search', function (req, res) {
     var categorie = req.query.categorie;
     var lettre = req.query.lettre;
@@ -24,17 +25,13 @@ router.get('/search', function (req, res) {
     var files;
     switch(categorie) {
         case "artist":
-                pathDir = path.join(__dirname, '../public/'+categorie+'/'+lettre+'**');
-                files = glob.sync([pathDir]);
-                var artistNames = [];
-                var position;
-                for(var i = 0 ;i<files.length;i++){
-                    position = files[i].lastIndexOf("/");
-                    artistNames.push(files[i].substring(position+1,files[i].length));
-                }
-                console.log("test2");
-                //new EJS({url: '../views/includes/listCategorie.ejs'}).update(document.querySelector('#articleMainContent_listCategorie_column1'), { artistNames: artistNames });
-                res.render('index', { artistNames: artistNames });
+                getCategorieByLetter(res,'index',categorie,'../public/'+categorie+'/'+lettre+'**');
+            break;
+        case "album":
+                getCategorieByLetter(res,'index',categorie,'../public/**/'+lettre+'**');
+            break;
+        case "songs":
+                getCategorieByLetter(res,'index',categorie,'../public/**/**/'+lettre+'**');
             break;
         //ajouter un default
     }
@@ -43,7 +40,7 @@ router.get('/search', function (req, res) {
 router.get('/artist/*', function (req, res) {
     //Chercher le dossier req.url pour y trouver les albums
     console.log("url = "+req.url);
-    res.render('index', { artistName: artistName });
+    res.render('albumArtist', { albumFile: albumFile });
 
 });
 
@@ -57,34 +54,48 @@ router.get('/chercherLyricsWikia',function(req, res){
     //
     //les lyrics des albums de 10 artistes commencant par la lettre A
     //contient les liens des artistes de tout l'alphabet qui sont aussi les noms des répertoires sur le disque
-    var tabDirArtist;
-    var dirArtist = path.join(__dirname+conf.http.public+'artist');
-    var selector = '#mw-pages>.mw-content-ltr>table a[href]';
-    var url = 'http://lyrics.wikia.com/wiki/Category:Artists_';
-    var attr = 'href';//on récupérera dans allLinks les href du selector ci-dessus afin de créer les répertoires
-    var removeStrHref = '/wiki/';
+    var tabDirArtists;
+    var dirArtists = path.join(__dirname+conf.http.public+'artist');
+    var urlArtists = 'http://lyrics.wikia.com/wiki/Category:Artists_';
+    var selectorArtists = '#mw-pages>.mw-content-ltr>table a[href]';
+    var attrArtists = 'href';//on récupérera dans allLinks les href du selector ci-dessus afin de créer les répertoires
+    var removeStrHrefArtists = '/wiki/';
+    
+    var urlAlbums = 'http://lyrics.wikia.com/api.php?func=getArtist&artist=';
+    var selectorAlbums = '.albums>li>a[href]:first-child';
+    var attrAlbums = 'href';
+    var removeStrHrefAlbums = 'http://lyrics.wikia.com/';
+
     //creation de la promise
-    //for(var i = 0, len = alphabet.length;i<len;i++){
-            lyricsWikia.getArtistFromCategorie(url+alphabet[14],selector,attr).then(function(valtLinks) {
-            tabDirArtist = lyricsWikia.createDirArtist(dirArtist,valtLinks,removeStrHref,true);
-            /*for(var j = 0 ;j<tabDirArtist.length;j++){
-                console.log("tabDirArtist = "+tabDirArtist[j]);
-            }*/
-            lyricsWikia.getAlbumsFromArtists(tabDirArtist);
-            //http://lyrics.wikia.com/api.php?func=getArtist&artist=Linkin_Park&fmt=json$
-
-            JSON.parse();
-            //au clic sur href /artist/B.W.B. on ira chercher en BDD B.W.B
-            //Une fois les dossiers crées il faut récupérer les albums des groupes ainsi que leur musique :
-            //http://lyrics.wikia.com/api.php?func=getArtist&artist=Linkin_Park&fmt=html
-                
-
-            
+    for(var i = 0, len = alphabet.length;i<len;i++){
+        lyricsWikia.getArtistFromCategorie(urlArtists+alphabet[i],selectorArtists,attrArtists,removeStrHrefArtists).then(function(valtLinks) {
+            //valtLinks => liste des noms d'artistes
+            lyricsWikia.createDirArtist(dirArtists,valtLinks);
+            console.log("createDirArtist "+alphabet[i]);
+            for(var j = 0;j<valtLinks.length;j++){
+                //console.log("myVal = "+valtLinks[j]);
+                lyricsWikia.getAlbumsFromArtists(urlAlbums,selectorAlbums,attrAlbums,removeStrHrefAlbums,dirArtists,valtLinks[j]);
+            }      
         }).catch(function() { 
             console.log("error Fin asynchrone");
         });
-        //lyricsWikia.getLyricsFromWikiaPageURL("http://lyrics.wikia.com/wiki/Category:Artists_"+ alphabet[0]);
-    //}
+    }
 });
+
+
+function getCategorieByLetter(res,renderPage,nomCategorie,pattern){
+    pathDir = path.join(__dirname, pattern);
+    var categorieFile = [];
+    console.log("pathDir = "+pathDir);
+    files = glob.sync([pathDir]);
+    var position;
+    for(var i = 0 ;i<files.length;i++){
+        position = files[i].lastIndexOf("/");
+        categorieFile.push(files[i].substring(position+1,files[i].length));
+    }
+    console.log("test2");
+    //new EJS({url: '../views/index.ejs'}).update(document.querySelector('#articleMainContent_listCategorie'), { categorieFile: categorieFile,nomCategorie:nomCategorie});
+    res.render(renderPage, { categorieFile: categorieFile,nomCategorie:nomCategorie });
+}
 
 module.exports = router;

@@ -206,17 +206,23 @@ header {
 #articleMainContent_listCategorie:hover{
     box-shadow: 2px 3px 20px rgb(190, 189, 189);
 }
-    #articleMainContent_listCategorie_column table{
-        width: 100%;
-    }
-    #articleMainContent_listCategorie_column td{
-        width :33%;
-        margin: 3%;    
-        font-size:15px;
-    }
-    #articleMainContent_listCategorie_column li{
-        margin-top: 5px;    
-    }
+
+        #articleMainContent_listCategorie_column table{
+            width: 100%;
+        }
+        #articleMainContent_listCategorie_column td{
+            
+            width :33%;
+            max-width:300px;
+            margin: 3%;    
+            display: inline-block;
+            word-wrap: break-word;
+            font-size:15px;
+        }
+        #articleMainContent_listCategorie_column li{
+            margin-top: 5px;    
+
+        }
 
 /*----------------------------------------------------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------------------------------------------------*/

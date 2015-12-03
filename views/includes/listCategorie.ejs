@@ -4,23 +4,23 @@
             <tr>
             <% 
                 var j = 0;
-                var nbLinksByColumn = Math.round(artistNames.length/3);
+                var nbLinksByColumn = Math.round(categorieFile.length/3);
                 var nbColumn = 3;
                 for(var i=0; i < nbColumn; i++){ %>
                 <td>
                     <ul>
                         <% 
                         while(j < nbLinksByColumn) { 
-                            if (j<artistNames.length){
+                            if (j<categorieFile.length){
                         %>
                                 <li>
-                                    <a href="/artist/<%= artistNames[j] %>"><%= artistNames[j]%> </a>
+                                    <a href="/<%= nomCategorie %>/<%= categorieFile[j] %>"><%= categorieFile[j]%> </a>
                                 </li>
                         <% 
                             }
                             j++;
                         }
-                        nbLinksByColumn+=Math.round(artistNames.length/3);
+                        nbLinksByColumn+=Math.round(categorieFile.length/3);
                         %>
                     </ul>
                 </td>
