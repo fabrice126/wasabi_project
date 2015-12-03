@@ -40,6 +40,7 @@ router.get('/search', function (req, res) {
 router.get('/artist/*', function (req, res) {
     //Chercher le dossier req.url pour y trouver les albums
     console.log("url = "+req.url);
+    
     res.render('albumArtist', { albumFile: albumFile });
 
 });
