@@ -1,23 +1,32 @@
 $(document).ready(function() {
     //var page = $('#nav li a:first').text(); // par défaut c'est Index
     // au clic sur un lien du menu
-    /*$('#alphabet_Artist>li>a').click(function(e) {
+    $('[id^=alphabet_]>li>a').click(function(e) {//alphabet_Artist
         e.preventDefault();
         var url = $(this).attr('href'); // on récupère le href
         console.log("url avant ajax = "+url);
-        $.ajax({
-            url: url,
-            type: 'GET',
-            cache: false,
-            success: function(data) {
-                console.log(data);
-                $("#articleMainContent_listCategorie").append(data);
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                console.error('error ' + textStatus + " " + errorThrown);
+        $.get(url, function(data, status){
+            $('#loadContent').html(data);
+            if(url!=window.location){
+                console.log("pushState");
+                window.history.pushState({path:url},'',url);
             }
+        }).fail(function() {
+            console.error('error ' + status);
         });
-    });*/
+    });
+    
+    $(window).bind('popstate', function() {
+        $.ajax({url:location.pathname,success: function(data){
+            console.log("Popstat");
+            $('#loadContent').html(data);
+        }});
+    });
+
+    
+    
+    
+    
     
     //Au clic sur un le bouton
     $('#btn_chercherLyricsWikia').click(function(e) {

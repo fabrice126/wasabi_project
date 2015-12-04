@@ -191,7 +191,7 @@ header {
                     font-size: 18px;
                 }
 /*----------------------------------------------------------------------------------------*/
-/*------------------------CSS articleMainContent_listCategorie-------------------------*/
+/*--------------------------CSS articleMainContent_listCategorie--------------------------*/
 /*----------------------------------------------------------------------------------------*/
 
 #articleMainContent_listCategorie{
@@ -224,12 +224,29 @@ header {
 
         }
 
+
+/*----------------------------------------------------------------------------------------*/
+/*--------------------------CSS articleMainContent_presentation--------------------------*/
+/*----------------------------------------------------------------------------------------*/
+#articleMainContent_presentation{
+    background-color: whitesmoke;
+    margin-top: 5%;
+    margin-left: 15px;
+    margin-right: 15px;
+    border-radius: 3px;
+    box-shadow: 0 0 3px rgba(0,0,0,.16),0 3px 12px rgba(0,0,0,.32);
+    border-bottom: 1px solid rgba(255,255,255,0.01);
+}
+    #articleMainContent_presentation:hover{
+        box-shadow: 2px 3px 20px rgb(190, 189, 189);
+    }
+
 /*----------------------------------------------------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------------------------------------------------*/
 /*-----------------------------------------------------CSS TRANSITION---------------------------------------------------*/
 /*----------------------------------------------------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------------------------------------------------*/
-#articleMainContent_AlphabeticalIndex,#headerNavCenter_InputSearch,#articleMainContent_listCategorie{
+#articleMainContent_AlphabeticalIndex,#headerNavCenter_InputSearch,#articleMainContent_listCategorie,#articleMainContent_presentation{
 	-o-transition: all 0.5s linear;
     -moz-transition: all 0.5s linear;
     -khtml-transition: all 0.5s linear;

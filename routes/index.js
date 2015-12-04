@@ -7,6 +7,7 @@ var glob            = require('glob-all');
 //fichier de configuation
 var conf            = require('./conf/conf.json');
 var lyricsWikia     = require('./handler/lyricsWikia.js');
+var db              = require('mongoskin').db('localhost:27017/wasabi'); 
 
 
 /* GET home page. */
@@ -14,33 +15,37 @@ var lyricsWikia     = require('./handler/lyricsWikia.js');
 router.get('/', function (req, res) {
     res.setHeader('Content-Type', conf.http.mime.html);
     console.log("test");
-    res.render('index',{categorieFile:[]});//on initialise categorieFile avec un tableau vide
+    res.render('index',{categorieFile:[],displayCategorie:true });//on initialise categorieFile avec un tableau vide
 });
 
 router.get('/search', function (req, res) {
-    var categorie = req.query.categorie;
     var lettre = req.query.lettre;
-    categorie = categorie.toLowerCase();
-    var pathDir;
-    var files;
-    switch(categorie) {
+    var nomCategorie = req.query.categorie.toLowerCase();
+    var categorieFile = [];
+    var renderPage = 'includes/listCategorie';
+    switch(nomCategorie) {
         case "artist":
-                getCategorieByLetter(res,'index',categorie,'../public/'+categorie+'/'+lettre+'**');
+                categorieFile= getDataByPattern('../public/'+nomCategorie+'/'+lettre+'**');
             break;
         case "album":
-                getCategorieByLetter(res,'index',categorie,'../public/**/'+lettre+'**');
+                categorieFile = getDataByPattern('../public/**/'+lettre+'**');
             break;
         case "songs":
-                getCategorieByLetter(res,'index',categorie,'../public/**/**/'+lettre+'**');
+                categorieFile = getDataByPattern('../public/**/**/'+lettre+'**');
             break;
-        //ajouter un default
+        default:
+                    
+            break;
     }
+    //res.render(renderPage, { categorieFile: categorieFile,nomCategorie:nomCategorie,displayCategorie:true });
+
+    res.render(renderPage,{ categorieFile: categorieFile,nomCategorie:nomCategorie});
 });
 
 router.get('/artist/*', function (req, res) {
     //Chercher le dossier req.url pour y trouver les albums
     console.log("url = "+req.url);
-    
+    getDataByPattern(res, 'index','artist');
     res.render('albumArtist', { albumFile: albumFile });
 
 });
@@ -82,21 +87,18 @@ router.get('/chercherLyricsWikia',function(req, res){
         });
     }
 });
-
-
-function getCategorieByLetter(res,renderPage,nomCategorie,pattern){
-    pathDir = path.join(__dirname, pattern);
+//Lorsque l'utilisateur clique sur un lien cette fonction est appelé elle permet de récupérer ce qui est contenu dans le dossier artist
+function getDataByPattern(pattern){
+    var pathDir = path.join(__dirname, pattern);
     var categorieFile = [];
-    console.log("pathDir = "+pathDir);
-    files = glob.sync([pathDir]);
+    var files = glob.sync([pathDir]);
     var position;
     for(var i = 0 ;i<files.length;i++){
         position = files[i].lastIndexOf("/");
         categorieFile.push(files[i].substring(position+1,files[i].length));
     }
-    console.log("test2");
+    return categorieFile;
     //new EJS({url: '../views/index.ejs'}).update(document.querySelector('#articleMainContent_listCategorie'), { categorieFile: categorieFile,nomCategorie:nomCategorie});
-    res.render(renderPage, { categorieFile: categorieFile,nomCategorie:nomCategorie });
 }
 
 module.exports = router;
