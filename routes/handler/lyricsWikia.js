@@ -43,53 +43,169 @@ var sanitize = require("sanitize-filename");
 //    });
 //};
 
-
 //Si le répertoire n'existe pas il est crée
 //param 1 : répertoire a vérifier (déja crée ou à créer)
-var dirExistOrCreate = function(dir){
-    if (!fs.existsSync(dir)){
-        fs.mkdirSync(dir, function (err) {
-            console.error('failed to create directory', err);
-        });
-    }
-};
+//var dirExistOrCreate = function(dir){
+//    if (!fs.existsSync(dir)){
+//        fs.mkdirSync(dir, function (err) {
+//            console.error('failed to create directory', err);
+//        });
+//    }
+//};
+
 //creer les répertoires des artistes avec les valeurs nom d'artiste recupéré sur lyricsWikia (valLinks)
 //param 1 : répertoire ou seront les dossiers des artistes
 //param 2 : href récupéré sur wiki, ex: "/wikia/ACDC"
 //param 3 : Permet de supprimer une chaine de caractère d'un href, si non utile mettre :''
 //param 4 : si les artites doivent être ou non indexés
-var createDirArtist = function(dirArtist,valLinks){
-        //var tabIndexArtist = []; // !!!!!! Faire promise pour retourner tabIndexArtist
-        //les dossiers et fichiers ne peuvent contenir les caractères suivants:    
-        //  \ / : * ? " < > | on utilise donc sanitize
-        //console.log("dirArtist = "+dirArtist);
-        dirExistOrCreate(dirArtist);
-        for(var i=0,len = valLinks.length; i<len;i++){
-            var artistName = valLinks[i];
-            var artistNameSanitize = sanitize(artistName);
-            //Si le dernier char est un '.'
-            if(artistNameSanitize.charAt(artistNameSanitize.length-1) == '.'){
-                artistNameSanitize = sanitizeLastChar(artistName);
-            }
-            var dirOfAnArtist = path.join(dirArtist+"/"+artistNameSanitize);
-            //tabIndexArtist.push(artistName+':'+artistNameSanitize); //Pour crée l'index plus tard artistName:path/sanitize(artistName)
-            dirExistOrCreate(dirOfAnArtist);
-            //console.log("Création de : "+dirOfAnArtist);
-        }
-        console.info("Directory created successfully !");
-    //return tabIndexArtist;
-};
+//var createDirArtist = function(dirArtist,valLinks){
+//        //les dossiers et fichiers ne peuvent contenir les caractères suivants:    
+//        //  \ / : * ? " < > | on utilise donc sanitize
+//        //console.log("dirArtist = "+dirArtist);
+//        dirExistOrCreate(dirArtist);
+//        for(var i=0,len = valLinks.length; i<len;i++){
+//            var artistName = valLinks[i];
+//            var artistNameSanitize = sanitize(artistName);
+//            //Si le dernier char est un '.'
+//            if(artistNameSanitize.charAt(artistNameSanitize.length-1) == '.'){
+//                artistNameSanitize = sanitizeLastChar(artistName);
+//            }
+//            var dirOfAnArtist = path.join(dirArtist+"/"+artistNameSanitize);
+//            dirExistOrCreate(dirOfAnArtist);
+//            //console.log("Création de : "+dirOfAnArtist);
+//        }
+//        console.info("Directory created successfully !");
+//};
 
 //Si on rencontre un probleme avec un char situé en fin de nom de dossier
 //Ici le '.' situé en fin de dossier empêche la suppression du dossier
 //param 1 : string a nettoyer
-var sanitizeLastChar = function (sanitizeStr){
-    while(sanitizeStr.charAt(sanitizeStr.length-1) == '.'){ 
-        //on supprime le dernier caractère qui est un '.'
-        sanitizeStr = sanitizeStr.substring(0, sanitizeStr.length-1) 
-    }
-    return sanitizeStr;
-};
+//var sanitizeLastChar = function (sanitizeStr){
+//    while(sanitizeStr.charAt(sanitizeStr.length-1) == '.'){ 
+//        //on supprime le dernier caractère qui est un '.'
+//        sanitizeStr = sanitizeStr.substring(0, sanitizeStr.length-1) 
+//    }
+//    return sanitizeStr;
+//};
+
+//param 1 : url de la page a récupérer
+//param 2 : selecteur pour récupérer la partie qui nous interesse dans leur page html
+//param 3 : valeur de l'attribut à récupérer
+//var getArtistFromCategorie = function(url,selector,attr,removeStr){
+//    // La fonction de résolution est appelée avec la capacité de tenir ou de rompre la promesse
+//    var promise = new Promise(function(resolve, reject) { 
+//        request(url, function(err, resp, body){
+//            if (!err && resp.statusCode == 200) {
+//                var tLinks = [];
+//                $ = cheerio.load(body);
+//                var links = $(selector); //#mw-pages>.mw-content-ltr>table a[href]
+//                $(links).each(function(i, link){
+//                    tLinks.push($(link).attr(attr).replace(removeStr, ""));//on récupére les #mw-pages>.mw-content-ltr>table a[href]
+//                });
+//                resolve(tLinks);//une fois le tLinks rempli resolve va indiquer que la promise s'est bien executée et va donc executer le then
+//            }
+//            else{
+//                console.error('Error:', err);
+//                reject(new Error(resp.statusText));
+//            }
+//        });
+//    });
+//    return promise;
+//};
+
+//recupére les albums des artists et leurs musiques via l'api de lyrics wikia pour créer les dossiers associés dans/public/artist/Nom_Album/Nom_Musique
+//param 1 : url de la page a récupérer
+//param 2 : selecteur pour récupérer la partie qui nous interesse dans leur page html
+//param 3 : valeur de l'attribut à récupérer
+//param 4 : tableau représentant les noms d'artistes
+//var getAlbumsFromArtists = function(url,selector,attr,removeStr,dirArtists,currNomArtist){
+//    //faire comme la fonction getArtistFromCategorie
+//        var promise = new Promise(function(resolve, reject) { 
+//            var urlArtists = url+currNomArtist;
+//            request(urlArtists, function(err, resp, body){
+//                if (!err && resp.statusCode == 200) {
+//                    //console.log("urlArtists = "+urlArtists);
+//
+//                    var tLinks = [];
+//                    $ = cheerio.load(body);
+//                    var tElts = $(".albums>li")//$(selector);
+//                    //console.log("currNomArtist = "+currNomArtist);
+//                    $(tElts).each(function(i, eltAlbum){
+//                        var album= $(eltAlbum).find($(".albums>li>a[href]:first-child")).attr(attr).replace(removeStr+currNomArtist, "");
+//                        album = sanitize(album);
+//                        album = sanitizeLastChar(album);
+//                        currNomArtist = sanitize(currNomArtist);
+//                        currNomArtist = sanitizeLastChar(currNomArtist);
+//                        //console.log("   album = "+album);
+//
+//                        var dirAlbums = path.join(dirArtists+"/"+currNomArtist+"/"+album);
+//                        dirExistOrCreate(dirAlbums);
+//                        $(eltAlbum).find($(".songs>li>a[href]")).each(function(ii,eltSong){
+//                            var song = $(eltSong).attr(attr).replace(removeStr+currNomArtist+':',"");
+//                            //console.log("       song = "+song);
+//                            song = sanitize(song);
+//                            song = sanitizeLastChar(song);
+//                            var dirSongs = path.join(dirArtists+"/"+currNomArtist+"/"+album+"/"+song);
+//                            dirExistOrCreate(dirSongs);
+//                        });
+//                    });
+//                    resolve(tLinks);//une fois le tLinks rempli resolve va indiquer que la promise s'est bien executée et va donc executer le then
+//                }
+//                else{
+//                    console.error('Error:', err);
+//                    reject(new Error(resp.statusText));
+//                }
+//            });
+//       });
+//    return promise;
+//};
+
+//recupére les albums des artists via l'api de lyrics wikia
+//param 1 : url de la page a récupérer
+//param 2 : selecteur pour récupérer la partie qui nous interesse dans leur page html
+//param 3 : valeur de l'attribut à récupérer
+//param 4 : tableau représentant les noms d'artistes
+//var getAlbumsFromArtists = function(url,selector,attr,removeStr,dirArtists,currNomArtist){
+//    //faire comme la fonction getArtistFromCategorie
+//        var promise = new Promise(function(resolve, reject) { 
+//            var urlArtists = url+currNomArtist;
+//            request(urlArtists, function(err, resp, body){
+//                if (!err && resp.statusCode == 200) {
+//                    //console.log("urlArtists = "+urlArtists);
+//
+//                    var tAllInfoArtists = [];
+//                    $ = cheerio.load(body);
+//                    var tElts = $(".albums>li")//$(selector);
+//                    //console.log("currNomArtist = "+currNomArtist);
+//                    $(tElts).each(function(i, eltAlbum){
+//                        var album= $(eltAlbum).find($(".albums>li>a[href]:first-child")).attr(attr).replace(removeStr+currNomArtist, "");
+//                        album = sanitize(album);
+//                        album = sanitizeLastChar(album);
+//                        currNomArtist = sanitize(currNomArtist);
+//                        currNomArtist = sanitizeLastChar(currNomArtist);
+//                        //console.log("   album = "+album);
+//
+//                        var dirAlbums = path.join(dirArtists+"/"+currNomArtist+"/"+album);
+//                        dirExistOrCreate(dirAlbums);
+//                        $(eltAlbum).find($(".songs>li>a[href]")).each(function(ii,eltSong){
+//                            var song = $(eltSong).attr(attr).replace(removeStr+currNomArtist+':',"");
+//                            //console.log("       song = "+song);
+//                            song = sanitize(song);
+//                            song = sanitizeLastChar(song);
+//                            var dirSongs = path.join(dirArtists+"/"+currNomArtist+"/"+album+"/"+song);
+//                            dirExistOrCreate(dirSongs);
+//                        });
+//                    });
+//                    resolve(tAllInfoArtists);//une fois le tAllInfoArtists rempli resolve va indiquer que la promise s'est bien executée et va donc executer le then
+//                }
+//                else{
+//                    console.error('Error:', err);
+//                    reject(new Error(resp.statusText));
+//                }
+//            });
+//       });
+//    return promise;
+//};
 
 //param 1 : url de la page a récupérer
 //param 2 : selecteur pour récupérer la partie qui nous interesse dans leur page html
@@ -99,13 +215,19 @@ var getArtistFromCategorie = function(url,selector,attr,removeStr){
     var promise = new Promise(function(resolve, reject) { 
         request(url, function(err, resp, body){
             if (!err && resp.statusCode == 200) {
-                var tLinks = [];
+                var tAllInfoArtists = [];
                 $ = cheerio.load(body);
                 var links = $(selector); //#mw-pages>.mw-content-ltr>table a[href]
                 $(links).each(function(i, link){
-                    tLinks.push($(link).attr(attr).replace(removeStr, ""));//on récupére les #mw-pages>.mw-content-ltr>table a[href]
+                    //tAllInfoArtists.push($(link).attr(attr).replace(removeStr, ""));//on récupére les #mw-pages>.mw-content-ltr>table a[href]
+                    var tInfoArtist = {
+                        name:$(link).attr('title'),
+                        urlWikia:$(link).attr(attr).replace(removeStr, ""), //on récupére les #mw-pages>.mw-content-ltr>table a[href]
+                        albums:[]
+                    };
+                    tAllInfoArtists.push(tInfoArtist);
                 });
-                resolve(tLinks);//une fois le tLinks rempli resolve va indiquer que la promise s'est bien executée et va donc executer le then
+                resolve(tAllInfoArtists);//une fois le tAllInfoArtists rempli resolve va indiquer que la promise s'est bien executée et va donc executer le then
             }
             else{
                 console.error('Error:', err);
@@ -120,39 +242,49 @@ var getArtistFromCategorie = function(url,selector,attr,removeStr){
 //param 1 : url de la page a récupérer
 //param 2 : selecteur pour récupérer la partie qui nous interesse dans leur page html
 //param 3 : valeur de l'attribut à récupérer
-//param 4 : tableau représentant les noms d'artistes
-var getAlbumsFromArtists = function(url,selector,attr,removeStr,dirArtists,currNomArtist){
+//param 4 : tableau représentant l'objet Artist
+var getAlbumsFromArtists = function(url,selector,attr,removeStr,objArtist){
     //faire comme la fonction getArtistFromCategorie
         var promise = new Promise(function(resolve, reject) { 
-            var urlArtists = url+currNomArtist;
-            request(urlArtists, function(err, resp, body){
+            var currUrlNomArtist = objArtist.urlWikia;
+            var currNomArtist = objArtist.name;
+            var urlWikiaArtists = url+currUrlNomArtist;
+            request(urlWikiaArtists, function(err, resp, body){
                 if (!err && resp.statusCode == 200) {
-                    //console.log("urlArtists = "+urlArtists);
-
-                    var tLinks = [];
                     $ = cheerio.load(body);
                     var tElts = $(".albums>li")//$(selector);
-                    //console.log("currNomArtist = "+currNomArtist);
+                    //console.log("artist = "+currNomArtist);
                     $(tElts).each(function(i, eltAlbum){
-                        var album= $(eltAlbum).find($(".albums>li>a[href]:first-child")).attr(attr).replace(removeStr+currNomArtist, "");
-                        album = sanitize(album);
-                        album = sanitizeLastChar(album);
-                        currNomArtist = sanitize(currNomArtist);
-                        currNomArtist = sanitizeLastChar(currNomArtist);
-                        //console.log("   album = "+album);
-
-                        var dirAlbums = path.join(dirArtists+"/"+currNomArtist+"/"+album);
-                        dirExistOrCreate(dirAlbums);
+                        var album= $(eltAlbum).find($(".albums>li>a[href]:first-child")).text();
+                        var dateSortie = "";
+                        if(album.lastIndexOf('_(')!==-1){
+                            dateSortie = album.slice(album.lastIndexOf('_('),album.length);
+                            album = album.replace(dateSortie,'');
+                            dateSortie = dateSortie.substring(2,dateSortie.length-1);//on passera de _(1995) à 1995 
+                        }
+                        var urlAlbum = $(eltAlbum).find($(".albums>li>a[href]:first-child")).attr(attr);
+                        var songs = [];//va contenir les objets objSong
+                        //console.log("       Album = "+album);
                         $(eltAlbum).find($(".songs>li>a[href]")).each(function(ii,eltSong){
-                            var song = $(eltSong).attr(attr).replace(removeStr+currNomArtist+':',"");
-                            //console.log("       song = "+song);
-                            song = sanitize(song);
-                            song = sanitizeLastChar(song);
-                            var dirSongs = path.join(dirArtists+"/"+currNomArtist+"/"+album+"/"+song);
-                            dirExistOrCreate(dirSongs);
+                            var song = $(eltSong).text();
+                            var urlSong = $(eltSong).attr(attr);
+                            var objSong = {
+                                titre: song,
+                                urlSong: urlSong
+                            };
+                            songs.push(objSong);
+                            //console.log("           Song = "+$(eltSong).text());
                         });
+                        var objAlbum = {
+                            titre: album,
+                            dateSortie: dateSortie,
+                            urlAlbum: urlAlbum,
+                            songs:songs //array contenant les objets objSong
+                        };
+                        //on ajoute l'objet l'album contenant le nom de l'album et ses musiques 
+                        objArtist.albums.push(objAlbum);
                     });
-                    resolve(tLinks);//une fois le tLinks rempli resolve va indiquer que la promise s'est bien executée et va donc executer le then
+                    resolve(objArtist);//une fois le objArtist rempli resolve va indiquer que la promise s'est bien executée et va donc executer le then
                 }
                 else{
                     console.error('Error:', err);
@@ -174,6 +306,3 @@ var getLyricsFromAlbums = function(tabDirAlbum){
 exports.getArtistFromCategorie      = getArtistFromCategorie;
 exports.getAlbumsFromArtists        = getAlbumsFromArtists;
 exports.getLyricsFromAlbums         = getLyricsFromAlbums;
-
-//exports.getLyricsFromWikiaPageURL   = getLyricsFromWikiaPageURL;
-exports.createDirArtist             = createDirArtist;

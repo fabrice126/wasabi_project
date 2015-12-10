@@ -3,11 +3,12 @@ var router          = express.Router();
 var path            = require('path');
 var url             = require('url');
 var fs              = require('fs');
-var glob            = require('glob-all');
+var glob            = require('glob-all'); 
+var db              = require('mongoskin').db('mongodb://localhost:27017/wasabi');
+var lyricsWikia     = require('./handler/lyricsWikia.js');
 //fichier de configuation
 var conf            = require('./conf/conf.json');
-var lyricsWikia     = require('./handler/lyricsWikia.js');
-var db              = require('mongoskin').db('localhost:27017/wasabi'); 
+
 
 
 /* GET home page. */
@@ -34,7 +35,7 @@ router.get('/search', function (req, res) {
                 categorieFile = getDataByPattern('../public/**/**/'+lettre+'**');
             break;
         default:
-                    
+     
             break;
     }
     //res.render(renderPage, { categorieFile: categorieFile,nomCategorie:nomCategorie,displayCategorie:true });
@@ -71,21 +72,26 @@ router.get('/chercherLyricsWikia',function(req, res){
     var selectorAlbums = '.albums>li>a[href]:first-child';
     var attrAlbums = 'href';
     var removeStrHrefAlbums = 'http://lyrics.wikia.com/';
-
-    //creation de la promise
+    //on supprime la collection artist de la base de données pour la recréer
+    db.collection('artist').drop();
     for(var i = 0, len = alphabet.length;i<len;i++){
         lyricsWikia.getArtistFromCategorie(urlArtists+alphabet[i],selectorArtists,attrArtists,removeStrHrefArtists).then(function(valtLinks) {
             //valtLinks => liste des noms d'artistes
-            lyricsWikia.createDirArtist(dirArtists,valtLinks);
-            console.log("createDirArtist "+alphabet[i]);
-            for(var j = 0;j<valtLinks.length;j++){
-                //console.log("myVal = "+valtLinks[j]);
-                lyricsWikia.getAlbumsFromArtists(urlAlbums,selectorAlbums,attrAlbums,removeStrHrefAlbums,dirArtists,valtLinks[j]);
-            }      
+            console.log("Dans promise de GET chercherLyricsWikia");
+            //lyricsWikia.createDirArtit(dirArtists,valtLinks);
+            for(var j = 0;j < valtLinks.length ;j++){
+                lyricsWikia.getAlbumsFromArtists(urlAlbums,selectorAlbums,attrAlbums,removeStrHrefAlbums,valtLinks[j]).then(function(objArtist){
+                    db.collection('artist').insert(objArtist, function(err, result) {
+                        if (err) throw err;
+                        if (result) console.log('Added!');
+                    });
+                });
+            }
         }).catch(function() { 
             console.log("error Fin asynchrone");
         });
     }
+    console.log("fin de GET chercherLyricsWikia");
 });
 //Lorsque l'utilisateur clique sur un lien cette fonction est appelé elle permet de récupérer ce qui est contenu dans le dossier artist
 function getDataByPattern(pattern){
