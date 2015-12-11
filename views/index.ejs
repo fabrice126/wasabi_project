@@ -11,9 +11,18 @@
 		<script src="javascripts/createTab.js"></script>
         <!--Regroupe le code permettant la navigation en ajax de la page index.html -->
         <script src="javascripts/navAjaxIndex.js"></script>
+        <script src="bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
+        <link href="elements/todo-app.html" rel="import">
+        <link rel="import" href="bower_components/google-map/google-map.html">
+
+<!-- Use element -->
+
 	</head>
+
+
 	<body>
         <% include ./includes/navHeader %>
+
 		<section id="articleMainContent">
 
             <% if (displayCategorie) { %>

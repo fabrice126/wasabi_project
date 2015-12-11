@@ -13,11 +13,11 @@ var conf            = require('./conf/conf.json');
 
 /* GET home page. */
 
-router.get('/', function (req, res) {
-    res.setHeader('Content-Type', conf.http.mime.html);
-    console.log("test");
-    res.render('index',{categorieFile:[],displayCategorie:true });//on initialise categorieFile avec un tableau vide
-});
+//router.get('/', function (req, res) {
+//    res.setHeader('Content-Type', conf.http.mime.html);
+//    console.log("test");
+//    res.render('index',{categorieFile:[],displayCategorie:true });//on initialise categorieFile avec un tableau vide
+//});
 
 router.get('/search', function (req, res) {
     var lettre = req.query.lettre;
@@ -26,6 +26,14 @@ router.get('/search', function (req, res) {
     var renderPage = 'includes/listCategorie';
     switch(nomCategorie) {
         case "artist":
+                /*
+                db.artist.distinct('albums.titre'); 
+                        ou  
+                db.runCommand({
+                  distinct: 'artist',
+                  key: 'albums.titre'
+                });
+                */
                 categorieFile= getDataByPattern('../public/'+nomCategorie+'/'+lettre+'**');
             break;
         case "album":
@@ -87,6 +95,7 @@ router.get('/chercherLyricsWikia',function(req, res){
                     });
                 });
             }
+            db.collection('artist').createIndex( { "albums.songs": 1 } );
         }).catch(function() { 
             console.log("error Fin asynchrone");
         });
