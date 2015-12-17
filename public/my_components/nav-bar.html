@@ -2,38 +2,40 @@
 <html>
     <head>
         <link href="../bower_components/polymer/polymer.html" rel="import">
-        <link href="../bower_components/paper-item/paper-item.html" rel="import">
-        <link href="../bower_components/paper-input/paper-input.html" rel="import">
         <link href="../bower_components/iron-icons/iron-icons.html" rel="import">
-     	<link href="../bower_components/iron-input/iron-input.html" rel="import"> 
         <link href="../bower_components/paper-toolbar/paper-toolbar.html" rel="import">
         <link href="../bower_components/paper-button/paper-button.html" rel="import">
-        <link href="../my_components/nav-bar-search.html" rel="import">
+        <link href="../my_components/paper-input-search.html" rel="import">
+
     </head>
 
     <dom-module id="nav-bar">
-      <style>
-        /* CSS rules for your element */
-          .titre{
-              flex:0.6;
-          }
-      </style>
+        <style>
+            paper-input-search{
+                flex: 1;
+            }
+            paper-toolbar{
+                box-shadow : 0 4px 5px 0 rgba(0,0,0,0.14),0 1px 10px 0 rgba(0,0,0,0.12),0 2px 4px -1px rgba(0,0,0,0.2);
+            }
+        </style>
         <template>
             <!-- local DOM for your element -->
-
             <paper-toolbar>
-                    <paper-icon-button icon="menu" on-tap="menuAction"></paper-icon-button>
-                    <span class="titre">Toolbar</span>
-                    <nav-bar-search></nav-bar-search>
-                    <paper-icon-button icon="add">+</paper-icon-button>
-                    <paper-button raised>
-                        <iron-icon icon="cloud-done"></iron-icon>
-                        Create Database
-                    </paper-button>
+                <paper-icon-button icon="menu" on-tap="menuAction"></paper-icon-button>
+                <span class="titre">Toolbar</span>
+                <paper-input-search ></paper-input-search>
+                <paper-icon-button icon="add">+</paper-icon-button>
+                <paper-button raised>
+                    <iron-icon icon="cloud-done"></iron-icon>
+                    Create Database
+                </paper-button>
             </paper-toolbar>
         </template>
     </dom-module>
+    
 
+    
+    
 <script>
   // element registration
   Polymer({

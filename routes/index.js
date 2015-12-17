@@ -13,42 +13,37 @@ var conf            = require('./conf/conf.json');
 
 /* GET home page. */
 
-//router.get('/', function (req, res) {
-//    res.setHeader('Content-Type', conf.http.mime.html);
-//    console.log("test");
-//    res.render('index',{categorieFile:[],displayCategorie:true });//on initialise categorieFile avec un tableau vide
-//});
+router.get('/index1', function (req, res) {
+    res.setHeader('Content-Type', conf.http.mime.html);
+    console.log("test");
+    res.render('index1',{categorieFile:[],displayCategorie:true });//on initialise categorieFile avec un tableau vide
+});
 
 router.get('/search', function (req, res) {
     var lettre = req.query.lettre;
     var nomCategorie = req.query.categorie.toLowerCase();
+    console.log("lettre = "+lettre+"  nomCategorie = "+nomCategorie);
     var categorieFile = [];
     var renderPage = 'includes/listCategorie';
     switch(nomCategorie) {
         case "artist":
-                /*
-                db.artist.distinct('albums.titre'); 
-                        ou  
-                db.runCommand({
-                  distinct: 'artist',
-                  key: 'albums.titre'
-                });
-                */
-                categorieFile= getDataByPattern('../public/'+nomCategorie+'/'+lettre+'**');
+                finAllByField("artist","name",res);
+                //categorieFile= getDataByPattern('../public/'+nomCategorie+'/'+lettre+'**');
             break;
         case "album":
-                categorieFile = getDataByPattern('../public/**/'+lettre+'**');
+                finAllByField("artist","albums.titre",res);
+                //categorieFile = getDataByPattern('../public/**/'+lettre+'**');
             break;
         case "songs":
-                categorieFile = getDataByPattern('../public/**/**/'+lettre+'**');
+                finAllByField("artist","albums.songs.titre",res);
+                //categorieFile = getDataByPattern('../public/**/**/'+lettre+'**');
             break;
         default:
-     
             break;
     }
-    //res.render(renderPage, { categorieFile: categorieFile,nomCategorie:nomCategorie,displayCategorie:true });
 
-    res.render(renderPage,{ categorieFile: categorieFile,nomCategorie:nomCategorie});
+    //res.render(renderPage,{ categorieFile: categorieFile,nomCategorie:nomCategorie});
+    
 });
 
 router.get('/artist/*', function (req, res) {
@@ -103,17 +98,25 @@ router.get('/chercherLyricsWikia',function(req, res){
     console.log("fin de GET chercherLyricsWikia");
 });
 //Lorsque l'utilisateur clique sur un lien cette fonction est appelé elle permet de récupérer ce qui est contenu dans le dossier artist
-function getDataByPattern(pattern){
-    var pathDir = path.join(__dirname, pattern);
-    var categorieFile = [];
-    var files = glob.sync([pathDir]);
-    var position;
-    for(var i = 0 ;i<files.length;i++){
-        position = files[i].lastIndexOf("/");
-        categorieFile.push(files[i].substring(position+1,files[i].length));
-    }
-    return categorieFile;
-    //new EJS({url: '../views/index.ejs'}).update(document.querySelector('#articleMainContent_listCategorie'), { categorieFile: categorieFile,nomCategorie:nomCategorie});
+//function getDataByPattern(pattern){
+//    var pathDir = path.join(__dirname, pattern);
+//    var categorieFile = [];
+//    var files = glob.sync([pathDir]);
+//    var position;
+//    for(var i = 0 ;i<files.length;i++){
+//        position = files[i].lastIndexOf("/");
+//        categorieFile.push(files[i].substring(position+1,files[i].length));
+//    }
+//    return categorieFile;
+//    //new EJS({url: '../views/index.ejs'}).update(document.querySelector('#articleMainContent_listCategorie'), { categorieFile: categorieFile,nomCategorie:nomCategorie});
+//}
+
+function finAllByField(collection,query,res){
+    db.command( { distinct: collection, key: query }, function( err, result ) {
+        console.log(result.values);
+        console.log(result.values.length);
+        res.send(JSON.stringify(result.values));
+    });
 }
 
 module.exports = router;

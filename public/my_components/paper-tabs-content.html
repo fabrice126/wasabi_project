@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link href="../bower_components/polymer/polymer.html" rel="import">
+        <link href="../bower_components/paper-tabs/paper-tabs.html" rel="import">
+        <link href="../bower_components/paper-material/paper-material.html" rel="import">
+        <link href="../bower_components/iron-pages/iron-pages.html" rel="import">
+    </head>
+
+    <dom-module id="paper-tabs-content">
+        <style>
+            paper-tab{
+                --paper-tab-ink :#E0E0E0;
+            }
+            paper-tab:hover{
+                background-color: #f2f2f2;
+            }
+            paper-tabs {
+                --paper-tabs-selection-bar-color:#3f51b5;
+            }
+            [id^=alphabet_]>li{
+                padding-left: 1%;
+                padding-right: 1%;
+                font-size: 18px;
+            }
+            [id^=alphabet_]>li>a{
+                color: #3f51b5;
+                text-decoration: none;
+            }
+            [id^=alphabet_]{
+                list-style: none;
+                display: inline-flex;
+                width:60%;
+            }
+            #nav_alphabet{
+                text-align: center;
+            }
+
+        </style>
+        <template>
+            <!-- local DOM for your element -->
+            <paper-material id="tabs" elevation="1">
+                <paper-tabs selected="0">
+                    <template is="dom-repeat" items="{{categories}}" as="categorie">
+                        <paper-tab id="categorie_{{categorie}}" >{{categorie}}</paper-tab>
+                    </template>
+                </paper-tabs>
+            </paper-material>
+            <paper-material elevation="1">
+                <nav id="nav_alphabet">
+                    <iron-pages selected="0">  
+                        <template is="dom-repeat" items="{{categories}}"  as="categorie">
+                            <ul id="alphabet_{{categorie}}">
+                            <template is="dom-repeat" items="{{alphabet}}"  as="lettre">
+                                <li>
+                                    <a href="search?categorie={{categorie}}&amp;lettre={{lettre}}">{{lettre}}</a>
+                                </li>
+                            </template>
+                            </ul>
+                        </template>
+                    </iron-pages>
+                </nav>
+            </paper-material>
+        </template>
+    </dom-module>
+
+    
+<script>
+  // element registration
+  Polymer({
+    is: "paper-tabs-content",
+    // add properties and methods on the element's prototype
+    properties: {
+        categories:{
+            type: Array,
+            value: []
+        },
+        alphabet :{
+            type: Array,
+            value: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
+        }
+    },
+	ready: function(e){    
+        var pages = document.querySelector('iron-pages');
+        var tabs = document.querySelector('paper-tabs');
+        tabs.addEventListener('iron-select', function() { 
+            pages.selected = tabs.selected;
+        });
+    }
+  });   
+</script>
+</html>
+    

@@ -9,17 +9,14 @@
 
 <!--		<link href="stylesheets/bootstrap.min.css" rel="stylesheet">-->
 		<script src="javascripts/jquery/jquery-2.1.4.js"></script>
-		<script src="javascripts/createTab.js"></script>
         <!--Regroupe le code permettant la navigation en ajax de la page index.html -->
         <script src="javascripts/navAjaxIndex.js"></script>
         <!--Regroupe le code permettant la creation de webcomponent -->
         <script src="bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
 <!--        <link href="my_components/todo-app.html" rel="import">-->
         <link href="my_components/nav-bar.html" rel="import">
-        <link href="bower_components/iron-icons/iron-icons.html" rel="import">
-        <link href="bower_components/paper-icon-button/paper-icon-button.html" rel="import">
-        <link href="bower_components/paper-toolbar/paper-toolbar.html" rel="import">
-        <link href="bower_components/iron-flex-layout/iron-flex-layout.html" rel="import">
+        <link href="my_components/paper-tabs-content.html" rel="import">
+
 
 
 <!-- Use element -->
@@ -39,11 +36,10 @@
                 </div>
             </paper-header-panel>
 -->
-            
             <paper-header-panel main class="flex">
                 <nav-bar></nav-bar>
-                <div> 
-                    Main content... 
+                <div id=mainContent>
+                    <paper-tabs-content categories='["Artist", "Album", "Songs", "Label"]'></paper-tabs-content>
                 </div>
             </paper-header-panel>
         </paper-drawer-panel>
