@@ -9,8 +9,7 @@
 
 <!--		<link href="stylesheets/bootstrap.min.css" rel="stylesheet">-->
 		<script src="javascripts/jquery/jquery-2.1.4.js"></script>
-        <!--Regroupe le code permettant la navigation en ajax de la page index.html -->
-        <script src="javascripts/navAjaxIndex.js"></script>
+
         <!--Regroupe le code permettant la creation de webcomponent -->
         <script src="bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
 <!--        <link href="my_components/todo-app.html" rel="import">-->
@@ -40,9 +39,13 @@
                 <nav-bar></nav-bar>
                 <div id=mainContent>
                     <paper-tabs-content categories='["Artist", "Album", "Songs", "Label"]'></paper-tabs-content>
+                    <div id="loadContent"></div>
                 </div>
             </paper-header-panel>
         </paper-drawer-panel>
 <!--		<todo-app></todo-app>-->
 	</body>
+
+    <!--Regroupe le code permettant la navigation en ajax de la page index.html -->
+    <script src="javascripts/navAjaxIndex.js"></script>
 </html>

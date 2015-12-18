@@ -12,7 +12,7 @@ var conf            = require('./conf/conf.json');
 
 
 /* GET home page. */
-
+//a supprimer une fois le template coté client fini
 router.get('/index1', function (req, res) {
     res.setHeader('Content-Type', conf.http.mime.html);
     console.log("test");
@@ -25,17 +25,35 @@ router.get('/search', function (req, res) {
     console.log("lettre = "+lettre+"  nomCategorie = "+nomCategorie);
     var categorieFile = [];
     var renderPage = 'includes/listCategorie';
+    var regLetter = new RegExp('^'+lettre,'i');
     switch(nomCategorie) {
         case "artist":
-                finAllByField("artist","name",res);
-                //categorieFile= getDataByPattern('../public/'+nomCategorie+'/'+lettre+'**');
+            db.collection('artist').find({"name": regLetter},{"name":1,"_id":0}).toArray(function(err,result){
+                if (err) throw err;
+                //console.log(result);
+                res.send(JSON.stringify(result));
+            });
             break;
         case "album":
-                finAllByField("artist","albums.titre",res);
-                //categorieFile = getDataByPattern('../public/**/'+lettre+'**');
+            db.collection('artist').aggregate([
+                // Match the possible documents.
+                {"$match": {"albums.titre": regLetter}},
+                // De-normalize le tableau pour sépérarer les documents
+                { "$unwind": "$albums"},
+                // On filtre "filter" le contenu 
+                {"$match": {"albums.titre": regLetter}},
+                //Regroupement des titres d'albums
+                {"$group": {_id:'$albums'}},
+                //On demande a afficher le titre uniquement
+                {"$project" : { "_id.titre" : 1 }}
+            ],function(err, result) {
+                //console.log(result);
+                res.send(JSON.stringify(result));
+            })
+            //categorieFile = getDataByPattern('../public/**/'+lettre+'**');
             break;
         case "songs":
-                finAllByField("artist","albums.songs.titre",res);
+                //finAllByField("artist","albums.songs.titre",res);
                 //categorieFile = getDataByPattern('../public/**/**/'+lettre+'**');
             break;
         default:
@@ -111,12 +129,5 @@ router.get('/chercherLyricsWikia',function(req, res){
 //    //new EJS({url: '../views/index.ejs'}).update(document.querySelector('#articleMainContent_listCategorie'), { categorieFile: categorieFile,nomCategorie:nomCategorie});
 //}
 
-function finAllByField(collection,query,res){
-    db.command( { distinct: collection, key: query }, function( err, result ) {
-        console.log(result.values);
-        console.log(result.values.length);
-        res.send(JSON.stringify(result.values));
-    });
-}
 
 module.exports = router;
