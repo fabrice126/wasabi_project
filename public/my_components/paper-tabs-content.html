@@ -5,6 +5,11 @@
         <link href="../bower_components/paper-tabs/paper-tabs.html" rel="import">
         <link href="../bower_components/paper-material/paper-material.html" rel="import">
         <link href="../bower_components/iron-pages/iron-pages.html" rel="import">
+        <link href="../bower_components/paper-card/paper-card.html" rel="import">
+        <link href="../bower_components/paper-ripple/paper-ripple.html" rel="import">
+        <link href="../bower_components/iron-ajax/iron-ajax.html" rel="import">
+
+
     </head>
 
     <dom-module id="paper-tabs-content">
@@ -18,10 +23,26 @@
             paper-tabs {
                 --paper-tabs-selection-bar-color:#3f51b5;
             }
+            paper-card{
+                width: 310px;
+                height: 60px;
+                margin-top: 10px;
+                display: inline-table;
+            }
+            #loader{
+                display: block;
+                text-align: center;
+            }
+          .flex-wrap {
+            @apply(--layout-horizontal);
+            @apply(--layout-wrap);
+            }
+            
             [id^=alphabet_]>li{
-                padding-left: 1%;
-                padding-right: 1%;
-                font-size: 18px;
+                padding-left: 0.2%;
+                padding-right: 0.2%;
+                font-size: 20px;
+                display: inline-block;
             }
             [id^=alphabet_]>li>a{
                 color: #3f51b5;
@@ -29,16 +50,20 @@
             }
             [id^=alphabet_]{
                 list-style: none;
-                display: inline-flex;
-                width:60%;
+                display: inline-block;
+                width:100%;
+                padding-left: 0px;
             }
             #nav_alphabet{
                 text-align: center;
             }
+            
 
         </style>
         <template>
-            <!-- local DOM for your element -->
+            <!--Chargement en ajax du contenu -->
+            <iron-ajax id="get_content" auto last-response="{{data}}" handleAs="json"> </iron-ajax>
+            <!-- Génération des listes de catégories -->
             <paper-material id="tabs" elevation="1">
                 <paper-tabs selected="0">
                     <template is="dom-repeat" items="{{categories}}" as="categorie">
@@ -46,14 +71,15 @@
                     </template>
                 </paper-tabs>
             </paper-material>
+            <!--Génération de l'alphabet-->
             <paper-material elevation="1">
                 <nav id="nav_alphabet">
-                    <iron-pages selected="0">  
+                    <iron-pages id="iron_alphabet" selected="0">  
                         <template is="dom-repeat" items="{{categories}}"  as="categorie">
                             <ul id="alphabet_{{categorie}}">
                             <template is="dom-repeat" items="{{alphabet}}"  as="lettre">
-                                <li>
-                                    <a href="search?categorie={{categorie}}&amp;lettre={{lettre}}">{{lettre}}</a>
+                                <li>  
+                                    <a on-tap='doLoadContent' href="search?categorie={{categorie}}&amp;lettre={{lettre}}">{{lettre}} </a>
                                 </li>
                             </template>
                             </ul>
@@ -61,6 +87,15 @@
                     </iron-pages>
                 </nav>
             </paper-material>
+            <!-- Chargement des liens -->
+            <div id="loader">
+                <template class="flex-wrap" is="dom-repeat" items="{{data}}">
+                    <paper-card elevation="2">
+                             {{item.name}}
+                             <paper-ripple></paper-ripple>
+                    </paper-card> 
+                </template>
+            </div>
         </template>
     </dom-module>
 
@@ -83,11 +118,17 @@
 	ready: function(e){    
         var pages = document.querySelector('iron-pages');
         var tabs = document.querySelector('paper-tabs');
-        tabs.addEventListener('iron-select', function() { 
+        tabs.addEventListener('iron-select', function(e) { 
             pages.selected = tabs.selected;
         });
-    }
-  });   
-</script>
+    },
+      doLoadContent: function(e){
+            e.preventDefault();
+            //L'affectation de l'url lance la requête automatiquement   
+            this.$.get_content.url = e.target.href; 
+      }
+  });  
+
+</script>   
 </html>
     

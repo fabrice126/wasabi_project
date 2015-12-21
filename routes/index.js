@@ -28,9 +28,9 @@ router.get('/search', function (req, res) {
     var regLetter = new RegExp('^'+lettre,'i');
     switch(nomCategorie) {
         case "artist":
-            db.collection('artist').find({"name": regLetter},{"name":1,"_id":0}).toArray(function(err,result){
+            db.collection('artist').find({"name": regLetter},{"name":1,"_id":0}).sort( {"name":1}).toArray(function(err,result){
                 if (err) throw err;
-                //console.log(result);
+                console.log(result);
                 res.send(JSON.stringify(result));
             });
             break;
@@ -50,11 +50,8 @@ router.get('/search', function (req, res) {
                 //console.log(result);
                 res.send(JSON.stringify(result));
             })
-            //categorieFile = getDataByPattern('../public/**/'+lettre+'**');
             break;
         case "songs":
-                //finAllByField("artist","albums.songs.titre",res);
-                //categorieFile = getDataByPattern('../public/**/**/'+lettre+'**');
             break;
         default:
             break;
@@ -104,7 +101,7 @@ router.get('/chercherLyricsWikia',function(req, res){
                 lyricsWikia.getAlbumsFromArtists(urlAlbums,selectorAlbums,attrAlbums,removeStrHrefAlbums,valtLinks[j]).then(function(objArtist){
                     db.collection('artist').insert(objArtist, function(err, result) {
                         if (err) throw err;
-                        if (result) console.log('Added!');
+                        if (result) console.log('Added =>'+objArtist.name);
                     });
                 });
             }
