@@ -12,43 +12,53 @@ var conf            = require('./conf/conf.json');
 
 
 /* GET home page. */
-
-//router.get('/', function (req, res) {
-//    res.setHeader('Content-Type', conf.http.mime.html);
-//    console.log("test");
-//    res.render('index',{categorieFile:[],displayCategorie:true });//on initialise categorieFile avec un tableau vide
-//});
+//a supprimer une fois le template coté client fini
+router.get('/index1', function (req, res) {
+    res.setHeader('Content-Type', conf.http.mime.html);
+    console.log("test");
+    res.render('index1',{categorieFile:[],displayCategorie:true });//on initialise categorieFile avec un tableau vide
+});
 
 router.get('/search', function (req, res) {
     var lettre = req.query.lettre;
     var nomCategorie = req.query.categorie.toLowerCase();
+    console.log("lettre = "+lettre+"  nomCategorie = "+nomCategorie);
     var categorieFile = [];
     var renderPage = 'includes/listCategorie';
+    var regLetter = new RegExp('^'+lettre,'i');
     switch(nomCategorie) {
         case "artist":
-                /*
-                db.artist.distinct('albums.titre'); 
-                        ou  
-                db.runCommand({
-                  distinct: 'artist',
-                  key: 'albums.titre'
-                });
-                */
-                categorieFile= getDataByPattern('../public/'+nomCategorie+'/'+lettre+'**');
+            db.collection('artist').find({"name": regLetter},{"name":1,"_id":0}).sort( {"name":1}).toArray(function(err,result){
+                if (err) throw err;
+                console.log(result);
+                res.send(JSON.stringify(result));
+            });
             break;
         case "album":
-                categorieFile = getDataByPattern('../public/**/'+lettre+'**');
+            db.collection('artist').aggregate([
+                // Match the possible documents.
+                {"$match": {"albums.titre": regLetter}},
+                // De-normalize le tableau pour sépérarer les documents
+                { "$unwind": "$albums"},
+                // On filtre "filter" le contenu 
+                {"$match": {"albums.titre": regLetter}},
+                //Regroupement des titres d'albums
+                {"$group": {_id:'$albums'}},
+                //On demande a afficher le titre uniquement
+                {"$project" : { "_id.titre" : 1 }}
+            ],function(err, result) {
+                //console.log(result);
+                res.send(JSON.stringify(result));
+            })
             break;
         case "songs":
-                categorieFile = getDataByPattern('../public/**/**/'+lettre+'**');
             break;
         default:
-     
             break;
     }
-    //res.render(renderPage, { categorieFile: categorieFile,nomCategorie:nomCategorie,displayCategorie:true });
 
-    res.render(renderPage,{ categorieFile: categorieFile,nomCategorie:nomCategorie});
+    //res.render(renderPage,{ categorieFile: categorieFile,nomCategorie:nomCategorie});
+    
 });
 
 router.get('/artist/*', function (req, res) {
@@ -91,7 +101,7 @@ router.get('/chercherLyricsWikia',function(req, res){
                 lyricsWikia.getAlbumsFromArtists(urlAlbums,selectorAlbums,attrAlbums,removeStrHrefAlbums,valtLinks[j]).then(function(objArtist){
                     db.collection('artist').insert(objArtist, function(err, result) {
                         if (err) throw err;
-                        if (result) console.log('Added!');
+                        if (result) console.log('Added =>'+objArtist.name);
                     });
                 });
             }
@@ -103,17 +113,18 @@ router.get('/chercherLyricsWikia',function(req, res){
     console.log("fin de GET chercherLyricsWikia");
 });
 //Lorsque l'utilisateur clique sur un lien cette fonction est appelé elle permet de récupérer ce qui est contenu dans le dossier artist
-function getDataByPattern(pattern){
-    var pathDir = path.join(__dirname, pattern);
-    var categorieFile = [];
-    var files = glob.sync([pathDir]);
-    var position;
-    for(var i = 0 ;i<files.length;i++){
-        position = files[i].lastIndexOf("/");
-        categorieFile.push(files[i].substring(position+1,files[i].length));
-    }
-    return categorieFile;
-    //new EJS({url: '../views/index.ejs'}).update(document.querySelector('#articleMainContent_listCategorie'), { categorieFile: categorieFile,nomCategorie:nomCategorie});
-}
+//function getDataByPattern(pattern){
+//    var pathDir = path.join(__dirname, pattern);
+//    var categorieFile = [];
+//    var files = glob.sync([pathDir]);
+//    var position;
+//    for(var i = 0 ;i<files.length;i++){
+//        position = files[i].lastIndexOf("/");
+//        categorieFile.push(files[i].substring(position+1,files[i].length));
+//    }
+//    return categorieFile;
+//    //new EJS({url: '../views/index.ejs'}).update(document.querySelector('#articleMainContent_listCategorie'), { categorieFile: categorieFile,nomCategorie:nomCategorie});
+//}
+
 
 module.exports = router;
