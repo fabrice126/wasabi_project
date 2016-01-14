@@ -6,7 +6,7 @@
         <link href="../bower_components/paper-toolbar/paper-toolbar.html" rel="import">
         <link href="../bower_components/paper-button/paper-button.html" rel="import">
         <link href="../my_components/paper-input-search.html" rel="import">
-
+        
     </head>
 
     <dom-module id="nav-bar">
@@ -17,15 +17,18 @@
             paper-toolbar{
                 box-shadow : 0 4px 5px 0 rgba(0,0,0,0.14),0 1px 10px 0 rgba(0,0,0,0.12),0 2px 4px -1px rgba(0,0,0,0.2);
             }
+            
         </style>
         <template>
             <!-- local DOM for your element -->
+            <!--permet d'envoyer une requête ajax-->
+            <iron-request id="createdb"></iron-request>
             <paper-toolbar>
                 <paper-icon-button icon="menu" on-tap="menuAction"></paper-icon-button>
                 <span class="titre">Toolbar</span>
                 <paper-input-search ></paper-input-search>
                 <paper-icon-button icon="add">+</paper-icon-button>
-                <paper-button id="btn_chercherLyricsWikia" raised>
+                <paper-button on-tap="createdb" id="btn_createdb" raised>
                     <iron-icon icon="cloud-done"></iron-icon>
                     Create Database
                 </paper-button>
@@ -36,9 +39,12 @@
   // element registration
   Polymer({
     is: "nav-bar",
-    // add properties and methods on the element's prototype
-    properties: {},
-	ready: function(e){}
+	ready: function(e){
+    },
+    createdb: function () {
+        console.log("On tap Create Database : dans create db avant envoie ajax : nav-bar component");
+        this.$.createdb.send({url: "/createdb"});
+    }
   });
 </script>
 </html>

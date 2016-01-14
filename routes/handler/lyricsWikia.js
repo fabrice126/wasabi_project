@@ -1,10 +1,6 @@
 var cheerio = require('cheerio');
 var request = require('request');
 //Le module fs  de lire/créer/supprimer/renommer/changer droits/avoir des infos sur un fichier ou répertoire etc.
-var fs = require('fs');
-var path = require('path');
-//Permet d'enlever les caractères interdit pour les dossiers de windows
-var sanitize = require("sanitize-filename");
 
 
 //var getLyricsFromWikiaPageURL = function(url) {
@@ -68,7 +64,7 @@ var getArtistFromCategorie = function(url,selector,attr,removeStr){
             }
             else{
                 console.error('Error:', err);
-                reject(new Error(resp.statusText));
+                reject(new Error(err));
             }
         });
     });
@@ -125,21 +121,15 @@ var getAlbumsFromArtists = function(url,selector,attr,removeStr,objArtist){
                 }
                 else{
                     console.error('Error:', err);
-                    reject(new Error(resp.statusText));
+                    reject(new Error(err));
                 }
             });
        });
     return promise;
 };
 
-//récupére les lyrics de chaque album via l'api de lyrics wikia
-//param 1 : tableau de répertoire représentant les albums, on mettra les lyrics dedans
-var getLyricsFromAlbums = function(tabDirAlbum){
-    
-};
 
 
 
 exports.getArtistFromCategorie      = getArtistFromCategorie;
 exports.getAlbumsFromArtists        = getAlbumsFromArtists;
-exports.getLyricsFromAlbums         = getLyricsFromAlbums;

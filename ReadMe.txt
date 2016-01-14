@@ -1,5 +1,6 @@
 1-
 2-Lancer le serveur
+	2.1 - node ./bin/www
 3-http://localhost:3000/ (dans le navigateur)
 4-Pour recuperer l'ensemble des paroles clicker sur le bouton EXTRACTION OF LYRICS
 5-Pour recuperer les donnees relatives au texte et les enregistrer dans le local Storage clicker sur le bouton EXTRACTION OF BABEL'S DATA

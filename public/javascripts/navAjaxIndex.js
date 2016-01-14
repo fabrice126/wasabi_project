@@ -38,19 +38,16 @@ $(document).ready(function() {
 //            $('#loadContent').html(data);
 //        }});
 //    });
-
     
-    
-    //Au clic sur un le bouton
-    $('#btn_chercherLyricsWikia').click(function(e) {
-
-        console.log("btn_chercherLyricsWikia");             
-            // chargement dans la div
-            $.ajax({
-                url: "/chercherLyricsWikia",
-                cache: false
-            });
-        
-        return false;
+    $( "#loader").on("click","paper-card", function() {
+        var url  = $(this).attr("id");
+        console.log("URL ="+url);
+        $.get(url, function(data, status){
+            console.log(data);
+            var pageArtist = document.createElement("paper-tabs-content");
+            pageArtist.artist = data;
+            $('#mainContent').html(pageArtist);
+        });
     });
+    
 });

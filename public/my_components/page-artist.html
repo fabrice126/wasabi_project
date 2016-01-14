@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link href="../bower_components/polymer/polymer.html" rel="import">
+        <link href="../bower_components/paper-tabs/paper-tabs.html" rel="import">
+        <link href="../bower_components/paper-material/paper-material.html" rel="import">
+        <link href="../bower_components/iron-pages/iron-pages.html" rel="import">
+        <link href="../bower_components/paper-card/paper-card.html" rel="import">
+        <link href="../bower_components/paper-ripple/paper-ripple.html" rel="import">
+        <link href="../bower_components/iron-ajax/iron-ajax.html" rel="import">
+    </head>
+
+    <dom-module id="paper-tabs-content">
+        <style>
+            paper-tab{
+                --paper-tab-ink :#E0E0E0;
+            }
+            paper-tab:hover{
+                background-color: #f2f2f2;
+            }
+            paper-tabs {
+                --paper-tabs-selection-bar-color:#3f51b5;
+            }
+            paper-card{
+                width: 310px;
+                height: 60px;
+                margin-top: 10px;
+                display: inline-table;
+                padding-top: 18px;
+            }
+            #loader{
+                display: block;
+                text-align: center;
+            }
+            .flex-wrap {
+                @apply(--layout-horizontal);
+                @apply(--layout-wrap);
+            }
+        </style>
+        <template>
+            {{artist}}
+
+        </template>
+    </dom-module>
+
+    
+<script>
+  // element registration
+  Polymer({
+    is: "paper-tabs-content",
+    // add properties and methods on the element's prototype
+    properties: {
+        artist:{
+            type: Object,
+            value: function() { 
+                return {}; 
+            }
+        }
+    },
+    ready: function(e){    
+        console.log(artist);
+    }
+  });  
+
+</script>   
+</html>
+    
