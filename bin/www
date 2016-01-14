@@ -42,7 +42,7 @@ function normalizePort(val) {
   }
 
   if (port >= 0) {
-    // port number
+    console.log('Le serveur écoute sur le port 3000');
     return port;
   }
 
