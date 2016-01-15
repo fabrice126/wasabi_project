@@ -3,7 +3,6 @@ var router          = express.Router();
 var db              = require('mongoskin').db('mongodb://localhost:27017/wasabi');
 
 /* GET search pages. */
-
 router.get('/', function (req, res,next) {
     console.log("Dedans search")
     var lettre = req.query.lettre;
@@ -57,9 +56,11 @@ router.get('/', function (req, res,next) {
 router.get('/artist/:artistName', function (req, res) {
     var artistName= req.params.artistName;
     console.log("Affichage de la page de l'artiste "+artistName);
+
     db.collection('artist').find({"name": artistName}).toArray(function(err,result){
         if (err) throw err;
-        res.send(JSON.stringify(result));
+        console.log(result[0]);
+        res.send(JSON.stringify(result[0]));
     });
 });
 /* PROBLEME D'encodage lors de la reception des variables */
@@ -69,8 +70,8 @@ router.get('/artist/:artistName/albums/:albumsName', function (req, res) {
     console.log("Artist : "+artistName+" Affichage de la page de l'album "+albumsName);
     db.collection('artist').find({"name": artistName,"albums.titre":albumsName}).toArray(function(err,result){
         if (err) throw err;
-        console.log(result);
-        res.send(JSON.stringify(result));
+        console.log(result[0]);
+        res.send(JSON.stringify(result[0]));
     });
 });
 
@@ -80,8 +81,8 @@ router.get('/artist/:artistName/songs/:songsName', function (req, res) {
     console.log("Affichage de la page de la musique "+songsName);
     db.collection('artist').find({"name": artistName,"albums.songs.titre":songsName}).toArray(function(err,result){
         if (err) throw err;
-        console.log(result);
-        res.send(JSON.stringify(result));
+        console.log(result[0]);
+        res.send(JSON.stringify(result[0]));
     });
 });
 module.exports = router;

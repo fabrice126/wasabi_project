@@ -21,7 +21,17 @@
             paper-tabs {
                 --paper-tabs-selection-bar-color:#3f51b5;
             }
+            
+            paper-card:hover {
+              @apply(--shadow-elevation-8dp);
+            }
             paper-card{
+                -o-transition: all 0.5s linear;
+                -moz-transition: all 0.5s linear;
+                -khtml-transition: all 0.5s linear;
+                -webkit-transition: all 0.5s linear;
+                -ms-transition: all 0.5s linear;
+                transition: all 0.5s linear; 
                 width: 310px;
                 height: 60px;
                 margin-top: 10px;
@@ -86,12 +96,14 @@
                     </iron-pages>
                 </nav>
             </paper-material>
+            
+            
             <!-- Chargement des liens -->
             <div id="loader">
                 <!-- Affichage des artists -->
                  <template is="dom-if" if="{{_isArtist(data)}}">
                      <template id="cards" class="flex-wrap" is="dom-repeat" items="{{data}}" as="infos">
-                        <paper-card id="/search/artist/{{infos.name}}" elevation="2">
+                        <paper-card id="/search/artist/{{infos.name}}" elevation="1">
                             <div>{{infos.name}}</div>
                             <paper-ripple></paper-ripple>
                         </paper-card> 
@@ -100,7 +112,7 @@
                 <!-- Affichage des albums -->
                 <template is="dom-if" if="{{_isAlbum(data)}}">
                     <template id="cards" class="flex-wrap" is="dom-repeat" items="{{data}}" as="infos" >
-                        <paper-card id="/search/artist/{{infos.name}}/albums/{{infos.albums.titre}}" elevation="2">
+                        <paper-card id="/search/artist/{{infos.name}}/albums/{{infos.albums.titre}}" elevation="1">
                             <div>{{infos.albums.titre}}</div> 
                             <div> de: {{infos.name}}</div> 
                             <paper-ripple></paper-ripple>
@@ -110,7 +122,7 @@
                 <!-- Affichage des songs -->
                 <template is="dom-if" if="{{_isSong(data)}}">
                     <template id="cards" class="flex-wrap" is="dom-repeat" items="{{data}}" as="infos">
-                        <paper-card id="/search/artist/{{infos.name}}/songs/{{infos.albums.songs.titre}}" elevation="2">
+                        <paper-card id="/search/artist/{{infos.name}}/songs/{{infos.albums.songs.titre}}" elevation="1">
                             <div>{{infos.albums.songs.titre}}</div>
                             <div>de: {{infos.name}}</div>
                             <paper-ripple></paper-ripple>

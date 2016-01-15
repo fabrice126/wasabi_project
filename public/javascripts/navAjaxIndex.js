@@ -39,13 +39,14 @@ $(document).ready(function() {
 //        }});
 //    });
     
-    $( "#loader").on("click","paper-card", function() {
+    $(document).on("click","paper-card", function() {
         var url  = $(this).attr("id");
         console.log("URL ="+url);
         $.get(url, function(data, status){
-            console.log(data);
-            var pageArtist = document.createElement("paper-tabs-content");
-            pageArtist.artist = data;
+//            console.log(data);
+            var pageArtist = document.createElement("page-artist");
+            pageArtist.artist = JSON.parse(data);           
+            $('#mainContent').html('');
             $('#mainContent').html(pageArtist);
         });
     });
