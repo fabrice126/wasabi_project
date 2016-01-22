@@ -103,7 +103,8 @@ var getAlbumsFromArtists = function(url,selector,attr,removeStr,objArtist){
                             var urlSong = $(eltSong).attr(attr);
                             var objSong = {
                                 titre: song,
-                                urlSong: urlSong
+                                urlSong: urlSong,
+                                lyrics:"",
                             };
                             songs.push(objSong);
                             //console.log("           Song = "+$(eltSong).text());
@@ -130,6 +131,66 @@ var getAlbumsFromArtists = function(url,selector,attr,removeStr,objArtist){
 
 
 
+var getAllLyricsOfArtists = function(url,selector,objArtist){
+        var promise = new Promise(function(resolve, reject) { 
+            for(var nbAlbums=0;nbAlbums<objArtist.albums.length;nbAlbums++){
+                for(var nbLyrics=0;nbLyrics<objArtist.albums[nbAlbums].songs.length;nbLyrics++){
+                    //on récupérer l'objet correspondant a la chanson 
+                    //exemple : {"titre" : "Heavy Mind","urlSong" : "http://lyrics.wikia.com/A_Dead_Silence:Heavy_Mind"}  
+                    var currSong = objArtist.albums[nbAlbums].songs[nbLyrics];
+//                    sleep(300);
+                    var urlWikiaLyrics = currSong.urlSong;
+                    console.log("urlWikiaLyrics = "+urlWikiaLyrics);
+                    
+                    
+
+                    
+                    (function(urlWikiaLyrics,mynbAlbums,mynbLyrics,objArtist){
+
+                        
+                        request(urlWikiaLyrics, function(err, resp, body){
+                            if (!err && resp.statusCode == 200) {
+                                $ = cheerio.load(body);
+                                var lyrics = $(selector);
+                                $(lyrics).find("script").remove();
+                                $(lyrics).find(".lyricsbreak").remove();
+                                $(lyrics).contents().filter(function() {
+                                    return this.nodeType == 8;
+                                }).remove();
+            //                    console.log("########## lyricbox = \n\n\n"+ $(lyrics).html());
+
+
+//                                console.log("Request : "+objArtist.albums[nbAlbums].songs[nbLyrics]);
+    //                            currSong.lyrics = $(lyrics).html();
+                                objArtist.albums[mynbAlbums].songs[mynbLyrics].lyrics = $(lyrics).html();
+                                if((objArtist.albums.length-1) == (mynbAlbums) && (objArtist.albums[mynbAlbums].songs.length-1) == (mynbLyrics)){
+                                    console.log("Dans resolve = "+(objArtist.albums.length-1)+"="+(mynbAlbums)+" <et>  "+(objArtist.albums[mynbAlbums].songs.length-1)+"="+(mynbLyrics));
+                                    resolve(objArtist);//une fois le objArtist rempli resolve va indiquer que la promise s'est bien executée et va donc executer le then
+                                }
+                            }
+                            else{
+                                console.error('Error:', err);
+                                reject(new Error(err));
+                            }
+                        });
+                    })(urlWikiaLyrics,nbAlbums,nbLyrics,objArtist);
+                    
+                } 
+            }
+       });
+    return promise;
+};
+
+
+function sleep(milliseconds) {
+  var start = new Date().getTime();
+  for (var i = 0; i < 1e7; i++) {
+    if ((new Date().getTime() - start) > milliseconds){
+      break;
+    }
+  }
+}
 
 exports.getArtistFromCategorie      = getArtistFromCategorie;
 exports.getAlbumsFromArtists        = getAlbumsFromArtists;
+exports.getAllLyricsOfArtists       = getAllLyricsOfArtists;

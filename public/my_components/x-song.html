@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link href="../bower_components/polymer/polymer.html" rel="import">
+        <link href="../bower_components/paper-card/paper-card.html" rel="import">
+        <link href="../bower_components/paper-ripple/paper-ripple.html" rel="import">
+        <link rel="import" href="../bower_components/paper-fab/paper-fab.html">
+    </head>
+
+    <dom-module id="x-song">
+        <style>
+            .flex-wrap {
+                @apply(--layout-horizontal);
+                @apply(--layout-wrap);
+            }
+            .songs{
+                border-bottom: 1px solid rgba(229, 229, 229, 0.51);
+                padding: 20px;
+                padding-left: 7%;
+                display: block;
+            }
+            paper-input{
+                margin-left: 9%;
+                margin-right: 9%;
+            }
+            paper-card{
+                cursor:pointer;
+            }
+            paper-card:hover{
+                background-color: #F2F2F2;
+            }
+        </style>
+        <template>
+            <paper-card hidden="{{editing}}" id="/search/artist/{{artist.name}}/songs/{{songs.titre}}/{{artist._id}}" class="songs" elevation="0">
+                <li>{{songs.titre}}</li>
+                <paper-ripple></paper-ripple>
+            </paper-card>
+            <paper-input label="titre: {{songs.titre}}" id="edit" hidden="{{!editing}}" value="{{songs.titre}}"></paper-input>
+        </template>
+    </dom-module>
+
+    
+<script>
+  // element registration
+  Polymer({
+    is: "x-song",
+    // add properties and methods on the element's prototype
+    properties: {
+        artist:{
+            type: Object,
+            value: {}
+        },
+        songs:{
+            type: Object,
+            value: {}
+        },
+    	editing: {
+	    	type: Boolean,
+	    	value: false	
+    	}
+    },
+    ready: function(e){    
+        this.addEventListener('complete', this.handleComplete);
+    },
+  });  
+
+</script>   
+</html>
+    

@@ -1,6 +1,7 @@
 var express         = require('express');
 var router          = express.Router();
 var db              = require('mongoskin').db('mongodb://localhost:27017/wasabi');
+var ObjectId        = require('mongoskin').ObjectID;
 
 /* GET search pages. */
 router.get('/', function (req, res,next) {
@@ -53,36 +54,93 @@ router.get('/', function (req, res,next) {
     }
 });
 
-router.get('/artist/:artistName', function (req, res) {
+//Utiliser pour l'affichage d'un artiste
+router.get('/artist/:artistName/:_id', function (req, res) {
     var artistName= req.params.artistName;
-    console.log("Affichage de la page de l'artiste "+artistName);
+    var _id = req.params._id;
+    console.log("Affichage de la page de l'artiste "+artistName+" _id = "+_id);
 
-    db.collection('artist').find({"name": artistName}).toArray(function(err,result){
+    db.collection('artist').find({"_id": ObjectId(_id)}).toArray(function(err,result){
         if (err) throw err;
         console.log(result[0]);
         res.send(JSON.stringify(result[0]));
     });
 });
-/* PROBLEME D'encodage lors de la reception des variables */
-router.get('/artist/:artistName/albums/:albumsName', function (req, res) {
+//Utiliser pour l'affichage d'un album
+router.get('/artist/:artistName/albums/:albumsName/:_id', function (req, res) {
     var albumsName= req.params.albumsName;
     var artistName = req.params.artistName;
-    console.log("Artist : "+artistName+" Affichage de la page de l'album "+albumsName);
-    db.collection('artist').find({"name": artistName,"albums.titre":albumsName}).toArray(function(err,result){
+    var _id = req.params._id;
+    console.log("Artist : "+artistName+" Affichage de la page de l'album "+albumsName+" _id = "+_id);
+    db.collection('artist').find({"_id": ObjectId(_id)}).toArray(function(err,result){
         if (err) throw err;
         console.log(result[0]);
         res.send(JSON.stringify(result[0]));
     });
 });
 
-router.get('/artist/:artistName/songs/:songsName', function (req, res) {
+//Utiliser pour l'affichage d'une chanson
+router.get('/artist/:artistName/songs/:songsName/:_id', function (req, res) {
     var songsName = req.params.songsName;
     var artistName = req.params.artistName;
-    console.log("Affichage de la page de la musique "+songsName);
-    db.collection('artist').find({"name": artistName,"albums.songs.titre":songsName}).toArray(function(err,result){
+    var _id = req.params._id;
+    console.log("Affichage de la page de la musique "+songsName +" _id = "+_id);
+    db.collection('artist').find({"_id": ObjectId(_id)}).toArray(function(err,result){
         if (err) throw err;
         console.log(result[0]);
         res.send(JSON.stringify(result[0]));
     });
 });
+
+
+//Utiliser pour récupérer les infos d'un album (situé dans la page-artist.html) avant de le modifier
+router.get('/artist/:artistName/albums/:albumsName/:_id/modify', function (req, res) {
+    var albumsName= req.params.albumsName;
+    var artistName = req.params.artistName;
+    var _id = req.params._id;
+    console.log("L'utilisateur veut modifier l'album "+albumsName+" de l'artiste "+artistName+" _id = "+_id);
+    db.collection('artist').aggregate([       
+               {"$match": {"_id":ObjectId(_id)}},      
+                {"$unwind": "$albums"},
+                {"$match": {"albums.titre": albumsName}}
+            ],function(err, result) {
+                if (err) throw err;
+                console.log(result[0]);
+                res.send(JSON.stringify(result[0]));
+            });
+});
+
+
+router.put('/artist/:artistName/albums/:albumsName/:_id/update/album/:oldNameAlbum', function (req, res) {
+    var album = req.body;
+    var _id = req.params._id;
+    var oldNameAlbum= req.params.oldNameAlbum;
+    console.log(album);
+    console.log("Mise à jour de l'album "+ album.titre+" _id = "+_id); 
+    
+    
+    
+    db.collection('artist').update(
+        {
+            _id: ObjectId(_id),
+            "albums.titre": oldNameAlbum,
+        }, 
+        {
+            '$set':{
+                "albums.$.titre":album.titre,
+                "albums.$.dateSortie":album.dateSortie,
+                "albums.$.songs":album.songs,
+            }
+        }, 
+        function(err, result) {
+            if (err) throw err;
+            if (result){
+                console.log('Updated!');
+            } 
+        });
+    
+});
+
+
+
 module.exports = router;

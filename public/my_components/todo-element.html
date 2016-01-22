@@ -119,7 +119,9 @@
     },
     doEdit: function(e){
     	this.editing=!this.editing;
-    	if (!this.editing){ this.fire('edit', {rid:this.rid, task:this.task}); }
+    	if (!this.editing){ 
+            this.fire('edit', {rid:this.rid, task:this.task}); 
+        }
 	},
 	ready: function(e){}
   });

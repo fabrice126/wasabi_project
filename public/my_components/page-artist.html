@@ -13,31 +13,12 @@
         <link rel="import" href="../bower_components/paper-item/paper-item-body.html">
         <link rel="import" href="../bower_components/paper-fab/paper-fab.html">
 
+
         
     </head>
 
     <dom-module id="page-artist">
         <style>
-            .done {
-                background: green;
-            }
-            .songs{
-                border-bottom: 1px solid rgba(229, 229, 229, 0.51);
-                padding: 20px;
-                padding-left: 7%;
-
-            }
-            paper-card{
-                display: block;
-            }
-            .album{
-                border-bottom: 1px solid #e5e5e5;
-                font-size: 22px;
-                font-weight: 400;
-                line-height: 28px;
-                padding: 4%;
-                height: 100px;
-            }
             .flex-wrap {
                 @apply(--layout-horizontal);
                 @apply(--layout-wrap);
@@ -50,32 +31,16 @@
                 padding-bottom: 14px;
                 padding-left: 24px;
             }
-            ol{
-                list-style-position:inside; 
-                margin: 0px;
-                padding: 0px;
+            paper-material{
+                margin-bottom: 5%;
             }
         </style>
         <template>
             <paper-material elevation="1">
                 <div class="artistname"> {{artist.name}}</div>
+                
                 <template id="albums" class="flex-wrap" is="dom-repeat" items="{{artist.albums}}" as="album">
-                    <paper-card id="/search/artist/{{artist.name}}/albums/{{album.titre}}" class="album" id="/search/artist/{{infos.name}}" elevation="0">
-                        Album: {{album.titre}} {{album.dateSortie}}
-                        <paper-ripple></paper-ripple>
-                    </paper-card> 
-                    <paper-fab hidden={{editing}}  icon="icons:create" on-tap="doEdit" class="edit" mini></paper-fab>
-                    <paper-fab hidden={{!editing}} icon="icons:done"   on-tap="doEdit" class="done" mini></paper-fab>
-                    <div class="list short" role="listbox">
-                        <ol>
-                        <template id="songs" class="flex-wrap" is="dom-repeat" items="{{album.songs}}" as="songs">
-                            <paper-card id="/search/artist/{{artist.name}}/songs/{{songs.titre}}" class="songs" elevation="0">
-                                <li>{{songs.titre}}</li>
-                                <paper-ripple></paper-ripple>
-                            </paper-card>
-                        </template>
-                        </ol>
-                    </div>
+                    <x-album album={{album}} artist={{artist}}></x-album>
                 </template>
             </paper-material>
         </template>
@@ -91,20 +56,10 @@
         artist:{
             type: Object,
             value: {}
-        },
-    	editing: {
-	    	type: Boolean,
-	    	value: false	
-    	}
+        }
     },
     ready: function(e){    
     },
-    doEdit: function(e){
-    	this.editing=!this.editing;
-    	if (!this.editing){
-            this.fire('edit', {rid:this.rid, task:this.task}); 
-        }
-	},
   });  
 
 </script>   

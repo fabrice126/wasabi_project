@@ -103,7 +103,7 @@
                 <!-- Affichage des artists -->
                  <template is="dom-if" if="{{_isArtist(data)}}">
                      <template id="cards" class="flex-wrap" is="dom-repeat" items="{{data}}" as="infos">
-                        <paper-card id="/search/artist/{{infos.name}}" elevation="1">
+                        <paper-card id="/search/artist/{{infos.name}}/{{infos._id}}" elevation="1">
                             <div>{{infos.name}}</div>
                             <paper-ripple></paper-ripple>
                         </paper-card> 
@@ -112,7 +112,7 @@
                 <!-- Affichage des albums -->
                 <template is="dom-if" if="{{_isAlbum(data)}}">
                     <template id="cards" class="flex-wrap" is="dom-repeat" items="{{data}}" as="infos" >
-                        <paper-card id="/search/artist/{{infos.name}}/albums/{{infos.albums.titre}}" elevation="1">
+                        <paper-card id="/search/artist/{{infos.name}}/albums/{{infos.albums.titre}}/{{infos._id}}" elevation="1">
                             <div>{{infos.albums.titre}}</div> 
                             <div> de: {{infos.name}}</div> 
                             <paper-ripple></paper-ripple>
@@ -122,7 +122,7 @@
                 <!-- Affichage des songs -->
                 <template is="dom-if" if="{{_isSong(data)}}">
                     <template id="cards" class="flex-wrap" is="dom-repeat" items="{{data}}" as="infos">
-                        <paper-card id="/search/artist/{{infos.name}}/songs/{{infos.albums.songs.titre}}" elevation="1">
+                        <paper-card id="/search/artist/{{infos.name}}/songs/{{infos.albums.songs.titre}}/{{infos._id}}" elevation="1">
                             <div>{{infos.albums.songs.titre}}</div>
                             <div>de: {{infos.name}}</div>
                             <paper-ripple></paper-ripple>

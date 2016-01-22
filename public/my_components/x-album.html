@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link href="../bower_components/polymer/polymer.html" rel="import">
+        <link href="../bower_components/paper-card/paper-card.html" rel="import">
+        <link href="../bower_components/paper-ripple/paper-ripple.html" rel="import">
+        <link rel="import" href="../bower_components/paper-fab/paper-fab.html">
+    </head>
+
+    <dom-module id="x-album">
+        <style>
+            .done {
+                background: green;
+            }
+            paper-card.album, paper-fab{
+                display: inline-block;
+            }
+            article{
+               border-bottom: 1px solid #e5e5e5; 
+            }
+            .album{
+                font-size: 22px;
+                font-weight: 400;
+                line-height: 28px;
+                padding: 4%;
+                height: 100px;
+            }
+            .flex-wrap {
+                @apply(--layout-horizontal);
+                @apply(--layout-wrap);
+            }
+            ol{
+                list-style-position:inside; 
+                margin: 0px;
+                padding: 0px;
+            }
+            .songs{
+                border-bottom: 1px solid rgba(229, 229, 229, 0.51);
+                padding: 20px;
+                padding-left: 7%;
+                display: block;
+            }
+            paper-input{
+                font-size: 22px;
+                font-weight: 400;
+                line-height: 28px;
+                padding: 4%;
+                height: 24px;
+                margin-left: 2%;
+                display: inline-block;
+            }
+            paper-fab{
+                float: right;
+                margin: 3%;
+            }
+            paper-card{
+                cursor:pointer;
+            }
+        </style>
+        <template>
+            <iron-ajax id="get_content" on-response="responseHandler" last-response="{{data}}" handleAs="json"> </iron-ajax>
+            <iron-ajax id="put_content" method="PUT" content-type="application/json" last-response="{{response}}"></iron-ajax>
+            <article>
+                <paper-card hidden="{{editing}}" id="/search/artist/{{artist.name}}/albums/{{album.titre}}/{{artist._id}}" class="album" elevation="0">
+                    Album: <span id="showTitre">{{album.titre}}</span> <span id="showDateSortie">{{album.dateSortie}}</span>
+                    <paper-ripple></paper-ripple>
+                </paper-card> 
+                <paper-input label="Nom de l'album" id="editTitre" hidden="{{!editing}}" value="{{album.titre}}"></paper-input>
+                <paper-input label="Date de sortie" id="editDateSortie" hidden="{{!editing}}" value="{{album.dateSortie}}"></paper-input>
+
+                <paper-fab hidden={{editing}}  icon="icons:create" on-tap="doEdit" class="edit" mini></paper-fab>
+                <paper-fab hidden={{!editing}} icon="icons:done"   on-tap="doEdit" class="done" mini></paper-fab>
+            </article>
+            <div class="list short" role="listbox">
+                <ol>
+                <template id="songs" class="flex-wrap" is="dom-repeat" items="{{album.songs}}" as="songs">
+                    <x-song artist={{artist}} songs={{songs}}></x-song>
+                </template>
+                </ol>
+            </div>
+        </template>
+    </dom-module>
+
+    
+<script>
+  // element registration
+  Polymer({
+    is: "x-album",
+    // add properties and methods on the element's prototype
+    properties: {
+        album:{
+            type: Object,
+            value: {},
+            notify: true,
+            reflectToAttribute: true,
+        },
+        artist:{
+            type: Object,
+            value: {}
+        },
+    	editing: {
+	    	type: Boolean,
+	    	value: false	
+    	},
+        data:{
+            type: Object,
+            value: {},
+        },
+        odAlbumName:{
+            type: String,
+            value:"",
+        }
+    },
+    ready: function(e){    
+    },
+    doEdit: function(e){
+    	this.editing=!this.editing;
+        var xsongs = this.querySelectorAll("x-song");
+        if(this.editing){  
+            this.odAlbumName = this.album.titre;
+            for(var i = 0 ;i<xsongs.length;i++){
+                xsongs[i].editing = this.editing;
+            }
+            //L'affectation de l'url lance la requête automatiquement   
+            this.$.get_content.url = "/search/artist/"+this.artist.name+"/albums/"+this.album.titre+"/"+this.artist._id+"/modify"; 
+            this.$.get_content.generateRequest();
+        }
+    	if (!this.editing){
+//            this.$.showTitre.innerHTML = this.data.albums.titre;
+//            this.$.showDateSortie.innerHTML = this.data.albums.dateSortie;
+            for(var i = 0 ;i<xsongs.length;i++){
+                xsongs[i].editing = this.editing;
+            }
+//            this.album.titre = this.data.albums.titre;
+            this.$.put_content.body = JSON.stringify(this.album);
+            this.$.put_content.url = "/search/artist/"+this.artist.name+"/albums/"+this.album.titre+"/"+this.artist._id+"/update/album/"+this.odAlbumName; 
+            this.$.put_content.generateRequest();
+        }
+	},
+    responseHandler: function(response){
+        console.log(this.album);
+        console.log("Requete fini");
+        this.album = {};
+        this.album = this.data.albums;
+        console.log(this.album);
+        
+    }
+  });  
+
+</script>   
+</html>
+    
