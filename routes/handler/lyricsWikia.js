@@ -13,7 +13,7 @@ var getArtistFromCategorie = function(url,selector,attr,removeStr){
         var nbArtistPerPage = 200;
         request(url, function(err, resp, body){
             if (!err && resp.statusCode == 200) {
-                var tAllInfoArtists = [];
+                var tObjArtist = [];
                 $ = cheerio.load(body);
                 var links = $(selector); //#mw-pages>.mw-content-ltr>table a[href]
                 //Pour itérer sur toutes les pages d'un artiste commençant par une lettre il faut avoir un url de type :
@@ -24,26 +24,64 @@ var getArtistFromCategorie = function(url,selector,attr,removeStr){
                     //on récupére les #mw-pages>.mw-content-ltr>table a[href]
                     //Cette condition permet de ne pas remplir le dernier objet artist d'une page contenant 200 artists. Cet objet sera rempli lors de la reqête de changement de page
                     if(i<nbArtistPerPage-1){
-                        var tInfoArtist = {
+                        var objArtist = {
                             name:$(link).attr('title'),
+                            urlWikipedia:"",
+                            urlOfficialWebsite : "",
+                            urlFacebook:"",
+                            urlMySpace:"",
+                            urlTwitter:"",
+                            locationInfo:[],
                             urlWikia:$(link).attr(attr).replace(removeStr, ""), //on récupére les #mw-pages>.mw-content-ltr>table a[href]
                             albums:[]
                         };
-                        tAllInfoArtists.push(tInfoArtist);
+                        tObjArtist.push(objArtist);
                     }
                 });
                 if($(links).length == nbArtistPerPage){
                     nextPage = true;
                 }
                 var objResolve = {};
-                objResolve.tObjArtist = tAllInfoArtists;
+                objResolve.tObjArtist = tObjArtist;
                 objResolve.artistPageFrom = artistPageFrom;
                 objResolve.nextPage = nextPage;
-                resolve(objResolve);//une fois le tAllInfoArtists rempli resolve va indiquer que la promise s'est bien executée et va donc executer le then
+                resolve(objResolve);//une fois le tObjArtist rempli resolve va indiquer que la promise s'est bien executée et va donc executer le then
             }
             else{
                 console.error('Error:', err);
                 reject(new Error(err));
+            }
+        });
+    });
+    return promise;
+};
+
+
+var getInfosFromPageArtist = function(url,objArtist){
+    // La fonction de résolution est appelée avec la capacité de tenir ou de rompre la promesse
+    var promise = new Promise(function(resolve, reject) { 
+        var urlArtist = url+objArtist.name;
+        
+        request(urlArtist, function(err, resp, body){
+            if (!err && resp.statusCode == 200) {
+                var tAllInfoArtists = [];
+                $ = cheerio.load(body);
+                objArtist.urlWikipedia = $("table.plainlinks a:contains('Wikipedia article')").attr('href')!=null? $("table.plainlinks a:contains('Wikipedia article')").attr('href') : "";
+                objArtist.urlOfficialWebsite = $("table.plainlinks a:contains('Official Website')").attr('href')!=null? $("table.plainlinks a:contains('Official Website')").attr('href') :"";
+                objArtist.urlFacebook = $("table.plainlinks a:contains('Facebook Profile')").attr('href') !=null?$("table.plainlinks a:contains('Facebook Profile')").attr('href') :"";
+                objArtist.urlMySpace = $("table.plainlinks a:contains('MySpace Profile')").attr('href') != null?$("table.plainlinks a:contains('MySpace Profile')").attr('href') :"";
+                objArtist.urlTwitter = $("table.plainlinks a:contains('Twitter Profile')").attr('href') !=null ?$("table.plainlinks a:contains('Twitter Profile')").attr('href') :"";
+                var tlocationInfo = $("table.plainlinks a[title^='Category:Hometown/']").map(function() {
+                    return $(this).text() !=""?$(this).text():"";
+                }).get();
+                if(tlocationInfo[0]!=""){
+                    objArtist.locationInfo = tlocationInfo;
+                }
+                resolve(objArtist);//une fois le tAllInfoArtists rempli resolve va indiquer que la promise s'est bien executée et va donc executer le then
+            }
+            else{
+                console.error('Error:', err);
+                getInfosFromPageArtist(url,objArtist);
             }
         });
     });
@@ -55,11 +93,9 @@ var getArtistFromCategorie = function(url,selector,attr,removeStr){
 //param 2 : selecteur pour récupérer la partie qui nous interesse dans leur page html
 //param 3 : valeur de l'attribut à récupérer
 //param 4 : tableau représentant l'objet Artist
-var getAlbumsFromArtists = function(url,selector,attr,removeStr,objArtist){
+var getAlbumsAndSongsOfArtist = function(url,selector,attr,objArtist){
         var promise = new Promise(function(resolve, reject) { 
-            var currUrlNomArtist = objArtist.urlWikia;
-            var currNomArtist = objArtist.name;
-            var urlWikiaArtists = url+currUrlNomArtist;
+            var urlWikiaArtists = url+objArtist.urlWikia;
             request(urlWikiaArtists, function(err, resp, body){
                 if (!err && resp.statusCode == 200) {
                     $ = cheerio.load(body);
@@ -67,33 +103,30 @@ var getAlbumsFromArtists = function(url,selector,attr,removeStr,objArtist){
                     $(tElts).each(function(i, eltAlbum){
                         var album= $(eltAlbum).find($(".albums>li>a[href]:first-child")).text();
                         var dateSortie = "";
-                        if(album.lastIndexOf('_(')!==-1){
+                        if(album.lastIndexOf('_(')!==-1){//Si il existe une date :
                             dateSortie = album.slice(album.lastIndexOf('_('),album.length);
                             album = album.replace(dateSortie,'');
                             dateSortie = dateSortie.substring(2,dateSortie.length-1);//on passera de _(1995) à 1995 
                         }
-                        var urlAlbum = $(eltAlbum).find($(".albums>li>a[href]:first-child")).attr(attr);
                         var songs = [];//va contenir les objets objSong
                         $(eltAlbum).find($(".songs>li>a[href]")).each(function(ii,eltSong){
-                            var song = $(eltSong).text();
-                            var urlSong = $(eltSong).attr(attr);
+                            //Création de l'objet song
                             var objSong = {
-                                titre: song,
-                                urlSong: urlSong,
+                                titre: $(eltSong).text(),
+                                urlSong: $(eltSong).attr(attr),
                                 lyrics:"",
                             };
-                            songs.push(objSong);
-                            //console.log("           Song = "+$(eltSong).text());
+                            songs.push(objSong);//On met l'objet song dans le tableau contenant les autres musiques de l'album
                         });
                         var objAlbum = {
                             titre: album,
                             dateSortie: dateSortie,
-                            urlAlbum: urlAlbum,
-                            songs:songs //array contenant les objets objSong
+                            urlWikipedia:"",
+                            urlAlbum: $(eltAlbum).find($(".albums>li>a[href]:first-child")).attr(attr),
+                            songs:songs //array contenant les objets représentant les musiques d'un album
                         };
-//                        console.log("Artiste :"+currNomArtist+" Album :"+objAlbum.titre);
-                        //on ajoute l'objet l'album contenant le nom de l'album et ses musiques 
-                        objArtist.albums.push(objAlbum);
+                        
+                        objArtist.albums.push(objAlbum);//on ajoute à l'ojet artiste l'objet album contenant le nom de l'album et ses musiques 
                     });
                     resolve(objArtist);//une fois le objArtist rempli resolve va indiquer que la promise s'est bien executée et va donc executer le then
                 }
@@ -113,40 +146,57 @@ var getAllLyricsOfArtists = function(url,selector,objArtist){
             for(var nbAlbums=0;nbAlbums<objArtist.albums.length;nbAlbums++){
                 nbTitre += objArtist.albums[nbAlbums].songs.length;
             }
-            console.log("Nombre total de musique pour l'artiste = "+nbTitre);
-            for(var nbAlbums=0;nbAlbums<objArtist.albums.length;nbAlbums++){
-                for(var nbLyrics=0;nbLyrics<objArtist.albums[nbAlbums].songs.length;nbLyrics++){
-                    //on récupérer l'objet correspondant a la chanson 
-                    //exemple : {"titre" : "Heavy Mind","urlSong" : "http://lyrics.wikia.com/A_Dead_Silence:Heavy_Mind"}  
-                    var currSong = objArtist.albums[nbAlbums].songs[nbLyrics];
-                    var urlWikiaLyrics = currSong.urlSong;    
-                    (function getLyricsSongRequest(urlWikiaLyrics,nbAlbums,nbLyrics,objArtist){   
-                            request({ pool: {maxSockets: Infinity}, url: urlWikiaLyrics,method: "GET",timeout: 500000}, function(err, resp, body){
-                                currNbTitre++;
-                                if (!err && resp.statusCode == 200) {
-                                    $ = cheerio.load(body);
-                                    var lyrics = $(selector);
-                                    $(lyrics).find("script").remove();
-                                    $(lyrics).find(".lyricsbreak").remove();
-                                    $(lyrics).contents().filter(function() {
-                                        return this.nodeType == 8;
-                                    }).remove();
-                                    objArtist.albums[nbAlbums].songs[nbLyrics].lyrics = $(lyrics).html();
-                                }
-                                else{
-                                    if(err != null){
-                                        console.error('\n\n getAllLyricsOfArtists = '+objArtist.name+'    '+objArtist.albums[nbAlbums].songs[nbLyrics].titre+'  \n :Error:', err);
-                                        console.error('===== RELANCE DE LA REQUETE =====');
-                                        currNbTitre--;
-                                        getLyricsSongRequest(urlWikiaLyrics,nbAlbums,nbLyrics,objArtist);
-                                    }
-                                }
-                                if(currNbTitre==nbTitre){
-                                    resolve(objArtist);
-                                }
-                            });
-                    })(urlWikiaLyrics,nbAlbums,nbLyrics,objArtist);
-                } 
+            var nbAlbums=0;
+
+            console.log("Nombre total de musique pour l'artiste = "+nbTitre+" album = "+objArtist.albums.length);
+            //Si il n'y a pas de musique sur la page
+            if(nbTitre>0){
+                (function albumLoop(nbAlbums,objArtist){
+                    setTimeout(function(){
+                        if(nbAlbums<objArtist.albums.length){
+                            for(var nbLyrics=0;nbLyrics<objArtist.albums[nbAlbums].songs.length;nbLyrics++){
+                                //on récupérer l'objet correspondant a la chanson 
+                                //exemple : {"titre" : "Heavy Mind","urlSong" : "http://lyrics.wikia.com/A_Dead_Silence:Heavy_Mind"}  
+                                var currSong = objArtist.albums[nbAlbums].songs[nbLyrics];
+                                var urlWikiaLyrics = currSong.urlSong;    
+
+                                (function getLyricsSongRequest(urlWikiaLyrics,nbAlbums,nbLyrics,objArtist){ 
+                                    request({ pool: {maxSockets: Infinity}, url: urlWikiaLyrics,method: "GET",timeout: 50000000}, function(err, resp, body){
+                                        currNbTitre++;
+                                        console.log("Musique "+currNbTitre+"                "+urlWikiaLyrics);
+                                        if (!err && resp.statusCode == 200) {
+                                            $ = cheerio.load(body);
+                                            var lyrics = $(selector);
+                                            var urlWikipediaArtist = $("#songfooter>div>a[href]:first-child")
+                                            $(lyrics).find("script").remove();
+                                            $(lyrics).find(".lyricsbreak").remove();
+                                            $(lyrics).contents().filter(function() {
+                                                return this.nodeType == 8;
+                                            }).remove();
+                                            objArtist.albums[nbAlbums].songs[nbLyrics].lyrics = $(lyrics).html();
+                                        }
+                                        else{
+                                            if(err != null){
+                                                console.error('\n\n getAllLyricsOfArtists = '+objArtist.name+'    '+objArtist.albums[nbAlbums].songs[nbLyrics].titre+'  \n :Error:', err);
+                                                console.error('===== RELANCE DE LA REQUETE =====');
+                                                currNbTitre--;
+                                                getLyricsSongRequest(urlWikiaLyrics,nbAlbums,nbLyrics,objArtist);
+                                            }
+                                        }
+                                        if(currNbTitre==nbTitre){
+                                            resolve(objArtist);
+                                        }
+                                    });
+                                })(urlWikiaLyrics,nbAlbums,nbLyrics,objArtist);  
+                            } 
+                            nbAlbums++;
+                            albumLoop(nbAlbums,objArtist);
+                        }
+                    }, Math.floor((Math.random() * 2500 ) + 500 ));
+                })(nbAlbums,objArtist);
+            }
+            else{
+                resolve(objArtist);
             }
        });
     return promise;
@@ -163,5 +213,6 @@ function sleep(milliseconds) {
 
 
 exports.getArtistFromCategorie      = getArtistFromCategorie;
-exports.getAlbumsFromArtists        = getAlbumsFromArtists;
+exports.getAlbumsAndSongsOfArtist   = getAlbumsAndSongsOfArtist;
 exports.getAllLyricsOfArtists       = getAllLyricsOfArtists;
+exports.getInfosFromPageArtist      = getInfosFromPageArtist;

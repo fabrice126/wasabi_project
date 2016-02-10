@@ -19,7 +19,6 @@ router.get('/', function (req, res,next) {
             break;
         case "album":
             db.collection('artist').aggregate([       
-                {$match: {'albums.titre':regLetter}},      
                 //on recherche les documents ayant des albums avec un titre commençant par regLetter
                 {"$match": {"albums.titre": regLetter}},
                 // De-normalize le tableau pour sépérarer les documents
@@ -43,8 +42,6 @@ router.get('/', function (req, res,next) {
                 {"$sort" : {'albums.songs.titre' : 1} },
                 {"$limit" : 200},
                 {"$project" : { "albums.songs.titre" : 1,"name":1}},
-
-                
             ],function(err, result) {
                 res.send(JSON.stringify(result));
             })
