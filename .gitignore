@@ -1,2 +1,6 @@
 /artist/*
 /node_modules/*
+mongo/backup_mongo/artist.metadata.json
+mongo/backup_mongo/dump/wasabi/artist.bson
+mongo/backup_mongo/dump/wasabi/artist.metadata.json
+mongo/backup_mongo/artist.bson

@@ -12,7 +12,7 @@ router.get('/', function (req, res,next) {
     var regLetter = new RegExp('^'+lettre,'i');
     switch(nomCategorie) {
         case "artist":
-            db.collection('artist').find({"name": regLetter},{"name":1,"_id":1}).sort( {"name":1}).toArray(function(err,result){
+            db.collection('artist').find({"name": regLetter},{"name":1,"_id":1}).limit(200).toArray(function(err,result){
                 if (err) throw err;
                 res.send(JSON.stringify(result));
             });
