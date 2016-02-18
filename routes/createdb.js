@@ -7,7 +7,7 @@ var lyricsWikia     = require('./handler/lyricsWikia.js');
 
 
 //Permet de changer de page pour récupérer tout les noms d'artistes d'une catégorie (exemple catégorie des artistes commencant par la lettre A)        
-var paramNextPage = "?pagefrom=";
+var paramNextPage = "?pagefrom=The Sounds";
 //contient les liens des artistes de tout l'alphabet qui sont aussi les noms des répertoires sur le disque
 var urlArtists = 'http://lyrics.wikia.com/wiki/Category:Artists_';
 var selectorArtists = '#mw-pages>.mw-content-ltr>table a[href]';
@@ -20,7 +20,7 @@ var attrAlbums = 'href';
 var selectorLyrics = 'div.lyricbox';
 //Nous permet de créer une première arborescence en récupérerant toutes les lyrics d'un abum et tous les album d'un groupe
 var alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
-var idxAlphabet = 13;
+var idxAlphabet = 19;
 router.get('/',function(req, res){
     console.log("dedans /createdb");
     //Pour chaque lettre  sur wikia et chaque catégorie on récupére pour commencer les albums de 5 artistes ainsi que tous ses albums et musiques

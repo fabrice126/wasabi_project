@@ -92,7 +92,7 @@ var getInfosFromPageArtist = function(url,objArtist){
 //param 4 : tableau représentant l'objet Artist
 var getAlbumsAndSongsOfArtist = function(url,selector,attr,objArtist){
         var promise = new Promise(function(resolve, reject) { 
-//            (function(url,objArtist){
+            (function requestAlbumsAndSongs(url,selector,attr,objArtist){//permet de relancer la requête si il y a un probleme
                 var urlWikiaArtists = url+objArtist.urlWikia;
                 request({ pool: {maxSockets: Infinity}, url: urlWikiaArtists,method: "GET",timeout: 50000000}, function(err, resp, body){
                     if (!err && resp.statusCode == 200) {
@@ -133,10 +133,10 @@ var getAlbumsAndSongsOfArtist = function(url,selector,attr,objArtist){
                         console.error('=====getArtistFromCategorie RELANCE DE LA REQUETE ====='+objArtist.urlWikia);
                         console.error('=====getArtistFromCategorie RELANCE DE LA REQUETE ====='+selector);
                         console.error('=====getArtistFromCategorie RELANCE DE LA REQUETE ====='+attr);
-                        getAlbumsAndSongsOfArtist(url,selector,attr,objArtist);
+                        requestAlbumsAndSongs(url,selector,attr,objArtist);
                     }
                 });
-//            })(url,objArtist);
+            })(url,selector,attr,objArtist);
        });
     return promise;
 };

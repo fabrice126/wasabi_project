@@ -24,10 +24,10 @@ router.get('/', function (req, res,next) {
                 // De-normalize le tableau pour sépérarer les documents
                 { "$unwind": "$albums"},
                 {"$match": {"albums.titre": regLetter}},
-                {"$sort" : {'albums.titre' : 1} },
+                {"$sort" : {"albums.titre" : 1} },
                 {"$limit" : 200},  
                 // On affiche seulement le titre contenu dans album
-                {$project : { "albums.titre" : 1 ,"name":1}}
+                {$project : { "titleAlbum" : "$albums.titre" ,"name":1}}
             ],function(err, result) {
                 res.send(JSON.stringify(result));
             })
@@ -39,9 +39,9 @@ router.get('/', function (req, res,next) {
                 {"$unwind": "$albums"},
                 {"$unwind": "$albums.songs"},
                 {"$match": {"albums.songs.titre": regLetter}},
-                {"$sort" : {'albums.songs.titre' : 1} },
+//                {"$sort" : {'albums.songs.titre' : 1} },
                 {"$limit" : 200},
-                {"$project" : { "albums.songs.titre" : 1,"name":1}},
+                {"$project" : { "titleSong" : "$albums.songs.titre","name":1}},
             ],function(err, result) {
                 res.send(JSON.stringify(result));
             })

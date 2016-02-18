@@ -67,11 +67,10 @@
                 text-align: center;
             }
             
-
         </style>
         <template>
             <!--Chargement en ajax du contenu -->
-            <iron-ajax id="get_content" auto last-response="{{data}}" handleAs="json"> </iron-ajax>
+            <iron-ajax id="get_content" last-response="{{data}}" handleAs="json"> </iron-ajax>
             <!-- Génération des listes de catégories -->
             <paper-material id="tabs" elevation="1">
                 <paper-tabs selected="0">
@@ -112,8 +111,8 @@
                 <!-- Affichage des albums -->
                 <template is="dom-if" if="{{_isAlbum(data)}}">
                     <template id="cards" class="flex-wrap" is="dom-repeat" items="{{data}}" as="infos" >
-                        <paper-card id="/search/artist/{{infos.name}}/albums/{{infos.albums.titre}}/{{infos._id}}" elevation="1">
-                            <div>{{infos.albums.titre}}</div> 
+                        <paper-card id="/search/artist/{{infos.name}}/albums/{{infos.titleAlbum}}/{{infos._id}}" elevation="1">
+                            <div>{{infos.titleAlbum}}</div> 
                             <div> de: {{infos.name}}</div> 
                             <paper-ripple></paper-ripple>
                         </paper-card> 
@@ -122,8 +121,8 @@
                 <!-- Affichage des songs -->
                 <template is="dom-if" if="{{_isSong(data)}}">
                     <template id="cards" class="flex-wrap" is="dom-repeat" items="{{data}}" as="infos">
-                        <paper-card id="/search/artist/{{infos.name}}/songs/{{infos.albums.songs.titre}}/{{infos._id}}" elevation="1">
-                            <div>{{infos.albums.songs.titre}}</div>
+                        <paper-card id="/search/artist/{{infos.name}}/songs/{{infos.titleSong}}/{{infos._id}}" elevation="1">
+                            <div>{{infos.titleSong}}</div>
                             <div>de: {{infos.name}}</div>
                             <paper-ripple></paper-ripple>
                         </paper-card> 
@@ -155,38 +154,55 @@
         tabs.addEventListener('iron-select', function(e) { 
             pages.selected = tabs.selected;
         });
+        window.onpopstate = function(e){
+            console.log(e);
+            console.log("e.state = "+e.state.path);
+            if(e.state != null){
+                var url = e.state.path;
+                console.log(e.state.path);
+                var get_content = document.querySelector("#get_content").url = url;
+                get_content.generateRequest();
+//                Polymer.$.get_content.url = url; 
+//                Polymer.$.get_content.generateRequest();
+            }
+        }  
     },
     doLoadCategorie: function(e){
         e.preventDefault();
         //L'affectation de l'url lance la requête automatiquement   
-        this.$.get_content.url = e.target.href; 
+        var url = e.target.href;
+        if(url!=window.location){
+            console.log("doLoadCategorie = "+url);
+            window.history.pushState({path:url},'',url);
+        }        
+        //stop refreshing to the page given in
+        this.$.get_content.url = url; 
+        this.$.get_content.generateRequest();
+        return false;
     },
     _isArtist: function (infosData) {
         var exist = false;
-        if(typeof(infosData[0].albums) == "undefined"){
+        if(typeof(infosData[0].titleAlbum) == "undefined" && typeof(infosData[0].titleSong) == "undefined"){
             exist = true;
         }
         return exist;
     },
     _isAlbum: function (infosData) {
-        if(Boolean(infosData[0].albums) && Boolean(infosData[0].albums.titre)){
-            return true;
+        var isAlbum = false;
+        if(infosData[0].titleAlbum){
+            isAlbum = true;
         }
-        else{
-            return false;
-        }
+            return isAlbum;
     },
     _isSong: function (infosData) {
-        if(Boolean(infosData[0].albums) && Boolean(infosData[0].albums.songs)){
-            return true;
+        var isSong = false;
+        if(infosData[0].titleSong){
+            isSong = true;
         }
-        else{
-            return false;
-        }
+        return isSong;
     },
       
   });  
 
 </script>   
 </html>
-    
