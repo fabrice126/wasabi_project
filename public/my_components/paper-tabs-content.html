@@ -153,19 +153,18 @@
         var tabs = document.querySelector('paper-tabs');
         tabs.addEventListener('iron-select', function(e) { 
             pages.selected = tabs.selected;
-        });
+        });  
         window.onpopstate = function(e){
-            console.log(e);
-            console.log("e.state = "+e.state.path);
             if(e.state != null){
+                console.log(e);
                 var url = e.state.path;
                 console.log(e.state.path);
-                var get_content = document.querySelector("#get_content").url = url;
+                var get_content = document.querySelector("#get_content")
+                get_content.url = url;
+                console.log("Dans on pop state");
                 get_content.generateRequest();
-//                Polymer.$.get_content.url = url; 
-//                Polymer.$.get_content.generateRequest();
             }
-        }  
+        }
     },
     doLoadCategorie: function(e){
         e.preventDefault();
