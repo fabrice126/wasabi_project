@@ -28,9 +28,14 @@
         }
       </style>
         <template>
-            <paper-input label="Search" id="searchInput">
+            <iron-ajax id="get_search" url="" last-response="{{data}}" handleAs="json"> </iron-ajax>
+<!--
+            <paper-input type="search" label="Search" on-input="search" id="searchInput" results="10">
                 <iron-icon icon="search" prefix></iron-icon>
                 <paper-icon-button suffix  on-tap="clearInput" icon="clear" alt="clear" title="clear"></paper-icon-button>
+            </paper-input>
+-->
+            <paper-input label="search!" type="search"  on-input="search" id="searchInput" placeholder="Recherche ..." autosave="test" results="10">
             </paper-input>
         </template>
     </dom-module>
@@ -40,10 +45,19 @@
   Polymer({
     is: "paper-input-search",
     // add properties and methods on the element's prototype
-    properties: {},
-	ready: function(e){},
+    properties: {
+    },
+	ready: function(e){
+        
+    },
     clearInput:function(e){
         this.$.searchInput.value = "";
+    },
+    search:function(e){
+        console.log(e);
+        console.log(e.target.bindValue);
+        this.$.get_search.url ="/search/artist/"+e.target.bindValue; 
+        this.$.get_search.generateRequest();
     }
   });
 

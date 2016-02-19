@@ -1,0 +1,25 @@
+{
+  "name": "pushstate-anchor",
+  "version": "0.3.2",
+  "authors": [
+    "Erik Ringsmuth <erik.ringsmuth@gmail.com>"
+  ],
+  "description": "Extend the <a> tag with history.pushState()",
+  "keywords": [
+    "web-components"
+  ],
+  "main": "pushstate-anchor.html",
+  "license": "MIT",
+  "homepage": "https://github.com/erikringsmuth/pushstate-anchor",
+  "ignore": [
+    "**/.*",
+    "bower_components",
+    "node_modules",
+    "tests",
+    "gulpfile.js",
+    "package.json"
+  ],
+  "devDependencies": {
+    "platform-dev": "Polymer/platform-dev#~0.4.1"
+  }
+}

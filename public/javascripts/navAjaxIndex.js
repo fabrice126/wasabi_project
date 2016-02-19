@@ -1,10 +1,10 @@
 $(document).ready(function() {
     //Quand on entre sur l'application :
+    console.log("DANS JQUERYYYYYYY");
     window.history.pushState({path:"/"},'',"/");
-    
+
     $(document).on("click","paper-card", function(e) {
         e.preventDefault();
-        console.log("dans blabla");
         var url  = $(this).attr("id");
         console.log("URL ="+url);
         $.get(url, function(data, status){
@@ -18,5 +18,13 @@ $(document).ready(function() {
             }
         });
     });
+    window.addEventListener("popstate", function(e){
+        var url = e.state.path;
+        
+        if(url!=window.location){  
+            
+        }
+    }, false);
+
 
 });

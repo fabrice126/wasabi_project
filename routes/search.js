@@ -107,6 +107,17 @@ router.get('/artist/:artistName/albums/:albumsName/:_id/modify', function (req, 
             });
 });
 
+//permet de chercher des artistes via la barre de recherche
+router.get('/artist/:artistName', function (req, res) {
+    var artistName = req.params.artistName;
+    var regLetter = new RegExp('^'+artistName,'i');
+    console.log("L'utilisateur recherche un artiste commancant par les lettres: "+artistName);
+    db.collection('artist').find({"name": regLetter},{"name":1}).limit(10).toArray(function(err,result){
+        if (err) throw err;
+        res.send(JSON.stringify(result));
+    });
+});
+
 
 router.put('/artist/:artistName/albums/:albumsName/:_id/update/album/:oldNameAlbum', function (req, res) {
     var album = req.body;
@@ -114,9 +125,6 @@ router.put('/artist/:artistName/albums/:albumsName/:_id/update/album/:oldNameAlb
     var oldNameAlbum= req.params.oldNameAlbum;
     console.log(album);
     console.log("Mise à jour de l'album "+ album.titre+" _id = "+_id); 
-    
-    
-    
     db.collection('artist').update(
         {
             _id: ObjectId(_id),
