@@ -4,15 +4,18 @@ var db              = require('mongoskin').db('mongodb://localhost:27017/wasabi'
 var ObjectId        = require('mongoskin').ObjectID;
 
 /* GET search pages. */
-router.get('/', function (req, res,next) {
-    console.log("Dedans search")
-    var lettre = req.query.lettre;
-    var nomCategorie = req.query.categorie.toLowerCase();
-    console.log("lettre = "+lettre+"  nomCategorie = "+nomCategorie);
+router.get('/categorie/:nomCategorie/lettre/:lettre', function (req, res,next) {
+    var nomCategorie= req.params.nomCategorie.toLowerCase();
+    var lettre = req.params.lettre;
+    console.log("Dedans search");
+    console.log("lettre = "+lettre+" nomCategorie = "+nomCategorie);
     var regLetter = new RegExp('^'+lettre,'i');
     switch(nomCategorie) {
         case "artist":
+            var debut = Date.now();
             db.collection('artist').find({"name": regLetter},{"name":1,"_id":1}).limit(200).toArray(function(err,result){
+                var fin = Date.now();
+                console.log(fin-debut);
                 if (err) throw err;
                 res.send(JSON.stringify(result));
             });
@@ -24,7 +27,7 @@ router.get('/', function (req, res,next) {
                 // De-normalize le tableau pour sépérarer les documents
                 { "$unwind": "$albums"},
                 {"$match": {"albums.titre": regLetter}},
-                {"$sort" : {"albums.titre" : 1} },
+//                {"$sort" : {"albums.titre" : 1} },
                 {"$limit" : 200},  
                 // On affiche seulement le titre contenu dans album
                 {$project : { "titleAlbum" : "$albums.titre" ,"name":1}}

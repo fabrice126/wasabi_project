@@ -3,16 +3,17 @@ db.getCollection('artist').aggregate([
                 // De-normalize le tableau pour sépérarer les documents
                 {"$unwind": "$albums"},
                 {"$unwind": "$albums.songs"},
-                {"$project" : 
-                    {
-                        _id:0, 
+                {"$project" : 
+                    {
+                        _id:0, 
                         "name":1,
-                        "titre":"$albums.songs.titre",
-                        "urlSong":"$albums.songs.urlSong",
-                        "lyrics":"$albums.songs.lyrics"
-                    }
+                        "albumTitre":"$albums.titre",
+                        "songTitre":"$albums.songs.titre",
+                        "urlSong":"$albums.songs.urlSong",
+                        "lyrics":"$albums.songs.lyrics"
+                    }
                 },
                 { 
-                    $out : "allObjectsSong"
+                    $out : "song"
                 }
             ])

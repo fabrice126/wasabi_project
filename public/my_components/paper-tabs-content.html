@@ -70,7 +70,9 @@
         </style>
         <template>
             <!--Chargement en ajax du contenu -->
-            <iron-ajax id="get_content" url="" last-response="{{data}}" handleAs="json"> </iron-ajax>
+            
+            <iron-ajax id="get_content" url="/search/categorie/{{categorie}}/lettre/{{lettre}}" auto last-response="{{data}}" handleAs="json"> </iron-ajax>
+<!--            url="/search/categorie/{{categorie}}/lettre/{{lettre}}" auto-->
             <!-- Génération des listes de catégories -->
             <paper-material id="tabs" elevation="1">
                 <paper-tabs selected="0">
@@ -87,7 +89,8 @@
                             <ul id="alphabet_{{categorie}}">
                             <template is="dom-repeat" items="{{alphabet}}"  as="lettre">
                                 <li>  
-                                    <a on-tap='doLoadCategorie' href="search?categorie={{categorie}}&amp;lettre={{lettre}}">{{lettre}} </a>
+                                    <a    href="#/search/categorie/{{categorie}}/lettre/{{lettre}}">{{lettre}} </a>
+<!--                                   on-tap='doLoadCategorie' -->
                                 </li>
                             </template>
                             </ul>
@@ -102,7 +105,7 @@
                 <!-- Affichage des artists -->
                  <template is="dom-if" if="{{_isArtist(data)}}">
                      <template id="cards" class="flex-wrap" is="dom-repeat" items="{{data}}" as="infos">
-                        <paper-card id="/search/artist/{{infos.name}}/{{infos._id}}" elevation="1">
+                        <paper-card on-tap='doLoadArtist' id="#/search/artist/{{infos.name}}/{{infos._id}}" elevation="1">
                             <div>{{infos.name}}</div>
                             <paper-ripple></paper-ripple>
                         </paper-card> 
@@ -111,7 +114,7 @@
                 <!-- Affichage des albums -->
                 <template is="dom-if" if="{{_isAlbum(data)}}">
                     <template id="cards" class="flex-wrap" is="dom-repeat" items="{{data}}" as="infos" >
-                        <paper-card id="/search/artist/{{infos.name}}/albums/{{infos.titleAlbum}}/{{infos._id}}" elevation="1">
+                        <paper-card id="#/search/artist/{{infos.name}}/albums/{{infos.titleAlbum}}/{{infos._id}}" elevation="1">
                             <div>{{infos.titleAlbum}}</div> 
                             <div> de: {{infos.name}}</div> 
                             <paper-ripple></paper-ripple>
@@ -121,7 +124,7 @@
                 <!-- Affichage des songs -->
                 <template is="dom-if" if="{{_isSong(data)}}">
                     <template id="cards" class="flex-wrap" is="dom-repeat" items="{{data}}" as="infos">
-                        <paper-card id="/search/artist/{{infos.name}}/songs/{{infos.titleSong}}/{{infos._id}}" elevation="1">
+                        <paper-card id="#/search/artist/{{infos.name}}/songs/{{infos.titleSong}}/{{infos._id}}" elevation="1">
                             <div>{{infos.titleSong}}</div>
                             <div>de: {{infos.name}}</div>
                             <paper-ripple></paper-ripple>
@@ -147,28 +150,34 @@
             type: Array,
             value: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
         }
+        
     },
     ready: function(e){    
-        var pages = document.querySelector('iron-pages');
-        var tabs = document.querySelector('paper-tabs');
-        tabs.addEventListener('iron-select', function(e) { 
+        document.addEventListener('iron-select', function(e) { 
+            var pages = document.querySelector('iron-pages');
+            var tabs = document.querySelector('paper-tabs');
             pages.selected = tabs.selected;
         });  
-        console.log("DANS LE READY !!!!!!!!!!")
-        window.onpopstate = this.popstate;
+        console.log("DANS LE READY DE PAPER-TABS-CONTENT!!!!!!!!!!")
+//        window.onpopstate = this.popstate;
     },
-    doLoadCategorie: function(e){
-        e.preventDefault();
-        var url = e.target.href;
-        if(url!=window.location){
-            console.log("window.location = "+window.location);
-            console.log("doLoadCategorie = "+url);
-            window.history.pushState({path:url},'',url);
-        }        
-        this.$.get_content.url = url; 
-        this.$.get_content.generateRequest();
-        return false;
-    },
+//    doLoadCategorie: function(e){
+////        e.preventDefault();
+//        var url = e.target.hash;
+////        if(url!=window.location){
+////            console.log("window.location = "+window.location);
+////            console.log("doLoadCategorie = "+url);
+////            window.history.pushState({path:url},'',url);
+////        }        
+//        
+////        document.querySelector('app-router').go(url);
+//        this.$.get_content.url = url.replace("#","");
+//        this.$.get_content.generateRequest();
+//    },
+      doLoadArtist:function(e){
+          console.log(e);
+           document.querySelector('app-router').go('#/search/artist/{{infos.name}}/{{infos._id}}/');
+      },
     _isData:function(infoData){
         var exist = false;
         if(infoData != null){
@@ -203,17 +212,17 @@
         }
         return isSong;
     },
-    popstate:function(e){
-        if(e.state != null){
-            console.log(e);
-            var url = e.state.path;
-            console.log("url onpopstate = "+url);
-            var get_content = document.querySelector("#get_content")
-            get_content.url = url;
-            console.log("Dans on pop state");
-            get_content.generateRequest();
-        }
-    },
+//    popstate:function(e){
+//        if(e.state != null){
+//            console.log(e);
+//            var url = e.state.path;
+//            console.log("url onpopstate = "+url);
+//            var get_content = document.querySelector("#get_content")
+//            get_content.url = url;
+//            console.log("Dans on pop state");
+//            get_content.generateRequest();
+//        }
+//    },
       
   });  
 

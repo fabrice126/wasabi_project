@@ -15,7 +15,7 @@
         <link href="bower_components/app-router/app-router.html" rel="import">
         <link href="bower_components/pushstate-anchor/pushstate-anchor.html" rel="import">
         <link href="my_components/nav-bar.html" rel="import">
-        <link href="my_components/paper-tabs-content.html" rel="import">
+<!--        <link href="my_components/paper-tabs-content.html" rel="import">-->
         <link href="my_components/page-artist.html" rel="import">
         <link href="my_components/x-album.html" rel="import">
         <link href="my_components/x-song.html" rel="import">
@@ -49,16 +49,17 @@
             <paper-header-panel main class="flex">
                 <nav-bar></nav-bar>
                 <div id=mainContent>
-<!--                        <a href="#/search/artist/A%20Band%20Called%20Pain/56bc9ccfa20bf7d07039e786" >toto</a>
-                        <app-router>
-                            <app-route path="/search/artist/:artist/:id" import="/my_components/page-artist.html" ></app-route>
-                        </app-router>-->
-                    <paper-tabs-content></paper-tabs-content>
+<!--                    <paper-tabs-content></paper-tabs-content>-->
+                    <app-router>
+                        <app-route path="/" import="my_components/paper-tabs-content.html"></app-route>
+                        <app-route path="/search/categorie/:categorie/lettre/:lettre" import="my_components/paper-tabs-content.html"></app-route>    
+                        <app-route path="/search/artist/:nameArtist/songs/:titleSong/:id" import="my_components/page-artist.html"></app-route>    
+<!--                     <app-route path="/customer/*" import="/my_components/page-artist.html"></app-route>-->
+                    </app-router>
                 </div>
             </paper-header-panel>
 <!--        </paper-drawer-panel>-->
 <!--	<todo-app></todo-app>-->
 	</body>
-
 
 </html>
