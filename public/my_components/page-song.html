@@ -40,8 +40,8 @@
 <!--                Si utilisé avec app router-->
 <!--                <iron-ajax id="get_content" url="/search/artist/{{artist}}/{{id}}" last-response="{{artist}}" handleAs="json"> </iron-ajax>-->
 
-                {{id}}
-
+                {{nameArtist}}
+                {{nameSong}}
                 <div class="songname"> {{artist.name}}</div>
                 
                 <template id="albums" class="flex-wrap" is="dom-repeat" items="{{artist.albums}}" as="album">

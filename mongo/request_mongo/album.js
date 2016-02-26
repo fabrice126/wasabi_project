@@ -7,9 +7,9 @@ db.getCollection('artist').aggregate([
                         _id:0, 
                         "name":1,
                         "albumTitre":"$albums.titre",
-                        "dateSortie":"$albums.titre",
-                        "urlWikipedia":"$albums.urlSong",
-                        "urlAlbum":"$albums.lyrics"
+                        "dateSortie":"$albums.dateSortie",
+                        "urlWikipedia":"$albums.urlWikipedia",
+                        "urlAlbum":"$albums.urlAlbum",
                     }
                 },
                 { 

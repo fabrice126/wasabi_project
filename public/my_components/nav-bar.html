@@ -6,6 +6,7 @@
         <link href="../bower_components/paper-toolbar/paper-toolbar.html" rel="import">
         <link href="../bower_components/paper-button/paper-button.html" rel="import">  
         <link href="paper-input-search.html" rel="import">
+        <link href="paper-autocomplete.html" rel="import">
     </head>
 
     <dom-module id="nav-bar">
@@ -25,12 +26,15 @@
             <paper-toolbar>
                 <paper-icon-button icon="menu" on-tap="menuAction"></paper-icon-button>
                 <span class="titre">Toolbar</span>
-                <paper-input-search ></paper-input-search>
+                <paper-autocomplete></paper-autocomplete>
+<!--                <paper-input-search ></paper-input-search>-->
                 <paper-icon-button icon="add">+</paper-icon-button>
+<!--
                 <paper-button on-tap="createdb" id="btn_createdb" raised>
                     <iron-icon icon="cloud-done"></iron-icon>
                     Create Database
                 </paper-button>
+-->
             </paper-toolbar>
         </template>
     </dom-module>

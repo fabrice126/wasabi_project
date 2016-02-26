@@ -7,7 +7,7 @@ var lyricsWikia     = require('./handler/lyricsWikia.js');
 
 
 //Permet de changer de page pour récupérer tout les noms d'artistes d'une catégorie (exemple catégorie des artistes commencant par la lettre A)        
-var paramNextPage = "?pagefrom=The Sounds";
+var paramNextPage = "?pagefrom=";
 //contient les liens des artistes de tout l'alphabet qui sont aussi les noms des répertoires sur le disque
 var urlArtists = 'http://lyrics.wikia.com/wiki/Category:Artists_';
 var selectorArtists = '#mw-pages>.mw-content-ltr>table a[href]';
@@ -40,7 +40,6 @@ var fetchData = function(url,lettre,paramNextPage,selectorArtists,attrArtists,re
             var j=0;
             setIntervalLoop(objArtist,url,lettre,j);
             console.log("fin de GET createdb");
-            //db.collection('artist').createIndex( { "albums.songs": 1 } );
         }).catch(function() { 
             console.log("error Fin asynchrone");
         });

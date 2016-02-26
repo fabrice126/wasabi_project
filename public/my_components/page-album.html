@@ -1,0 +1,52 @@
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <link href="../bower_components/polymer/polymer.html" rel="import">
+        <link href="../bower_components/paper-material/paper-material.html" rel="import">
+        <link href="../bower_components/paper-card/paper-card.html" rel="import">
+        <link href="../bower_components/iron-ajax/iron-ajax.html" rel="import">
+        <link href="../bower_components/paper-item/paper-item.html" rel="import">
+        <link rel="import" href="../bower_components/paper-item/paper-icon-item.html">
+        <link rel="import" href="../bower_components/paper-item/paper-item-body.html">
+        <link rel="import" href="../bower_components/paper-fab/paper-fab.html">
+
+
+        
+    </head>
+
+    <dom-module id="page-album">
+        <style>
+
+        </style>
+        <template>
+            <paper-material elevation="1">
+<!--                Si utilisé avec app router-->
+<!--                <iron-ajax id="get_content" url="/search/artist/{{artist}}/{{id}}" last-response="{{artist}}" handleAs="json"> </iron-ajax>-->
+
+                {{nameArtist}}
+                {{nameAlbum}}
+            </paper-material>
+        </template>
+    </dom-module>
+
+    
+<script>
+  // element registration
+  Polymer({
+    is: "page-album",
+    // add properties and methods on the element's prototype
+    properties: {
+        artist:{
+            type: Object,
+            value: {}
+        },
+    },
+    ready: function(e){    
+
+    },
+  });  
+
+</script>   
+</html>
+    
