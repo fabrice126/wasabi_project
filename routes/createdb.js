@@ -7,7 +7,7 @@ var lyricsWikia     = require('./handler/lyricsWikia.js');
 
 
 //Permet de changer de page pour récupérer tout les noms d'artistes d'une catégorie (exemple catégorie des artistes commencant par la lettre A)        
-var paramNextPage = "?pagefrom=";
+var paramNextPage = "?pagefrom=Aerosmith";
 //contient les liens des artistes de tout l'alphabet qui sont aussi les noms des répertoires sur le disque
 var urlArtists = 'http://lyrics.wikia.com/wiki/Category:Artists_';
 var selectorArtists = '#mw-pages>.mw-content-ltr>table a[href]';
@@ -20,7 +20,7 @@ var attrAlbums = 'href';
 var selectorLyrics = 'div.lyricbox';
 //Nous permet de créer une première arborescence en récupérerant toutes les lyrics d'un abum et tous les album d'un groupe
 var alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
-var idxAlphabet = 19;
+var idxAlphabet = 0;
 router.get('/',function(req, res){
     console.log("dedans /createdb");
     //Pour chaque lettre  sur wikia et chaque catégorie on récupére pour commencer les albums de 5 artistes ainsi que tous ses albums et musiques
@@ -38,16 +38,16 @@ var fetchData = function(url,lettre,paramNextPage,selectorArtists,attrArtists,re
             //objArtist.tObjArtist => tableau d'objet représentant les artists: [{ name: 'A Dying God', urlWikia: 'A_Dying_God', albums: [] },{objet2}, etc]
             console.log("objArtist.tObjArtist.length  ==="+objArtist.tObjArtist.length );
             var j=0;
-            setIntervalLoop(objArtist,url,lettre,j);
+            getArtistDiscography(objArtist,url,lettre,j);
             console.log("fin de GET createdb");
         }).catch(function() { 
             console.log("error Fin asynchrone");
         });
-    }, Math.floor((Math.random() * 20500) + 20300));
+    }, Math.floor((Math.random() * 40500) + 30300));
 
 };
 
-var setIntervalLoop = function(newObjArtist,url,lettre,j){
+var getArtistDiscography = function(newObjArtist,url,lettre,j){
     //On récupére les albums (musiques incluses) des artistes commencant par la lettre A
     //Seul facon de faire pour simuler une boucle avec un timeout a chaque tour (settimout ne fonctionne pas dans une boucle) on appel donc cette fonction récusivement
 //    setTimeout(function(){
@@ -56,21 +56,23 @@ var setIntervalLoop = function(newObjArtist,url,lettre,j){
             //lorsque la requete ajax pour récupérer les artistes est terminé on obtient un objet (voir ci-dessous la structure json)
             //Nous allons maintenant ajouter dans chaque objet représentant l'artiste, les paroles des musiques
             lyricsWikia.getInfosFromPageArtist(urlPageArtist,objArtist).then(function(objArtist){
-                lyricsWikia.getAllLyricsOfArtists(urlApiWikia,selectorLyrics,objArtist).then(function(objArtist){
-                    //Quand on a traiter complétement une page d'artiste => albums avec ses musiques insérés en base de données, on passe a la page suivante
-                    db.collection('artist').insert(objArtist, function(err, result) {
-                        if (err) throw err;
-                        if (result) {
-                            console.log('Added =>'+objArtist.name);
-                        }
-                    }); 
+                lyricsWikia.getInfosFromPageAlbum(objArtist).then(function(objArtist){
+                    lyricsWikia.getAllLyricsOfArtists(urlApiWikia,selectorLyrics,objArtist).then(function(objArtist){
+                        //Quand on a traiter complétement une page d'artiste => albums avec ses musiques insérés en base de données, on passe a la page suivante
+                        db.collection('artistFull').insert(objArtist, function(err, result) {
+                            if (err) throw err;
+                            if (result) {
+                                console.log('Added =>'+objArtist.name);
+                            }
+                        }); 
+                    });
                 });
             }); 
-            //Mode asynchrone => le site ne semble pas bloquer les requêtes de l'inria 
+            //Mode asynchrone => le site ne semble pas bloquer les requêtes de l'inria
+            //Si il reste des artistes a traiter dans une page : alors on passe a l'objet suivante newObjArtist.tObjArtist[j]
             if(j < newObjArtist.tObjArtist.length-1){
                 j++;
-//                console.log("j == "+j+" newObjArtist.tObjArtist.length == "+newObjArtist.tObjArtist.length+" newObjArtist.nextPage =="+newObjArtist.nextPage+" \n\n");
-                setIntervalLoop(newObjArtist,url,lettre,j);
+                getArtistDiscography(newObjArtist,url,lettre,j);
             }
             else{
                 console.log("\n\n\n\n ================== NEXT PAGE ================== \n\n\n\n")
@@ -85,9 +87,8 @@ var setIntervalLoop = function(newObjArtist,url,lettre,j){
                     }
                 }
             }
-
         });
-//    }, Math.floor((Math.random() * 700) + 300));
+//    }, Math.floor((Math.random() * 20000) + 10000));
 };
 
 

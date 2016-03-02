@@ -85,6 +85,41 @@ var getInfosFromPageArtist = function(url,objArtist){
     return promise;
 };
 
+var getInfosFromPageAlbum = function(objArtist){
+    var promise = new Promise(function(resolve, reject) { 
+        var currNbAlbum = 0 ;
+        var nbAlbum = objArtist.albums.length;
+        for(var i = 0;i <nbAlbum;i++){
+            (function requestInfoAlbums(objArtist, i){
+                request(objArtist.albums[i].urlAlbum, function(err, resp, body){
+                    currNbAlbum++ ;
+                    if (!err && resp.statusCode == 200) {
+                        var tAllInfoArtists = [];
+                        $ = cheerio.load(body);
+
+                        objArtist.albums[i].genre = $("#mw-content-text>.plainlinks table tr:contains('Genre') td>a:last-child").html() != null ? $("#mw-content-text>.plainlinks table tr:contains('Genre') td>a:last-child").html() :"";
+                        objArtist.albums[i].length = $("#mw-content-text>.plainlinks table tr:contains('Length:') td:last-child").html() != null ? $("#mw-content-text>.plainlinks table tr:contains('Length:') td:last-child").html() : "";
+                        objArtist.albums[i].urlWikipedia = $("#mw-content-text>.plainlinks div>i>b>a:contains('Wikipedia')").attr('href') != null ? $("#mw-content-text>.plainlinks div>i>b>a:contains('Wikipedia')").attr('href') : "";
+                    }
+                    else{
+                        if(err != null){
+                            console.error('=====getInfosFromPageAlbum RELANCE DE LA REQUETE ====='+objArtist.albums[i].titre);
+                            currNbAlbum--;
+                            requestInfoAlbums(objArtist,i);
+                        }
+                    }
+                    if(currNbAlbum==nbAlbum){
+                        resolve(objArtist);
+                    }
+                });
+             })(objArtist, i);
+        }
+        
+    });
+    return promise;
+    
+};
+
 //recupére les albums des artists via l'api de lyrics wikia
 //param 1 : url de la page a récupérer
 //param 2 : selecteur pour récupérer la partie qui nous interesse dans leur page html
@@ -113,6 +148,7 @@ var getAlbumsAndSongsOfArtist = function(url,selector,attr,objArtist){
                                     titre: $(eltSong).text(),
                                     urlSong: $(eltSong).attr(attr),
                                     lyrics:"",
+                                    urlWikipedia:"",
                                 };
                                 songs.push(objSong);//On met l'objet song dans le tableau contenant les autres musiques de l'album
                             });
@@ -120,6 +156,8 @@ var getAlbumsAndSongsOfArtist = function(url,selector,attr,objArtist){
                                 titre: album,
                                 dateSortie: dateSortie,
                                 urlWikipedia:"",
+                                genre:"",
+                                length:"",
                                 urlAlbum: $(eltAlbum).find($(".albums>li>a[href]:first-child")).attr(attr),
                                 songs:songs //array contenant les objets représentant les musiques d'un album
                             };
@@ -176,10 +214,11 @@ var getAllLyricsOfArtists = function(url,selector,objArtist){
                                                 return this.nodeType == 8;
                                             }).remove();
                                             objArtist.albums[nbAlbums].songs[nbLyrics].lyrics = $(lyrics).html();
+                                            $("#mw-content-text div:contains('Wikipedia') div>i>b>a.extiw").attr('href')
+                                            objArtist.albums[nbAlbums].songs[nbLyrics].urlWikipedia = $("#mw-content-text div:contains('Wikipedia') div>i>b>a.extiw").attr('href') != null ? $("#mw-content-text div:contains('Wikipedia') div>i>b>a.extiw").attr('href') : "";
                                         }
                                         else{
                                             if(err != null){
-//                                                console.error('\n\n getAllLyricsOfArtists = '+objArtist.name+'    '+objArtist.albums[nbAlbums].songs[nbLyrics].titre+'  \n :Error:', err);
                                                 console.error('=====getAllLyricsOfArtists RELANCE DE LA REQUETE ====='+objArtist.name);
                                                 currNbTitre--;
                                                 getLyricsSongRequest(urlWikiaLyrics,nbAlbums,nbLyrics,objArtist);
@@ -211,3 +250,4 @@ exports.getArtistFromCategorie      = getArtistFromCategorie;
 exports.getAlbumsAndSongsOfArtist   = getAlbumsAndSongsOfArtist;
 exports.getAllLyricsOfArtists       = getAllLyricsOfArtists;
 exports.getInfosFromPageArtist      = getInfosFromPageArtist;
+exports.getInfosFromPageAlbum       = getInfosFromPageAlbum;
