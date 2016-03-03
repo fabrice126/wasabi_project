@@ -7,7 +7,7 @@ var lyricsWikia     = require('./handler/lyricsWikia.js');
 
 
 //Permet de changer de page pour récupérer tout les noms d'artistes d'une catégorie (exemple catégorie des artistes commencant par la lettre A)        
-var paramNextPage = "?pagefrom=Aerosmith";
+var paramNextPage = "?pagefrom=Aleksandra Radovic";
 //contient les liens des artistes de tout l'alphabet qui sont aussi les noms des répertoires sur le disque
 var urlArtists = 'http://lyrics.wikia.com/wiki/Category:Artists_';
 var selectorArtists = '#mw-pages>.mw-content-ltr>table a[href]';
@@ -43,7 +43,7 @@ var fetchData = function(url,lettre,paramNextPage,selectorArtists,attrArtists,re
         }).catch(function() { 
             console.log("error Fin asynchrone");
         });
-    }, Math.floor((Math.random() * 40500) + 30300));
+    }, Math.floor((Math.random() * 20500) + 15300));
 
 };
 

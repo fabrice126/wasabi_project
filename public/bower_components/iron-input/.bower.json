@@ -1,6 +1,6 @@
 {
   "name": "iron-input",
-  "version": "1.0.0",
+  "version": "1.0.8",
   "description": "An input element with data binding",
   "authors": [
     "The Polymer Authors"
@@ -10,9 +10,7 @@
     "polymer",
     "input"
   ],
-  "main": [
-    "iron-input.html"
-  ],
+  "main": "iron-input.html",
   "private": true,
   "repository": {
     "type": "git",
@@ -26,20 +24,20 @@
     "polymer": "Polymer/polymer#^1.0.0"
   },
   "devDependencies": {
+    "paper-styles": "polymerelements/paper-styles#^1.0.2",
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
     "iron-validator-behavior": "PolymerElements/iron-validator-behavior#^1.0.0",
     "test-fixture": "PolymerElements/test-fixture#^1.0.0",
-    "web-component-tester": "*",
+    "web-component-tester": "polymer/web-component-tester#^3.4.0",
     "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0"
   },
-  "_release": "1.0.0",
+  "_release": "1.0.8",
   "_resolution": {
     "type": "version",
-    "tag": "v1.0.0",
-    "commit": "e030cc3d07ae296fa94389c03835b328601ac161"
+    "tag": "1.0.8",
+    "commit": "55d2b39ead32b8d90da538daa1a6681fd9ae89d9"
   },
-  "_source": "git://github.com/polymerelements/iron-input.git",
-  "_target": "1.0.0",
-  "_originalSource": "polymerelements/iron-input",
-  "_direct": true
+  "_source": "git://github.com/PolymerElements/iron-input.git",
+  "_target": "~1.0.7",
+  "_originalSource": "PolymerElements/iron-input"
 }

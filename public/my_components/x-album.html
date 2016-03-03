@@ -61,7 +61,7 @@
             <iron-ajax id="get_content" on-response="responseHandler" last-response="{{data}}" handleAs="json"> </iron-ajax>
             <iron-ajax id="put_content" method="PUT" content-type="application/json" last-response="{{response}}"></iron-ajax>
             <article>
-                <paper-card hidden="{{editing}}" id="/search/artist/{{artist.name}}/albums/{{album.titre}}/{{artist._id}}" class="album" elevation="0">
+                <paper-card hidden="{{editing}}" id="/search/artist/{{artist.name}}/albums/{{album.titre}}" class="album" elevation="0">
                     Album: <span id="showTitre">{{album.titre}}</span> <span id="showDateSortie">{{album.dateSortie}}</span>
                     <paper-ripple></paper-ripple>
                 </paper-card> 
@@ -74,7 +74,7 @@
             <div class="list short" role="listbox">
                 <ol>
                 <template id="songs" class="flex-wrap" is="dom-repeat" items="{{album.songs}}" as="songs">
-                    <x-song artist={{artist}} songs={{songs}}></x-song>
+                    <x-song artist={{artist}} album={{album}} songs={{songs}}></x-song>
                 </template>
                 </ol>
             </div>
@@ -122,7 +122,7 @@
                 xsongs[i].editing = this.editing;
             }
             //L'affectation de l'url lance la requête automatiquement   
-            this.$.get_content.url = "/search/artist/"+this.artist.name+"/albums/"+this.album.titre+"/"+this.artist._id+"/modify"; 
+            this.$.get_content.url = "/search/artist/"+encodeURIComponent(this.artist.name)+"/albums/"+encodeURIComponent(this.album.titre)+"/"+encodeURIComponent(this.artist._id)+"/modify"; 
             this.$.get_content.generateRequest();
         }
     	if (!this.editing){
@@ -133,7 +133,7 @@
             }
 //            this.album.titre = this.data.albums.titre;
             this.$.put_content.body = JSON.stringify(this.album);
-            this.$.put_content.url = "/search/artist/"+this.artist.name+"/albums/"+this.album.titre+"/"+this.artist._id+"/update/album/"+this.odAlbumName; 
+            this.$.put_content.url = "/search/artist/"+encodeURIComponent(this.artist.name)+"/albums/"+encodeURIComponent(this.album.titre)+"/"+encodeURIComponent(this.artist._id)+"/update/album/"+encodeURIComponent(this.odAlbumName); 
             this.$.put_content.generateRequest();
         }
 	},

@@ -1,0 +1,355 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<!-- Iron Elements -->
+<link rel="import" href="../iron-input/iron-input.html">
+<link rel="import" href="../iron-icon/iron-icon.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
+<link rel="import" href="../iron-icons/hardware-icons.html">
+
+<!-- Paper Elements -->
+<link rel="import" href="../paper-material/paper-material.html">
+<link rel="import" href="../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../paper-styles/paper-styles-classes.html">
+
+<!-- Carbon Elements -->
+<link rel="import" href="../carbon-voice-input/carbon-voice-input.html">
+
+<!--
+Material Design Search Input
+
+Example:
+
+    <carbon-search-input></carbon-search-input>
+
+Example:
+
+    <carbon-search-input voice-enabled placeholder="Search..."></carbon-search-input>
+
+@demo demo/index.html
+@hero hero.svg
+-->
+
+<dom-module id="carbon-search-input">
+  <template>
+    <style>
+
+      :host {
+        display: block;
+        box-sizing: border-box;
+
+        width: 100%;
+        height: 36px;
+      }
+
+      paper-material{
+        width: 100%;
+        height: 100%;
+
+        background-color: #FFFFFF;
+        border-radius: 2px;
+        transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+        :host[blend] paper-material{
+          background-color: var(--dark-primary-color);
+        }
+
+        :host[focused] paper-material{
+          background-color: #FFFFFF !important;
+        }
+
+      :host [is="iron-input"]{
+        box-sizing: border-box;
+        border: none;
+        outline: none;
+
+        background-color: transparent;
+        height: 100%;
+        transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+        :host[blend] [is="iron-input"]{ color: var(--dark-theme-secondary-color); }
+
+        :host[listening] [is="iron-input"]{ color: var(--light-theme-secondary-color); }
+
+      :host [icon="search"]{
+        transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+        color: var(--light-theme-secondary-color);
+        margin: 0 24px;
+      }
+
+        :host[blend]  [icon="search"]{ color: var(--dark-theme-text-color); }
+
+        :host[focused] [icon="search"]{ color: var(--light-theme-secondary-color); }
+
+      paper-icon-button{
+        transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+        color: var(--light-theme-secondary-color);
+        margin-right: 12px;
+        border-radius: 50%;
+      }
+
+      :host[blend] paper-icon-button{ color: var(--dark-theme-text-color); }
+
+      :host[focused] paper-icon-button{ color: var(--light-theme-secondary-color); }
+
+      :host[listening] paper-icon-button{
+        background-color: var(--accent-color);
+        transform: scale(1.2);
+        color: #FFFFFF !important;
+        transition: all .3s ease-out;
+
+        animation: search-scale 4s infinite;
+      }
+
+      @-webkit-keyframes search-scale {
+        0% { transform: scale(1.0) } 10% { transform: scale(1.4) }
+        20% { transform: scale(1.2)} 30%{ transform: scale(1.3) }
+        40%{ transform: scale(1.2) } 50%{ transform: scale(1.7) }
+        60%{ transform: scale(1.5) } 70%{ transform: scale(1.0) }
+        80%{ transform: scale(1.3) } 90%{ transform: scale(1.4) }
+        100% { transform: scale(1.0) }
+      }
+      @-moz-keyframes search-scale {
+        0% { transform: scale(1.0) } 10% { transform: scale(1.4) }
+        20% { transform: scale(1.2)} 30%{ transform: scale(1.3) }
+        40%{ transform: scale(1.2) } 50%{ transform: scale(1.7) }
+        60%{ transform: scale(1.5) } 70%{ transform: scale(1.0) }
+        80%{ transform: scale(1.3) } 90%{ transform: scale(1.4) }
+        100% { transform: scale(1.0) }
+      }
+      @-o-keyframes search-scale {
+        0% { transform: scale(1.0) } 10% { transform: scale(1.4) }
+        20% { transform: scale(1.2)} 30%{ transform: scale(1.3) }
+        40%{ transform: scale(1.2) } 50%{ transform: scale(1.7) }
+        60%{ transform: scale(1.5) } 70%{ transform: scale(1.0) }
+        80%{ transform: scale(1.3) } 90%{ transform: scale(1.4) }
+        100% { transform: scale(1.0) }
+      }
+
+      @keyframes search-scale {
+        0% { transform: scale(1.0) } 10% { transform: scale(1.4) }
+        20% { transform: scale(1.2)} 30%{ transform: scale(1.3) }
+        40%{ transform: scale(1.2) } 50%{ transform: scale(1.7) }
+        60%{ transform: scale(1.5) } 70%{ transform: scale(1.0) }
+        80%{ transform: scale(1.3) } 90%{ transform: scale(1.4) }
+        100% { transform: scale(1.0) }
+      }
+
+    </style>
+      <iron-ajax id="get_search" url="" last-response="{{data}}" handleAs="json"> </iron-ajax>
+
+    <carbon-voice-input id="voiceInput"
+                        supported="{{_supported}}"
+                        transcript="{{_transcript}}"
+                        interim="{{_interim}}"
+                        listening="{{listening}}"></carbon-voice-input>
+
+    <paper-material class="layout horizontal center" elevation="[[_elevation]]">
+
+      <iron-icon icon="search"></iron-icon>
+
+      <input is="iron-input" on-input="search" class="flex" type="text" id="search" placeholder="[[placeholder]]" bind-value="{{value}}">
+
+      <paper-icon-button id="microphone" hidden$="[[!_microphoneVisible]]" icon="hardware:keyboard-voice"></paper-icon-button>
+
+    </paper-material>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'carbon-search-input',
+
+      properties: {
+
+        /**
+         * `placeholder` The placeholder text that will show until the user types
+         * something into the search input.
+         */
+        placeholder: String,
+
+        /**
+         * `value` is the value of the users search input.
+         */
+        value: {
+          type: String,
+          notify: true
+        },
+
+        /**
+         * `focused` is true when the search input is focused.
+         */
+        focused: {
+          type: Boolean,
+          value: false,
+          reflectToAttribute: true,
+          observer: '_focusChange'
+        },
+
+        /**
+         * `voiceEnabled` when true, the microphone support will be check. If supported,
+         * a microphone will appear in the serach box enabling voice search.
+         */
+        voiceEnabled: {
+          type: Boolean,
+          value: false
+        },
+
+        /**
+         * `blend`, If true, the search input will use the `--dark-theme-secondary-color`
+         * CSS variable as the search inputs background color when not in focus.
+         */
+        blend: {
+          type: Boolean,
+          value: false,
+          observer: '_modeChange'
+        },
+
+        /**
+         * `listening` will be true if the user is using the voice serach.
+         */
+        listening: {
+          type: Boolean,
+          value: false,
+          notify: true,
+          observer: "_listenChange",
+          reflectToAttribute: true
+        },
+
+        /**
+         * `_elevation` determines the elevation of the search input. Changes depending on
+         * blend and focus properties.
+         */
+        _elevation: Number,
+
+        /**
+         * `_supported` will be true if the browser supports voice search.
+         */
+        _supported: Boolean,
+
+        /**
+         * `_transcipt` The result of the users voice search.
+         */
+        _transcript: {
+          type: String,
+          observer: "_voiceInput"
+        },
+
+        /**
+         * `_interim` Updates as the users speaks with the users search query.
+         * Moslty here for fancy visual effects.
+         */
+        _interim: {
+          type: String,
+          observer: "_voiceInput",
+          notify: true
+        },
+
+        /**
+         * `_microphoneVisible` If voice search is enabled and the browser supports
+         * voice serach, then this will be true.
+         */
+        _microphoneVisible: {
+          type: Boolean,
+          computed: '_computeMicrophoneVisibility(_supported, voiceEnabled)'
+        }
+
+      },
+
+      listeners: {
+        'microphone.tap': 'startListening',
+        'search.focus': '_updateFocus',
+        'search.blur': '_updateFocus'
+      },
+
+      /**
+       * Activates the voice search feature.
+       *
+       * The same as clicking the 'microphone' button.
+       */
+      startListening: function(){
+        this.$.voiceInput.listen();
+      },
+
+      /**
+       * Sets the focus attribute based on the foucs state of the search box.
+       *
+       */
+      _updateFocus: function(){
+        if(this.$.search === document.activeElement)
+          this.focused = true;
+        else
+          this.focused = false;
+      },
+
+      /**
+       * Attempt to destroy this element's enemies with a beam of light!
+       *
+       * Or, at least, dispatch an event in the vain hope that someone else will
+       * do the zapping.
+       */
+      _listenChange: function(){
+        if(!this.listening)
+          this.value = this._transcript;
+        else
+          this.$.search.focus();
+      },
+
+      /**
+       * Attempt to destroy this element's enemies with a beam of light!
+       *
+       * Or, at least, dispatch an event in the vain hope that someone else will
+       * do the zapping.
+       */
+      _computeMicrophoneVisibility: function(supported, voiceEnabled){
+        return supported && voiceEnabled;
+      },
+
+      /**
+       * Attempt to destroy this element's enemies with a beam of light!
+       *
+       * Or, at least, dispatch an event in the vain hope that someone else will
+       * do the zapping.
+       */
+      _voiceInput: function(){
+        if(this.listening)
+          this.value = this._interim;
+        else
+          this.value = this._transcript;
+      },
+
+      /**
+       * Attempt to destroy this element's enemies with a beam of light!
+       *
+       * Or, at least, dispatch an event in the vain hope that someone else will
+       * do the zapping.
+       */
+      _modeChange: function(){
+        if(this.blend) this._elevation = 0;
+      },
+
+      /**
+       * Attempt to destroy this element's enemies with a beam of light!
+       *
+       * Or, at least, dispatch an event in the vain hope that someone else will
+       * do the zapping.
+       */
+      _focusChange: function(){
+        if (this.blend)
+          this._elevation = this.focused ? 1 : 0;
+        else
+          this._elevation = 1;
+      },
+    search:function(e){
+        console.log(e.target.bindValue);
+        if(e.target.bindValue.length>1){
+            this.$.get_search.url ="/search/artist/begin/"+encodeURIComponent(e.target.bindValue); 
+            this.$.get_search.generateRequest();
+        }
+    } 
+        
+
+    });
+  </script>
+</dom-module>

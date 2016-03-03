@@ -31,14 +31,17 @@
             }
         </style>
         <template>
-            <paper-card hidden="{{editing}}" id="/search/artist/{{artist.name}}/songs/{{songs.titre}}/{{artist._id}}" class="songs" elevation="0">
-                <li>{{songs.titre}}</li>
+
+            <paper-card hidden="{{editing}}" on-tap='doLoadCategorie' id="#/search/artist/{{_encodeUri(artist.name)}}/album/{{_encodeUri(album.titre)}}/song/{{_encodeUri(songs.titre)}}" class="songs" elevation="0" >
+                <li id="#/search/artist/{{_encodeUri(artist.name)}}/album/{{_encodeUri(album.titre)}}/song/{{_encodeUri(songs.titre)}}">
+                    {{songs.titre}}
+                </li>
                 <paper-ripple></paper-ripple>
             </paper-card>
-            <paper-input label="titre: {{songs.titre}}" id="edit" hidden="{{!editing}}" value="{{songs.titre}}"></paper-input>
+            <paper-input label="titre: {{songs.titre}}" id="edit" hidden="{{!editing}}" value="{{songs.titre}}"></paper-input>        
         </template>
     </dom-module>
-
+    
     
 <script>
   // element registration
@@ -54,6 +57,10 @@
             type: Object,
             value: {}
         },
+        album:{
+            type: Object,
+            value: {}
+        },
     	editing: {
 	    	type: Boolean,
 	    	value: false	
@@ -62,6 +69,13 @@
     ready: function(e){    
         this.addEventListener('complete', this.handleComplete);
     },
+    doLoadCategorie:function(e){
+          window.location.href = e.target.id;
+    },
+      
+    _encodeUri : function(titre){
+        return encodeURIComponent(titre);
+    }  
   });  
 
 </script>   

@@ -56,9 +56,11 @@
     search:function(e){
         console.log(e);
         console.log(e.target.bindValue);
-        this.$.get_search.url ="/search/artist/"+e.target.bindValue; 
+        
+        this.$.get_search.url ="/search/artist/"+encodeURIComponent(e.target.bindValue); 
         this.$.get_search.generateRequest();
-    }
+    } 
+      
   });
 
 </script>

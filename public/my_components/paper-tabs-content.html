@@ -105,7 +105,7 @@
                 <!-- Affichage des artists -->
                  <template is="dom-if" if="{{_isArtist(data)}}">
                      <template id="cards" class="flex-wrap" is="dom-repeat" items="{{data}}" as="infos">
-                         <paper-button on-tap='doLoadCategorie' id="#/search/artist/{{infos.name}}/{{infos._id}}" raised>
+                         <paper-button on-tap='doLoadCategorie' id="#/search/artist/{{_encodeUri(infos.name)}}" raised>
                              {{infos.name}}
                          </paper-button>
                      </template>
@@ -113,7 +113,7 @@
                 <!-- Affichage des albums -->
                 <template is="dom-if" if="{{_isAlbum(data)}}">
                     <template id="cards" class="flex-wrap" is="dom-repeat" items="{{data}}" as="infos" >
-                         <paper-button on-tap='doLoadCategorie' id="#/search/artist/{{infos.name}}/albums/{{infos.titleAlbum}}/{{infos._id}}" raised>
+                         <paper-button on-tap='doLoadCategorie' id="#/search/artist/{{_encodeUri(infos.name)}}/albums/{{_encodeUri(infos.titleAlbum)}}" raised>
                              {{infos.titleAlbum}}<br>
                              de: {{infos.name}}
                          </paper-button>
@@ -122,7 +122,7 @@
                 <!-- Affichage des songs -->
                 <template is="dom-if" if="{{_isSong(data)}}">
                     <template id="cards" class="flex-wrap" is="dom-repeat" items="{{data}}" as="infos">
-                         <paper-button on-tap='doLoadCategorie' id="#/search/artist/{{infos.name}}/songs/{{infos.titleSong}}/{{infos._id}}" raised>
+                         <paper-button on-tap='doLoadCategorie' id="#/search/artist/{{_encodeUri(infos.name)}}/songs/{{_encodeUri(infos.titleSong)}}" raised>
                             {{infos.titleSong}}<br>
                             de: {{infos.name}}
                          </paper-button>
@@ -168,25 +168,10 @@
                 var pages = document.querySelector('iron-pages');
                 pages.selected = tabs.selected;
             });  
-
-//        window.onpopstate = this.popstate;
     },
-//    doLoadCategorie: function(e){
-////        e.preventDefault();
-//        var url = e.target.hash;
-////        if(url!=window.location){
-////            console.log("window.location = "+window.location);
-////            console.log("doLoadCategorie = "+url);
-////            window.history.pushState({path:url},'',url);
-////        }        
-//        
-////        document.querySelector('app-router').go(url);
-//        this.$.get_content.url = url.replace("#","");
-//        this.$.get_content.generateRequest();
-//    },
       doLoadCategorie:function(e){
           console.log(e.target.id);
-          window.location.href = e.target.id
+          window.location.href = e.target.id;
       },
     _isData:function(infoData){
         var exist = false;
@@ -222,17 +207,9 @@
         }
         return isSong;
     },
-//    popstate:function(e){
-//        if(e.state != null){
-//            console.log(e);
-//            var url = e.state.path;
-//            console.log("url onpopstate = "+url);
-//            var get_content = document.querySelector("#get_content")
-//            get_content.url = url;
-//            console.log("Dans on pop state");
-//            get_content.generateRequest();
-//        }
-//    },
+    _encodeUri : function(infosData){
+        return encodeURIComponent(infosData);
+    }
       
   });  
 

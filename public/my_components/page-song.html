@@ -23,13 +23,21 @@
                 @apply(--layout-horizontal);
                 @apply(--layout-wrap);
             }
-            .songname{
+            #songName{
                 font-size: 34px;
                 line-height: 34px;
                 padding-top: 3%;
                 padding-right: 24px;
                 padding-bottom: 14px;
                 padding-left: 24px;
+            }
+            #songLyrics{
+                font-size: 19px;
+                padding-top: 3%;
+                padding-right: 24px;
+                padding-bottom: 14px;
+                padding-left: 24px;
+                text-align: justify;
             }
             paper-material{
                 margin-bottom: 5%;
@@ -40,13 +48,11 @@
 <!--                Si utilisé avec app router-->
 <!--                <iron-ajax id="get_content" url="/search/artist/{{artist}}/{{id}}" last-response="{{artist}}" handleAs="json"> </iron-ajax>-->
 
-                {{nameArtist}}
-                {{nameSong}}
-                <div class="songname"> {{artist.name}}</div>
+                <iron-ajax id="get_content" auto url="/search/artist/{{_encodeUri(nameArtist)}}/album/{{_encodeUri(nameAlbum)}}/song/{{_encodeUri(nameSong)}}" last-response="{{artist}}" handleAs="json" on-response="handleResponse"> </iron-ajax>
                 
-                <template id="albums" class="flex-wrap" is="dom-repeat" items="{{artist.albums}}" as="album">
-                    <x-album album={{album}} artist={{artist}}></x-album>
-                </template>
+                <div id="songName"> {{artist.albums.songs.titre}}</div>
+                <div id="songLyrics"> </div>
+<!--                {{ artist.albums.songs.lyrics}}-->
             </paper-material>
         </template>
     </dom-module>
@@ -63,9 +69,20 @@
             value: {}
         },
     },
-    ready: function(e){    
+    ready: function(e){   
 
     },
+    _encodeUri : function(titre){
+        return encodeURIComponent(titre);
+    } ,
+    _htmlToText : function(html){
+        
+        return html.innerHTML;
+    },
+    handleResponse: function(request) {
+        console.log(request.detail.xhr.response.albums.songs.lyrics);
+        document.querySelector("#songLyrics").innerHTML = request.detail.xhr.response.albums.songs.lyrics;
+    }
   });  
 
 </script>   

@@ -42,11 +42,20 @@
                 <nav-bar></nav-bar>
                 <div id=mainContent>
                     <app-router>
-                        <app-route path="/" import="my_components/paper-tabs-content.html"></app-route>
-                        <app-route path="/search/categorie/:categorie/lettre/:lettre" import="my_components/paper-tabs-content.html"></app-route>    
-                        <app-route path="/search/artist/:nameArtist/:id" import="my_components/page-artist.html"></app-route>    
-                        <app-route path="/search/artist/:nameArtist/albums/:nameAlbum/:id" import="my_components/page-album.html"></app-route>    
-                        <app-route path="/search/artist/:nameArtist/songs/:nameSong/:id" import="my_components/page-song.html"></app-route>    
+                        <app-route path="/"  onUrlChange="updateModel" import="my_components/paper-tabs-content.html"></app-route>
+                        <app-route path="/" onUrlChange="updateModel"  import="my_components/paper-tabs-content.html"></app-route>    
+
+                        <app-route path="/search/categorie/:categorie/lettre/:lettre" onUrlChange="updateModel"  import="my_components/paper-tabs-content.html"></app-route>    
+                        <app-route path="/search/categorie/:categorie/lettre/:lettre/" import="my_components/paper-tabs-content.html"></app-route>  
+                        
+                        <app-route path="/search/artist/:nameArtist"  onUrlChange="updateModel" import="my_components/page-artist.html"></app-route>    
+                        <app-route path="/search/artist/:nameArtist/" import="my_components/page-artist.html"></app-route> 
+                        
+                        <app-route path="/search/artist/:nameArtist/albums/:nameAlbum"  onUrlChange="updateModel" import="my_components/page-album.html"></app-route>
+                        <app-route path="/search/artist/:nameArtist/albums/:nameAlbum/" import="my_components/page-album.html"></app-route>    
+                        
+                        <app-route path="/search/artist/:nameArtist/album/:nameAlbum/song/:nameSong" onUrlChange="updateModel" import="my_components/page-song.html"></app-route>
+                        <app-route path="/search/artist/:nameArtist/album/:nameAlbum/song/:nameSong/" import="my_components/page-song.html"></app-route>
                     </app-router>
                 </div>
             </paper-header-panel>

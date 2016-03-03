@@ -5,6 +5,7 @@
         <link href="../bower_components/iron-icons/iron-icons.html" rel="import">
         <link href="../bower_components/paper-toolbar/paper-toolbar.html" rel="import">
         <link href="../bower_components/paper-button/paper-button.html" rel="import">  
+        <link href="../bower_components/carbon-search-input/carbon-search-input.html" rel="import">  
         <link href="paper-input-search.html" rel="import">
         <link href="paper-autocomplete.html" rel="import">
     </head>
@@ -13,6 +14,10 @@
         <style>
             paper-input-search{
                 flex: 1;
+            }
+            carbon-search-input{
+                flex: 0.65;
+                margin-left: 25%;
             }
             paper-toolbar{
                 box-shadow : 0 4px 5px 0 rgba(0,0,0,0.14),0 1px 10px 0 rgba(0,0,0,0.12),0 2px 4px -1px rgba(0,0,0,0.2);
@@ -27,7 +32,8 @@
                 <paper-icon-button icon="menu" on-tap="menuAction"></paper-icon-button>
                 <span class="titre">Toolbar</span>
 <!--                <paper-autocomplete></paper-autocomplete>-->
-                <paper-input-search ></paper-input-search>
+<!--                <paper-input-search ></paper-input-search>-->
+                <carbon-search-input placeholder="Search" voice-enabled></carbon-search-input>
                 <paper-icon-button icon="add">+</paper-icon-button>
                 <paper-button on-tap="createdb" id="btn_createdb" raised>
                     <iron-icon icon="cloud-done"></iron-icon>

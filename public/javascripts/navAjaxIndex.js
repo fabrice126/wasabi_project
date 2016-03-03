@@ -1,6 +1,5 @@
 $(document).ready(function() {
     //Quand on entre sur l'application :
-    console.log("DANS JQUERYYYYYYY");
 //    window.history.pushState({path:"/"},'',"/");
 
 //    $(document).on("click","paper-card", function(e) {
