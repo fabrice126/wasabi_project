@@ -40,11 +40,30 @@ Example:
         width: 100%;
         height: 36px;
       }
+        #suggestion{
+            background-color: white;
+            color:black;
+            border-radius: 0px 0px 5px 5px;
+            box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+        }
+        paper-card{
+            width: 100%;
+            padding-left: 12%;
+            padding-top: 2%;
+            padding-bottom: 2%;
+            cursor: pointer;
+        }
+        #suggestion:last-child{
+            border-radius: 0px 0px 5px 5px;
 
+        }
+        paper-card:hover{
+            background-color: #394BB3;
+            color: white;
+        }
       paper-material{
         width: 100%;
         height: 100%;
-
         background-color: #FFFFFF;
         border-radius: 2px;
         transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
@@ -62,7 +81,7 @@ Example:
         box-sizing: border-box;
         border: none;
         outline: none;
-
+font-size: 15px;
         background-color: transparent;
         height: 100%;
         transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
@@ -70,7 +89,9 @@ Example:
 
         :host[blend] [is="iron-input"]{ color: var(--dark-theme-secondary-color); }
 
-        :host[listening] [is="iron-input"]{ color: var(--light-theme-secondary-color); }
+        :host[listening] [is="iron-input"]{ 
+            color: var(--light-theme-secondary-color); 
+        }
 
       :host [icon="search"]{
         transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
@@ -87,6 +108,7 @@ Example:
         color: var(--light-theme-secondary-color);
         margin-right: 12px;
         border-radius: 50%;
+      z-index: 2000;
       }
 
       :host[blend] paper-icon-button{ color: var(--dark-theme-text-color); }
@@ -154,6 +176,17 @@ Example:
       <paper-icon-button id="microphone" hidden$="[[!_microphoneVisible]]" icon="hardware:keyboard-voice"></paper-icon-button>
 
     </paper-material>
+        <div id=suggestion>
+<!--        <template is="dom-if" items="{{_exist(data)}}">-->
+            <template is="dom-repeat" items="{{data}}" as="suggestion">
+                <paper-card on-tap='doLoadSearch' id="#/search/artist/{{_encodeUri(suggestion.name)}}" elevation="0" >
+                    {{suggestion.name}}
+                    <paper-ripple></paper-ripple>
+                </paper-card> 
+            </template>
+<!--        </template>-->
+
+        </div>
 
   </template>
 
@@ -341,13 +374,26 @@ Example:
         else
           this._elevation = 1;
       },
+    doLoadSearch:function(e){
+        console.log(e);
+          window.location.href = e.target.id;
+        this.$.search.value = "";
+        
+    },
     search:function(e){
-        console.log(e.target.bindValue);
-        if(e.target.bindValue.length>1){
-            this.$.get_search.url ="/search/artist/begin/"+encodeURIComponent(e.target.bindValue); 
-            this.$.get_search.generateRequest();
+        this.$.get_search.url ="/search/artist/begin/"+encodeURIComponent(e.target.bindValue); 
+        this.$.get_search.generateRequest();
+    },
+    _encodeUri : function(infosData){
+        return encodeURIComponent(infosData);
+    },
+    _exist:function(infosData){
+        console.log(infosData);
+        if(infosData != "null"){
+            return infosData;
         }
-    } 
+        return false;
+    }
         
 
     });

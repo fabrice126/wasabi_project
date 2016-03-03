@@ -121,7 +121,7 @@ router.get('/artist/begin/:artistName', function (req, res) {
     var artistName = req.params.artistName;
     var regLetter = new RegExp('^'+artistName,'i');
     console.log("L'utilisateur recherche un artiste commancant par les lettres: "+artistName);
-    db.collection('artist').find({"name": regLetter},{"name":1}).limit(10).toArray(function(err,result){
+    db.collection('artist').find({"name": regLetter},{"name":1}).limit(6).toArray(function(err,result){
         if (err) throw err;
         res.send(JSON.stringify(result));
     });

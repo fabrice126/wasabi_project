@@ -22,6 +22,9 @@ html{
 paper-material{
     background-color: white;
 }
+paper-toolbar{
+    z-index: 1000;
+}
 /*-------------------Modififaction de la couleur de la scrollbar----------------------------*/
 
 body::-webkit-scrollbar,p::-webkit-scrollbar { 
