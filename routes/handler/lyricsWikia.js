@@ -10,49 +10,52 @@ var getArtistFromCategorie = function(url,selector,attr,removeStr){
     // La fonction de résolution est appelée avec la capacité de tenir ou de rompre la promesse
     var promise = new Promise(function(resolve, reject) { 
         //  /!\/!\/!\/!\/!\   Si dans l'avenir le nombre d'artiste sur la page de lyrics wikia change ce parametre doit changer   /!\/!\/!\/!\/!\
-        var nbArtistPerPage = 200;
-        request(url, function(err, resp, body){
-            if (!err && resp.statusCode == 200) {
-                var tObjArtist = [];
-                $ = cheerio.load(body);
-                var links = $(selector); //#mw-pages>.mw-content-ltr>table a[href]
-                //Pour itérer sur toutes les pages d'un artiste commençant par une lettre il faut avoir un url de type :
-                //http://lyrics.wikia.com/wiki/Category:Artists_A?pagefrom=A+Pocket+Full+Of+Posers ou A+Pocket+Full+Of+Posers est le dernier titre d'artiste de la page analysé
-                var artistPageFrom = $(links)[$(links).length-1].attribs.title;
-                var nextPage = false;
-                $(links).each(function(i, link){
-                    //on récupére les #mw-pages>.mw-content-ltr>table a[href]
-                    //Cette condition permet de ne pas remplir le dernier objet artist d'une page contenant 200 artists. Cet objet sera rempli lors de la reqête de changement de page
-                    if(i<nbArtistPerPage-1){
-                        var objArtist = {
-                            name:$(link).attr('title'),
-                            urlWikipedia:"",
-                            urlOfficialWebsite : "",
-                            urlFacebook:"",
-                            urlMySpace:"",
-                            urlTwitter:"",
-                            locationInfo:[],
-                            urlWikia:$(link).attr(attr).replace(removeStr, ""), //on récupére les #mw-pages>.mw-content-ltr>table a[href]
-                            albums:[]
-                        };
-                        tObjArtist.push(objArtist);
+        (function requestArtistFromCategorie(url,selector,attr,removeStr){
+
+            var nbArtistPerPage = 200;
+            request(url, function(err, resp, body){
+                if (!err && resp.statusCode == 200) {
+                    var tObjArtist = [];
+                    $ = cheerio.load(body);
+                    var links = $(selector); //#mw-pages>.mw-content-ltr>table a[href]
+                    //Pour itérer sur toutes les pages d'un artiste commençant par une lettre il faut avoir un url de type :
+                    //http://lyrics.wikia.com/wiki/Category:Artists_A?pagefrom=A+Pocket+Full+Of+Posers ou A+Pocket+Full+Of+Posers est le dernier titre d'artiste de la page analysé
+                    var artistPageFrom = $(links)[$(links).length-1].attribs.title;
+                    var nextPage = false;
+                    $(links).each(function(i, link){
+                        //on récupére les #mw-pages>.mw-content-ltr>table a[href]
+                        //Cette condition permet de ne pas remplir le dernier objet artist d'une page contenant 200 artists. Cet objet sera rempli lors de la reqête de changement de page
+                        if(i<nbArtistPerPage-1){
+                            var objArtist = {
+                                name:$(link).attr('title'),
+                                urlWikipedia:"",
+                                urlOfficialWebsite : "",
+                                urlFacebook:"",
+                                urlMySpace:"",
+                                urlTwitter:"",
+                                locationInfo:[],
+                                urlWikia:$(link).attr(attr).replace(removeStr, ""), //on récupére les #mw-pages>.mw-content-ltr>table a[href]
+                                albums:[]
+                            };
+                            tObjArtist.push(objArtist);
+                        }
+                    });
+                    if($(links).length == nbArtistPerPage){
+                        nextPage = true;
                     }
-                });
-                if($(links).length == nbArtistPerPage){
-                    nextPage = true;
+                    var objResolve = {};
+                    objResolve.tObjArtist = tObjArtist;
+                    objResolve.artistPageFrom = artistPageFrom;
+                    objResolve.nextPage = nextPage;
+                    resolve(objResolve);//une fois le tObjArtist rempli resolve va indiquer que la promise s'est bien executée et va donc executer le then
                 }
-                var objResolve = {};
-                objResolve.tObjArtist = tObjArtist;
-                objResolve.artistPageFrom = artistPageFrom;
-                objResolve.nextPage = nextPage;
-                resolve(objResolve);//une fois le tObjArtist rempli resolve va indiquer que la promise s'est bien executée et va donc executer le then
-            }
-            else{
-                console.error('=====getArtistFromCategorie RELANCE DE LA REQUETE ====='+url);
-                console.error(new Error(err));
-                getArtistFromCategorie(url,selector,attr,removeStr);
-            }
-        });
+                else{
+                    console.error('=====getArtistFromCategorie RELANCE DE LA REQUETE ====='+url);
+                    console.error(new Error(err));
+                    requestArtistFromCategorie(url,selector,attr,removeStr);
+                }
+            });
+        })(url,selector,attr,removeStr);
     });
     return promise;
 };

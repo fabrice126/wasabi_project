@@ -1,18 +1,18 @@
-<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../bower_components/polymer/polymer.html">
 
 <!-- Iron Elements -->
-<link rel="import" href="../iron-input/iron-input.html">
-<link rel="import" href="../iron-icon/iron-icon.html">
-<link rel="import" href="../iron-icons/iron-icons.html">
-<link rel="import" href="../iron-icons/hardware-icons.html">
+<link rel="import" href="../bower_components/iron-input/iron-input.html">
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/iron-icons/hardware-icons.html">
 
 <!-- Paper Elements -->
-<link rel="import" href="../paper-material/paper-material.html">
-<link rel="import" href="../paper-icon-button/paper-icon-button.html">
-<link rel="import" href="../paper-styles/paper-styles-classes.html">
+<link rel="import" href="../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-styles/paper-styles-classes.html">
 
 <!-- Carbon Elements -->
-<link rel="import" href="../carbon-voice-input/carbon-voice-input.html">
+<link rel="import" href="carbon-voice-input.html">
 
 <!--
 Material Design Search Input
@@ -41,11 +41,13 @@ Example:
         height: 36px;
       }
         #suggestion{
+            display: none;
             background-color: white;
             color:black;
             border-radius: 0px 0px 5px 5px;
             box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
         }
+
         paper-card{
             width: 100%;
             padding-left: 12%;
@@ -61,32 +63,58 @@ Example:
             background-color: #394BB3;
             color: white;
         }
+
+/*
+        #suggestion:not(paper-material:focus){
+            display: none;
+        }
+*/
       paper-material{
         width: 100%;
         height: 100%;
-        background-color: #FFFFFF;
+        background-color: rgba(163,231,255,0.50);
         border-radius: 2px;
         transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
       }
-
+        #search::-webkit-input-placeholder {
+            color: white;
+        }
+         
         :host[blend] paper-material{
           background-color: var(--dark-primary-color);
         }
 
         :host[focused] paper-material{
-          background-color: #FFFFFF !important;
+            background-color: #FFFFFF !important;
+            transition: all 0.5s linear;
+        }
+        :host[focused] paper-material .searchIcon{ 
+            fill: #737373;
+        }
+        :host[focused] paper-material #microphone{ 
+            color: #737373;
+        }
+        :host[focused] paper-material #search::-webkit-input-placeholder{ 
+            color: #737373;
+        }
+        .searchIcon{
+            fill: white;
+            transition: all 0.5s linear;
+        }
+        #microphone{
+            color: white;
+            transition: all 0.5s linear;
         }
 
       :host [is="iron-input"]{
         box-sizing: border-box;
         border: none;
         outline: none;
-font-size: 15px;
+        font-size: 15px;
         background-color: transparent;
         height: 100%;
         transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
       }
-
         :host[blend] [is="iron-input"]{ color: var(--dark-theme-secondary-color); }
 
         :host[listening] [is="iron-input"]{ 
@@ -108,7 +136,7 @@ font-size: 15px;
         color: var(--light-theme-secondary-color);
         margin-right: 12px;
         border-radius: 50%;
-      z-index: 2000;
+        z-index: 2000;
       }
 
       :host[blend] paper-icon-button{ color: var(--dark-theme-text-color); }
@@ -169,9 +197,9 @@ font-size: 15px;
 
     <paper-material class="layout horizontal center" elevation="[[_elevation]]">
 
-      <iron-icon icon="search"></iron-icon>
+      <iron-icon icon="search" class="searchIcon"></iron-icon>
 
-      <input is="iron-input" on-input="search" class="flex" type="text" id="search" placeholder="[[placeholder]]" bind-value="{{value}}">
+      <input is="iron-input" on-input="search" class="flex" type="text" id="search" placeholder="[[placeholder]]" autocomplete="off" bind-value="{{value}}">
 
       <paper-icon-button id="microphone" hidden$="[[!_microphoneVisible]]" icon="hardware:keyboard-voice"></paper-icon-button>
 
@@ -375,12 +403,12 @@ font-size: 15px;
           this._elevation = 1;
       },
     doLoadSearch:function(e){
-        console.log(e);
-          window.location.href = e.target.id;
+        window.location.href = e.target.id;
         this.$.search.value = "";
-        
+        this.$.suggestion.style.display = "none";
     },
     search:function(e){
+        this.$.suggestion.style.display = "block";
         this.$.get_search.url ="/search/artist/begin/"+encodeURIComponent(e.target.bindValue); 
         this.$.get_search.generateRequest();
     },

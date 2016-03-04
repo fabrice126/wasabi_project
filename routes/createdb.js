@@ -7,7 +7,7 @@ var lyricsWikia     = require('./handler/lyricsWikia.js');
 
 
 //Permet de changer de page pour récupérer tout les noms d'artistes d'une catégorie (exemple catégorie des artistes commencant par la lettre A)        
-var paramNextPage = "?pagefrom=Aleksandra Radovic";
+var paramNextPage = "?pagefrom=";
 //contient les liens des artistes de tout l'alphabet qui sont aussi les noms des répertoires sur le disque
 var urlArtists = 'http://lyrics.wikia.com/wiki/Category:Artists_';
 var selectorArtists = '#mw-pages>.mw-content-ltr>table a[href]';

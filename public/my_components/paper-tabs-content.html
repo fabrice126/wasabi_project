@@ -72,7 +72,7 @@
         <template>
             <!--Chargement en ajax du contenu -->
             
-            <iron-ajax id="get_content" url="/search/categorie/{{categorie}}/lettre/{{lettre}}" auto last-response="{{data}}" handleAs="json"> </iron-ajax>
+            <iron-ajax id="get_content" url="/search/categorie/{{categorie}}/lettre/{{lettre}}" last-response="{{data}}" auto handleAs="json"> </iron-ajax>
 <!--            url="/search/categorie/{{categorie}}/lettre/{{lettre}}" auto-->
             <!-- Génération des listes de catégories -->
             <paper-material id="tabs" elevation="1">
@@ -168,6 +168,7 @@
                 var pages = document.querySelector('iron-pages');
                 pages.selected = tabs.selected;
             });  
+//            console.log(document.querySelector("#get_content"));
     },
       doLoadCategorie:function(e){
           console.log(e.target.id);
