@@ -9,39 +9,35 @@ router.get('/categorie/:nomCategorie/lettre/:lettre', function (req, res,next) {
     var lettre = req.params.lettre;
     console.log("Dedans search");
     console.log("lettre = "+lettre+" nomCategorie = "+nomCategorie);
-    var regLetter = new RegExp('^'+lettre,'i');
+    var regLetterToUpperCase = new RegExp('^' + lettre.toUpperCase());
+    var regLetterToLowerCase = new RegExp('^' + lettre.toLowerCase());
     switch(nomCategorie) {
         case "artist":
             var debut = Date.now();
-            db.collection('artist').find({"name": regLetter},{"name":1,"_id":1}).limit(200).toArray(function(err,result){
+            db.collection('artist').find({ $or: [{ name: regLetterToUpperCase }, { name: regLetterToLowerCase }] },{"name":1,"_id":1}).limit(200).toArray(function(err,result){
                 var fin = Date.now();
                 console.log(fin-debut);
                 if (err) throw err;
                 res.send(JSON.stringify(result));
             });
             break;
-        case "album":
-            db.collection('artist').aggregate([       
-                //on recherche les documents ayant des albums avec un titre commençant par regLetter
-                {"$match": {"albums.titre": regLetter}},
-                // De-normalize le tableau pour sépérarer les documents
-                { "$unwind": "$albums"},
-                {"$match": {"albums.titre": regLetter}},
-//                {"$sort" : {"albums.titre" : 1} },
+        case "album":                
+            db.collection('album').aggregate([       
+                {"$match": { $or: [{ titre: regLetterToUpperCase }, { titre: regLetterToLowerCase }] }},
                 {"$limit" : 200},  
-                // On affiche seulement le titre contenu dans album
-                {$project : { "titleAlbum" : "$albums.titre" ,"name":1}}
+                {$project : { "titleAlbum" : "$titre" ,"name":1}}
             ],function(err, result) {
                 res.send(JSON.stringify(result));
             })
+
             break;
         case "songs":
             db.collection('artist').aggregate([ 
-                {"$match": {"albums.songs.titre": regLetter}},
+                {"$match": { $or: [{ "albums.songs.titre": regLetterToUpperCase }, { "albums.songs.titre": regLetterToLowerCase }] }},
                 // De-normalize le tableau pour sépérarer les documents
                 {"$unwind": "$albums"},
                 {"$unwind": "$albums.songs"},
-                {"$match": {"albums.songs.titre": regLetter}},
+                {"$match": { $or: [{ "albums.songs.titre": regLetterToUpperCase }, { "albums.songs.titre": regLetterToLowerCase }] }},
 //                {"$sort" : {'albums.songs.titre' : 1} },
                 {"$limit" : 200},
                 {"$project" : { "titleSong" : "$albums.songs.titre","name":1}},
