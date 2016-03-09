@@ -98,15 +98,13 @@ router.get('/artist/:artistName/album/:albumName/song/:songsName', function (req
     
 });
 
-
 //Utiliser pour récupérer les infos d'un album (situé dans la page-artist.html) avant de le modifier
-router.get('/artist/:artistName/albums/:albumsName/:_id/modify', function (req, res) {
+router.get('/artist/:artistName/albums/:albumsName/modify', function (req, res) {
     var albumsName= req.params.albumsName;
     var artistName = req.params.artistName;
-    var _id = req.params._id;
-    console.log("L'utilisateur veut modifier l'album "+albumsName+" de l'artiste "+artistName+" _id = "+_id);
+    console.log("L'utilisateur veut modifier l'album "+albumsName+" de l'artiste ");
     db.collection('artist').aggregate([       
-               {"$match": {"_id":ObjectId(_id)}},      
+               {"$match": {  $and:[{"name":artistName},{"albums.titre":albumsName}] } },      
                 {"$unwind": "$albums"},
                 {"$match": {"albums.titre": albumsName}}
             ],function(err, result) {
@@ -121,7 +119,7 @@ router.get('/artist/begin/:artistName', function (req, res) {
     var artistName = req.params.artistName;
     var regLetter = new RegExp('^'+artistName,'i');
     console.log("L'utilisateur recherche un artiste commancant par les lettres: "+artistName);
-    db.collection('artist').find({"name": regLetter},{"name":1}).limit(6).toArray(function(err,result){
+    db.collection('artist').find({"name": regLetter},{"name":1}).limit(11).toArray(function(err,result){
         if (err) throw err;
         res.send(JSON.stringify(result));
     });
@@ -152,7 +150,6 @@ router.put('/artist/:artistName/albums/:albumsName/:_id/update/album/:oldNameAlb
                 console.log('Updated!');
             } 
         });
-    
 });
 
 

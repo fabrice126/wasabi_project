@@ -5,6 +5,7 @@
         <link href="../bower_components/paper-card/paper-card.html" rel="import">
         <link href="../bower_components/paper-ripple/paper-ripple.html" rel="import">
         <link rel="import" href="../bower_components/paper-fab/paper-fab.html">
+        <link rel="import" href="../bower_components/paper-input/paper-input.html">
     </head>
 
     <dom-module id="x-song">
@@ -67,7 +68,6 @@
     	}
     },
     ready: function(e){    
-        this.addEventListener('complete', this.handleComplete);
     },
     doLoadCategorie:function(e){
           window.location.href = e.target.id;

@@ -50,20 +50,29 @@ Example:
 
         paper-card{
             width: 100%;
-            padding-left: 12%;
-            padding-top: 2%;
-            padding-bottom: 2%;
+            padding-left: 5%;
+            padding-top: 1%;
+            padding-bottom: 1%;
             cursor: pointer;
+            color: black;
         }
         #suggestion:last-child{
             border-radius: 0px 0px 5px 5px;
 
         }
         paper-card:hover{
-            background-color: #394BB3;
-            color: white;
+            background-color: #EBEEF4;
+
         }
 
+        a:hover, a:focus,a:active a:visited {
+            color:black;
+        }
+        .search_title{
+            position: absolute;
+            margin-top: 10px;
+            margin-left: 10px;
+        }
 /*
         #suggestion:not(paper-material:focus){
             display: none;
@@ -105,6 +114,14 @@ Example:
             color: white;
             transition: all 0.5s linear;
         }
+        
+        .band_search_bar{
+            background-color: #3F51B5;
+            border-radius: 100%;  
+            padding: 7px;
+        }
+
+
 
       :host [is="iron-input"]{
         box-sizing: border-box;
@@ -195,25 +212,21 @@ Example:
                         interim="{{_interim}}"
                         listening="{{listening}}"></carbon-voice-input>
 
-    <paper-material class="layout horizontal center" elevation="[[_elevation]]">
-
-      <iron-icon icon="search" class="searchIcon"></iron-icon>
-
-      <input is="iron-input" on-input="search" class="flex" type="text" id="search" placeholder="[[placeholder]]" autocomplete="off" bind-value="{{value}}">
-
-      <paper-icon-button id="microphone" hidden$="[[!_microphoneVisible]]" icon="hardware:keyboard-voice"></paper-icon-button>
-
-    </paper-material>
+        <paper-material class="layout horizontal center" elevation="[[_elevation]]">
+            <iron-icon icon="search" class="searchIcon"></iron-icon>
+            <input is="iron-input" on-input="search" class="flex" type="text" id="search" placeholder="[[placeholder]]" autocomplete="off" bind-value="{{value}}">
+            <paper-icon-button id="microphone" hidden$="[[!_microphoneVisible]]" icon="hardware:keyboard-voice"></paper-icon-button>
+        </paper-material>
         <div id=suggestion>
-<!--        <template is="dom-if" items="{{_exist(data)}}">-->
             <template is="dom-repeat" items="{{data}}" as="suggestion">
-                <paper-card on-tap='doLoadSearch' id="#/search/artist/{{_encodeUri(suggestion.name)}}" elevation="0" >
-                    {{suggestion.name}}
-                    <paper-ripple></paper-ripple>
-                </paper-card> 
+               <a href="#/search/artist/{{_encodeUri(suggestion.name)}}">
+                    <paper-card on-tap='doLoadSearch' elevation="0" >
+                        <img class="band_search_bar" src="../img/band_search_bar.svg" alt="Band"> 
+                        <span class="search_title">{{suggestion.name}}</span>
+                        <paper-ripple></paper-ripple>
+                    </paper-card> 
+                </a>
             </template>
-<!--        </template>-->
-
         </div>
 
   </template>
@@ -403,7 +416,7 @@ Example:
           this._elevation = 1;
       },
     doLoadSearch:function(e){
-        window.location.href = e.target.id;
+//        window.location.href = e.target.id;
         this.$.search.value = "";
         this.$.suggestion.style.display = "none";
     },
@@ -415,13 +428,13 @@ Example:
     _encodeUri : function(infosData){
         return encodeURIComponent(infosData);
     },
-    _exist:function(infosData){
-        console.log(infosData);
-        if(infosData != "null"){
-            return infosData;
-        }
-        return false;
-    }
+//    _exist:function(infosData){
+//        console.log(infosData);
+//        if(infosData != "null"){
+//            return infosData;
+//        }
+//        return false;
+//    }
         
 
     });

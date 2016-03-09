@@ -117,15 +117,19 @@
     	this.editing=!this.editing;
         var xsongs = this.querySelectorAll("x-song");
         if(this.editing){  
+            console.log("DANS THIS EDITING");
             this.odAlbumName = this.album.titre;
+            
             for(var i = 0 ;i<xsongs.length;i++){
                 xsongs[i].editing = this.editing;
             }
             //L'affectation de l'url lance la requête automatiquement   
-            this.$.get_content.url = "/search/artist/"+encodeURIComponent(this.artist.name)+"/albums/"+encodeURIComponent(this.album.titre)+"/"+encodeURIComponent(this.artist._id)+"/modify"; 
+            this.$.get_content.url = "/search/artist/"+encodeURIComponent(this.artist.name)+"/albums/"+encodeURIComponent(this.album.titre)+"/modify"; 
+            console.log(this.$.get_content.url);
             this.$.get_content.generateRequest();
         }
     	if (!this.editing){
+            console.log("DANS THIS NOT EDITING");
 //            this.$.showTitre.innerHTML = this.data.albums.titre;
 //            this.$.showDateSortie.innerHTML = this.data.albums.dateSortie;
             for(var i = 0 ;i<xsongs.length;i++){
@@ -138,7 +142,6 @@
         }
 	},
     responseHandler: function(response){
-        console.log(this.album);
         console.log("Requete fini");
         this.album = {};
         this.album = this.data.albums;
