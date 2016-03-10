@@ -4,9 +4,9 @@ var favicon         = require('serve-favicon');
 var logger          = require('morgan');
 var cookieParser    = require('cookie-parser');
 var bodyParser      = require('body-parser');
-var index           = require('./routes/index');
 var search          = require('./routes/search');
 var createdb        = require('./routes/createdb');
+var basicAuth = require('basic-auth-connect');
 var app = express();
 
 
@@ -19,11 +19,13 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+//permet de s'authentifier, personne ne doit pouvoir accèder au site
+app.use(basicAuth('michel', 'michelbuffa'));
 
-app.use('/', index);
+app.use('/',express.static(path.join(__dirname, 'public')));
 app.use('/search', search);
 app.use('/createdb', createdb);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

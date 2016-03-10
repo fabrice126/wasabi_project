@@ -120,6 +120,16 @@ Example:
             border-radius: 100%;  
             padding: 7px;
         }
+        .album_search_bar{
+/*            background-color: #f98b13;*/
+            border-radius: 100%;  
+            padding: 7px;
+        }
+        .song_search_bar{
+            background-color: #C0A805;
+            border-radius: 100%;  
+            padding: 7px;
+        }
 
 
 
@@ -222,6 +232,8 @@ Example:
                <a href="#/search/artist/{{_encodeUri(suggestion.name)}}">
                     <paper-card on-tap='doLoadSearch' elevation="0" >
                         <img class="band_search_bar" src="../img/band_search_bar.svg" alt="Band"> 
+<!--                        <img class="album_search_bar" src="../img/album_search_bar.svg" alt="Album"> -->
+                        <img class="song_search_bar" src="../img/song_search_bar.svg" alt="Song"> 
                         <span class="search_title">{{suggestion.name}}</span>
                         <paper-ripple></paper-ripple>
                     </paper-card> 
