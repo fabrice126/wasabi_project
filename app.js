@@ -12,7 +12,6 @@ var app = express();
 
 // view cache
 app.set('view cache', false); // désactivation du cache express
-
 // uncomment after placing your favicon in /public
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
@@ -20,8 +19,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 //permet de s'authentifier, personne ne doit pouvoir accèder au site
-app.use(basicAuth('michel', 'michelbuffa'));
-
+//app.use(basicAuth('michel', 'michelbuffa'));
 app.use('/',express.static(path.join(__dirname, 'public')));
 app.use('/search', search);
 app.use('/createdb', createdb);

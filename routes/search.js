@@ -7,8 +7,6 @@ var ObjectId        = require('mongoskin').ObjectID;
 router.get('/categorie/:nomCategorie/lettre/:lettre', function (req, res,next) {
     var nomCategorie= req.params.nomCategorie.toLowerCase();
     var lettre = req.params.lettre;
-    console.log("Dedans search");
-    console.log("lettre = "+lettre+" nomCategorie = "+nomCategorie);
     var regLetterToUpperCase = new RegExp('^' + lettre.toUpperCase());
     var regLetterToLowerCase = new RegExp('^' + lettre.toLowerCase());
     switch(nomCategorie) {
@@ -146,6 +144,23 @@ router.put('/artist/:artistName/albums/:albumsName/:_id/update/album/:oldNameAlb
                 console.log('Updated!');
             } 
         });
+});
+
+router.post("/artist/:artistName/album/:albumsName/song/:titleSong/modify",function(req,res){
+        var titre = req.body;
+        console.log(decodeURIComponent(titre));
+        var artistName = req.params.artistName;
+        var albumsName= req.params.albumsName;
+        var titleSong= req.params.titleSong;
+    db.getCollection('artist').aggregate([ 
+                {"$match": {"$and":[ {"name":artistName},{"albums.titre":albumsName},{"albums.songs.titre":titleSong}]}   },
+                // De-normalize le tableau pour sépérarer les documents
+                {"$unwind": "$albums"},
+                {"$unwind": "$albums.songs"},
+                {"$match": {"$and":[ {"name":artistName},{"albums.titre":albumsName},{"albums.songs.titre":titleSong}]}   },
+//                { $set: { "albums.songs.lyrics": } 
+    ])
+    
 });
 
 

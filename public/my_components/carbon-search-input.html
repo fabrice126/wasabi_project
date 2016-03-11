@@ -233,7 +233,7 @@ Example:
                     <paper-card on-tap='doLoadSearch' elevation="0" >
                         <img class="band_search_bar" src="../img/band_search_bar.svg" alt="Band"> 
 <!--                        <img class="album_search_bar" src="../img/album_search_bar.svg" alt="Album"> -->
-                        <img class="song_search_bar" src="../img/song_search_bar.svg" alt="Song"> 
+<!--                        <img class="song_search_bar" src="../img/song_search_bar.svg" alt="Song"> -->
                         <span class="search_title">{{suggestion.name}}</span>
                         <paper-ripple></paper-ripple>
                     </paper-card> 
@@ -397,12 +397,19 @@ Example:
        *
        * Or, at least, dispatch an event in the vain hope that someone else will
        * do the zapping.
-       */
+       */        
       _voiceInput: function(){
-        if(this.listening)
-          this.value = this._interim;
-        else
-          this.value = this._transcript;
+        if(this.listening){
+            this.value = this._interim;
+            if(this.value!=""){
+                this.$.suggestion.style.display = "block";
+                this.$.get_search.url ="/search/artist/begin/"+encodeURIComponent(this.value); 
+                this.$.get_search.generateRequest();
+            }
+        }
+        else{
+            this.value = this._transcript;
+        }
       },
 
       /**
@@ -428,7 +435,6 @@ Example:
           this._elevation = 1;
       },
     doLoadSearch:function(e){
-//        window.location.href = e.target.id;
         this.$.search.value = "";
         this.$.suggestion.style.display = "none";
     },
@@ -440,13 +446,7 @@ Example:
     _encodeUri : function(infosData){
         return encodeURIComponent(infosData);
     },
-//    _exist:function(infosData){
-//        console.log(infosData);
-//        if(infosData != "null"){
-//            return infosData;
-//        }
-//        return false;
-//    }
+
         
 
     });

@@ -12,6 +12,7 @@
         <link rel="import" href="../bower_components/paper-item/paper-icon-item.html">
         <link rel="import" href="../bower_components/paper-item/paper-item-body.html">
         <link rel="import" href="../bower_components/paper-fab/paper-fab.html">
+        <link rel="import" href="../bower_components/paper-input/paper-textarea.html">
 
 
         
@@ -31,13 +32,30 @@
                 padding-bottom: 14px;
                 padding-left: 24px;
             }
-            #songLyrics{
+            #songLyricsNonEditable{
                 font-size: 19px;
                 padding-top: 3%;
                 padding-right: 24px;
                 padding-bottom: 14px;
                 padding-left: 24px;
                 text-align: justify;
+                transition: all 0.5s linear;
+
+            }
+            #songLyricsEditable{
+                transition: all 0.5s linear;
+                background-color: #F2F2F2;
+                font-size: 19px;
+                padding-top: 3%;
+                padding-right: 24px;
+                padding-bottom: 14px;
+                padding-left: 24px;
+                text-align: justify;
+
+            }
+            paper-fab{
+                float: right;
+                margin-right: 3%;
             }
             paper-material{
                 margin-bottom: 5%;
@@ -50,9 +68,17 @@
 
                 <iron-ajax id="get_content" auto url="/search/artist/{{_encodeUri(nameArtist)}}/album/{{_encodeUri(nameAlbum)}}/song/{{_encodeUri(nameSong)}}" last-response="{{artist}}" handleAs="json" on-response="handleResponse"> </iron-ajax>
                 
-                <div id="songName"> {{artist.albums.songs.titre}}</div>
-                <div id="songLyrics"> </div>
-<!--                {{ artist.albums.songs.lyrics}}-->
+                <iron-ajax id="put_content" method="POST" params={{_encodeUri(lyrics)}} content-type="application/json" last-response="{{response}}"></iron-ajax>
+
+                
+                <div id="songName"> 
+                   {{artist.albums.songs.titre}}
+                    <paper-fab hidden={{editing}}  icon="icons:create" on-tap="doEdit" class="edit" mini></paper-fab>
+                    <paper-fab hidden={{!editing}} icon="icons:done"   on-tap="doEdit" class="done" mini></paper-fab>
+                </div>                
+
+                <div id="songLyricsNonEditable" hidden={{editing}} contenteditable=false> </div>
+                <div id="songLyricsEditable" hidden={{!editing}} contenteditable=true> </div>                
             </paper-material>
         </template>
     </dom-module>
@@ -68,6 +94,14 @@
             type: Object,
             value: {}
         },
+        editing: {
+	    	type: Boolean,
+	    	value: false	
+    	},
+        lyrics:{
+            type:String,
+            value:""
+        }
     },
     ready: function(e){   
 
@@ -79,10 +113,34 @@
         
         return html.innerHTML;
     },
-    handleResponse: function(request) {
-        console.log(request.detail.xhr.response.albums.songs.lyrics);
-        document.querySelector("#songLyrics").innerHTML = request.detail.xhr.response.albums.songs.lyrics;
-    }
+    handleResponse: function(request) {        
+        this.lyrics = request.detail.xhr.response.albums.songs.lyrics;
+//        this.lyrics = lyricsDecode;
+//        console.log(lyricsDecode);
+//        document.querySelector("#editLyrics").value = lyricsDecode;
+        document.querySelector("#songLyricsNonEditable").innerHTML = this.lyrics;
+        document.querySelector("#songLyricsEditable").innerHTML = this.lyrics;
+
+    },
+    doEdit: function(e){
+    	this.editing=!this.editing;
+        if(this.editing){  
+            document.querySelector("#songLyricsEditable").innerHTML = document.querySelector("#songLyricsNonEditable").innerHTML;
+//            //L'affectation de l'url lance la requête automatiquement   
+//            this.$.put_content.url ="/artist/"+this._encodeUri(this.artist.name)+"/album/"+this._encodeUri(this.artist.albums.titre)+"/song/"+this._encodeUri(this.artist.albums.songs.titre)+"/modify";
+//            console.log(document.querySelector("#songLyricsNonEditable").innerHTML);
+//            this.lyrics = document.querySelector("#songLyricsNonEditable").innerHTML;
+//            this.$.put_content.generateRequest();
+        }
+    	if (!this.editing){
+        document.querySelector("#songLyricsNonEditable").innerHTML = document.querySelector("#songLyricsEditable").innerHTML;
+//            this.$.put_content.body = JSON.stringify(this.album);
+//            this.$.put_content.url = "/search/artist/"+encodeURIComponent(this.artist.name)+"/albums/"+encodeURIComponent(this.album.titre)+"/"+encodeURIComponent(this.artist._id)+"/update/album/"+encodeURIComponent(this.odAlbumName); 
+//            this.$.put_content.generateRequest();
+        }
+	},
+ 
+      
   });  
 
 </script>   
