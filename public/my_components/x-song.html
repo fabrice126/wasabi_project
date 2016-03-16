@@ -14,7 +14,7 @@
                 @apply(--layout-horizontal);
                 @apply(--layout-wrap);
             }
-            .songs{
+            .song{
                 border-bottom: 1px solid rgba(229, 229, 229, 0.51);
                 padding: 20px;
                 padding-left: 7%;
@@ -33,13 +33,14 @@
         </style>
         <template>
 
-            <paper-card hidden="{{editing}}" on-tap='doLoadCategorie' id="#/search/artist/{{_encodeUri(artist.name)}}/album/{{_encodeUri(album.titre)}}/song/{{_encodeUri(songs.titre)}}" class="songs" elevation="0" >
-                <li id="#/search/artist/{{_encodeUri(artist.name)}}/album/{{_encodeUri(album.titre)}}/song/{{_encodeUri(songs.titre)}}">
-                    {{songs.titre}}
+            <paper-card hidden="{{editing}}" on-tap="doLoadSong" link="#/search/artist/{{_encodeUri(artist.name)}}/album/{{_encodeUri(album.titre)}}/song/{{_encodeUri(songs.titre)}}" class="song" elevation="0" >
+                <li link="#/search/artist/{{_encodeUri(artist.name)}}/album/{{_encodeUri(album.titre)}}/song/{{_encodeUri(songs.titre)}}">
+                    {{song.titre}}
                 </li>
                 <paper-ripple></paper-ripple>
             </paper-card>
-            <paper-input label="titre: {{songs.titre}}" id="edit" hidden="{{!editing}}" value="{{songs.titre}}"></paper-input>        
+
+            <paper-input label="titre: {{song.titre}}" id="edit" hidden="{{!editing}}" value="{{song.titre}}"></paper-input>        
         </template>
     </dom-module>
     
@@ -54,7 +55,7 @@
             type: Object,
             value: {}
         },
-        songs:{
+        song:{
             type: Object,
             value: {}
         },
@@ -69,8 +70,8 @@
     },
     ready: function(e){    
     },
-    doLoadCategorie:function(e){
-          window.location.href = e.target.id;
+    doLoadSong:function(e){
+          window.location.href = e.target.link;
     },
       
     _encodeUri : function(titre){
