@@ -113,7 +113,7 @@
                 <!-- Affichage des albums -->
                 <template is="dom-if" if="{{_isAlbum(data)}}">
                     <template id="cards" class="flex-wrap" is="dom-repeat" items="{{data}}" as="infos" >
-                         <paper-button on-tap='doLoadCategorie' id="#/search/artist/{{_encodeUri(infos.name)}}/albums/{{_encodeUri(infos.titleAlbum)}}" raised>
+                         <paper-button on-tap='doLoadCategorie' id="#/search/artist/{{_encodeUri(infos.name)}}/album/{{_encodeUri(infos.titleAlbum)}}" raised>
                              {{infos.titleAlbum}}<br>
                              de: {{infos.name}}
                          </paper-button>
@@ -122,7 +122,7 @@
                 <!-- Affichage des songs -->
                 <template is="dom-if" if="{{_isSong(data)}}">
                     <template id="cards" class="flex-wrap" is="dom-repeat" items="{{data}}" as="infos">
-                         <paper-button on-tap='doLoadCategorie' id="#/search/artist/{{_encodeUri(infos.name)}}/songs/{{_encodeUri(infos.titleSong)}}" raised>
+                         <paper-button on-tap='doLoadCategorie' id="#/search/artist/{{_encodeUri(infos.name)}}/album/{{_encodeUri(infos.albumTitre)}}/song/{{_encodeUri(infos.titleSong)}}" raised>
                             {{infos.titleSong}}<br>
                             de: {{infos.name}}
                          </paper-button>
@@ -141,7 +141,7 @@
     properties: {
         categories:{
             type: Array,
-            value: ['Artist', 'Album', 'Songs', 'Label']
+            value: ['Artists', 'Albums', 'Songs', 'Label']
         },
         alphabet :{
             type: Array,
@@ -203,6 +203,7 @@
         var isSong = false;
         if(this._isData(infosData)){
             if(infosData[0].titleSong){
+                console.log(infosData[0]);
                 isSong = true;
             }
         }

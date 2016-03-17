@@ -10,13 +10,13 @@ router.get('/categorie/:nomCategorie/lettre/:lettre', function (req, res,next) {
     var regLetterToUpperCase = new RegExp('^' + lettre.toUpperCase());
     var regLetterToLowerCase = new RegExp('^' + lettre.toLowerCase());
     switch(nomCategorie) {
-        case "artist":
+        case "artists":
             db.collection('artist').find({ $or: [{ name: regLetterToUpperCase }, { name: regLetterToLowerCase }] },{"name":1,"_id":1}).limit(200).toArray(function(err,result){
                 if (err) throw err;
                 res.send(JSON.stringify(result));
             });
             break;
-        case "album":                
+        case "albums":                
             db.collection('album').aggregate([       
                 {"$match": { $or: [{ titre: regLetterToUpperCase }, { titre: regLetterToLowerCase }] }},
                 {"$limit" : 200},  
@@ -27,15 +27,10 @@ router.get('/categorie/:nomCategorie/lettre/:lettre', function (req, res,next) {
 
             break;
         case "songs":
-            db.collection('artist').aggregate([ 
-                {"$match": { $or: [{ "albums.songs.titre": regLetterToUpperCase }, { "albums.songs.titre": regLetterToLowerCase }] }},
-                // De-normalize le tableau pour sépérarer les documents
-                {"$unwind": "$albums"},
-                {"$unwind": "$albums.songs"},
-                {"$match": { $or: [{ "albums.songs.titre": regLetterToUpperCase }, { "albums.songs.titre": regLetterToLowerCase }] }},
-//                {"$sort" : {'albums.songs.titre' : 1} },
-                {"$limit" : 200},
-                {"$project" : { "titleSong" : "$albums.songs.titre","name":1}},
+            db.collection('song').aggregate([ 
+                {"$match": { $or: [{ titre: regLetterToUpperCase}, { titre: regLetterToLowerCase }] }},
+                {"$limit" : 200},  
+                {$project : { "albumTitre" : 1 ,"name":1,"titleSong":"$titre"}}
             ],function(err, result) {
                 res.send(JSON.stringify(result));
             })
@@ -156,7 +151,7 @@ router.put("/modify/artist/:artistName/album/:albumsName/song/:titleSong",functi
 //permet de chercher des artistes via la barre de recherche
 router.get('/artist/begin/:artistName', function (req, res) {
     var artistName = req.params.artistName;
-    var regLetter = new RegExp('^'+artistName,'i');
+    var regLetter = new RegExp(artistName,'i');
     console.log("L'utilisateur recherche un artiste commancant par les lettres: "+artistName);
     db.collection('artist').find({"name": regLetter},{"name":1}).limit(11).toArray(function(err,result){
         if (err) throw err;
