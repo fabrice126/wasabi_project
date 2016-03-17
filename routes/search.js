@@ -83,12 +83,13 @@ router.get('/artist/:artistName/album/:albumName/song/:songsName', function (req
     
 });
 
+
 //Utiliser pour récupérer les infos d'un album (situé dans la page-artist.html) avant de le modifier
 router.get('/modify/artist/:artistName/album/:albumName', function (req, res) {
     
     var albumName= req.params.albumName;
     var artistName = req.params.artistName;
-    console.log("L'utilisateur veut modifier l'album "+albumName+" de l'artiste ");
+    console.log("L'utilisateur veut modifier l'album "+albumName+" de l'artiste "+artistName);
     db.collection('artist').aggregate([       
                {"$match": {  $and:[{"name":artistName},{"albums.titre":albumName}] } },      
                 {"$unwind": "$albums"},
@@ -99,7 +100,22 @@ router.get('/modify/artist/:artistName/album/:albumName', function (req, res) {
                 res.send(JSON.stringify(result[0]));
             });
 });
-
+//Utiliser pour récupérer un album de la page album
+router.get('/artist/:artistName/album/:albumName', function (req, res) {
+    
+    var albumName= req.params.albumName;
+    var artistName = req.params.artistName;
+    console.log("L'utilisateur veut afficher l'album "+albumName+" de l'artiste "+artistName);
+    db.collection('artist').aggregate([       
+                {"$match": {  $and:[{"name":artistName},{"albums.titre":albumName}] } },      
+                {"$unwind": "$albums"},
+                {"$match": {"albums.titre": albumName}},
+            ],function(err, result) {
+                if (err) throw err;
+//                console.log(result[0]);
+                res.send(JSON.stringify(result[0]));
+            });
+});
 
 
 //permet l'update d'unalbum

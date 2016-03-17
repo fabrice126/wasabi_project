@@ -17,15 +17,28 @@
 
     <dom-module id="page-album">
         <style>
-
+            .flex-wrap {
+                @apply(--layout-horizontal);
+                @apply(--layout-wrap);
+            }
+            .artistname{
+                font-size: 34px;
+                line-height: 34px;
+                padding-top: 3%;
+                padding-right: 24px;
+                padding-bottom: 14px;
+                padding-left: 24px;
+            }
+            paper-material{
+                margin-bottom: 5%;
+            }
         </style>
         <template>
             <paper-material elevation="1">
-<!--                Si utilisé avec app router-->
-<!--                <iron-ajax id="get_content" url="/search/artist/{{artist}}/{{id}}" last-response="{{artist}}" handleAs="json"> </iron-ajax>-->
+                <iron-ajax id="get_content" auto url="/search/artist/{{_encodeUri(nameArtist)}}/album/{{_encodeUri(nameAlbum)}}" last-response="{{artist}}" handleAs="json"> </iron-ajax>
 
-                {{nameArtist}}
-                {{nameAlbum}}
+                    <div class="artistname"> {{artist.name}}</div>
+                    <x-album album={{artist.albums}} artist={{artist}}></x-album>
             </paper-material>
         </template>
     </dom-module>
@@ -45,6 +58,9 @@
     ready: function(e){    
 
     },
+    _encodeUri : function(titre){
+        return encodeURIComponent(titre);
+    }  
   });  
 
 </script>   
