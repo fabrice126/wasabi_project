@@ -33,8 +33,8 @@
         </style>
         <template>
 
-            <paper-card hidden="{{editing}}" on-tap="doLoadSong" link="#/search/artist/{{_encodeUri(artist.name)}}/album/{{_encodeUri(album.titre)}}/song/{{_encodeUri(songs.titre)}}" class="song" elevation="0" >
-                <li link="#/search/artist/{{_encodeUri(artist.name)}}/album/{{_encodeUri(album.titre)}}/song/{{_encodeUri(songs.titre)}}">
+            <paper-card hidden="{{editing}}" on-tap="doLoadSong" link="#/search/artist/{{_encodeUri(artist.name)}}/album/{{_encodeUri(album.titre)}}/song/{{_encodeUri(song.titre)}}" class="song" elevation="0" >
+                <li link="#/search/artist/{{_encodeUri(artist.name)}}/album/{{_encodeUri(album.titre)}}/song/{{_encodeUri(song.titre)}}">
                     {{song.titre}}
                 </li>
                 <paper-ripple></paper-ripple>
@@ -71,6 +71,7 @@
     ready: function(e){    
     },
     doLoadSong:function(e){
+        console.log("e.target.link == "+e.target.link)
           window.location.href = e.target.link;
     },
       

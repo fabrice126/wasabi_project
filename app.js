@@ -19,7 +19,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 //permet de s'authentifier, personne ne doit pouvoir accèder au site
-//app.use(basicAuth('michel', 'michelbuffa'));
+app.use(basicAuth('michel', 'michelbuffa'));
 app.use('/',express.static(path.join(__dirname, 'public')));
 app.use('/search', search);
 app.use('/createdb', createdb);

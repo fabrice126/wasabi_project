@@ -63,7 +63,6 @@ router.get('/artist/:artistName', function (req, res) {
 //    });
 //});
 
-
 //Utiliser pour l'affichage d'une chanson
 router.get('/artist/:artistName/album/:albumName/song/:songsName', function (req, res) {
 
@@ -131,6 +130,7 @@ router.put('/update/artist/:artistName/album/:albumName/oldalbum/:oldNameAlbum',
             } 
         });
 });
+
 router.put("/modify/artist/:artistName/album/:albumsName/song/:titleSong",function(req,res){
         var titre = req.body;
         console.log(decodeURIComponent(titre));
