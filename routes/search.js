@@ -4,14 +4,19 @@ var db              = require('mongoskin').db('mongodb://localhost:27017/wasabi'
 var ObjectId        = require('mongoskin').ObjectID;
 
 /* GET search pages. */
-router.get('/categorie/:nomCategorie/lettre/:lettre', function (req, res,next) {
+router.get('/categorie/:nomCategorie/lettre/:lettre/page/:numPage', function (req, res,next) {
     var nomCategorie= req.params.nomCategorie.toLowerCase();
     var lettre = req.params.lettre;
+    var numPage = req.params.numPage;
+    
+    var limit = 200;
+    var skip = numPage*limit;
+    console.log("numPage === "+numPage);
     var regLetterToUpperCase = new RegExp('^' + lettre.toUpperCase());
     var regLetterToLowerCase = new RegExp('^' + lettre.toLowerCase());
     switch(nomCategorie) {
         case "artists":
-            db.collection('artist').find({ $or: [{ name: regLetterToUpperCase }, { name: regLetterToLowerCase }] },{"name":1,"_id":1}).limit(200).toArray(function(err,result){
+            db.collection('artist').find({ $or: [{ name: regLetterToUpperCase }, { name: regLetterToLowerCase }] },{"name":1,"_id":1}).skip(skip).limit(limit).toArray(function(err,result){
                 if (err) throw err;
                 res.send(JSON.stringify(result));
             });
@@ -19,7 +24,8 @@ router.get('/categorie/:nomCategorie/lettre/:lettre', function (req, res,next) {
         case "albums":                
             db.collection('album').aggregate([       
                 {"$match": { $or: [{ titre: regLetterToUpperCase }, { titre: regLetterToLowerCase }] }},
-                {"$limit" : 200},  
+                {"$skip" :  skip},
+                {"$limit" : limit},  
                 {$project : { "titleAlbum" : "$titre" ,"name":1}}
             ],function(err, result) {
                 res.send(JSON.stringify(result));
@@ -29,7 +35,8 @@ router.get('/categorie/:nomCategorie/lettre/:lettre', function (req, res,next) {
         case "songs":
             db.collection('song').aggregate([ 
                 {"$match": { $or: [{ titre: regLetterToUpperCase}, { titre: regLetterToLowerCase }] }},
-                {"$limit" : 200},  
+                {"$skip" :  skip},
+                {"$limit" : limit},  
                 {$project : { "albumTitre" : 1 ,"name":1,"titleSong":"$titre"}}
             ],function(err, result) {
                 res.send(JSON.stringify(result));
@@ -39,6 +46,7 @@ router.get('/categorie/:nomCategorie/lettre/:lettre', function (req, res,next) {
             break;
     }
 });
+
 
 //Utiliser pour l'affichage d'un artiste
 router.get('/artist/:artistName', function (req, res) {
