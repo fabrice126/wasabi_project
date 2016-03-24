@@ -46,7 +46,20 @@ router.get('/categorie/:nomCategorie/lettre/:lettre/page/:numPage', function (re
             break;
     }
 });
-
+//permet de récupérer des informations sur le nombre d'artiste/album/musique
+router.get('/dbinfo', function (req, res) {
+    var dbinfo = {};
+    db.collection('artist').count(function(err, count) {
+        dbinfo.nbArtist = count;
+        db.collection('album').count(function(err, count) {
+            dbinfo.nbAlbum = count;
+            db.collection('song').count(function(err, count) {
+                dbinfo.nbSong = count;
+                res.send(JSON.stringify(dbinfo));
+            });
+        });
+    });
+});
 
 //Utiliser pour l'affichage d'un artiste
 router.get('/artist/:artistName', function (req, res) {

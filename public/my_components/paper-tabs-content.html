@@ -93,7 +93,7 @@
             <!--Chargement en ajax du contenu -->
             
             <iron-ajax id="get_content" url="/search/categorie/{{categorie}}/lettre/{{lettre}}/page/{{numPage}}" last-response="{{data}}" auto handleAs="json"> </iron-ajax>
-<!--            url="/search/categorie/{{categorie}}/lettre/{{lettre}}" auto-->
+            <iron-ajax id="get_db_info" url="/search/dbinfo" last-response="{{db_info}}" auto handleAs="json"> </iron-ajax>
             <!-- Génération des listes de catégories -->
             <paper-material elevation="1">
                 <paper-tabs selected={{idxCurrentTab}}>
@@ -106,15 +106,24 @@
             <paper-material elevation="1">
                 <nav id="nav_alphabet">
                     <iron-pages id="iron_alphabet" selected="0">  
-                        <template is="dom-repeat" items="{{categories}}"  as="categorie">
+                        <template is="dom-repeat" items="{{categories}}" index-as="idx" as="categorie">
                             <ul id="alphabet_{{categorie}}">
-                            <template is="dom-repeat" items="{{alphabet}}"  as="lettre">
+                            <template is="dom-repeat" items="{{alphabet}}" as="lettre">
                                 <li>  
                                     <a href="#/search/categorie/{{categorie}}/lettre/{{lettre}}/page/0">{{lettre}} </a>
                                 </li>
                             </template>
                             </ul>
                         </template>
+                           <template is="dom-if" if="{{_isNbArtist(categorie)}}">
+                                    Nous avons actuellement {{ db_info.nbArtist}} artistes !
+                            </template>
+                            <template is="dom-if" if="{{_isNbAlbum(categorie)}}">
+                                    Nous avons actuellement {{db_info.nbAlbum}} albums !
+                            </template>                      
+                            <template is="dom-if" if="{{_isNbSong(categorie)}}">
+                                    Nous avons actuellement {{db_info.nbSong}} musiques !
+                            </template>
                     </iron-pages>
                 </nav>
             </paper-material>
@@ -210,11 +219,12 @@
             console.log("DANS LE READY DE PAPER-TABS-CONTENT!!!!!!!!!!")
             var tabs = document.querySelector('paper-tabs');
             var pages = document.querySelector('iron-pages');
+//            //on lance la requête uniquement lorsqu'on charge la page
+//            this.$.get_db_info.generateRequest();
             for(var i = 0;i<this.categories.length;i++){
                 if(document.location.href.search(this.categories[i])!=-1){
                     this.idxCurrentTab = i; 
                 }
-                
             }
             document.addEventListener('iron-select', function(e) { 
                 var tabs = document.querySelector('paper-tabs');
@@ -288,6 +298,27 @@
             this.isHiddenNext = true;
             return parseInt(numPage, 10);
         }
+    },
+    _isNbArtist:function(categorie){
+        if(categorie == "Artists"){
+            console.log("DEDANS ARTIST");
+            return true;
+        }
+        return false;
+    },
+    _isNbAlbum:function(categorie){
+        if(categorie == "Albums"){
+            console.log("DEDANS ALBUM");
+            return true;
+        }
+        return false;
+    },
+    _isNbSong:function(categorie){
+        if(categorie == "Songs"){
+            console.log("DEDANS SONG");
+            return true;
+        }
+        return false;
     },
       
   });  
