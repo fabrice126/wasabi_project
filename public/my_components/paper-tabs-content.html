@@ -36,7 +36,7 @@
                 transition: all 1s linear; 
                 width: 305px;
                 height: 60px;
-                background: white;
+                background: #F2F2F2;
                 margin-top: 10px;
                 display: inline-table;
                 padding-top: 18px;
@@ -44,6 +44,8 @@
             #loader{
                 display: block;
                 text-align: center;
+                margin-top: 1%;
+                
             }
           .flex-wrap {
             @apply(--layout-horizontal);
@@ -70,7 +72,7 @@
                 text-align: center;
             }
             paper-fab.blue {
-                --paper-fab-background: var(--paper-light-blue-500);
+                --paper-fab-background: #3F51B5;
                 --paper-fab-keyboard-focus-background: var(--paper-light-blue-900);
             }
             .previousPage{
@@ -86,7 +88,10 @@
                 margin: 1%;
             }
             #paginationBottom{
-                margin-top: 5%;
+                margin-bottom: 5%;
+            }
+            .listData{
+                padding-bottom: 2%;
             }
         </style>
         <template>
@@ -115,14 +120,15 @@
                             </template>
                             </ul>
                         </template>
-                           <template is="dom-if" if="{{_isNbArtist(categorie)}}">
+                                                            
+                           <template is="dom-if" if="{{_isNbArtist(idxCurrentTab)}}">
                                     Nous avons actuellement {{ db_info.nbArtist}} artistes !
                             </template>
-                            <template is="dom-if" if="{{_isNbAlbum(categorie)}}">
+                            <template is="dom-if" if="{{_isNbAlbum(idxCurrentTab)}}">
                                     Nous avons actuellement {{db_info.nbAlbum}} albums !
                             </template>                      
-                            <template is="dom-if" if="{{_isNbSong(categorie)}}">
-                                    Nous avons actuellement {{db_info.nbSong}} musiques !
+                            <template is="dom-if" if="{{_isNbSong(idxCurrentTab)}}">
+                                   Nous avons actuellement {{db_info.nbSong}} musiques !
                             </template>
                     </iron-pages>
                 </nav>
@@ -130,54 +136,64 @@
             
             
             <!-- Chargement des liens -->
-            <div id="loader">
-                <template is="dom-if" if="{{_isData(data)}}">
-                    <paper-material elevation="1">
-                       <a class="previousPage" href="#/search/categorie/{{categorie}}/lettre/{{lettre}}/page/{{_isPrevious(numPage)}}" tabindex="-1">
-                            <paper-fab  mini hidden="{{isHiddenPrevious}}" icon="chevron-left" title="previous" class="blue"></paper-fab>
-                        </a>
-                        <a class="nextPage" href="#/search/categorie/{{categorie}}/lettre/{{lettre}}/page/{{_isNext(numPage)}}" tabindex="-1">
-                            <paper-fab mini hidden="{{isHiddenNext}}" icon="chevron-right" title="next" class="blue"></paper-fab>
-                        </a>
-                    </paper-material>
-                </template>
-                <!-- Affichage des artists -->
-                 <template is="dom-if" if="{{_isArtist(data)}}">
-                     <template id="cards" class="flex-wrap" is="dom-repeat" items="{{data}}" as="infos">
-                         <paper-button on-tap='doLoadCategorie' id="#/search/artist/{{_encodeUri(infos.name)}}" raised>
-                             {{infos.name}}
-                         </paper-button>
-                     </template>
-                </template>
-                <!-- Affichage des albums -->
-                <template is="dom-if" if="{{_isAlbum(data)}}">
-                    <template id="cards" class="flex-wrap" is="dom-repeat" items="{{data}}" as="infos" >
-                         <paper-button on-tap='doLoadCategorie' id="#/search/artist/{{_encodeUri(infos.name)}}/album/{{_encodeUri(infos.titleAlbum)}}" raised>
-                             {{infos.titleAlbum}}<br>
-                             de: {{infos.name}}
-                         </paper-button>
+            <template is="dom-if" if="{{_isData(data)}}">
+
+                <div id="loader">
+    <!--                <template is="dom-if" if="{{_isExistNumPage(numPage)}}">-->
+
+                        <paper-material elevation="1">
+                            <a class="previousPage" href="#/search/categorie/{{categorie}}/lettre/{{lettre}}/page/{{_isPrevious(numPage)}}" tabindex="-1">
+                                <paper-fab mini hidden$="{{isHiddenPrevious}}" icon="chevron-left" title="previous" class="blue"></paper-fab>
+                            </a>
+                            <span></span>
+                            <a class="nextPage" href="#/search/categorie/{{categorie}}/lettre/{{lettre}}/page/{{_isNext(numPage)}}" tabindex="-1">
+                                <paper-fab  mini hidden$="{{isHiddenNext}}" icon="chevron-right" title="next" class="blue"></paper-fab>
+                            </a>
+                        </paper-material>
+    <!--                </template>-->
+                    <!-- Affichage des artists -->
+                     <template is="dom-if" if="{{_isArtist(data)}}">
+                        <paper-material class="listData" elevation="1">
+                             <template id="cards" class="flex-wrap" is="dom-repeat" items="{{data}}" as="infos">
+                                 <paper-button on-tap='doLoadCategorie' animated id="#/search/artist/{{_encodeUri(infos.name)}}" raised>
+                                     {{infos.name}}
+                                 </paper-button>
+                             </template>
+                         </paper-material>
                     </template>
-                </template>
-                <!-- Affichage des songs -->
-                <template is="dom-if" if="{{_isSong(data)}}">
-                    <template id="cards" class="flex-wrap" is="dom-repeat" items="{{data}}" as="infos">
-                         <paper-button on-tap='doLoadCategorie' id="#/search/artist/{{_encodeUri(infos.name)}}/album/{{_encodeUri(infos.albumTitre)}}/song/{{_encodeUri(infos.titleSong)}}" raised>
-                            {{infos.titleSong}}<br>
-                            de: {{infos.name}}
-                         </paper-button>
+                    <!-- Affichage des albums -->
+                    <template is="dom-if" if="{{_isAlbum(data)}}">
+                          <paper-material class="listData" elevation="1">    
+                            <template id="cards" class="flex-wrap" is="dom-repeat" items="{{data}}" as="infos" >
+                                     <paper-button on-tap='doLoadCategorie' id="#/search/artist/{{_encodeUri(infos.name)}}/album/{{_encodeUri(infos.titleAlbum)}}" raised>
+                                         {{infos.titleAlbum}}<br>
+                                         de: {{infos.name}}
+                                     </paper-button>
+                            </template>
+                         </paper-material>
                     </template>
-                </template>
-                <template is="dom-if" if="{{_isData(data)}}">
-                    <paper-material id="paginationBottom" elevation="1">
-                        <a class="previousPage" href="#/search/categorie/{{categorie}}/lettre/{{lettre}}/page/{{_isPrevious(numPage)}}" tabindex="-1">
-                            <paper-fab mini hidden="{{isHiddenPrevious}}" icon="chevron-left" title="previous" class="blue"></paper-fab>
-                        </a>
-                        <a class="nextPage" href="#/search/categorie/{{categorie}}/lettre/{{lettre}}/page/{{_isNext(numPage)}}" tabindex="-1">
-                            <paper-fab  mini hidden="{{isHiddenNext}}" icon="chevron-right" title="next" class="blue"></paper-fab>
-                        </a>
-                    </paper-material>
-                </template>
-            </div>
+                    <!-- Affichage des songs -->
+                    <template is="dom-if" if="{{_isSong(data)}}">
+                       <paper-material class="listData" elevation="1">
+                            <template id="cards" class="flex-wrap" is="dom-repeat" items="{{data}}" as="infos">
+                                     <paper-button on-tap='doLoadCategorie' id="#/search/artist/{{_encodeUri(infos.name)}}/album/{{_encodeUri(infos.albumTitre)}}/song/{{_encodeUri(infos.titleSong)}}" raised>
+                                        {{infos.titleSong}}<br>
+                                        de: {{infos.name}}
+                                     </paper-button>
+                            </template>
+                        </paper-material>
+                    </template>
+                        <paper-material id="paginationBottom" elevation="1">
+                            <a class="previousPage" href="#/search/categorie/{{categorie}}/lettre/{{lettre}}/page/{{_isPrevious(numPage)}}" tabindex="-1">
+                                <paper-fab mini hidden$="{{isHiddenPrevious}}" icon="chevron-left" title="previous" class="blue"></paper-fab>
+                            </a>
+                            <a class="nextPage" href="#/search/categorie/{{categorie}}/lettre/{{lettre}}/page/{{_isNext(numPage)}}" tabindex="-1">
+                                <paper-fab  mini hidden$="{{isHiddenNext}}" icon="chevron-right" title="next" class="blue"></paper-fab>
+                            </a>
+                        </paper-material>
+
+                </div>
+            </template>
         </template>
     </dom-module>
 
@@ -197,8 +213,8 @@
             value: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
         },
         idxCurrentTab:{
-            type:String,
-            value:""
+            type:Number,
+            value:0,
         },
         isHiddenPrevious:{
             type:Boolean,
@@ -234,7 +250,6 @@
 //            console.log(document.querySelector("#get_content"));
     },
       doLoadCategorie:function(e){
-          console.log(e.target.id);
           window.location.href = e.target.id;
       },
     _isData:function(infosData){
@@ -279,8 +294,6 @@
     },
     _isPrevious : function(numPage){
         var numPage = parseInt(numPage, 10);
-        console.log(numPage);
-
         if(numPage>0){
             this.isHiddenPrevious = false;
             return numPage-1;
@@ -290,36 +303,52 @@
             return numPage;
         }
     },
+    //===========================REMPLACER LE 200 PAR LE NOMBRE TOTAL D'ARTISTE COMMENCANT PAR 'A', INCREMENTER nbElement ===========================
+    //===========================REMPLACER LE 200 PAR LE NOMBRE TOTAL D'ARTISTE COMMENCANT PAR 'A', INCREMENTER nbElement ===========================
+    //===========================REMPLACER LE 200 PAR LE NOMBRE TOTAL D'ARTISTE COMMENCANT PAR 'A', INCREMENTER nbElement ===========================
+
     _isNext : function(numPage){
+        console.log("_isNext == "+numPage);
         if(this.nbElement == 200){
+            console.log("_isNext IF == "+numPage);
+            this.isHiddenNext = false;
             return parseInt(numPage, 10)+1;
         }
         else{
+            console.log("_isNext ELSE == "+numPage);
             this.isHiddenNext = true;
             return parseInt(numPage, 10);
         }
     },
-    _isNbArtist:function(categorie){
-        if(categorie == "Artists"){
-            console.log("DEDANS ARTIST");
-            return true;
+    _isNbArtist:function(idxCurrentTab){
+        var artist=false;
+        if(this.categories[idxCurrentTab] == "Artists"){
+            artist = true;
         }
-        return false;
+        return artist;
     },
-    _isNbAlbum:function(categorie){
-        if(categorie == "Albums"){
-            console.log("DEDANS ALBUM");
-            return true;
+    _isNbAlbum:function(idxCurrentTab){
+        var album=false;
+        if(this.categories[idxCurrentTab] == "Albums"){
+            album = true;
         }
-        return false;
+        return album;
     },
-    _isNbSong:function(categorie){
-        if(categorie == "Songs"){
-            console.log("DEDANS SONG");
-            return true;
+    _isNbSong:function(idxCurrentTab){
+        var song=false;
+        if(this.categories[idxCurrentTab] == "Songs"){
+            song = true;
         }
-        return false;
+        return song;
     },
+    _isExistNumPage:function(numPage){
+        console.log("numPage ==="+ numPage);
+        var isExist = false;
+        if(numPage != ""){
+            isExist = true;
+        }
+        return isExist;
+    }
       
   });  
 
