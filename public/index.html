@@ -44,6 +44,7 @@
                     <app-router>
                         <app-route path="/" onUrlChange="updateModel" import="my_components/paper-tabs-content.html"></app-route>
 
+                        
                         <app-route path="/search/categorie/:categorie/lettre/:lettre/page/:numPage"  onUrlChange="updateModel"  import="my_components/paper-tabs-content.html"></app-route>  
                         <app-route path="/search/categorie/:categorie/lettre/:lettre/page/:numPage/" onUrlChange="updateModel" import="my_components/paper-tabs-content.html"></app-route>
                         
@@ -54,7 +55,7 @@
                         <app-route path="/search/artist/:nameArtist/album/:nameAlbum/" onUrlChange="updateModel" import="my_components/page-album.html"></app-route>    
                         
                         <app-route path="/search/artist/:nameArtist/album/:nameAlbum/song/:nameSong" onUrlChange="updateModel" import="my_components/page-song.html"></app-route>
-                        <app-route path="/search/artist/:nameArtist/album/:nameAlbum/song/:nameSong/" onUrlChange="updateModel" import="my_components/page-song.html"></app-route>
+                        <app-route path="/search/artist/:nameArtist/album/:nameAlbum/song/:nameSong/"  onUrlChange="updateModel" import="my_components/page-song.html"></app-route>
                     </app-router>
                 </div>
             </paper-header-panel>

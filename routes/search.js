@@ -9,16 +9,29 @@ router.get('/categorie/:nomCategorie/lettre/:lettre/page/:numPage', function (re
     var lettre = req.params.lettre;
     var numPage = req.params.numPage;
     
-    var limit = 200;
-    var skip = numPage*limit;
-    console.log("numPage === "+numPage);
-    var regLetterToUpperCase = new RegExp('^' + lettre.toUpperCase());
-    var regLetterToLowerCase = new RegExp('^' + lettre.toLowerCase());
+    
+    var urlParamValid = false;
+    var numPageTest = parseInt(numPage);
+    if(Number.isInteger(numPageTest) && numPageTest>=0){
+        urlParamValid = true;
+        console.log(urlParamValid);
+        var limit = 200;
+        var skip = numPage*limit;
+        var regLetterToUpperCase = new RegExp('^' + lettre.toUpperCase());
+        var regLetterToLowerCase = new RegExp('^' + lettre.toLowerCase());
+    }
+    else{
+        nomCategorie = "default";
+    }
     switch(nomCategorie) {
         case "artists":
-            db.collection('artist').find({ $or: [{ name: regLetterToUpperCase }, { name: regLetterToLowerCase }] },{"name":1,"_id":1}).skip(skip).limit(limit).toArray(function(err,result){
+            db.collection('artist').find({ $or: [{ name: regLetterToUpperCase }, { name: regLetterToLowerCase }] },{"name":1,"_id":0}).skip(skip).limit(limit).toArray(function(err,result){
                 if (err) throw err;
-                res.send(JSON.stringify(result));
+                    db.collection('artist').find({ $or: [{ name:  regLetterToUpperCase }, { name: regLetterToLowerCase }] }).count(function(err, count) {
+                        if (err) throw err;
+                        result.push({"nbcount": count});
+                        res.send(JSON.stringify(result));
+                    });
             });
             break;
         case "albums":                
@@ -28,7 +41,12 @@ router.get('/categorie/:nomCategorie/lettre/:lettre/page/:numPage', function (re
                 {"$limit" : limit},  
                 {$project : { "titleAlbum" : "$titre" ,"name":1}}
             ],function(err, result) {
-                res.send(JSON.stringify(result));
+                    if (err) throw err;
+                    db.collection('album').find({ $or: [{ titre:  regLetterToUpperCase }, { titre: regLetterToLowerCase }] }).count(function(err, count) {
+                        if (err) throw err;
+                        result.push({"nbcount": count});
+                        res.send(JSON.stringify(result));
+                    });
             })
 
             break;
@@ -39,10 +57,18 @@ router.get('/categorie/:nomCategorie/lettre/:lettre/page/:numPage', function (re
                 {"$limit" : limit},  
                 {$project : { "albumTitre" : 1 ,"name":1,"titleSong":"$titre"}}
             ],function(err, result) {
-                res.send(JSON.stringify(result));
+                    if (err) throw err;
+                    db.collection('song').find({ $or: [{ titre:  regLetterToUpperCase }, { titre: regLetterToLowerCase }] }).count(function(err, count) {
+                        if (err) throw err;
+                        result.push({"nbcount": count});
+                        console.log(result.nbcount);
+                        res.send(JSON.stringify(result));
+                    });
             })
             break;
         default:
+            
+                res.status(403).send([{error:"BAD REQUEST"}]);
             break;
     }
 });
