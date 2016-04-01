@@ -34,7 +34,7 @@
                 -webkit-transition: all 1s linear;
                 -ms-transition: all 1s linear;
                 transition: all 1s linear; 
-                width: 305px;
+                width: 300px;
                 height: 60px;
                 background: #F2F2F2;
                 margin-top: 10px;
@@ -70,6 +70,25 @@
             }
             #nav_alphabet{
                 text-align: center;
+            }
+            #nav_sub_alphabet{
+                text-align: center;
+            }
+            [id^=alphabet_sub]>li{
+                padding-left: 0.2%;
+                padding-right: 0.2%;
+                font-size: 20px;
+                display: inline-block;
+            }
+            [id^=alphabet_sub]>li>a{
+                color: #3f51b5;
+                text-decoration: none;
+            }
+            [id^=alphabet_sub]{
+                list-style: none;
+                display: inline-block;
+                width:100%;
+                padding-left: 0px;
             }
             paper-fab.blue {
                 --paper-fab-background: #3F51B5;
@@ -113,7 +132,7 @@
             <paper-material elevation="1">
                 <nav id="nav_alphabet">
                     <iron-pages id="iron_alphabet" selected="0">  
-                        <template is="dom-repeat" items="{{categories}}" index-as="idx" as="categorie">
+                        <template is="dom-repeat" items="{{categories}}" as="categorie">
                             <ul id="alphabet_{{categorie}}">
                             <template is="dom-repeat" items="{{alphabet}}" as="lettre">
                                 <li>  
@@ -144,10 +163,18 @@
                             <a class="previousPage" href="#/search/categorie/{{categorie}}/lettre/{{lettre}}/page/{{_isPrevious(numPage)}}" tabindex="-1">
                                 <paper-fab mini  icon="chevron-left" title="previous" class="blue"></paper-fab>
                             </a>
-                            <span></span>
                             <a class="nextPage" href="#/search/categorie/{{categorie}}/lettre/{{lettre}}/page/{{_isNext(numPage,data)}}" tabindex="-1">
                                 <paper-fab  mini icon="chevron-right" title="next" class="blue"></paper-fab>
                             </a>
+                            <nav id="nav_sub_alphabet">
+                                <ul id="alphabet_sub{{categorie}}">
+                                    <template is="dom-repeat" items="{{alphabet}}" as="lettreIdx" index-as="idx">
+                                        <li>  
+                                            <a href="#/search/categorie/{{categorie}}/lettre/{{currentLetter(lettre)}}{{lettreIdx}}/page/0">{{currentLetter(lettre)}}{{lettreIdx}}</a>
+                                        </li>
+                                    </template>
+                                </ul>
+                            </nav>
                         </paper-material>
                     <!-- Affichage des artists -->
                      <template is="dom-if" if="{{_isArtist(data)}}">
@@ -251,6 +278,15 @@
 
       doLoadCategorie:function(e){
           window.location.href = e.target.id;
+      },
+      currentLetter:function(letter){
+          var currLetter;
+          if(letter.length>1){
+              currLetter = letter[0];
+          }else{
+              currLetter = letter;
+          }
+          return currLetter;
       },
       _checkUrlParams:function(lettre,numPage){
             var urlParamValid = false;
