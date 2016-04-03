@@ -8,41 +8,57 @@ router.get('/categorie/:nomCategorie/lettre/:lettre/page/:numPage', function (re
     var nomCategorie= req.params.nomCategorie.toLowerCase();
     var lettre = req.params.lettre;
     var numPage = req.params.numPage;
-    
-    
+    var tObjectRequest = [];
     var urlParamValid = false;
     var numPageTest = parseInt(numPage);
     if(Number.isInteger(numPageTest) && numPageTest>=0){
         urlParamValid = true;
-        console.log(urlParamValid);
         var limit = 200;
         var skip = numPage*limit;
-        var regLetterToUpperCase = new RegExp('^' + lettre.toUpperCase());
-        var regLetterToLowerCase = new RegExp('^' + lettre.toLowerCase());
+        
+        
+        var tParamToFind = [];
+        //Permet d'optimiser la requête mongodb en n'utilisant pas le case insensitive "i" ex: /AB/i
+        if(lettre.length==2){
+            tParamToFind.push(new RegExp('^' + lettre[0].toUpperCase()+lettre[1].toUpperCase()));
+            tParamToFind.push(new RegExp('^' + lettre[0].toUpperCase()+lettre[1].toLowerCase()));
+            tParamToFind.push(new RegExp('^' + lettre[0].toLowerCase()+lettre[1].toUpperCase()));
+            tParamToFind.push(new RegExp('^' + lettre[0].toLowerCase()+lettre[1].toLowerCase()));
+        }
+        else{
+            tParamToFind.push(new RegExp('^' + lettre.toUpperCase()));
+            tParamToFind.push(new RegExp('^' + lettre.toLowerCase()));  
+        } 
     }
     else{
         nomCategorie = "default";
     }
     switch(nomCategorie) {
         case "artists":
-            db.collection('artist').find({ $or: [{ name: regLetterToUpperCase }, { name: regLetterToLowerCase }] },{"name":1,"_id":0}).skip(skip).limit(limit).toArray(function(err,result){
+            for(var i = 0 ;i<tParamToFind.length;i++){
+                tObjectRequest.push({"name":tParamToFind[i]});
+            }
+            db.collection('artist').find({$or:tObjectRequest},{"name":1,"_id":0}).skip(skip).limit(limit).toArray(function(err,result){
                 if (err) throw err;
-                    db.collection('artist').find({ $or: [{ name:  regLetterToUpperCase }, { name: regLetterToLowerCase }] }).count(function(err, count) {
+                    db.collection('artist').find({$or:tObjectRequest}).count(function(err, count) {
                         if (err) throw err;
                         result.push({"nbcount": count});
                         res.send(JSON.stringify(result));
                     });
             });
             break;
-        case "albums":                
+        case "albums":   
+            for(var i = 0 ;i<tParamToFind.length;i++){
+                tObjectRequest.push({"titre":tParamToFind[i]});
+            }
             db.collection('album').aggregate([       
-                {"$match": { $or: [{ titre: regLetterToUpperCase }, { titre: regLetterToLowerCase }] }},
+                {"$match": { $or: tObjectRequest }},
                 {"$skip" :  skip},
                 {"$limit" : limit},  
                 {$project : { "titleAlbum" : "$titre" ,"name":1}}
             ],function(err, result) {
                     if (err) throw err;
-                    db.collection('album').find({ $or: [{ titre:  regLetterToUpperCase }, { titre: regLetterToLowerCase }] }).count(function(err, count) {
+                    db.collection('album').find({ $or: tObjectRequest }).count(function(err, count) {
                         if (err) throw err;
                         result.push({"nbcount": count});
                         res.send(JSON.stringify(result));
@@ -51,17 +67,25 @@ router.get('/categorie/:nomCategorie/lettre/:lettre/page/:numPage', function (re
 
             break;
         case "songs":
+            for(var i = 0 ;i<tParamToFind.length;i++){
+                tObjectRequest.push({"titre":tParamToFind[i]});
+            }
+            var start = Date.now();
             db.collection('song').aggregate([ 
-                {"$match": { $or: [{ titre: regLetterToUpperCase}, { titre: regLetterToLowerCase }] }},
+                {"$match": { $or: tObjectRequest }},
                 {"$skip" :  skip},
                 {"$limit" : limit},  
                 {$project : { "albumTitre" : 1 ,"name":1,"titleSong":"$titre"}}
             ],function(err, result) {
+                    console.log("Avant le count==");
+                    console.log(Date.now() - start);
+                    var secondStart = Date.now();
                     if (err) throw err;
-                    db.collection('song').find({ $or: [{ titre:  regLetterToUpperCase }, { titre: regLetterToLowerCase }] }).count(function(err, count) {
+                    db.collection('song').find({ $or: tObjectRequest }).count(function(err, count) {
+                        console.log("Après le count==");
+                        console.log(Date.now() - secondStart);
                         if (err) throw err;
                         result.push({"nbcount": count});
-                        console.log(result.nbcount);
                         res.send(JSON.stringify(result));
                     });
             })
@@ -94,7 +118,6 @@ router.get('/artist/:artistName', function (req, res) {
 
     db.collection('artist').find({"name":artistName }).toArray(function(err,result){
         if (err) throw err;
-//        console.log(result[0]);
         res.send(JSON.stringify(result[0]));
     });
 });
@@ -105,7 +128,6 @@ router.get('/artist/:artistName', function (req, res) {
 //    console.log("Artist : "+artistName+" Affichage de la page de l'album "+albumsName);
 //    db.collection('artist').find({"name":artistName }).toArray(function(err,result){
 //        if (err) throw err;
-////        console.log(result[0]);
 //        res.send(JSON.stringify(result[0]));
 //    });
 //});
@@ -143,7 +165,6 @@ router.get('/modify/artist/:artistName/album/:albumName', function (req, res) {
                 {"$match": {"albums.titre": albumName}}
             ],function(err, result) {
                 if (err) throw err;
-//                console.log(result[0]);
                 res.send(JSON.stringify(result[0]));
             });
 });
@@ -159,7 +180,6 @@ router.get('/artist/:artistName/album/:albumName', function (req, res) {
                 {"$match": {"albums.titre": albumName}},
             ],function(err, result) {
                 if (err) throw err;
-//                console.log(result[0]);
                 res.send(JSON.stringify(result[0]));
             });
 });
@@ -196,7 +216,6 @@ router.put('/update/artist/:artistName/album/:albumName/oldalbum/:oldNameAlbum',
 
 router.put("/modify/artist/:artistName/album/:albumsName/song/:titleSong",function(req,res){
         var titre = req.body;
-        console.log(decodeURIComponent(titre));
         var artistName = req.params.artistName;
         var albumsName= req.params.albumsName;
         var titleSong= req.params.titleSong;
@@ -221,5 +240,6 @@ router.get('/artist/begin/:artistName', function (req, res) {
         res.send(JSON.stringify(result));
     });
 });
+
 
 module.exports = router;
