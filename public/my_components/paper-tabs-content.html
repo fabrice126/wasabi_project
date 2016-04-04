@@ -180,7 +180,7 @@
                      <template is="dom-if" if="{{_isArtist(data)}}">
                         <paper-material class="listData" elevation="1">
                             <div>Il y a actuellement {{_getNbCount(data)}} artists commençant par la lettre {{lettre}}</div>
-                             <template id="cards" class="flex-wrap" is="dom-repeat" items="{{data}}" as="infos" index-as="idx">
+                             <template class="flex-wrap" is="dom-repeat" items="{{data}}" as="infos" index-as="idx">
                                  <template is="dom-if" if="{{_isLastElement(idx,data)}}">
                                      <paper-button on-tap='doLoadCategorie' animated id="#/search/artist/{{_encodeUri(infos.name)}}" raised>
                                          {{infos.name}}
@@ -193,7 +193,7 @@
                     <template is="dom-if" if="{{_isAlbum(data)}}">
                         <paper-material class="listData" elevation="1">
                             <div>Il y a actuellement {{_getNbCount(data)}} albums commençant par la lettre {{lettre}}</div>
-                            <template id="cards" class="flex-wrap" is="dom-repeat" items="{{data}}" as="infos" index-as="idx">
+                            <template class="flex-wrap" is="dom-repeat" items="{{data}}" as="infos" index-as="idx">
                                 <template is="dom-if" if="{{_isLastElement(idx,data)}}">
                                      <paper-button on-tap='doLoadCategorie' id="#/search/artist/{{_encodeUri(infos.name)}}/album/{{_encodeUri(infos.titleAlbum)}}" raised>
                                          {{infos.titleAlbum}}<br>
@@ -207,7 +207,7 @@
                     <template is="dom-if" if="{{_isSong(data)}}">
                        <paper-material class="listData" elevation="1">
                            <div>Il y a actuellement {{_getNbCount(data)}} musiques commençant par la lettre {{lettre}}</div>
-                            <template id="cards" class="flex-wrap" is="dom-repeat" items="{{data}}" as="infos" index-as="idx">
+                            <template class="flex-wrap" is="dom-repeat" items="{{data}}" as="infos" index-as="idx">
                                 <template is="dom-if" if="{{_isLastElement(idx,data)}}">
                                      <paper-button on-tap='doLoadCategorie' id="#/search/artist/{{_encodeUri(infos.name)}}/album/{{_encodeUri(infos.albumTitre)}}/song/{{_encodeUri(infos.titleSong)}}" raised>
                                         {{infos.titleSong}}<br>

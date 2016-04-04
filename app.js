@@ -5,7 +5,8 @@ var logger          = require('morgan');
 var cookieParser    = require('cookie-parser');
 var bodyParser      = require('body-parser');
 var search          = require('./routes/search');
-var createdb        = require('./routes/createdb');
+//var createdb        = require('./routes/createdb');
+//var updatedb        = require('./routes/updatedb');
 var basicAuth = require('basic-auth-connect');
 var app = express();
 
@@ -22,8 +23,9 @@ app.use(cookieParser());
 app.use(basicAuth('michel', 'michelbuffa'));
 app.use('/',express.static(path.join(__dirname, 'public')));
 app.use('/search', search);
-app.use('/createdb', createdb);
-
+//Permet d'utiliser les fonctions de créations et updates de la base de données
+//app.use('/createdb', createdb);
+//app.use('/updatedb', updatedb);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

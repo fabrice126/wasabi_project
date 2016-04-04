@@ -2,7 +2,9 @@ var express         = require('express');
 var router          = express.Router();
 var db              = require('mongoskin').db('mongodb://localhost:27017/wasabi');
 var lyricsWikia     = require('./handler/lyricsWikia.js');
+/**
 
+*/
 
 
 
@@ -21,6 +23,7 @@ var selectorLyrics = 'div.lyricbox';
 //Nous permet de créer une première arborescence en récupérerant toutes les lyrics d'un abum et tous les album d'un groupe
 var alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
 var idxAlphabet = 0;
+//DETRUIT ET CREE LA BASE DE DONNEES
 router.get('/',function(req, res){
     console.log("dedans /createdb");
     //Pour chaque lettre  sur wikia et chaque catégorie on récupére pour commencer les albums de 5 artistes ainsi que tous ses albums et musiques

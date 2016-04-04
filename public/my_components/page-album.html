@@ -36,7 +36,6 @@
         <template>
             <paper-material elevation="1">
                 <iron-ajax id="get_content" auto url="/search/artist/{{_encodeUri(nameArtist)}}/album/{{_encodeUri(nameAlbum)}}" last-response="{{artist}}" handleAs="json"> </iron-ajax>
-
                     <div class="artistname"> {{artist.name}}</div>
                     <x-album album={{artist.albums}} artist={{artist}}></x-album>
             </paper-material>
