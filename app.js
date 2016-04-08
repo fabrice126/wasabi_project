@@ -6,9 +6,10 @@ var cookieParser    = require('cookie-parser');
 var bodyParser      = require('body-parser');
 var search          = require('./routes/search');
 //var createdb        = require('./routes/createdb');
-//var updatedb        = require('./routes/updatedb');
-var basicAuth = require('basic-auth-connect');
-var app = express();
+var updatedb        = require('./routes/updatedb');
+var extractdbpedia  = require('./routes/extractdbpedia');
+var basicAuth       = require('basic-auth-connect');
+var app             = express();
 
 
 // view cache
@@ -23,10 +24,11 @@ app.use(cookieParser());
 app.use(basicAuth('michel', 'michelbuffa'));
 app.use('/',express.static(path.join(__dirname, 'public')));
 app.use('/search', search);
+
 //Permet d'utiliser les fonctions de créations et updates de la base de données
 //app.use('/createdb', createdb);
-//app.use('/updatedb', updatedb);
-
+app.use('/updatedb', updatedb);
+app.use('/extractdbpedia', extractdbpedia);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
@@ -41,7 +43,7 @@ app.use(function(req, res, next) {
 // will print stacktrace
 //if (app.get('env') === 'development') {
 //  app.use(function(err, req, res, next) {
-//    res.status(err.status || 500);
+//    res.status(err.status || 500 || 404);
 //    res.render('error', {
 //      message: "messages d'erreurs : \n\n"+err.message,
 //      error: err

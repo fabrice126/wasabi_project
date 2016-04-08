@@ -68,7 +68,7 @@
 
                 <iron-ajax id="get_content" auto url="/search/artist/{{_encodeUri(nameArtist)}}/album/{{_encodeUri(nameAlbum)}}/song/{{_encodeUri(nameSong)}}" last-response="{{artist}}" handleAs="json" on-response="handleResponse"> </iron-ajax>
                 
-                <iron-ajax id="put_content" method="PUT" params={{_encodeUri(lyrics)}} content-type="application/json" last-response="{{response}}"></iron-ajax>
+                <iron-ajax id="put_content" method="PUT" content-type="application/json"></iron-ajax>
 
                 
                 <div id="songName"> 
@@ -108,42 +108,41 @@
     _encodeUri : function(titre){
         return encodeURIComponent(titre);
     } ,
-    _decodeUri : function(titre){
-        return decodeURIComponent(titre);
-    } ,
     _htmlToText : function(html){
         
         return html.innerHTML;
     },
     handleResponse: function(request) {        
-        document.querySelector("#songLyricsNonEditable").innerHTML = request.detail.xhr.response.albums.songs.lyrics;
-        document.querySelector("#songLyricsEditable").innerHTML = this.lyrics;
-        this.lyrics = document.querySelector("#songLyricsNonEditable").innerHTML;
-
+        if(this.editing){
+            document.querySelector("#songLyricsEditable").innerHTML = request.detail.xhr.response.albums.songs.lyrics;
+        }
+        if (!this.editing){
+            document.querySelector("#songLyricsNonEditable").innerHTML = request.detail.xhr.response.albums.songs.lyrics;
+            document.querySelector("#songLyricsEditable").innerHTML = this.lyrics;
+            this.lyrics = document.querySelector("#songLyricsNonEditable").innerHTML;  
+        }
     },
     doEdit: function(e){
     	this.editing=!this.editing;
         if(this.editing){  
-            document.querySelector("#songLyricsEditable").innerHTML = document.querySelector("#songLyricsNonEditable").innerHTML;
-//            this.$.put_content.url ="/artist/"+this._encodeUri(this.artist.name)+"/album/"+this._encodeUri(this.artist.albums.titre)+"/song/"+this._encodeUri(this.artist.albums.songs.titre)+"/modify";
-//            console.log(document.querySelector("#songLyricsNonEditable").innerHTML);
-//            this.lyrics = document.querySelector("#songLyricsNonEditable").innerHTML;
-//            this.$.put_content.generateRequest();
+            this.$.get_content.url ="/search/artist/"+this._encodeUri(this.artist.name)+"/album/"+this._encodeUri(this.artist.albums.titre)+"/song/"+this._encodeUri(this.artist.albums.songs.titre);
+            this.$.get_content.generateRequest();
         }
     	if (!this.editing){
-            
-            document.querySelector("#songLyricsNonEditable").innerHTML = document.querySelector("#songLyricsEditable").innerHTML.replace(/<div>/g,"<br>").replace(/<\/div>/g,""); 
+            document.querySelector("#songLyricsNonEditable").innerHTML = document.querySelector("#songLyricsEditable").innerHTML.replace(/<div>/g,"<br>").replace(/<\/div>/g,"").replace(/\n/g,""); 
             if(this.lyrics != document.querySelector("#songLyricsNonEditable").innerHTML){
                 console.log("Des modifications");
                 this.lyrics = document.querySelector("#songLyricsNonEditable").innerHTML;
+                var objLyrics = {};
+                objLyrics.lyrics = this.lyrics;
+                objLyrics._id = this.artist.albums.songs._id;
+                this.$.put_content.body = JSON.stringify(objLyrics);
+                this.$.put_content.url = "/search/artist/"+this._encodeUri(this.artist.name)+"/album/"+this._encodeUri(this.artist.albums.titre)+"/song/"+this._encodeUri(this.artist.albums.songs.titre);
+                this.$.put_content.generateRequest();
             }
             else{
                 console.log("Pas de modifications");
             }
-//            if(this.lyrics)
-//            this.$.put_content.body = JSON.stringify(this.album);
-//            this.$.put_content.url = "/search/artist/"+encodeURIComponent(this.artist.name)+"/albums/"+encodeURIComponent(this.album.titre)+"/"+encodeURIComponent(this.artist._id)+"/update/album/"+encodeURIComponent(this.odAlbumName); 
-//            this.$.put_content.generateRequest();
         }
 	},
  

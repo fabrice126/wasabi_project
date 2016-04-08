@@ -65,19 +65,62 @@ var getInfosFromPageArtist = function(url,objArtist){
     // La fonction de résolution est appelée avec la capacité de tenir ou de rompre la promesse
     var promise = new Promise(function(resolve, reject) { 
         var urlArtist = url+objArtist.name;
-        
+        console.log("urlArtist = "+urlArtist);
         request(urlArtist, function(err, resp, body){
             if (!err && resp.statusCode == 200) {
                 var tAllInfoArtists = [];
+                var tInfosArtist = ["genres","members","formerMembers","labels","locationInfo"];  
+                var tSelectorInfosArtist = ["genres","members","formerMembers","labels","table.plainlinks a[title^='Category:Hometown/']"];  
                 $ = cheerio.load(body);
                 objArtist.urlWikipedia = $("table.plainlinks a:contains('Wikipedia article')").attr('href')!=null? $("table.plainlinks a:contains('Wikipedia article')").attr('href') : "";
                 objArtist.urlOfficialWebsite = $("table.plainlinks a:contains('Official Website')").attr('href')!=null? $("table.plainlinks a:contains('Official Website')").attr('href') :"";
                 objArtist.urlFacebook = $("table.plainlinks a:contains('Facebook Profile')").attr('href') !=null?$("table.plainlinks a:contains('Facebook Profile')").attr('href') :"";
                 objArtist.urlMySpace = $("table.plainlinks a:contains('MySpace Profile')").attr('href') != null?$("table.plainlinks a:contains('MySpace Profile')").attr('href') :"";
                 objArtist.urlTwitter = $("table.plainlinks a:contains('Twitter Profile')").attr('href') !=null ?$("table.plainlinks a:contains('Twitter Profile')").attr('href') :"";
+                              
+
+                
+//                $("table>tbody>tr>td>div:contains('Band members') + div>ul>li").map(function() {
+//                    console.log($(this).text() !=""?$(this).text():"");
+//                    tMembers.push();
+//                }).get();
+//                
+//                $("table>tbody>tr>td>div:contains('Band members') + div>ul>li>a").map(function() {
+//                    console.log($(this).text() !=""?$(this).text():"");
+//                    tMembers.push();
+//                }).get();
+//                
+//               // $("table>tbody>tr>td>div:contains('Band members') + div>ul>li>b>a , table>tbody>tr>td>div:contains('Band members') + div>ul>li")
+//                $("table>tbody>tr>td>div:contains('Band members') + div>ul>li>b>a").map(function() {
+//                    console.log($(this).text() !=""?$(this).text():"");
+//                    tMembers.push();
+//                }).get();
+                
+//                var tFormerMembers = $("table.plainlinks a[title^='Category:Hometown/']").map(function() {
+//                    return $(this).text() !=""?$(this).text():"";
+//                }).get();
+                var tGenres =  $("#mw-content-text>table div>ul>li>a[title^='Category:Genre/']").map(function() {
+                    return $(this).text() !=""?$(this).text():"";
+                }).get();
+                var tLabels = $("#mw-content-text>table div>ul>li>a[title^='Category:Label/']").map(function() {
+                    return $(this).text() !=""?$(this).text():"";
+                }).get();
                 var tlocationInfo = $("table.plainlinks a[title^='Category:Hometown/']").map(function() {
                     return $(this).text() !=""?$(this).text():"";
                 }).get();
+
+                if(tGenres[0]!=""){
+                    objArtist.genres = tGenres;
+                }
+//                if(tMembers[0]!=""){
+//                    objArtist.members = tMembers;
+//                }
+//                if(tFormerMembers[0]!=""){
+//                    objArtist.formerMembers = tFormerMembers;
+//                }
+                if(tLabels[0]!=""){
+                    objArtist.labels = tLabels;
+                }
                 if(tlocationInfo[0]!=""){
                     objArtist.locationInfo = tlocationInfo;
                 }
@@ -170,10 +213,10 @@ var getAlbumsAndSongsOfArtist = function(url,selector,attr,objArtist){
                         resolve(objArtist);//une fois le objArtist rempli resolve va indiquer que la promise s'est bien executée et va donc executer le then
                     }
                     else{
-                        console.error('=====getArtistFromCategorie RELANCE DE LA REQUETE ====='+url);
-                        console.error('=====getArtistFromCategorie RELANCE DE LA REQUETE ====='+objArtist.urlWikia);
-                        console.error('=====getArtistFromCategorie RELANCE DE LA REQUETE ====='+selector);
-                        console.error('=====getArtistFromCategorie RELANCE DE LA REQUETE ====='+attr);
+                        console.error('=====getAlbumsAndSongsOfArtist RELANCE DE LA REQUETE ====='+url);
+                        console.error('=====getAlbumsAndSongsOfArtist RELANCE DE LA REQUETE ====='+objArtist.urlWikia);
+                        console.error('=====getAlbumsAndSongsOfArtist RELANCE DE LA REQUETE ====='+selector);
+                        console.error('=====getAlbumsAndSongsOfArtist RELANCE DE LA REQUETE ====='+attr);
                         requestAlbumsAndSongs(url,selector,attr,objArtist);
                     }
                 });

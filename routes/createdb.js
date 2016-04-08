@@ -62,7 +62,7 @@ var getArtistDiscography = function(newObjArtist,url,lettre,j){
                 lyricsWikia.getInfosFromPageAlbum(objArtist).then(function(objArtist){
                     lyricsWikia.getAllLyricsOfArtists(urlApiWikia,selectorLyrics,objArtist).then(function(objArtist){
                         //Quand on a traiter complétement une page d'artiste => albums avec ses musiques insérés en base de données, on passe a la page suivante
-                        db.collection('artistFull').insert(objArtist, function(err, result) {
+                        db.collection('artist').insert(objArtist, function(err, result) {
                             if (err) throw err;
                             if (result) {
                                 console.log('Added =>'+objArtist.name);
