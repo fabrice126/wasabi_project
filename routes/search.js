@@ -116,10 +116,10 @@ router.get('/dbinfo', function (req, res) {
 //GET ARTIST PAR NOM D'ARTISTE (UN NOM D'ARTISTE EST UNIQUE -> REGLE DE LYRICS WIKIA LORS DE L'EXTRACTION DES DONNEES)
 router.get('/artist/:artistName', function (req, res) {
     var artistName= req.params.artistName;
-    console.log("Affichage de la page de l'artiste "+artistName);
+    this.console.log("Affichage de la page de l'artiste "+artistName);
     db.collection('artist').findOne({name:artistName},{"urlWikia":0}, function(err, artist) {
         if (artist===null) {
-            console.log("Artist Inexistant");
+            this.console.log("Artist Inexistant");
             res.status(404).send([{error:"Page not find"}]);
         }
         else{
@@ -158,7 +158,7 @@ router.get('/artist/:artistName/album/:albumName', function (req, res) {
         db.collection('album').findOne({$and:[{"titre":albumName},{"name":artistName}]},{"urlAlbum":0}, function(err, album) {
             db.collection('song').find({$and:[{"albumTitre":albumName},{"name":artistName}]},{"name":0,"albumTitre":0,"urlSong":0,"lyrics":0,"urlWikipedia":0}).toArray(function(err,song){
                 if (album===null) {
-                    console.log("Album Inexistant");
+                    this.console.log("Album Inexistant");
                     res.status(404).send([{error:"Page not find"}]);
                 }
                 else{
@@ -201,7 +201,7 @@ router.get('/artist/:artistName/album/:albumName/song/:songsName', function (req
         db.collection('album').findOne({$and:[{"titre":albumName},{"name":artistName}]},{"urlAlbum":0}, function(err, album) {
             db.collection('song').findOne({$and:[{"albumTitre":albumName},{"name":artistName},{"titre":songsName}]},{"urlSong":0},function(err, song) {
                 if (album===null || song === null) {
-                    console.log("Album Inexistant");
+                    this.console.log("Album Inexistant");
                     res.status(404).send([{error:"Page not find"}]);
                 }
                 else{

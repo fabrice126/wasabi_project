@@ -27,31 +27,35 @@ router.get('/artist',function(req, res){
 
         (function fetchArtist(skip,nbArtist){
             if(skip<nbArtist){
-                console.log(skip);
-                console.log(limit);
-                console.log(nbArtist);
                 db.collection('artist').find({}).skip(skip).limit(limit).toArray(function(err,result){
                     var i = 0;
                     (function loop(i,result){
                         lyricsWikia.getInfosFromPageArtist(urlPageArtist,result[i]).then(function(objArtist){
                                 var idArtist = objArtist._id;
                                 delete objArtist._id;
-                                console.log(objArtist);
-//                                db.collection('artist').update( { _id: new ObjectId(idArtist) },{ $set: objArtist } );
-                            if(i<result.length){
-                                i++;
-                                setTimeout(function(){ 
-                                     loop(i,result);
-                                }, Math.floor((Math.random() * 100) + 100));
-                                
-                            }
-                            
+//                                console.log(objArtist);
+                                db.collection('artist').update( { _id: new ObjectId(idArtist) },{ $set: objArtist }, function(err) {
+                                    if (err) throw err;
+                                    console.log("Updated => "+objArtist.name);
+                                    if(i<result.length){
+                                        console.log("Continue ... " );
+                                        //Pour ne pas surcharger les serveurs de lyrics wikia et éviter un ban 
+                                        setTimeout(function(){ 
+                                            loop(i,result);
+                                        }, Math.floor((Math.random() * 10) + 100));
+                                    }
+                                    else{
+                                        console.log("SKIP ...");
+                                        skip += limit;
+                                        console.log("\n\n SKIP = "+skip);
+                                        setTimeout(function(){ 
+                                            fetchArtist(skip,nbArtist);
+                                        }, Math.floor((Math.random() * 10000) + 100));
+                                    }
+                                });
+                            i++;
                         });
                     })(i,result);
-
-                    console.log("\n\n SKIP = "+skip);
-                    skip += limit;
-//                    fetchArtist(skip,nbArtist);
                 });
             }
             else{
@@ -61,6 +65,15 @@ router.get('/artist',function(req, res){
         res.send("OK");
         
     });
+    
+//Ajoute l'id de d'un document album dans les documents musiques de l'album
+router.get('/addIdsAlbum',function(req, res){
+    
+});
+//Ajoute l'id d'un document album dans chacun de des documents album de l'artiste et dans chacune de ses musiques de l'artiste
+router.get('/addIdsArtist',function(req, res){
+    
+});
 
 //    "member" : [ 
 //        {

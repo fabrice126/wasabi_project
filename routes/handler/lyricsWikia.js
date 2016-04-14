@@ -33,8 +33,13 @@ var getArtistFromCategorie = function(url,selector,attr,removeStr){
                                 urlFacebook:"",
                                 urlMySpace:"",
                                 urlTwitter:"",
-                                locationInfo:[],
                                 urlWikia:$(link).attr(attr).replace(removeStr, ""), //on récupére les #mw-pages>.mw-content-ltr>table a[href]
+                                activeYears:"",
+                                members:[],
+                                formerMembers:[],
+                                locationInfo:[],
+                                genres:[],
+                                labels:[],
                                 albums:[]
                             };
                             tObjArtist.push(objArtist);
@@ -60,75 +65,70 @@ var getArtistFromCategorie = function(url,selector,attr,removeStr){
     return promise;
 };
 
-
+//Extraction des données sur les pages d'artistes de lyrics wikia
 var getInfosFromPageArtist = function(url,objArtist){
     // La fonction de résolution est appelée avec la capacité de tenir ou de rompre la promesse
     var promise = new Promise(function(resolve, reject) { 
-        var urlArtist = url+objArtist.name;
-        console.log("urlArtist = "+urlArtist);
+        var urlArtist = url+objArtist.urlWikia;
         request(urlArtist, function(err, resp, body){
             if (!err && resp.statusCode == 200) {
-                var tAllInfoArtists = [];
-                var tInfosArtist = ["genres","members","formerMembers","labels","locationInfo"];  
-                var tSelectorInfosArtist = ["genres","members","formerMembers","labels","table.plainlinks a[title^='Category:Hometown/']"];  
                 $ = cheerio.load(body);
                 objArtist.urlWikipedia = $("table.plainlinks a:contains('Wikipedia article')").attr('href')!=null? $("table.plainlinks a:contains('Wikipedia article')").attr('href') : "";
                 objArtist.urlOfficialWebsite = $("table.plainlinks a:contains('Official Website')").attr('href')!=null? $("table.plainlinks a:contains('Official Website')").attr('href') :"";
                 objArtist.urlFacebook = $("table.plainlinks a:contains('Facebook Profile')").attr('href') !=null?$("table.plainlinks a:contains('Facebook Profile')").attr('href') :"";
                 objArtist.urlMySpace = $("table.plainlinks a:contains('MySpace Profile')").attr('href') != null?$("table.plainlinks a:contains('MySpace Profile')").attr('href') :"";
                 objArtist.urlTwitter = $("table.plainlinks a:contains('Twitter Profile')").attr('href') !=null ?$("table.plainlinks a:contains('Twitter Profile')").attr('href') :"";
-                              
-
+                objArtist.activeYears = $("#mw-content-text>table div:contains('Years active') + div") != null ?$("#mw-content-text>table div:contains('Years active') + div").text() : ""; 
+                objArtist.genres = $("#mw-content-text>table div>ul>li>a[title^='Category:Genre/']").map(function() { return $(this).text() !=""?$(this).text():""; }).get();
+                objArtist.labels = $("#mw-content-text>table div>ul>li>a[title^='Category:Label/']").map(function() { return $(this).text() !=""?$(this).text():""; }).get();
+                objArtist.locationInfo = $("table.plainlinks a[title^='Category:Hometown/']").map(function() { return $(this).text() !=""?$(this).text():""; }).get();
                 
-//                $("table>tbody>tr>td>div:contains('Band members') + div>ul>li").map(function() {
-//                    console.log($(this).text() !=""?$(this).text():"");
-//                    tMembers.push();
-//                }).get();
-//                
-//                $("table>tbody>tr>td>div:contains('Band members') + div>ul>li>a").map(function() {
-//                    console.log($(this).text() !=""?$(this).text():"");
-//                    tMembers.push();
-//                }).get();
-//                
-//               // $("table>tbody>tr>td>div:contains('Band members') + div>ul>li>b>a , table>tbody>tr>td>div:contains('Band members') + div>ul>li")
-//                $("table>tbody>tr>td>div:contains('Band members') + div>ul>li>b>a").map(function() {
-//                    console.log($(this).text() !=""?$(this).text():"");
-//                    tMembers.push();
-//                }).get();
-                
-//                var tFormerMembers = $("table.plainlinks a[title^='Category:Hometown/']").map(function() {
-//                    return $(this).text() !=""?$(this).text():"";
-//                }).get();
-                var tGenres =  $("#mw-content-text>table div>ul>li>a[title^='Category:Genre/']").map(function() {
-                    return $(this).text() !=""?$(this).text():"";
-                }).get();
-                var tLabels = $("#mw-content-text>table div>ul>li>a[title^='Category:Label/']").map(function() {
-                    return $(this).text() !=""?$(this).text():"";
-                }).get();
-                var tlocationInfo = $("table.plainlinks a[title^='Category:Hometown/']").map(function() {
-                    return $(this).text() !=""?$(this).text():"";
-                }).get();
-
-                if(tGenres[0]!=""){
-                    objArtist.genres = tGenres;
+                //Si memberName != "" alors c'est un artiste solo
+                var memberName = $("#mw-content-text>table div:contains('Real name') + div").text();
+                var members;
+                //Si c'est un groupe
+                if(memberName == ""){
+                    console.log("C'EST UN GROUPE");
+                    members = $("#mw-content-text>table div:contains('Band members') + div>ul>li").map(function() { return extractMembersAndFormerMembers(this);}).get();
+                    var formerMembers = $("#mw-content-text>table div:contains('Former members') + div>ul>li").map(function() { return extractMembersAndFormerMembers(this); }).get();
+                    objArtist.members = members;
+                    objArtist.formerMembers = formerMembers;
                 }
-//                if(tMembers[0]!=""){
-//                    objArtist.members = tMembers;
-//                }
-//                if(tFormerMembers[0]!=""){
-//                    objArtist.formerMembers = tFormerMembers;
-//                }
-                if(tLabels[0]!=""){
-                    objArtist.labels = tLabels;
-                }
-                if(tlocationInfo[0]!=""){
-                    objArtist.locationInfo = tlocationInfo;
+                else{
+                    console.log("C'EST UN ARTISTE SOLO");
+                    var objMember = {name:"",instruments:[],activeYears:[]};
+                    members = $("#mw-content-text>table div:contains('Real name') + div").map(function() {objMember.name = $(this).text(); return objMember; }).get();
+                    objArtist.members = members;
+                    objArtist.formerMembers = [];
                 }
             }
             resolve(objArtist);
         });
     });
     return promise;
+};
+
+var extractMembersAndFormerMembers = function(membre){
+    var objMember = {name:"",instruments:[],activeYears:[]};
+    if( $(membre).text() !=""){
+        var text = $(membre).text();
+        if(new RegExp(" - ").test(text)){
+            var memberTmp = text.split(' - ');
+            objMember.name = memberTmp[0];
+            if(new RegExp("([(])([0-9]+)").test(memberTmp[1])){
+                var memberTmpInstruDate = memberTmp[1].split("(");
+                var memberTmpDate = memberTmpInstruDate[1].replace(')','');
+                objMember.instruments = memberTmpInstruDate[0].split(',');
+                objMember.activeYears = memberTmpDate.split(',');
+            }
+        }
+        else{
+            objMember.name = $(membre).text();
+        }              
+        return objMember;
+    }else{
+        return objMember;
+    }
 };
 
 var getInfosFromPageAlbum = function(objArtist){
@@ -229,8 +229,8 @@ var getAllLyricsOfArtists = function(url,selector,objArtist){
         var promise = new Promise(function(resolve, reject) { 
             var nbTitre = 0;
             var currNbTitre = 0;
-            for(var nbAlbums=0;nbAlbums<objArtist.albums.length;nbAlbums++){
-                nbTitre += objArtist.albums[nbAlbums].songs.length;
+            for(var nbLoopAlbums=0;nbLoopAlbums<objArtist.albums.length;nbLoopAlbums++){
+                nbTitre += objArtist.albums[nbLoopAlbums].songs.length;
             }
             var nbAlbums=0;
 

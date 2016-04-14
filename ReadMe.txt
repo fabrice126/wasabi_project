@@ -31,13 +31,19 @@ Architecture :
 ----backup_mongo/
 	#contient des requêtes utiles
 	#si la base de données est recrée de zéro elle contiendra:
-		#Une collection artist contenant des documents représentant un artiste avec ses albums et ses musiques, il faudra donc lancer :
-		#1- le fichier findSameDocument.js afin de trouver les documents en double (ayant le même nom d'artist) dans la base de données
-			#Il y aura toujours des documents en double dans la base de données une fois celle-ci crée
-			#car lors de l'extraction  sur le site de lyrics wikia certains artistes étaient présent 2 fois
-			#Supprimer alors un des deux documents apparaissant en double
-		#2- le fichier constructBDAfterCreate.js dans mongodb afin de créer : une collection artist sans albums, une colelction song et album ainsi que leurs index
-
+		#Une collection artist contenant des documents représentant un artiste avec leurs albums et leurs musiques, il faudra donc lancer :
+			#1- le fichier FindSameDocument.js dans mongo afin de trouver les documents en double (ayant le même nom d'artist) dans la base de données
+				#Il y aura toujours des documents en double dans la base de données une fois celle-ci crée 
+				#car lors de l'extraction  sur le site de lyrics wikia certains artistes étaient présents plusieurs fois
+				#Supprimer alors un des deux documents apparaissant en double
+			#2- le fichier ConstructBDAfterCreate.js dans mongodb afin de créer : 
+				#-une collection artist contenant uniquement les informations relatives à l'artiste (sans le champs album)
+				#-une collection album contenant les informations relatives à l'album
+				#-une collection song contenant les informations relatives à la musique
+				#-Les index des collections artist, album et song
+			#3- le fichier WordCount_Artist.js faisant le word count des lyrics pour chaque artist (afin de voir les termes les plus utilisés par un artiste)
+			#4- le fichier WordCount_Album.js faisant le word count des lyrics pour chaque album (afin de voir les termes les plus utilisés dans un album)
+			#5- le fichier WordCount_Song.js faisant le word count des lyrics pour chaque song (afin de voir les termes les plus utilisés dans une musique)
 
 
 --node_modules/

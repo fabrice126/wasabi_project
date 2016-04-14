@@ -10,7 +10,9 @@ var constructData = function (field, tParamToFind) {
     }
     return tObjectRequest;
 };
+var countWordsLyrics = function(){
 
+};
 
 
 exports.constructData = constructData;
