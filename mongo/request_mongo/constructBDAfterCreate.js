@@ -46,7 +46,7 @@ db.getCollection('song').createIndex({ name: 1});
 db.getCollection('song').createIndex({ albumTitre: 1}); 
 db.getCollection('song').createIndex({ titre: 1}); 
 db.getCollection('song').createIndex({ position: 1}); 
-
+db.getCollection('song').createIndex( {titre: "text"});
          
 //suppression du champ albums dans la collection artist      
 db.getCollection('artist').update({},{$unset: {albums:1}},false,true);

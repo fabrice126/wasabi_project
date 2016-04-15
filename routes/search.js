@@ -78,13 +78,14 @@ router.get('/categorie/:nomCategorie/lettre/:lettre/page/:numPage', function (re
                     var secondStart = Date.now();
                     if (err) throw err;
                     //Le count sur des millions de data est long ~250ms
-                    db.collection('song').find({ $or: tObjectRequest }).count(function(err, count) {
+//                    db.collection('song').find({ $or: tObjectRequest }).count(function(err, count) {
                         this.console.log("Après le count==");
                         this.console.log(Date.now() - secondStart);
                         if (err) throw err;
-                        result.push({"nbcount": count});
+//                        result.push({"nbcount": count});
+                        result.push({"nbcount": "count"});
                         res.send(JSON.stringify(result));
-                    });
+//                    });
             });
             break;
         default:
@@ -228,10 +229,15 @@ router.put('/artist/:artistName/album/:albumName/song/:songsName',function(req,r
 router.get('/artist/begin/:artistName', function (req, res) {
     var artistName = req.params.artistName;
     var regLetter = new RegExp(artistName,'i');
+    var maxinfo = 12;
+    var result = [];
     this.console.log("L'utilisateur recherche un artiste commancant par les lettres: "+artistName);
-    db.collection('artist').find({"name": regLetter},{"name":1}).limit(11).toArray(function(err,result){
+    db.collection('artist').find({"name": regLetter},{"name":1,urlWikipedia:1}).limit(maxinfo).toArray(function(err,artist){
         if (err) throw err;
-        res.send(JSON.stringify(result));
+        db.collection('song').find({ $text: { $search:  "\""+artistName+"\""} },{"name":1, "titre":1,"albumTitre":1,"_id":1}).limit(maxinfo).toArray(function(err,song){
+            result = artist.concat(song);
+            res.send(JSON.stringify(result));
+        });
     });
 });
 

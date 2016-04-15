@@ -229,15 +229,25 @@ Example:
         </paper-material>
         <div id=suggestion>
             <template is="dom-repeat" items="{{data}}" as="suggestion">
-               <a href="#/search/artist/{{_encodeUri(suggestion.name)}}">
-                    <paper-card on-tap='doLoadSearch' elevation="0" >
-                        <img class="band_search_bar" src="../img/band_search_bar.svg" alt="Band"> 
-<!--                        <img class="album_search_bar" src="../img/album_search_bar.svg" alt="Album"> -->
-<!--                        <img class="song_search_bar" src="../img/song_search_bar.svg" alt="Song"> -->
-                        <span class="search_title">{{suggestion.name}}</span>
-                        <paper-ripple></paper-ripple>
-                    </paper-card> 
-                </a>
+                <template is="dom-if" if="{{_isArtist(suggestion)}}">
+                    <a href="#/search/artist/{{_encodeUri(suggestion.name)}}">
+                        <paper-card on-tap='doLoadSearch' elevation="0" >
+                            <img class="band_search_bar" src="../img/band_search_bar.svg" alt="Band"> 
+                            <!--                        <img class="album_search_bar" src="../img/album_search_bar.svg" alt="Album"> -->
+                            <span class="search_title">{{suggestion.name}}</span>
+                            <paper-ripple></paper-ripple>
+                        </paper-card> 
+                    </a>
+                </template>
+                <template is="dom-if" if="{{_isSong(suggestion)}}">
+                   <a href="#/search/artist/{{_encodeUri(suggestion.name)}}/album/{{_encodeUri(suggestion.albumTitre)}}/song/{{_encodeUri(suggestion.titre)}}">
+                        <paper-card on-tap='doLoadSearch' elevation="0" >
+                            <img class="song_search_bar" src="../img/song_search_bar.svg" alt="Song"> 
+                            <span class="search_title">{{suggestion.titre}} - {{suggestion.name}}</span>
+                            <paper-ripple></paper-ripple>
+                        </paper-card> 
+                    </a>
+                </template>
             </template>
         </div>
 
@@ -446,9 +456,25 @@ Example:
     _encodeUri : function(infosData){
         return encodeURIComponent(infosData);
     },
+    _isArtist : function(data){
+        var isArtist = false;
+        if(typeof data.urlWikipedia !== 'undefined') {
+            
+            isArtist = true;
+        }
+        console.log("isArtist = "+isArtist);
+        return isArtist;
+    },
+    _isSong : function(data){
+        var isSong = false;
+        if(typeof data.albumTitre !== 'undefined') {
+            isSong = true;
+        }
+        console.log("isSong = "+isSong);
+        return isSong;
+    },
 
         
-
     });
   </script>
 </dom-module>
