@@ -73,6 +73,9 @@ Example:
             margin-top: 10px;
             margin-left: 10px;
         }
+        .search_album{
+            font-size: 12px;
+        }
 /*
         #suggestion:not(paper-material:focus){
             display: none;
@@ -243,7 +246,7 @@ Example:
                    <a href="#/search/artist/{{_encodeUri(suggestion.name)}}/album/{{_encodeUri(suggestion.albumTitre)}}/song/{{_encodeUri(suggestion.titre)}}">
                         <paper-card on-tap='doLoadSearch' elevation="0" >
                             <img class="song_search_bar" src="../img/song_search_bar.svg" alt="Song"> 
-                            <span class="search_title">{{suggestion.titre}} - {{suggestion.name}}</span>
+                            <span class="search_title">{{suggestion.titre}} - {{suggestion.name}} <span class="search_album">(album: {{suggestion.albumTitre}})</span></span>
                             <paper-ripple></paper-ripple>
                         </paper-card> 
                     </a>
@@ -462,7 +465,6 @@ Example:
             
             isArtist = true;
         }
-        console.log("isArtist = "+isArtist);
         return isArtist;
     },
     _isSong : function(data){
@@ -470,7 +472,6 @@ Example:
         if(typeof data.albumTitre !== 'undefined') {
             isSong = true;
         }
-        console.log("isSong = "+isSong);
         return isSong;
     },
 

@@ -32,11 +32,13 @@ db.getCollection('artist').aggregate([
                         _id:0, 
                         "name":1,
                         "albumTitre":"$albums.titre",
+                        "lengthAlbum":"$albums.length",
+                        "dateSortieAlbum":"$albums.dateSortie",
                         "titre":"$albums.songs.titre",
                         "urlSong":"$albums.songs.urlSong",
                         "lyrics":"$albums.songs.lyrics",
                         "urlWikipedia":"$albums.songs.urlWikipedia",
-                        "position":1
+                        "position":1,
                     }
                 },
                 { $out : "song" }
@@ -46,7 +48,6 @@ db.getCollection('song').createIndex({ name: 1});
 db.getCollection('song').createIndex({ albumTitre: 1}); 
 db.getCollection('song').createIndex({ titre: 1}); 
 db.getCollection('song').createIndex({ position: 1}); 
-db.getCollection('song').createIndex( {titre: "text"});
          
 //suppression du champ albums dans la collection artist      
 db.getCollection('artist').update({},{$unset: {albums:1}},false,true);

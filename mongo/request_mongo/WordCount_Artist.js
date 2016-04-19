@@ -27,10 +27,12 @@ var reduce = function( key, values ) {
 
 
 //Skip pour reprendre le Map Reduce ou il s'est arrêté
-var cursorArtist = db.getCollection('artist').find({},{name:1}).skip(76280);
-while ( cursorArtist.hasNext() ) {
+var cursorArtist = db.getCollection('artist').find({wordCount:{$exists:false}},{name:1});
+var collectionTmp = 'word_count_by_lyrics_artist';
+while ( cursorArtist.hasNext() ) {
+    print("test");
     var name = cursorArtist.next().name;
-    db.getCollection('song').mapReduce( map, reduce,{query:{name:name}, out:'word_count_by_lyrics' });
+    db.getCollection('song').mapReduce( map, reduce,{query:{name:name}, out:collectionTmp });
     var cursorSong = db.getCollection('word_count_by_lyrics').find({$and:[{value:{$gt:1} }]}).sort({value:-1}); 
 
     var  currentWordCountSong = [];
@@ -38,7 +40,7 @@ while ( cursorArtist.hasNext() ) {
         currentWordCountSong.push(cursorSong.next());
     }
     db.getCollection('artist').update( { name: name },{ $set: {"wordCount":currentWordCountSong} } );
-    db.getCollection('word_count_by_lyrics').drop();  
+    db.getCollection(collectionTmp).drop();  
 }
 
 //query:{name:"Iron Maiden",albumTitre:"The Number Of The Beast", titre:"The Number Of The Beast"}    out:'word_count_by_lyrics'

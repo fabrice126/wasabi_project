@@ -23,21 +23,28 @@ var map = function (){
 var reduce = function( key, values ) {  
     return Array.sum(values);   
 };
-
-db.getCollection('album').find({wordCount:{$exists:false}}).forEach( function(album) { 
-    try {
-        var name = album.name;
-        var titre = album.titre;
-        var collectionTmp = 'word_count_by_lyrics';
-         db.getCollection('song').mapReduce( map, reduce,{query:{$and:[{name:name},{albumTitre:titre}]}, out: collectionTmp });
-         var cursorSong = db.getCollection(collectionTmp).find({$and:[{value:{$gt:1} }]}).sort({value:-1}); 
-         var currentWordCountSong = [];
-         while ( cursorSong.hasNext() ) {
-             currentWordCountSong.push(cursorSong.next());
-         }
-         db.getCollection('album').update( {$and:[{name:name},{titre:titre}]},{ $set: {"wordCount":currentWordCountSong} } );
-         db.getCollection(collectionTmp).drop(); 
-    } catch (err) {
-      print('ERREUR :'+err);
-    }
-} );
+// db.getCollection('album').find({wordCount:{$exists:false}}).skip(208000).forEach( function(album) { 
+function test(skip){
+    var i = 0 ;
+    db.getCollection('album').find({wordCount:{$exists:false}}).limit(skip).forEach( function(album) { 
+        
+        i++;
+    try {
+        var collectionTmp = 'word_count_by_lyrics_album';
+         db.getCollection('song').mapReduce( map, reduce,{query:{id_album:album._id}, out: collectionTmp });
+         var currentWordCountSong = [];
+         db.getCollection(collectionTmp).find({value:{$gt:1} }).sort({value:-1}).forEach( function(word) {
+             currentWordCountSong.push(word);
+         }); 
+         
+         db.getCollection('album').update( {_id:album._id},{ $set: {"wordCount":currentWordCountSong} } );
+         db.getCollection(collectionTmp).drop(); 
+         if(i ==skip && skip == 15000){
+             
+         }
+    } catch (err) {
+      print('ERREUR :'+err);
+    }
+} );
+}
+test(15000);

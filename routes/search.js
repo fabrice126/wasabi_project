@@ -229,12 +229,24 @@ router.put('/artist/:artistName/album/:albumName/song/:songsName',function(req,r
 router.get('/artist/begin/:artistName', function (req, res) {
     var artistName = req.params.artistName;
     var regLetter = new RegExp(artistName,'i');
-    var maxinfo = 12;
+    var maxinfo = 12; //12 élements doivent apparaitre dans l'autocomplétion de recherche
+    var maxinfoselected = maxinfo/2;
     var result = [];
     this.console.log("L'utilisateur recherche un artiste commancant par les lettres: "+artistName);
     db.collection('artist').find({"name": regLetter},{"name":1,urlWikipedia:1}).limit(maxinfo).toArray(function(err,artist){
         if (err) throw err;
-        db.collection('song').find({ $text: { $search:  "\""+artistName+"\""} },{"name":1, "titre":1,"albumTitre":1,"_id":1}).limit(maxinfo).toArray(function(err,song){
+        db.collection('song').find({ $text: { $search: artistName } },
+                                   { score: { $meta: "textScore" },"titre":1, "name":1,"albumTitre":1 }).sort({score:{$meta:"textScore"}}).limit(maxinfo).toArray(function(err,song){
+            //On a récupéré 12 artists et 12 musiques
+            //Si on a - de 6 artistes, comme il nous faut 12 résultats on va ajouter + de musiques
+            if(artist.length < maxinfoselected){
+                song = song.slice(0,maxinfoselected+maxinfoselected - artist.length);
+            }
+            else{
+                //il y a autant de musique que d'artist
+                artist = artist.slice(0,maxinfoselected);
+                song = song.slice(0,maxinfoselected);
+            }
             result = artist.concat(song);
             res.send(JSON.stringify(result));
         });
