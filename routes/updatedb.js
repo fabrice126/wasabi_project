@@ -65,41 +65,6 @@ router.get('/artist',function(req, res){
         res.send("OK");
         
     });
-    
-//Ajoute l'id de d'un document album dans les documents musiques de l'album
-router.get('/addIdsAlbum',function(req, res){
-    
-});
-//Ajoute l'id d'un document album dans chacun de des documents album de l'artiste et dans chacune de ses musiques de l'artiste
-router.get('/addIdsArtist',function(req, res){
-    
-});
-
-//    "member" : [ 
-//        {
-//            "name" : "James Hetfield",
-//            "role" : "lead vocals, rhythm guitar",
-//            "date" : "1981-present"
-//        }, 
-//        {
-//            "name" : "Lars Ulrich",
-//            "role" : "drums, percussion",
-//            "date" : "1981-present"
-//        }
-//    ],
-//    "formerMember" : [ 
-//        {
-//            "name" : "Dave Mustaine",
-//            "role" : "lead guitar, backing vocals",
-//            "date" : "1981-1983"
-//        }, 
-//        {
-//            "name" : "Ron McGovney",
-//            "role" : "bass",
-//            "date" : "1981-1982"
-//        }
-//    ],
-
 
 });
 
