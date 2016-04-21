@@ -25,35 +25,20 @@ var reduce = function( key, values ) {
 }
 
 
-
-//Skip pour reprendre le Map Reduce ou il s'est arrêté
-var cursorArtist = db.getCollection('artist').find({wordCount:{$exists:false}},{name:1});
-var collectionTmp = 'word_count_by_lyrics_artist';
-while ( cursorArtist.hasNext() ) {
-    print("test");
-    var name = cursorArtist.next().name;
-    db.getCollection('song').mapReduce( map, reduce,{query:{name:name}, out:collectionTmp });
-    var cursorSong = db.getCollection('word_count_by_lyrics').find({$and:[{value:{$gt:1} }]}).sort({value:-1}); 
-
-    var  currentWordCountSong = [];
-    while ( cursorSong.hasNext() ) {
-        currentWordCountSong.push(cursorSong.next());
-    }
-    db.getCollection('artist').update( { name: name },{ $set: {"wordCount":currentWordCountSong} } );
-    db.getCollection(collectionTmp).drop();  
-}
-
-//query:{name:"Iron Maiden",albumTitre:"The Number Of The Beast", titre:"The Number Of The Beast"}    out:'word_count_by_lyrics'
-// var cursorMR = db.getCollection('song').mapReduce( map, reduce,{query:{name:"Iron Maiden"} });
-// printjson(cursorMR);
-
-
-// var cursorSong = db.getCollection('word_count_by_lyrics').find({$and:[{value:{$gt:1} }]}).sort({value:-1});   
-// while ( cursorSong.hasNext() ) {
-//    currentWordCountSong.push(cursorSong.next());
-// }
-// printjson( currentWordCountSong );
-// db.getCollection('song').update( { name: "Iron Maiden",albumTitre:"The Number Of The Beast",titre: "The Number Of The Beast"},{ $set: {"wordCount":currentWordCountSong} } );
-
-
-
+
+var limit = 15000;
+(function recusive(limit){
+
+    var collectionTmp = 'word_count_by_lyrics_artist';
+    db.getCollection('artist').find({wordCount:{$exists:false}}).limit(limit).forEach( function(artist) { 
+         db.getCollection('song').mapReduce( map, reduce,{query:{name:artist.name}, out: collectionTmp });
+         var currentWordCountSong = [];
+         db.getCollection(collectionTmp).find({value:{$gt:1} }).sort({value:-1}).forEach( function(word) {
+             currentWordCountSong.push(word);
+         }); 
+         
+         db.getCollection('artist').update( {_id:artist._id},{ $set: {"wordCount":currentWordCountSong} } );
+         db.getCollection(collectionTmp).drop(); 
+    } );
+    recusive(limit);
+})(limit)
