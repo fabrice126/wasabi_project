@@ -6,8 +6,9 @@ var getArtistInfosDbpedia = function(objArtist,sparqlRequest){
     urlEndpoint
     var promise = new Promise(function(resolve, reject) { 
         (function getInfos(objArtist,sparqlRequest,failRequest){
-            var requestdbpedia = urlEndpoint+encodeURIComponent(sparqlRequest)+"&format=json";//ou xml a voir
+            var requestdbpedia = urlEndpoint+encodeURIComponent(sparqlRequest)+"&format=application%2Frdf%2Bxml";//ou xml a voir
             request(requestdbpedia, function(err, resp, body){
+                console.log(resp.statusCode);
                 if (!err && resp.statusCode == 200) {                
                     objArtist.rdf = body;
                     resolve(objArtist);
@@ -19,6 +20,8 @@ var getArtistInfosDbpedia = function(objArtist,sparqlRequest){
                         getInfos(objArtist,sparqlRequest,failRequest);
                     }
                     else{
+                        console.log("=====LA REQUETE A ECHOUEE=====")
+                        objArtist.rdf = '';
                         resolve(objArtist);
                     }
                 }

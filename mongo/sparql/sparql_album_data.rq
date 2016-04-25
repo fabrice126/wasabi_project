@@ -1,0 +1,65 @@
+PREFIX db-owl: <http://dbpedia.org/ontology/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX prop: <http://dbpedia.org/property/>
+PREFIX dc:      <http://purl.org/dc/terms/>
+CONSTRUCT {
+		 <http://dbpedia.org/resource/A_Matter_of_Life_and_Death_(album)>	prop:writer ?writer ;
+				  		db-owl:abstract ?abstract ;
+						db-owl:genre ?genre ;
+						db-owl:recordDate ?recordDate;
+						db-owl:recordLabel ?recordLabel;
+						db-owl:artist ?artist;
+						db-owl:releaseDate ?releaseDate;
+						db-owl:runtime ?runtime;
+						prop:label ?label;
+						prop:award ?award;
+						dc:subject ?subject;
+						db-owl:recordedIn ?recordedIn;
+						db-owl:producer ?producer.
+					?producer	db-owl:abstract ?abstractProducer ;
+						db-owl:birthPlace ?birthPlaceProducer ;
+						dc:subject ?subjectProducer;
+						db-owl:producer ?producerProducerOf;
+						db-owl:genre ?genreProducer;
+						db-owl:writer ?writerProducer;
+						db-owl:associatedBand ?associatedBandProducer.
+			
+
+}
+where {
+  service <http://dbpedia.org/sparql/> {
+     select *
+     where {
+		BIND (<http://dbpedia.org/resource/Dirty_Work_(The_Rolling_Stones_album)>	 AS ?album).
+		OPTIONAL {?album prop:writer ?writer 		. FILTER langMatches(lang(?writer), 'en')}  .	
+		OPTIONAL {?album db-owl:abstract ?abstract		. FILTER langMatches(lang(?abstract), 'en')}  .					
+		OPTIONAL {?album db-owl:genre ?genre}  .					
+		OPTIONAL {?album db-owl:recordDate ?recordDate}  .					
+		OPTIONAL {?album db-owl:recordLabel ?recordLabel}  .					
+		OPTIONAL {?album db-owl:artist ?artist}  .					
+		OPTIONAL {?album db-owl:releaseDate ?releaseDate}  .					
+		OPTIONAL {?album db-owl:runtime ?runtime}  .			
+		OPTIONAL {?album prop:label ?label}  .	
+		OPTIONAL {?album prop:award ?award		. FILTER langMatches(lang(?award), 'en')}  .	
+		OPTIONAL {?album prop:subject ?subject}  .	
+		OPTIONAL {?album db-owl:recordedIn ?recordedIn}.
+		OPTIONAL {
+			?album db-owl:producer ?producer
+			OPTIONAL {?producer	db-owl:abstract ?abstractProducer 		. FILTER langMatches(lang(?abstractProducer), 'en')} .
+			OPTIONAL {?producer	db-owl:birthPlace ?birthPlaceProducer } .
+			OPTIONAL {?producer	dc:subject ?subjectProducer} .
+			OPTIONAL {?producer	db-owl:producer ?producerProducerOf} .
+			OPTIONAL {?producer	db-owl:genre ?genreProducer} .
+			OPTIONAL {?producer	db-owl:writer ?writerProducer} .
+			OPTIONAL {?producer	db-owl:associatedBand ?associatedBandProducer} .
+
+		}  .	
+								
+	
+
+
+
+
+     }ORDER BY DESC(?writer) 
+  }
+}

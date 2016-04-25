@@ -89,7 +89,7 @@ router.get('/categorie/:nomCategorie/lettre/:lettre/page/:numPage', function (re
             });
             break;
         default:
-                res.status(404).send([{error:"Page not find"}]);
+                res.status(404).send([{error:"Page not found"}]);
             break;
     }
 });
@@ -118,21 +118,21 @@ router.get('/dbinfo', function (req, res) {
 router.get('/artist/:artistName', function (req, res) {
     var artistName= req.params.artistName;
     this.console.log("Affichage de la page de l'artiste "+artistName);
-    db.collection('artist').findOne({name:artistName},{"urlWikia":0}, function(err, artist) {
+    db.collection('artist').findOne({name:artistName},{"urlWikia":0,wordCount:0}, function(err, artist) {
         if (artist===null) {
             this.console.log("Artist Inexistant");
-            res.status(404).send([{error:"Page not find"}]);
+            res.status(404).send([{error:"Page not found"}]);
         }
         else{
             artist.albums = [];
             var cnt = 0;
             db.collection('album').count({name:artistName}, function(err, count) {
                 if (err) throw err; 
-                db.collection('album').find({name:artistName},{"urlWikipedia":0,"urlAlbum":0}).sort( { "dateSortie": -1} ).forEach(
+                db.collection('album').find({id_artist:artist._id},{"urlWikipedia":0,"urlAlbum":0,wordCount:0}).sort( { "dateSortie": -1} ).forEach(
                     function(album){ 
                         artist.albums.push(album);
                         (function(albumIdx,album){
-                            db.collection('song').find({ $and: [ {"albumTitre":album.titre}, {"name":artistName} ] },{"name":0,"albumTitre":0,"urlSong":0,"lyrics":0,"urlWikipedia":0}).toArray(function(err,song){
+                             db.collection('song').find({"id_album":album._id},{"position":1,"titre":1}).toArray(function(err,song){
                                 if (err) throw err;
                                 artist.albums[albumIdx].songs = song;
                                 cnt++;
@@ -151,40 +151,51 @@ router.get('/artist/:artistName', function (req, res) {
 //========================================WEBSERVICE REST POUR LA GESTION DES ALBUMS========================================\\
 //==========================================================================================================================\\
 //GET ALBUM PAR NOM D'ARTISTE ET TITRE D'ALBUM
+//FIXME
 router.get('/artist/:artistName/album/:albumName', function (req, res) {
     var albumName= req.params.albumName;
     var artistName = req.params.artistName;
     this.console.log("L'utilisateur veut AFFICHER l'album "+albumName+" de l'artiste "+artistName);
     db.collection('artist').findOne({name:artistName}, function(err, artist) {
-        db.collection('album').findOne({$and:[{"titre":albumName},{"name":artistName}]},{"urlAlbum":0}, function(err, album) {
-            db.collection('song').find({$and:[{"albumTitre":albumName},{"name":artistName}]},{"name":0,"albumTitre":0,"urlSong":0,"lyrics":0,"urlWikipedia":0}).toArray(function(err,song){
-                if (album===null) {
-                    this.console.log("Album Inexistant");
-                    res.status(404).send([{error:"Page not find"}]);
+        if (artist==null) {                    
+            res.status(404).send([{error:"Page not found"}]);
+        }
+        else{
+            //!\ UN ARTIST PEUT AVOIR PLUSIEURS FOIS UN MEME TITRE D'ALBUM /!\ ERREUR A CORRIGER
+            db.collection('album').findOne({$and:[{"titre":albumName},{"id_artist":artist._id}]},{"urlAlbum":0,wordCount:0}, function(err, album) {
+                if (album==null) {                    
+                    res.status(404).send([{error:"Page not found"}]);
                 }
                 else{
-                    album.songs = song;
-                    artist.albums = album;
-                    res.send(JSON.stringify(artist));
+                    db.collection('song').find({"id_album":album._id},{"position":1,"titre":1}).toArray(function(err,song){
+                        album.songs = song;
+                        artist.albums = album;
+                        res.send(JSON.stringify(artist));
+
+                    });
                 }
             });
-        });
+        }
     });
 });
 
 //PUT ALBUM PAR ID D'ABUM ET DE MUSIQUE
 router.put('/artist/:artistName/album/:albumName', function (req, res) {
     var albumBody = req.body;
-    this.console.log("Mise à jour de l'album "+ albumBody.titre); 
+    this.console.log("Mise à jour de l'album "+ JSON.stringify(albumBody)); 
     for(var j=0;j<albumBody.songs.length;j++){
+        //On chance le titre de l'album contenu dans le document musique
         albumBody.songs[j].albumTitre = albumBody.titre;
+        albumBody.songs[j].searchTags = albumBody.songs[j].titre+' '+albumBody.name+' '+ albumBody.titre;
         var idSong = albumBody.songs[j]._id;
-        delete albumBody.songs[j]._id;         // lance un avertissement si non supprimé car l'id est immutable
+        delete albumBody.songs[j]._id;         // lance un avertissement si non supprimé car l'id est immutable et ne peut être update
+        delete albumBody.songs[j].id_album;         // lance un avertissement si non supprimé car l'id est immutable et ne peut être update
         db.collection('song').update( { _id: new ObjectId(idSong) },{ $set: albumBody.songs[j] } );
     }
     delete albumBody.songs;
     var idAlbum = albumBody._id;
     delete albumBody._id; 
+    delete albumBody.id_artist; 
     db.collection('album').update( { _id: new ObjectId(idAlbum) },{ $set: albumBody } );
     res.send("OK");
 });
@@ -199,19 +210,29 @@ router.get('/artist/:artistName/album/:albumName/song/:songsName', function (req
     var songsName = req.params.songsName;
     this.console.log("Affichage de la page de la musique "+songsName );    
     db.collection('artist').findOne({name:artistName}, function(err, artist) {
-        db.collection('album').findOne({$and:[{"titre":albumName},{"name":artistName}]},{"urlAlbum":0}, function(err, album) {
-            db.collection('song').findOne({$and:[{"albumTitre":albumName},{"name":artistName},{"titre":songsName}]},{"urlSong":0},function(err, song) {
-                if (album===null || song === null) {
-                    this.console.log("Album Inexistant");
-                    res.status(404).send([{error:"Page not find"}]);
+        if (artist==null) {                    
+            res.status(404).send([{error:"Page not found"}]);
+        }
+        else{
+            db.collection('album').findOne({$and:[{"titre":albumName},{"id_artist":artist._id}]},{"urlAlbum":0,wordCount:0}, function(err, album) {
+                if (album==null) {                    
+                    res.status(404).send([{error:"Page not found"}]);
                 }
                 else{
-                    album.songs = song;
-                    artist.albums = album;
-                    res.send(JSON.stringify(artist));
+                    db.collection('song').findOne({$and:[{"albumTitre":albumName},{"name":artistName},{"titre":songsName}]},{"urlSong":0,wordCount:0},function(err, song) {
+                        if (song === null) {
+                            this.console.log("Album Inexistant");
+                            res.status(404).send([{error:"Page not found"}]);
+                        }
+                        else{
+                            album.songs = song;
+                            artist.albums = album;
+                            res.send(JSON.stringify(artist));
+                        }
+                    });
                 }
             });
-        });
+        }
     });
 });
 router.put('/artist/:artistName/album/:albumName/song/:songsName',function(req,res){

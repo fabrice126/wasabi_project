@@ -25,14 +25,14 @@ var reduce = function( key, values ) {
 };
 
 
-var limit = 20;
+var limit = 2000;
 (function recusive(limit){
 
     var collectionTmp = 'word_count_by_lyrics_song';
     db.getCollection('song').find({wordCount:{$exists:false}}).limit(limit).forEach( function(song) { 
          db.getCollection('song').mapReduce( map, reduce,{query:{_id:song._id}, out: collectionTmp });
          var currentWordCountSong = [];
-         db.getCollection(collectionTmp).find({value:{$gt:1} }).sort({value:-1}).forEach( function(word) {
+         db.getCollection(collectionTmp).find({}).sort({value:-1}).forEach( function(word) {
              currentWordCountSong.push(word);
          }); 
          
