@@ -1,32 +1,32 @@
 var request = require('request');
-var urlEndpoint = "http://dbpedia.org/sparql?default-graph-uri=http://dbpedia.org&query=";
 
-var getArtistInfosDbpedia = function(objArtist,sparqlRequest){
+var getArtistInfosDbpedia = function(objArtist,sparqlRequest,urlEndpoint){
     var failRequest = 0;
-    urlEndpoint
     var promise = new Promise(function(resolve, reject) { 
-        (function getInfos(objArtist,sparqlRequest,failRequest){
-            var requestdbpedia = urlEndpoint+encodeURIComponent(sparqlRequest)+"&format=application%2Frdf%2Bxml";//ou xml a voir
+        (function getInfos(objArtist,sparqlRequest,urlEndpoint ,failRequest){
+            var requestdbpedia = urlEndpoint+encodeURIComponent(sparqlRequest)+"&format=application%2Frdf%2Bxml&timeout=500000";
+//            console.log(requestdbpedia);
+            console.log(requestdbpedia.length);
             request(requestdbpedia, function(err, resp, body){
-                console.log(resp.statusCode);
-                if (!err && resp.statusCode == 200) {                
+                if (!err && resp.statusCode == 200) {
+                    console.log(resp.statusCode);
                     objArtist.rdf = body;
                     resolve(objArtist);
                 }
                 else{
-                    if(err != null && failRequest <5){
-                        console.error('=====RELANCE DE LA REQUETE EXTRACT SONG====='+objArtist.urlWikipedia);
-                        failRequest++
-                        getInfos(objArtist,sparqlRequest,failRequest);
+                    if(failRequest <3){
+                        console.log('=====RELANCE DE LA REQUETE EXTRACT SONG====='+objArtist.urlWikipedia);
+                        failRequest++;
+                        getInfos(objArtist,sparqlRequest,urlEndpoint,failRequest);
                     }
                     else{
-                        console.log("=====LA REQUETE A ECHOUEE=====")
+                        console.log("=====LA REQUETE A ECHOUEE=====");
                         objArtist.rdf = '';
                         resolve(objArtist);
                     }
                 }
             });
-        })(objArtist,sparqlRequest,failRequest);
+        })(objArtist,sparqlRequest,urlEndpoint,failRequest);
     });
     return promise;
 };
@@ -43,8 +43,8 @@ var getAlbumInfosDbpedia = function(objAlbum,sparqlRequest){
 
             }
             else{
-                if(err != null && failRequest <5){
-                    failRequest++
+                if(err !== null && failRequest <5){
+                    failRequest++;
                     console.error('=====RELANCE DE LA REQUETE EXTRACT SONG====='+objAlbum.urlWikipedia);
                     getInfos(objAlbum,failRequest);
                 }
@@ -65,8 +65,8 @@ var getSongInfosDbpedia = function(objSong,sparqlRequest){
 
             }
             else{
-                if(err != null && failRequest <5){
-                    failRequest++
+                if(err !== null && failRequest <5){
+                    failRequest++;
                     console.error('=====RELANCE DE LA REQUETE EXTRACT SONG====='+objSong.urlWikipedia);
                     getInfos(objSong,failRequest);
                 }
