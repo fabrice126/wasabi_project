@@ -5,6 +5,7 @@ var db              = require('mongoskin').db('mongodb://localhost:27017/wasabi'
 var dbpediaHandler  = require('./handler/dbpediaHandler.js');
 var infos_artist    = require('./sparql_request/infos_artist.js');
 var infos_album     = require('./sparql_request/infos_album.js');
+var infos_song     = require('./sparql_request/infos_song.js');
 var construct_endpoint = require('./sparql_request/construct_endpoint.js');
 var ObjectId        = require('mongoskin').ObjectID;
 
@@ -85,7 +86,7 @@ router.get('/album',function(req, res){
     var limit = 5000;
     var loop = true;
     //extraire l'url de wikipedia de objArtist.urlWikipedia 
-    (function getRequestArtistLoop(loop){
+    (function getRequestAlbumLoop(loop){
         if(loop){
             db.collection('artist').find({$and:[{urlWikipedia:{$ne:""}},{rdf:{$exists:false}}]},{_id:1,urlWikipedia:1}).limit(limit).toArray(function(err,tObjAlbum){
 //            db.collection('artist').find({name:"A Challenge Of Honour"},{_id:1,urlWikipedia:1}).limit(limit).toArray(function(err,tObjAlbum){
@@ -111,8 +112,8 @@ router.get('/album',function(req, res){
                             setTimeout(function(){  tObjAlbumLoop(i); }, Math.floor((Math.random() * 100)+200));
                         }
                         else{
-                            console.log("===========================NEXT LIMIT : getRequestArtistLoop = "+loop+"===========================");
-                            getRequestArtistLoop(loop);
+                            console.log("===========================NEXT LIMIT : getRequestAlbumLoop = "+loop+"===========================");
+                            getRequestAlbumLoop(loop);
                         }
                     });
                 })(i);
@@ -123,12 +124,49 @@ router.get('/album',function(req, res){
     res.send("OK");
 });
 
+router.get('/song',function(req, res){
 
-//router.get('/song',function(req, res){
-//        db.collection('song').find({urlWikipedia:{$ne:""}});
-//
-//        dbpediaHandler.getSongInfosDbpedia(objArtist,sparqlRequest);
-//});
+    var limit = 5000;
+    var loop = true;
+    //extraire l'url de wikipedia de objArtist.urlWikipedia 
+    (function getRequestSongLoop(loop){
+        if(loop){
+            db.collection('song').find({$and:[{urlWikipedia:{$ne:""}},{rdf:{$exists:false}}]},{_id:1,urlWikipedia:1}).limit(limit).toArray(function(err,tObjSong){
+//            db.collection('artist').find({name:"A Challenge Of Honour"},{_id:1,urlWikipedia:1}).limit(limit).toArray(function(err,tObjSong){
+                //il y a moins d'artist que la limit donc on arrive à la fin
+                if(tObjSong.length <limit){
+                    loop = false;
+                }
+                var i=0;
+                (function tObjSongLoop(i){
+                    var objSong = tObjSong[i];
+                    var objUrl= dbpediaHandler.extractInfosFromURL(objArtist.urlWikipedia,"http://en.wikipedia.org/wiki/");
+                    
+                    var sparql_request = infos_song.construct_request(objUrl.urlDbpedia,objUrl.country);
+                    var urlEndpoint = construct_endpoint.construct_endpoint(objUrl.country);
+                    console.log("\n\nTraitement de l'album => "+objUrl.urlDbpedia+" ...");
+                    dbpediaHandler.getInfosDbpedia(objSong,sparql_request,urlEndpoint).then(function(objSong){
+                        var rdfValue= objSong.rdf.replace(/\n|\t/g," ").replace(/\"/g,"'");
+                        db.collection('artist').update({_id : new ObjectId(objSong._id)}, { $set: {"rdf": rdfValue} });
+                        if(rdfValue<200){ console.log("!!!!!!!!!!!!!!!!!!!!! RDF VIDE !!!!!!!!!!!!!!!!!!!!!");}
+                        console.log("RDF Added => "+objSong.urlWikipedia);
+                        if(i < tObjSong.length-1){
+                            i++;
+                            setTimeout(function(){  tObjSongLoop(i); }, Math.floor((Math.random() * 100)+200));
+                        }
+                        else{
+                            console.log("===========================NEXT LIMIT : getRequestSongLoop = "+loop+"===========================");
+                            getRequestSongLoop(loop);
+                        }
+                    });
+                })(i);
+           
+            });
+        }
+    })(loop);
+    res.send("OK");
+});
+
 module.exports = router;
 
 
