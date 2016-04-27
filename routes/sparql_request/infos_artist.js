@@ -1,4 +1,12 @@
 var construct_request = function (artist, country) {
+    var countryLang='';
+    if(country=='' || country =='en.'){
+        countryLang = "en";
+        country = '';
+    }
+    else{
+        countryLang = country.substring(0,2);
+    }
     return  ' PREFIX db-owl: <http://dbpedia.org/ontology/> ' +
     ' PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> '+
     ' PREFIX prop:   <http://dbpedia.org/property/> '+
@@ -31,23 +39,23 @@ var construct_request = function (artist, country) {
     '    OPTIONAL {<http://'+country+'dbpedia.org/resource/'+artist+'> db-owl:associatedMusicalArtist ?associatedMusicalArtistBand} . '+
     '    OPTIONAL {<http://'+country+'dbpedia.org/resource/'+artist+'> db-owl:recordLabel ?recordLabel} . '+
     '    OPTIONAL {<http://'+country+'dbpedia.org/resource/'+artist+'> db-owl:activeYearsStartYear ?activeYearsStartYearBand} . '+
-    '    OPTIONAL {<http://'+country+'dbpedia.org/resource/'+artist+'> db-owl:abstract ?abstractBand . FILTER langMatches(lang(?abstractBand), "en")} . '+
+    '    OPTIONAL {<http://'+country+'dbpedia.org/resource/'+artist+'> db-owl:abstract ?abstractBand . FILTER langMatches(lang(?abstractBand), "'+countryLang+'")} . '+
     '    OPTIONAL { '+
     '        <http://'+country+'dbpedia.org/resource/'+artist+'> db-owl:bandMember ?bandMemberBand . '+
-    '        OPTIONAL {?bandMemberBand 	rdfs:label ?labelMember . FILTER langMatches(lang(?labelMember), "en")} . '+
-    '        OPTIONAL {?bandMemberBand  prop:birthName ?birthNameMember . FILTER langMatches(lang(?birthNameMember), "en")} . '+
-    '        OPTIONAL {?bandMemberBand 	prop:instrument ?instrumentMember . FILTER langMatches(lang(?instrumentMember), "en")} . '+
-    '        OPTIONAL {?bandMemberBand 	db-owl:abstract ?abstractMember . FILTER langMatches(lang(?abstractMember), "en")} . '+
+    '        OPTIONAL {?bandMemberBand 	rdfs:label ?labelMember . FILTER langMatches(lang(?labelMember), "'+countryLang+'")} . '+
+    '        OPTIONAL {?bandMemberBand  prop:birthName ?birthNameMember . FILTER langMatches(lang(?birthNameMember), "'+countryLang+'")} . '+
+    '        OPTIONAL {?bandMemberBand 	prop:instrument ?instrumentMember . FILTER langMatches(lang(?instrumentMember), "'+countryLang+'")} . '+
+    '        OPTIONAL {?bandMemberBand 	db-owl:abstract ?abstractMember . FILTER langMatches(lang(?abstractMember), "'+countryLang+'")} . '+
     '        OPTIONAL {?bandMemberBand 	db-owl:activeYearsStartYear  ?activeYearsStartYearMember} . '+
     '        OPTIONAL {?bandMemberBand  db-owl:birthDate ?birthDateMember} . '+
     '        OPTIONAL {?bandMemberBand  dc:subject ?subjectMember} . '+
     '    }. '+
     '    OPTIONAL { '+
     '        <http://'+country+'dbpedia.org/resource/'+artist+'> db-owl:formerBandMember ?formerBandMemberBand . '+
-    '        OPTIONAL {?formerBandMemberBand rdfs:label ?labelFormer       . FILTER langMatches(lang(?labelFormer), "en")} . '+
-    '        OPTIONAL {?formerBandMemberBand prop:birthName ?birthNameFormer	. FILTER langMatches(lang(?birthNameFormer), "en")} . '+
-    '        OPTIONAL {?formerBandMemberBand prop:instrument ?instrumentFormer	. FILTER langMatches(lang(?instrumentFormer), "en")} . '+
-    '        OPTIONAL {?formerBandMemberBand db-owl:abstract ?abstractFormer	. FILTER langMatches(lang(?abstractFormer), "en")} . '+
+    '        OPTIONAL {?formerBandMemberBand rdfs:label ?labelFormer       . FILTER langMatches(lang(?labelFormer), "'+countryLang+'")} . '+
+    '        OPTIONAL {?formerBandMemberBand prop:birthName ?birthNameFormer	. FILTER langMatches(lang(?birthNameFormer), "'+countryLang+'")} . '+
+    '        OPTIONAL {?formerBandMemberBand prop:instrument ?instrumentFormer	. FILTER langMatches(lang(?instrumentFormer), "'+countryLang+'")} . '+
+    '        OPTIONAL {?formerBandMemberBand db-owl:abstract ?abstractFormer	. FILTER langMatches(lang(?abstractFormer), "'+countryLang+'")} . '+
     '        OPTIONAL {?formerBandMemberBand db-owl:activeYearsStartYear ?activeYearsStartYearFormer} . '+
     '        OPTIONAL {?formerBandMemberBand dc:subject ?subjectFormer } . '+
     '        OPTIONAL {?formerBandMemberBand db-owl:birthDate ?birthDateFormer} . '+
@@ -55,17 +63,14 @@ var construct_request = function (artist, country) {
     ' } ORDER BY DESC(?bandMemberBand) ';
 }; 
 
-var construct_endpoint = function(country) {
-    if(country =='en.'){
-        country = '';
-    }
-    return "http://"+country+"dbpedia.org/sparql?default-graph-uri=http://"+country+"dbpedia.org&query=";
-};
-
-
 
 exports.construct_request = construct_request;
-exports.construct_endpoint = construct_endpoint;
+
+
+
+
+
+
 
 
 

@@ -1,80 +1,53 @@
 var request = require('request');
 
-var getArtistInfosDbpedia = function(objArtist,sparqlRequest,urlEndpoint){
+var getInfosDbpedia = function(obj,sparqlRequest,urlEndpoint){
     var failRequest = 0;
     var promise = new Promise(function(resolve, reject) { 
-        (function getInfos(objArtist,sparqlRequest,urlEndpoint ,failRequest){
-            var requestdbpedia = urlEndpoint+encodeURIComponent(sparqlRequest)+"&format=application%2Frdf%2Bxml&timeout=500000";
-//            console.log(requestdbpedia);
-            console.log(requestdbpedia.length);
+        (function getInfos(obj,sparqlRequest,urlEndpoint ,failRequest){
+            var requestdbpedia = urlEndpoint+encodeURIComponent(sparqlRequest)+"&format=application%2Frdf%2Bxml&timeout=60000";
             request(requestdbpedia, function(err, resp, body){
                 if (!err && resp.statusCode == 200) {
-                    console.log(resp.statusCode);
-                    objArtist.rdf = body;
-                    resolve(objArtist);
+                    obj.rdf = body;
+                    resolve(obj);
                 }
                 else{
-                    if(failRequest <3){
-                        console.log('=====RELANCE DE LA REQUETE EXTRACT SONG====='+objArtist.urlWikipedia);
+                    if(failRequest <2){
+                        console.log('=====RELANCE DE LA REQUETE EXTRACT SONG====='+obj.urlWikipedia);
+                        console.log(err);
                         failRequest++;
-                        getInfos(objArtist,sparqlRequest,urlEndpoint,failRequest);
+                        getInfos(obj,sparqlRequest,urlEndpoint,failRequest);
                     }
                     else{
                         console.log("=====LA REQUETE A ECHOUEE=====");
-                        objArtist.rdf = '';
-                        resolve(objArtist);
+                        obj.rdf = '';
+                        resolve(obj);
                     }
                 }
             });
-        })(objArtist,sparqlRequest,urlEndpoint,failRequest);
+        })(obj,sparqlRequest,urlEndpoint,failRequest);
     });
     return promise;
 };
 
-
-
-
-
-var getAlbumInfosDbpedia = function(objAlbum,sparqlRequest){
-    var failRequest = 0;
-    (function getInfos(objAlbum,failRequest){
-        request({ pool: {maxSockets: Infinity}, url: objAlbum.urlWikipedia,method: "GET",timeout: 50000000}, function(err, resp, body){
-            if (!err && resp.statusCode == 200) {
-
-            }
-            else{
-                if(err !== null && failRequest <5){
-                    failRequest++;
-                    console.error('=====RELANCE DE LA REQUETE EXTRACT SONG====='+objAlbum.urlWikipedia);
-                    getInfos(objAlbum,failRequest);
+var extractInfosFromURL = function(urlWikipedia,urlToSplit){
+                var tUrl = urlWikipedia.split(urlToSplit);
+                //certaine url sont de type : de:Adoro avec "de:" désignant le wikipedia allemand, il faut donc faire la redirection sur dbpedia
+                var objUrl = {};
+                objUrl.country = '';
+                objUrl.urlDbpedia = '';
+                //Si tUrl[1] de forme: "it:Adriano_Celentano"
+                if(/^[a-z]{2}:/.test(tUrl[1])){
+                    //On obtient le tableau suivant :urlDetail = ["it","Adriano_Celentano"]
+                    var urlDetail  = tUrl[1].split(":");
+                    objUrl.urlDbpedia = urlDetail[1];
+                    if(objUrl.urlDbpedia[0] =='_'){
+                        objUrl.urlDbpedia = objUrl.urlDbpedia.substr(1);
+                    }
+                    objUrl.country = urlDetail[0]+".";
                 }
-            }
-        });
-    })(objAlbum,failRequest);
+                else{objUrl.urlDbpedia = tUrl[1];}
+                objUrl.urlDbpedia = decodeURIComponent(objUrl.urlDbpedia);
+                return objUrl;
 };
-
-
-
-
-
-var getSongInfosDbpedia = function(objSong,sparqlRequest){
-    var failRequest = 0;
-    (function getInfos(objSong,failRequest){
-        request({ pool: {maxSockets: Infinity}, url: objSong.urlWikipedia,method: "GET",timeout: 50000000}, function(err, resp, body){
-            if (!err && resp.statusCode == 200) {
-
-            }
-            else{
-                if(err !== null && failRequest <5){
-                    failRequest++;
-                    console.error('=====RELANCE DE LA REQUETE EXTRACT SONG====='+objSong.urlWikipedia);
-                    getInfos(objSong,failRequest);
-                }
-            }
-        });
-    })(objSong,failRequest);
-
-};
-exports.getArtistInfosDbpedia = getArtistInfosDbpedia;
-exports.getAlbumInfosDbpedia = getAlbumInfosDbpedia;
-exports.getSongInfosDbpedia = getSongInfosDbpedia;
+exports.getInfosDbpedia = getInfosDbpedia;
+exports.extractInfosFromURL = extractInfosFromURL;
