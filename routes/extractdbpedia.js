@@ -85,26 +85,26 @@ router.get('/album',function(req, res){
 
     var limit = 5000;
     var loop = true;
-    //extraire l'url de wikipedia de objArtist.urlWikipedia 
+    //extraire l'url de wikipedia de objAlbum.urlWikipedia 
     (function getRequestAlbumLoop(loop){
         if(loop){
-            db.collection('artist').find({$and:[{urlWikipedia:{$ne:""}},{rdf:{$exists:false}}]},{_id:1,urlWikipedia:1}).limit(limit).toArray(function(err,tObjAlbum){
-//            db.collection('artist').find({name:"A Challenge Of Honour"},{_id:1,urlWikipedia:1}).limit(limit).toArray(function(err,tObjAlbum){
-                //il y a moins d'artist que la limit donc on arrive à la fin
+            db.collection('album').find({$and:[{urlWikipedia:{$ne:""}},{rdf:{$exists:false}}]},{_id:1,urlWikipedia:1}).limit(limit).toArray(function(err,tObjAlbum){
+//            db.collection('album').find({name:"A Challenge Of Honour"},{_id:1,urlWikipedia:1}).limit(limit).toArray(function(err,tObjAlbum){
+                //il y a moins d'album que la limit donc on arrive à la fin
                 if(tObjAlbum.length <limit){
                     loop = false;
                 }
                 var i=0;
                 (function tObjAlbumLoop(i){
                     var objAlbum = tObjAlbum[i];
-                    var objUrl= dbpediaHandler.extractInfosFromURL(objArtist.urlWikipedia,"http://en.wikipedia.org/wiki/");
+                    var objUrl= dbpediaHandler.extractInfosFromURL(objAlbum.urlWikipedia,"http://en.wikipedia.org/wiki/");
                     
                     var sparql_request = infos_album.construct_request(objUrl.urlDbpedia,objUrl.country);
                     var urlEndpoint = construct_endpoint.construct_endpoint(objUrl.country);
                     console.log("\n\nTraitement de l'album => "+objUrl.urlDbpedia+" ...");
                     dbpediaHandler.getInfosDbpedia(objAlbum,sparql_request,urlEndpoint).then(function(objAlbum){
                         var rdfValue= objAlbum.rdf.replace(/\n|\t/g," ").replace(/\"/g,"'");
-                        db.collection('artist').update({_id : new ObjectId(objAlbum._id)}, { $set: {"rdf": rdfValue} });
+                        db.collection('album').update({_id : new ObjectId(objAlbum._id)}, { $set: {"rdf": rdfValue} });
                         if(rdfValue<200){ console.log("!!!!!!!!!!!!!!!!!!!!! RDF VIDE !!!!!!!!!!!!!!!!!!!!!");}
                         console.log("RDF Added => "+objAlbum.urlWikipedia);
                         if(i < tObjAlbum.length-1){
@@ -128,26 +128,26 @@ router.get('/song',function(req, res){
 
     var limit = 5000;
     var loop = true;
-    //extraire l'url de wikipedia de objArtist.urlWikipedia 
+    //extraire l'url de wikipedia de objSong.urlWikipedia 
     (function getRequestSongLoop(loop){
         if(loop){
             db.collection('song').find({$and:[{urlWikipedia:{$ne:""}},{rdf:{$exists:false}}]},{_id:1,urlWikipedia:1}).limit(limit).toArray(function(err,tObjSong){
-//            db.collection('artist').find({name:"A Challenge Of Honour"},{_id:1,urlWikipedia:1}).limit(limit).toArray(function(err,tObjSong){
-                //il y a moins d'artist que la limit donc on arrive à la fin
+//            db.collection('song').find({name:"A Challenge Of Honour"},{_id:1,urlWikipedia:1}).limit(limit).toArray(function(err,tObjSong){
+                //il y a moins de musique que la limit donc on arrive à la fin
                 if(tObjSong.length <limit){
                     loop = false;
                 }
                 var i=0;
                 (function tObjSongLoop(i){
                     var objSong = tObjSong[i];
-                    var objUrl= dbpediaHandler.extractInfosFromURL(objArtist.urlWikipedia,"http://en.wikipedia.org/wiki/");
+                    var objUrl= dbpediaHandler.extractInfosFromURL(objSong.urlWikipedia,"http://en.wikipedia.org/wiki/");
                     
                     var sparql_request = infos_song.construct_request(objUrl.urlDbpedia,objUrl.country);
                     var urlEndpoint = construct_endpoint.construct_endpoint(objUrl.country);
                     console.log("\n\nTraitement de l'album => "+objUrl.urlDbpedia+" ...");
                     dbpediaHandler.getInfosDbpedia(objSong,sparql_request,urlEndpoint).then(function(objSong){
                         var rdfValue= objSong.rdf.replace(/\n|\t/g," ").replace(/\"/g,"'");
-                        db.collection('artist').update({_id : new ObjectId(objSong._id)}, { $set: {"rdf": rdfValue} });
+                        db.collection('song').update({_id : new ObjectId(objSong._id)}, { $set: {"rdf": rdfValue} });
                         if(rdfValue<200){ console.log("!!!!!!!!!!!!!!!!!!!!! RDF VIDE !!!!!!!!!!!!!!!!!!!!!");}
                         console.log("RDF Added => "+objSong.urlWikipedia);
                         if(i < tObjSong.length-1){

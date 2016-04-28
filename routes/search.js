@@ -15,6 +15,7 @@ router.get('/categorie/:nomCategorie/lettre/:lettre/page/:numPage', function (re
     lettre = req.params.lettre;
     numPage = req.params.numPage;
     urlParamValid = false;
+    
     numPageTest = parseInt(numPage);
     if(Number.isInteger(numPageTest) && numPageTest>=0){
         urlParamValid = true;
@@ -39,12 +40,15 @@ router.get('/categorie/:nomCategorie/lettre/:lettre/page/:numPage', function (re
     switch(nomCategorie) {
         case "artists":
             tObjectRequest = searchHandler.constructData("name", tParamToFind);
-            db.collection('artist').find({$or:tObjectRequest},{"name":1,"_id":0}).skip(skip).limit(limit).toArray(function(err,result){
+            db.collection('artist').find({$or:tObjectRequest},{"name":1}).skip(skip).limit(limit).toArray(function(err,artists){
                 if (err) throw err;
                     db.collection('artist').find({$or:tObjectRequest}).count(function(err, count) {
                         if (err) throw err;
-                        result.push({"nbcount": count});
-                        res.send(JSON.stringify(result));
+                        var objArtist = {};
+                        objArtist.artists = artists;
+                        objArtist.nbcount = count;
+                        objArtist.limit = limit;
+                        res.send(JSON.stringify(objArtist));
                     });
             });
             break;
@@ -55,12 +59,15 @@ router.get('/categorie/:nomCategorie/lettre/:lettre/page/:numPage', function (re
                 {"$skip" :  skip},
                 {"$limit" : limit},  
                 {$project : { "titleAlbum" : "$titre" ,"name":1}}
-            ],function(err, result) {
+            ],function(err, albums) {
                     if (err) throw err;
                     db.collection('album').find({ $or: tObjectRequest }).count(function(err, count) {
                         if (err) throw err;
-                        result.push({"nbcount": count});
-                        res.send(JSON.stringify(result));
+                        var objAlbum = {};
+                        objAlbum.albums = albums;
+                        objAlbum.nbcount = count;
+                        objAlbum.limit = limit;
+                        res.send(JSON.stringify(objAlbum));
                     });
             });
             break;
@@ -72,7 +79,7 @@ router.get('/categorie/:nomCategorie/lettre/:lettre/page/:numPage', function (re
                 {"$skip" :  skip}, 
                 {"$limit" : limit},  
                 {$project : { "albumTitre" : 1 ,"name":1,"titleSong":"$titre"}}
-            ],function(err, result) {
+            ],function(err, songs) {
                     this.console.log("Avant le count==");
                     this.console.log(Date.now() - start);
                     var secondStart = Date.now();
@@ -82,9 +89,11 @@ router.get('/categorie/:nomCategorie/lettre/:lettre/page/:numPage', function (re
                         this.console.log("Après le count==");
                         this.console.log(Date.now() - secondStart);
                         if (err) throw err;
-//                        result.push({"nbcount": count});
-                        result.push({"nbcount": "count"});
-                        res.send(JSON.stringify(result));
+                        var objSongs = {};
+                        objSongs.songs = songs;
+                        objSongs.nbcount = "count";
+                        objSongs.limit = limit;
+                        res.send(JSON.stringify(objSongs));
 //                    });
             });
             break;

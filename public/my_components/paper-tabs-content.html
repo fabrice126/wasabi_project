@@ -182,12 +182,10 @@
                      <template is="dom-if" if="{{_isArtist(data)}}">
                         <paper-material class="listData" elevation="1">
                             <div>Il y a actuellement {{_getNbCount(data)}} artists commençant par la lettre {{lettre}}</div>
-                             <template class="flex-wrap" is="dom-repeat" items="{{data}}" as="infos" index-as="idx">
-                                 <template is="dom-if" if="{{_isLastElement(idx,data)}}">
-                                     <paper-button on-tap='doLoadCategorie' animated id="#/search/artist/{{_encodeUri(infos.name)}}" raised>
-                                         {{infos.name}}
-                                     </paper-button>
-                                 </template>
+                             <template class="flex-wrap" is="dom-repeat" items="{{data.artists}}" as="artist">
+                                 <paper-button on-tap='doLoadCategorie' animated id="#/search/artist/{{_encodeUri(artist.name)}}" raised>
+                                     {{artist.name}}
+                                 </paper-button>
                              </template>
                          </paper-material>
                     </template>
@@ -195,39 +193,35 @@
                     <template is="dom-if" if="{{_isAlbum(data)}}">
                         <paper-material class="listData" elevation="1">
                             <div>Il y a actuellement {{_getNbCount(data)}} albums commençant par la lettre {{lettre}}</div>
-                            <template class="flex-wrap" is="dom-repeat" items="{{data}}" as="infos" index-as="idx">
-                                <template is="dom-if" if="{{_isLastElement(idx,data)}}">
-                                     <paper-button on-tap='doLoadCategorie' id="#/search/artist/{{_encodeUri(infos.name)}}/album/{{_encodeUri(infos.titleAlbum)}}" raised>
-                                         {{infos.titleAlbum}}<br>
-                                         de: {{infos.name}}
-                                     </paper-button>
-                                </template>
+                            <template class="flex-wrap" is="dom-repeat" items="{{data.albums}}" as="album">
+                                 <paper-button on-tap='doLoadCategorie' id="#/search/artist/{{_encodeUri(album.name)}}/album/{{_encodeUri(album.titleAlbum)}}" raised>
+                                     {{album.titleAlbum}}<br>
+                                     de: {{album.name}}
+                                 </paper-button>
                             </template>
                          </paper-material>
                     </template>
                     <!-- Affichage des songs -->
+
                     <template is="dom-if" if="{{_isSong(data)}}">
                        <paper-material class="listData" elevation="1">
                            <div>Il y a actuellement {{_getNbCount(data)}} musiques commençant par la lettre {{lettre}}</div>
-                            <template class="flex-wrap" is="dom-repeat" items="{{data}}" as="infos" index-as="idx">
-                                <template is="dom-if" if="{{_isLastElement(idx,data)}}">
-                                     <paper-button on-tap='doLoadCategorie' id="#/search/artist/{{_encodeUri(infos.name)}}/album/{{_encodeUri(infos.albumTitre)}}/song/{{_encodeUri(infos.titleSong)}}" raised>
-                                        {{infos.titleSong}}<br>
-                                        de: {{infos.name}}
-                                     </paper-button>
-                                </template>
+                            <template class="flex-wrap" is="dom-repeat" items="{{data.songs}}" as="song">
+                                 <paper-button on-tap='doLoadCategorie' id="#/search/artist/{{_encodeUri(song.name)}}/album/{{_encodeUri(song.albumTitre)}}/song/{{_encodeUri(song.titleSong)}}" raised>
+                                    {{song.titleSong}}<br>
+                                    de: {{song.name}}
+                                 </paper-button>
                             </template>
                         </paper-material>
                     </template>
-                        <paper-material id="paginationBottom" elevation="1">
-                            <a class="previousPage" href="#/search/categorie/{{categorie}}/lettre/{{lettre}}/page/{{_isPrevious(numPage)}}" tabindex="-1">
-                                <paper-fab mini icon="chevron-left" title="previous" class="blue"></paper-fab>
-                            </a>
-                            <a class="nextPage" href="#/search/categorie/{{categorie}}/lettre/{{lettre}}/page/{{_isNext(numPage,data)}}" tabindex="-1">
-                                <paper-fab  mini icon="chevron-right" title="next" class="blue"></paper-fab>
-                            </a>
-                        </paper-material>
-
+                    <paper-material id="paginationBottom" elevation="1">
+                        <a class="previousPage" href="#/search/categorie/{{categorie}}/lettre/{{lettre}}/page/{{_isPrevious(numPage)}}" tabindex="-1">
+                            <paper-fab mini icon="chevron-left" title="previous" class="blue"></paper-fab>
+                        </a>
+                        <a class="nextPage" href="#/search/categorie/{{categorie}}/lettre/{{lettre}}/page/{{_isNext(numPage,data)}}" tabindex="-1">
+                            <paper-fab  mini icon="chevron-right" title="next" class="blue"></paper-fab>
+                        </a>
+                    </paper-material>
                 </div>
             </template>
         </template>
@@ -298,46 +292,28 @@
             }
             return urlParamValid;
       },
-      _isLastElement:function(idx,data){
-          var showElement = true;
-          if(data != null && idx == data.length-1){
-              showElement = false;
-          }  
-          return showElement;
-      },
       _getNbCount:function(infosData){
-          if(infosData!=null && typeof(infosData) != "undefined"){
-                return infosData[infosData.length-1].nbcount;
+            if(Boolean(infosData.nbcount)){
+                return infosData.nbcount
             }
           return 0;
       },
     _isData:function(infosData){
-        var exist = false;
-        if(infosData != null){
-            exist = true;
-        }
-        return exist;
+        return Boolean(infosData);
     },
     _isArtist: function (infosData) {
-        var isArtist = false;
-        if(infosData != null && typeof(infosData[0].titleAlbum) == "undefined" && typeof(infosData[0].titleSong) == "undefined"){
-            isArtist = true;
-        }
-        return isArtist;
+        return Boolean(infosData.artists);
     },
     _isAlbum: function (infosData) {
-        var isAlbum = false;
-        if(infosData != null && infosData[0].titleAlbum){
-            isAlbum = true;
-        }
-        return isAlbum;
+        return Boolean(infosData.albums);
     },
     _isSong: function (infosData) {
-        var isSong = false;
-        if(infosData != null && infosData[0].titleSong){
-            isSong = true;
-        }
-        return isSong;
+//        var isSong = false;
+//        if(infosData != null && infosData[0].titleSong){
+//            isSong = true;
+//        }
+//        return isSong;
+        return Boolean(infosData.songs);
     },
     _encodeUri : function(infosData){
         return encodeURIComponent(infosData);
@@ -354,14 +330,26 @@
         return newNumPage;
 
     },
+    _isFullOfItems : function(items, limit){
+        if( items.length == limit ){
+            return true;
+        }
+        return false;
+    },
+    _isNext : function(numPage,infosData){
+        if( this._isArtist(infosData) && this._isFullOfItems(infosData.artists,infosData.limit) ){
+            return parseInt(numPage, 10)+1;
+        }
+        else if (this._isAlbum(infosData) && this._isFullOfItems(infosData.albums,infosData.limit)){
+            return parseInt(numPage, 10)+1;
 
-    _isNext : function(numPage,data){
-       if(data != null && data.length-1==200){
+        }
+        else if (this._isSong(infosData) && this._isFullOfItems(infosData.songs,infosData.limit)){
             return parseInt(numPage, 10)+1;
         }
         else{
             return parseInt(numPage, 10);
-        } 
+        }
     },
     _isNbArtist:function(idxCurrentTab){
         var artist=false;
