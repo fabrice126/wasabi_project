@@ -1,17 +1,17 @@
 
 Comment lancer l'application
 =======
-1.
-2.Lancer le serveur
-	2.1. - cd C:/Users/user/Documents/wasabi_project
-	2.2. - node bin/www
-	2.3. - le serveur est maintenant lancé sur http://localhost (dans le navigateur)
-3. 
-4.Pour recuperer l'ensemble des paroles clicker sur le bouton EXTRACTION OF LYRICS
-5.Pour recuperer les donnees relatives au texte et les enregistrer dans le local Storage clicker sur le bouton EXTRACTION OF BABEL'S DATA
-6.Pour afficher les donnees clicker sur le bouton SHOW EXTRACTED INFORMATIONS
-7.
-8.
+1. 
+2. Lancer le serveur
+	2.1. cd C:/Users/user/Documents/wasabi_project
+	2.2. node bin/www
+	2.3. le serveur est maintenant lancé sur http://localhost (dans le navigateur)
+3.  
+4. Pour recuperer l'ensemble des paroles clicker sur le bouton EXTRACTION OF LYRICS
+5. Pour recuperer les donnees relatives au texte et les enregistrer dans le local Storage clicker sur le bouton EXTRACTION OF BABEL'S DATA
+6. Pour afficher les donnees clicker sur le bouton SHOW EXTRACTED INFORMATIONS
+7. 
+8. 
 
 
 Architecture du code:
