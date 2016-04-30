@@ -33,7 +33,7 @@ return ' PREFIX db-owl: <http://dbpedia.org/ontology/> '+
 '                db-owl:producer ?producerOf . '+
 ' }  ' + 
 ' where { '+
-'    OPTIONAL {<http://'+country+'dbpedia.org/resource/'+album+'>  db-owl:abstract ?abstractAlbum . FILTER langMatches(lang(?abstractAlbum), '+countryLang+')}. ' +    
+'    OPTIONAL {<http://'+country+'dbpedia.org/resource/'+album+'>  db-owl:abstract ?abstractAlbum . FILTER langMatches(lang(?abstractAlbum), "'+countryLang+'")}. ' +    
 '    OPTIONAL {<http://'+country+'dbpedia.org/resource/'+album+'>  db-owl:artist   ?artistAlbum}. '+     
 '    OPTIONAL {<http://'+country+'dbpedia.org/resource/'+album+'>  db-owl:genre    ?genreAlbum}. ' +   
 '    OPTIONAL {<http://'+country+'dbpedia.org/resource/'+album+'>  db-owl:recordDate   ?recordDateAlbum} . '+     
@@ -41,12 +41,12 @@ return ' PREFIX db-owl: <http://dbpedia.org/ontology/> '+
 '    OPTIONAL {<http://'+country+'dbpedia.org/resource/'+album+'>  db-owl:releaseDate  ?releaseDateAlbum} . ' +    
 '    OPTIONAL {<http://'+country+'dbpedia.org/resource/'+album+'>  db-owl:runtime  ?runtimeAlbum} . '  +   
 '    OPTIONAL {<http://'+country+'dbpedia.org/resource/'+album+'>  dc:subject  ?subjectAlbum} . ' + 
-'    OPTIONAL {<http://'+country+'dbpedia.org/resource/'+album+'>  prop:award  ?awardAlbum 	. FILTER langMatches(lang(?awardAlbum), '+countryLang+')} . ' +    
+'    OPTIONAL {<http://'+country+'dbpedia.org/resource/'+album+'>  prop:award  ?awardAlbum 	. FILTER langMatches(lang(?awardAlbum), "'+countryLang+'")} . ' +    
 '    OPTIONAL {<http://'+country+'dbpedia.org/resource/'+album+'>  prop:studio ?studioAlbum} . '+ 
-'    OPTIONAL {<http://'+country+'dbpedia.org/resource/'+album+'>  prop:writer ?writerAlbum    .  FILTER isURI(?writerAlbum)} .. '+ 
+'    OPTIONAL {<http://'+country+'dbpedia.org/resource/'+album+'>  prop:writer ?writerAlbum    .  FILTER isURI(?writerAlbum)} . '+ 
 '    OPTIONAL { '+
 '        <http://'+country+'dbpedia.org/resource/'+album+'>    db-owl:producer ?producerAlbum '+
-'        OPTIONAL {?producerAlbum    db-owl:abstract ?abstractProducer      . FILTER langMatches(lang(?abstractProducer), '+countryLang+')}. '+         
+'        OPTIONAL {?producerAlbum    db-owl:abstract ?abstractProducer      . FILTER langMatches(lang(?abstractProducer), "'+countryLang+'")}. '+         
 '        OPTIONAL {?producerAlbum    db-owl:associatedMusicalArtist  ?associatedMusicalArtist}. '+
 '        OPTIONAL {?producerAlbum    db-owl:recordLabel  ?recordLabel}. '+  
 '        OPTIONAL {?producerAlbum    dc:subject      ?subject}. '+        

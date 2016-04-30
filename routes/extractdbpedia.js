@@ -82,15 +82,15 @@ router.get('/artist/createfields',function(req, res){
 });
 
 router.get('/album',function(req, res){
-
     var limit = 5000;
     var loop = true;
     //extraire l'url de wikipedia de objAlbum.urlWikipedia 
     (function getRequestAlbumLoop(loop){
         if(loop){
             db.collection('album').find({$and:[{urlWikipedia:{$ne:""}},{rdf:{$exists:false}}]},{_id:1,urlWikipedia:1}).limit(limit).toArray(function(err,tObjAlbum){
-//            db.collection('album').find({name:"A Challenge Of Honour"},{_id:1,urlWikipedia:1}).limit(limit).toArray(function(err,tObjAlbum){
+//            db.collection('album').find({titre:"Iron Maiden"}).limit(limit).toArray(function(err,tObjAlbum){
                 //il y a moins d'album que la limit donc on arrive à la fin
+                console.log("test 1");
                 if(tObjAlbum.length <limit){
                     loop = false;
                 }
@@ -109,7 +109,7 @@ router.get('/album',function(req, res){
                         console.log("RDF Added => "+objAlbum.urlWikipedia);
                         if(i < tObjAlbum.length-1){
                             i++;
-                            setTimeout(function(){  tObjAlbumLoop(i); }, Math.floor((Math.random() * 100)+200));
+                            setTimeout(function(){  tObjAlbumLoop(i); }, Math.floor((Math.random() * 100)+100));
                         }
                         else{
                             console.log("===========================NEXT LIMIT : getRequestAlbumLoop = "+loop+"===========================");
