@@ -3,56 +3,49 @@
  PREFIX prop:   <http://dbpedia.org/property/>  
 PREFIX dc: <http://purl.org/dc/terms/>  
 CONSTRUCT {               
-
-<http://dbpedia.org/resource/...And_Justice_for_All_(album)>  db-owl:abstract 	?abstractAlbum;
-					db-owl:artist 	?artistAlbum;                                                    
-					db-owl:genre 	?genreAlbum;                                                    
-					db-owl:producer 	?producerAlbum;
-					db-owl:recordDate 	?recordDateAlbum;                                                                     
-						db-owl:recordLabel              ?recordLabelAlbum;                                                                           
-						db-owl:releaseDate          	?releaseDateAlbum;
-						db-owl:runtime	          	?runtimeAlbum;
-						dc:subject			?subjectAlbum;
-						prop:award			?awardAlbum; 
-						prop:studio			?studioAlbum.
-
-				?producerAlbum  db-owl:abstract                	?abstractProducer;
-                               			db-owl:associatedMusicalArtist  ?associatedMusicalArtist;                                      
-						db-owl:recordLabel              ?recordLabel;
-                                       		dc:subject     		?subject;                                            
-						db-owl:artist		?artist;                    
-						db-owl:occupation	?occupation;
-		                                db-owl:producer        ?producerOf .
-
+	<http://dbpedia.org/resource/Aftermath_(The_Rolling_Stones_album)>  db-owl:abstract ?abstractAlbum;
+		db-owl:artist ?artistAlbum;
+		db-owl:genre ?genreAlbum;
+		db-owl:producer ?producerAlbum;
+		db-owl:recordDate ?recordDateAlbum;
+		db-owl:recordLabel  ?recordLabelAlbum;
+		db-owl:releaseDate ?releaseDateAlbum;
+		db-owl:runtime ?runtimeAlbum;
+		dc:subject ?subjectAlbum;
+		prop:award ?awardAlbum; 
+		prop:studio ?studioAlbum.
+	?producerAlbum  db-owl:abstract  ?abstractProducer;
+                		db-owl:associatedMusicalArtist  ?associatedMusicalArtist;
+		db-owl:recordLabel ?recordLabel;
+                		dc:subject ?subject;
+		db-owl:artist ?artist;
+		db-owl:occupation ?occupation.
 }    
 where {
   service <http://dbpedia.org/sparql/> {
      select  * where { 
-
-
-	OPTIONAL {<http://dbpedia.org/resource/...And_Justice_for_All_(album)> 	db-owl:abstract  ?abstractAlbum . FILTER langMatches(lang(?abstractAlbum), "en")}.     
-	OPTIONAL {<http://dbpedia.org/resource/...And_Justice_for_All_(album)> 	db-owl:artist           ?artistAlbum}.     
-	OPTIONAL {<http://dbpedia.org/resource/...And_Justice_for_All_(album)> 	db-owl:genre     	?genreAlbum}.     
-	OPTIONAL {<http://dbpedia.org/resource/...And_Justice_for_All_(album)> 	db-owl:recordDate       ?recordDateAlbum} .     
-	OPTIONAL {<http://dbpedia.org/resource/...And_Justice_for_All_(album)> 	db-owl:recordLabel      ?recordLabelAlbum} .     
-	OPTIONAL {<http://dbpedia.org/resource/...And_Justice_for_All_(album)> 	db-owl:releaseDate      ?releaseDateAlbum} .     
-	OPTIONAL {<http://dbpedia.org/resource/...And_Justice_for_All_(album)> 	db-owl:runtime          ?runtimeAlbum} .     
-	OPTIONAL {<http://dbpedia.org/resource/...And_Justice_for_All_(album)> 	dc:subject              ?subjectAlbum} .  
-	OPTIONAL {<http://dbpedia.org/resource/...And_Justice_for_All_(album)> 	prop:award              ?awardAlbum 	. FILTER langMatches(lang(?awardAlbum), "en")} .     
-	OPTIONAL {<http://dbpedia.org/resource/...And_Justice_for_All_(album)> 	prop:studio             ?studioAlbum} .   
-   
+{
+	OPTIONAL {<http://dbpedia.org/resource/Aftermath_(The_Rolling_Stones_album)> 	db-owl:abstract  ?abstractAlbum . FILTER langMatches(lang(?abstractAlbum), "en")}.     
+	OPTIONAL {<http://dbpedia.org/resource/Aftermath_(The_Rolling_Stones_album)> 	db-owl:artist           ?artistAlbum}.     
+	OPTIONAL {<http://dbpedia.org/resource/Aftermath_(The_Rolling_Stones_album)> 	db-owl:genre     	?genreAlbum}.     
+	OPTIONAL {<http://dbpedia.org/resource/Aftermath_(The_Rolling_Stones_album)> 	db-owl:recordDate       ?recordDateAlbum} .     
+	OPTIONAL {<http://dbpedia.org/resource/Aftermath_(The_Rolling_Stones_album)> 	db-owl:recordLabel      ?recordLabelAlbum} .     
+	OPTIONAL {<http://dbpedia.org/resource/Aftermath_(The_Rolling_Stones_album)> 	db-owl:releaseDate      ?releaseDateAlbum} .     
+	OPTIONAL {<http://dbpedia.org/resource/Aftermath_(The_Rolling_Stones_album)> 	db-owl:runtime          ?runtimeAlbum} .     
+	OPTIONAL {<http://dbpedia.org/resource/Aftermath_(The_Rolling_Stones_album)> 	dc:subject              ?subjectAlbum} .  
+	OPTIONAL {<http://dbpedia.org/resource/Aftermath_(The_Rolling_Stones_album)> 	prop:award              ?awardAlbum 	. FILTER langMatches(lang(?awardAlbum), "en")} .     
+	OPTIONAL {<http://dbpedia.org/resource/Aftermath_(The_Rolling_Stones_album)> 	prop:studio             ?studioAlbum} .
+}   UNION{
 	OPTIONAL {
-		<http://dbpedia.org/resource/...And_Justice_for_All_(album)> 	db-owl:producer            ?producerAlbum 
-   		OPTIONAL {?producerAlbum       	db-owl:abstract                 ?abstractProducer      . FILTER langMatches(lang(?abstractProducer), "en")}.         
+		<http://dbpedia.org/resource/Aftermath_(The_Rolling_Stones_album)> db-owl:producer ?producerAlbum 
+    		OPTIONAL {?producerAlbum       	db-owl:abstract                 ?abstractProducer      . FILTER langMatches(lang(?abstractProducer), "en")}.
 		OPTIONAL {?producerAlbum  	db-owl:associatedMusicalArtist  ?associatedMusicalArtist}.
-		OPTIONAL {?producerAlbum        db-owl:recordLabel      ?recordLabel}.   
-		OPTIONAL {?producerAlbum       	dc:subject              ?subject}.         
-      		OPTIONAL {?producerAlbum   	db-owl:artist  		?artist}.         
-		OPTIONAL {?producerAlbum  	db-owl:occupation       ?occupation}.         
-		OPTIONAL {?producerOf  	        db-owl:producer         ?producerAlbum}. 
-	}.    
-        
-        
+		OPTIONAL {?producerAlbum        db-owl:recordLabel      ?recordLabel}. 
+		OPTIONAL {?producerAlbum       	dc:subject              ?subject}.
+      		OPTIONAL {?producerAlbum   	db-owl:artist  		?artist}.
+		OPTIONAL {?producerAlbum  	db-owl:occupation       ?occupation}.
+	}
+}  
      }ORDER BY DESC(?artistAlbum) 
   }
 }

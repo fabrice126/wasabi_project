@@ -3,35 +3,39 @@ PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX prop: <http://dbpedia.org/property/>
 PREFIX dc:      <http://purl.org/dc/terms/>
 CONSTRUCT {
-		 <http://dbpedia.org/resource/Different_World_(song)>	db-owl:writer ?writer ;
-				  		db-owl:abstract ?abstractBand ;
-						db-owl:producer ?producer;
-						db-owl:genre ?genre;
-						#prop:label ?label  ; a mettre pour les requêtes d'album
-						#db-owl:recordLabel ?recordLabel; 
-						db-owl:album ?album.
+  <http://dbpedia.org/resource/Master_of_Puppets_(song)>	db-owl:writer ?writer ;  
+              db-owl:abstract ?abstract;  
+              db-owl:producer ?producer;  
+              db-owl:genre ?genre;  
+              db-owl:recordLabel ?recordLabel;   
+              db-owl:album ?album;  
+              db-owl:runtime ?runtime;  
+              prop:recorded ?recorded;  
+              dc:subject ?subject;  
+              db-owl:format ?format;  
+              db-owl:musicalArtist ?musicalArtist;  
+              db-owl:releaseDate ?releaseDate;  
+              prop:award ?award;  
+              prop:title ?title.
 }
 where {
   service <http://dbpedia.org/sparql/> {
      select *
-     where {
-
-		<http://dbpedia.org/resource/Different_World_(song)> 		db-owl:bandMember ?bandMemberBand.
-		OPTIONAL {<http://dbpedia.org/resource/Iron_Maiden>	db-owl:activeYearsStartYear ?activeYearsStartYearBand}  .
-		OPTIONAL {<http://dbpedia.org/resource/Iron_Maiden>	db-owl:abstract ?abstractBand			. FILTER langMatches(lang(?abstractBand), 'en')} .
-		#Extraction des informations sur les anciens membres
-		#OPTIONAL imbriqué car ?formerBandMemberBand peut ne pas exister, si c'est le cas virtuoso prédit un temps trop élevé pour la requête et nous bloque
-		OPTIONAL {
-			<http://dbpedia.org/resource/Different_World_(song)>	db-owl:formerBandMember ?formerBandMemberBand .
-			?formerBandMemberBand 		rdfs:label   		?labelFormer.  FILTER langMatches(lang(?labelFormer), 'en') .
-			OPTIONAL {?formerBandMemberBand  	prop:birthName   	?birthNameFormer	. FILTER langMatches(lang(?birthNameFormer), 'en')} .
-
-		}.
-		
-
-
-
-
-     }ORDER BY DESC(?bandMemberBand) 
+     where {	
+      OPTIONAL {<http://dbpedia.org/resource/Master_of_Puppets_(song)> db-owl:writer ?writer} .  
+      OPTIONAL {<http://dbpedia.org/resource/Master_of_Puppets_(song)> db-owl:abstract ?abstract . FILTER langMatches(lang(?abstract),  "en" )}  .  
+      OPTIONAL {<http://dbpedia.org/resource/Master_of_Puppets_(song)> db-owl:producer ?producer} .  
+      OPTIONAL {<http://dbpedia.org/resource/Master_of_Puppets_(song)> db-owl:genre ?genre} .  
+      OPTIONAL {<http://dbpedia.org/resource/Master_of_Puppets_(song)> db-owl:recordLabel ?recordLabel} .  
+      OPTIONAL {<http://dbpedia.org/resource/Master_of_Puppets_(song)> db-owl:album ?album} .  
+      OPTIONAL {<http://dbpedia.org/resource/Master_of_Puppets_(song)> db-owl:runtime ?runtime} .  
+      OPTIONAL {<http://dbpedia.org/resource/Master_of_Puppets_(song)> prop:recorded ?recorded } .  
+      OPTIONAL {<http://dbpedia.org/resource/Master_of_Puppets_(song)> dc:subject ?subject } .  
+      OPTIONAL {<http://dbpedia.org/resource/Master_of_Puppets_(song)> db-owl:format ?format } .  
+      OPTIONAL {<http://dbpedia.org/resource/Master_of_Puppets_(song)> db-owl:musicalArtist ?musicalArtist } .  
+      OPTIONAL {<http://dbpedia.org/resource/Master_of_Puppets_(song)> db-owl:releaseDate ?releaseDate } .  
+      OPTIONAL {<http://dbpedia.org/resource/Master_of_Puppets_(song)> prop:award ?award . FILTER langMatches(lang(?award),  "en" )} .  
+      OPTIONAL {<http://dbpedia.org/resource/Master_of_Puppets_(song)> prop:title ?title} . 
+     }ORDER BY DESC(?writer) 
   }
 }

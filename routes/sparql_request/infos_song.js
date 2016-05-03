@@ -22,7 +22,7 @@ var construct_request = function (artist, country) {
  '             prop:recorded ?recorded; '+ 
  '             dc:subject ?subject; '+ 
  '             db-owl:format ?format; '+ 
- '             db-owl:format ?musicalArtist; '+ 
+ '             db-owl:musicalArtist ?musicalArtist; '+ 
  '             db-owl:releaseDate ?releaseDate; '+ 
  '             prop:award ?award; '+ 
  '             prop:title ?title. '+ 
@@ -47,9 +47,4 @@ var construct_request = function (artist, country) {
 
 
 exports.construct_request = construct_request;
-
-
  
-
-
-

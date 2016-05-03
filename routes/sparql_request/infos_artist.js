@@ -9,11 +9,13 @@ var construct_request = function (artist, country) {
     }
     return  ' PREFIX db-owl: <http://dbpedia.org/ontology/> ' +
     ' PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> '+
+    ' PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> '+
     ' PREFIX prop:   <http://dbpedia.org/property/> '+
     ' PREFIX dc:      <http://purl.org/dc/terms/> '+
     ' CONSTRUCT { '+
     ' <http://'+country+'dbpedia.org/resource/'+artist+'> db-owl:bandMember ?bandMemberBand ; '+
     ' db-owl:abstract ?abstractBand ; '+
+    ' db-owl:genre ?genre ; '+
     ' db-owl:recordLabel ?recordLabel ; '+
     ' db-owl:activeYearsStartYear ?activeYearsStartYearBand ; '+
     ' db-owl:associatedMusicalArtist ?associatedMusicalArtistBand ; '+
@@ -35,7 +37,10 @@ var construct_request = function (artist, country) {
     ' dc:subject ?subjectMember . '+
     ' } '+
     ' where { '+
-    '    OPTIONAL {<http://'+country+'dbpedia.org/resource/'+artist+'> dc:subject  ?subjectBand} . '+
+    '    { '+
+    '    OPTIONAL {<http://'+country+'dbpedia.org/resource/'+artist+'> 	dc:subject ?subjectBand} '+
+    '    }UNION{ '+
+    '    OPTIONAL {<http://'+country+'dbpedia.org/resource/'+artist+'> db-owl:genre ?genre}. '+
     '    OPTIONAL {<http://'+country+'dbpedia.org/resource/'+artist+'> db-owl:associatedMusicalArtist ?associatedMusicalArtistBand} . '+
     '    OPTIONAL {<http://'+country+'dbpedia.org/resource/'+artist+'> db-owl:recordLabel ?recordLabel} . '+
     '    OPTIONAL {<http://'+country+'dbpedia.org/resource/'+artist+'> db-owl:activeYearsStartYear ?activeYearsStartYearBand} . '+
@@ -60,13 +65,12 @@ var construct_request = function (artist, country) {
     '        OPTIONAL {?formerBandMemberBand dc:subject ?subjectFormer } . '+
     '        OPTIONAL {?formerBandMemberBand db-owl:birthDate ?birthDateFormer} . '+
     '    } '+
+    '    } '+
     ' } ORDER BY DESC(?bandMemberBand) ';
 }; 
 
 
 exports.construct_request = construct_request;
-
-
 
 
 
