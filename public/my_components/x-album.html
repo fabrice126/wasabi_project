@@ -121,10 +121,6 @@
             type: Object,
             value: {},
         },
-        odAlbumName:{
-            type: String,
-            value:"",
-        }
     },
     ready: function(e){    
     },
@@ -142,7 +138,6 @@
     doEdit: function(e){
     	this.editing=!this.editing;
         if(this.editing){  
-            this.odAlbumName = this.album.titre;
             this.$.get_content.url = "/search/artist/"+this._encodeUri(this.artist.name)+"/album/"+this._encodeUri(this.album.titre); 
             console.log("URL DE L'ALBUM A MODIFIER :"+this.$.get_content.url);
             this.$.get_content.generateRequest();
@@ -150,7 +145,6 @@
     	if (!this.editing){
             console.log("DANS !THIS EDITING");
             this.$.put_content.body = JSON.stringify(this.album);
-//            this.$.put_content.url = "/search/update/artist/"+this._encodeUri(this.artist.name)+"/album/"+this._encodeUri(this.album.titre)+"/oldalbum/"+this._encodeUri(this.odAlbumName); 
             this.$.put_content.url = "/search/artist/"+this._encodeUri(this.artist.name)+"/album/"+this._encodeUri(this.album.titre);
             this.$.put_content.generateRequest();
         }

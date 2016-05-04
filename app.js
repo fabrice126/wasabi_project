@@ -15,6 +15,7 @@ var app             = express();
 // view cache
 app.set('view cache', false); // désactivation du cache express
 // uncomment after placing your favicon in /public
+//app.set('view engine', 'html'); 
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
@@ -30,17 +31,24 @@ app.use('/search', search);
 //app.use('/updatedb', updatedb);
 app.use('/extractdbpedia', extractdbpedia);
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  var err = new Error('Not Found');
-  err.status = 404;
-    
-  next(err);
-});
+//app.use(function(req, res, next) {
+//  var err = new Error('Not Found');
+//  err.status = 404;
+//    
+//  next(err);
+//});
 
 // error handlers
 
-// development error handler
-// will print stacktrace
+app.get('*', function(req, res){
+    console.log(path.join(__dirname ,'public/my_components',  'page-404.html'));
+    res.sendFile(path.join(__dirname ,'public/my_components',  'page-404.html'));
+});
+
+
+
+//// development error handler
+//// will print stacktrace
 //if (app.get('env') === 'development') {
 //  app.use(function(err, req, res, next) {
 //    res.status(err.status || 500 || 404);
@@ -50,9 +58,9 @@ app.use(function(req, res, next) {
 //    });
 //  });
 //}
-
-// production error handler
-// no stacktraces leaked to user
+//
+//// production error handler
+//// no stacktraces leaked to user
 //app.use(function(err, req, res, next) {
 //  res.status(err.status || 500);
 //  res.render('error', {

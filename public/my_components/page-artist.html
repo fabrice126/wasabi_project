@@ -12,6 +12,7 @@
         <link rel="import" href="../bower_components/paper-item/paper-icon-item.html">
         <link rel="import" href="../bower_components/paper-item/paper-item-body.html">
         <link rel="import" href="../bower_components/paper-fab/paper-fab.html">
+        <link rel="import" href="show-dialog.html">
 
 
         
@@ -33,13 +34,16 @@
             }
             paper-material{
                 margin-bottom: 5%;
-            }
+            }            
         </style>
         <template>
             <paper-material elevation="1">
-<!--                Si utilisé avec app router-->
                 <iron-ajax id="get_content" auto url="/search/artist/{{_encodeUri(nameArtist)}}" last-response="{{artist}}" handleAs="json"> </iron-ajax>
+                <template is="dom-if" if="{{artist.rdf.length}}">
+                    <show-dialog labeldialog="RDF {{artist.name}} :" labelbutton="Show RDF" content="{{artist.rdf}}" labelexitdialog="Close"></show-dialog>
+                </template>
                 <div class="artistname"> {{artist.name}}</div>
+                
                 <template class="flex-wrap" is="dom-repeat" items="{{artist.albums}}" as="album" initial-count="1" >
                     <x-album album={{album}} artist={{artist}}></x-album>
                 </template>
@@ -63,9 +67,7 @@
     },
     _encodeUri : function(nameArtist){
         return encodeURIComponent(nameArtist);
-    }  
-      
-      
+    },    
   });  
 
 </script>   

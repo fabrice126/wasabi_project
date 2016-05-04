@@ -1,6 +1,6 @@
 var express         = require('express');
 var router          = express.Router();
-var parseString     = require('xml2js').parseString;
+//var parseString     = require('xml2js').parseString;
 var db              = require('mongoskin').db('mongodb://localhost:27017/wasabi');
 var dbpediaHandler  = require('./handler/dbpediaHandler.js');
 var infos_artist    = require('./sparql_request/infos_artist.js');
@@ -54,27 +54,27 @@ router.get('/artist',function(req, res){
     res.send("OK");
 });
 
-router.get('/artist/createfields',function(req, res){
-//        db.collection('artist').find({$and:[{rdf:{$ne:""}},{rdf:{$exists:true}}]},{_id:1,urlWikipedia:1}).limit(limit).toArray(function(err,tObjArtist){
-        db.collection('artist').find({name:"Metallica"},{rdf:1,formerMembers:1,members:1,urlWikipedia:1}).limit(5).toArray(function(err,tObjArtist){
-            for(var i = 0; i<tObjArtist.length;i++){                
-//                console.log(tObjArtist[i]);
-                var xml = tObjArtist[i].rdf;
-                parseString(xml, function (err, result) {
-                    if(result !=null){
-//                        findObjectByLabel(result,'rdf:RDF');
-                            console.log(result['rdf:RDF']);
-//                            console.log(JSON.stringify(result['rdf:RDF']));
-                            console.log("\n\n\n\n");
-
-                    }
-                });
-            }
-//            db.collection('artist').update({_id : new ObjectId(objArtist._id)}, { $set: {"rdf": rdfValue} });
-        });
-
-
-});
+//router.get('/artist/createfields',function(req, res){
+////        db.collection('artist').find({$and:[{rdf:{$ne:""}},{rdf:{$exists:true}}]},{_id:1,urlWikipedia:1}).limit(limit).toArray(function(err,tObjArtist){
+//        db.collection('artist').find({name:"Metallica"},{rdf:1,formerMembers:1,members:1,urlWikipedia:1}).limit(5).toArray(function(err,tObjArtist){
+//            for(var i = 0; i<tObjArtist.length;i++){                
+////                console.log(tObjArtist[i]);
+//                var xml = tObjArtist[i].rdf;
+//                parseString(xml, function (err, result) {
+//                    if(result !=null){
+////                        findObjectByLabel(result,'rdf:RDF');
+//                            console.log(result['rdf:RDF']);
+////                            console.log(JSON.stringify(result['rdf:RDF']));
+//                            console.log("\n\n\n\n");
+//
+//                    }
+//                });
+//            }
+////            db.collection('artist').update({_id : new ObjectId(objArtist._id)}, { $set: {"rdf": rdfValue} });
+//        });
+//
+//
+//});
 
 router.get('/album',function(req, res){
     var limit = 5000;

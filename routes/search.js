@@ -135,9 +135,9 @@ router.get('/artist/:artistName', function (req, res) {
         else{
             artist.albums = [];
             var cnt = 0;
-            db.collection('album').count({name:artistName}, function(err, count) {
+            db.collection('album').count({id_artist:artist._id}, function(err, count) {
                 if (err) throw err; 
-                db.collection('album').find({id_artist:artist._id},{"urlWikipedia":0,"urlAlbum":0,wordCount:0}).sort( { "dateSortie": -1} ).forEach(
+                db.collection('album').find({id_artist:artist._id},{"urlAlbum":0,"wordCount":0,"rdf":0}).sort( { "dateSortie": -1} ).forEach(
                     function(album){ 
                         artist.albums.push(album);
                         (function(albumIdx,album){
@@ -165,13 +165,13 @@ router.get('/artist/:artistName/album/:albumName', function (req, res) {
     var albumName= req.params.albumName;
     var artistName = req.params.artistName;
     this.console.log("L'utilisateur veut AFFICHER l'album "+albumName+" de l'artiste "+artistName);
-    db.collection('artist').findOne({name:artistName}, function(err, artist) {
+    db.collection('artist').findOne({name:artistName},{"rdf":0,"wordCount":0,"urlWikia":0}, function(err, artist) {
         if (artist==null) {                    
             res.status(404).send([{error:"Page not found"}]);
         }
         else{
             //!\ UN ARTIST PEUT AVOIR PLUSIEURS FOIS UN MEME TITRE D'ALBUM /!\ ERREUR A CORRIGER
-            db.collection('album').findOne({$and:[{"titre":albumName},{"id_artist":artist._id}]},{"urlAlbum":0,wordCount:0}, function(err, album) {
+            db.collection('album').findOne({$and:[{"titre":albumName},{"id_artist":artist._id}]},{"urlAlbum":0,"wordCount":0}, function(err, album) {
                 if (album==null) {                    
                     res.status(404).send([{error:"Page not found"}]);
                 }
@@ -218,17 +218,17 @@ router.get('/artist/:artistName/album/:albumName/song/:songsName', function (req
     var albumName = req.params.albumName;
     var songsName = req.params.songsName;
     this.console.log("Affichage de la page de la musique "+songsName );    
-    db.collection('artist').findOne({name:artistName}, function(err, artist) {
+    db.collection('artist').findOne({name:artistName},{"rdf":0,"wordCount":0,"urlWikia":0}, function(err, artist) {
         if (artist==null) {                    
             res.status(404).send([{error:"Page not found"}]);
         }
         else{
-            db.collection('album').findOne({$and:[{"titre":albumName},{"id_artist":artist._id}]},{"urlAlbum":0,wordCount:0}, function(err, album) {
+            db.collection('album').findOne({$and:[{"titre":albumName},{"id_artist":artist._id}]},{"urlAlbum":0,"wordCount":0,"rdf":0}, function(err, album) {
                 if (album==null) {                    
                     res.status(404).send([{error:"Page not found"}]);
                 }
                 else{
-                    db.collection('song').findOne({$and:[{"albumTitre":albumName},{"name":artistName},{"titre":songsName}]},{"urlSong":0,wordCount:0},function(err, song) {
+                    db.collection('song').findOne({$and:[{"albumTitre":albumName},{"name":artistName},{"titre":songsName}]},{"urlSong":0,"wordCount":0,"searchTags":0},function(err, song) {
                         if (song === null) {
                             this.console.log("Album Inexistant");
                             res.status(404).send([{error:"Page not found"}]);
@@ -263,7 +263,8 @@ router.get('/artist/begin/:artistName', function (req, res) {
     var maxinfoselected = maxinfo/2;
     var result = [];
     this.console.log("L'utilisateur recherche un artiste commancant par les lettres: "+artistName);
-    db.collection('artist').find({"name": regLetter},{"name":1,urlWikipedia:1}).limit(maxinfo).toArray(function(err,artist){
+//    db.collection('artist').find({"name": regLetter},{"name":1,urlWikipedia:1}).limit(maxinfo).toArray(function(err,artist){
+    db.collection('artist').find({ $text: { $search: artistName } },{ score: { $meta: "textScore" },"name":1, "urlWikipedia":1 }).sort({score:{$meta:"textScore"}}).limit(maxinfo).toArray(function(err,artist){
         if (err) throw err;
         db.collection('song').find({ $text: { $search: artistName } },
                                    { score: { $meta: "textScore" },"titre":1, "name":1,"albumTitre":1 }).sort({score:{$meta:"textScore"}}).limit(maxinfo).toArray(function(err,song){

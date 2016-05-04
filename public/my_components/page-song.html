@@ -13,7 +13,7 @@
         <link rel="import" href="../bower_components/paper-item/paper-item-body.html">
         <link rel="import" href="../bower_components/paper-fab/paper-fab.html">
         <link rel="import" href="../bower_components/paper-input/paper-textarea.html">
-
+        <link rel="import" href="show-dialog.html">
 
         
     </head>
@@ -69,7 +69,10 @@
                 <iron-ajax id="get_content" auto url="/search/artist/{{_encodeUri(nameArtist)}}/album/{{_encodeUri(nameAlbum)}}/song/{{_encodeUri(nameSong)}}" last-response="{{artist}}" handleAs="json" on-response="handleResponse"> </iron-ajax>
                 
                 <iron-ajax id="put_content" method="PUT" content-type="application/json"></iron-ajax>
-
+                                        
+                <template is="dom-if" if="{{artist.albums.songs.rdf.length}}">
+                    <show-dialog labeldialog="RDF {{artist.albums.songs.titre}} :" labelbutton="Show RDF" content="{{artist.albums.songs.rdf}}" labelexitdialog="Close"></show-dialog>
+                </template>
                 
                 <div id="songName"> 
                    {{artist.albums.songs.titre}}
