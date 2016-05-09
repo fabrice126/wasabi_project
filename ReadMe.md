@@ -44,11 +44,11 @@ Architecture du code:
 				#-une collection album contenant les informations relatives à l'album  
 				#-une collection song contenant les informations relatives à la musique  
 				#-Les index des collections artist, album et song  
-			#3- le fichier WordCount_Artist.js faisant le word count des lyrics pour chaque artist (~3 heures d'éxecution)(afin de voir les termes les plus utilisés par un artiste)  
-			#4- le fichier WordCount_Album.js faisant le word count des lyrics pour chaque album (~10 heures d'éxecution) (afin de voir les termes les plus utilisés dans un album)  
-			#5- le fichier WordCount_Song.js faisant le word count des lyrics pour chaque song (afin de voir les termes les plus utilisés dans une musique)  
-			#6- le fichier RefArtistInSong.js permettant d'ajouter une référence d'artiste dans un document album(~2 minutes)  
-			#7- le fichier RefAlbumInSong.js permettant dajouter une référence d'album dans un document song(~20 minutes)  
+            #3- le fichier RefArtistInAlbum.js permettant d'ajouter une référence d'artiste dans un document album(~2 minutes)  
+			#4- le fichier RefAlbumInSong.js permettant dajouter une référence d'album dans un document song(~20 minutes) 
+			#5- le fichier WordCount_Artist.js faisant le word count des lyrics pour chaque artist (~3 heures d'éxecution)(afin de voir les termes les plus utilisés par un artiste)  
+			#6- le fichier WordCount_Album.js faisant le word count des lyrics pour chaque album (~10 heures d'éxecution) (afin de voir les termes les plus utilisés dans un album)  
+			#7- le fichier WordCount_Song.js faisant le word count des lyrics pour chaque song (afin de voir les termes les plus utilisés dans une musique)   
 			#8- le fichier CreateSearchField.js permettant de créer le champs sur lequel sera effectuée la recherche (~10 minutes)  
 
 --node_modules/  

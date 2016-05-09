@@ -5,7 +5,7 @@ var logger          = require('morgan');
 var cookieParser    = require('cookie-parser');
 var bodyParser      = require('body-parser');
 var search          = require('./routes/search');
-//var createdb        = require('./routes/createdb');
+var createdb        = require('./routes/createdb');
 //var updatedb        = require('./routes/updatedb');
 var extractdbpedia  = require('./routes/extractdbpedia');
 var basicAuth       = require('basic-auth-connect');
@@ -27,7 +27,7 @@ app.use('/',express.static(path.join(__dirname, 'public')));
 app.use('/search', search);
 
 //Permet d'utiliser les fonctions de créations et updates de la base de données
-//app.use('/createdb', createdb);
+app.use('/createdb', createdb);
 //app.use('/updatedb', updatedb);
 app.use('/extractdbpedia', extractdbpedia);
 // catch 404 and forward to error handler
@@ -39,10 +39,10 @@ app.use('/extractdbpedia', extractdbpedia);
 //});
 
 // error handlers
-
+//Return la page-404.html
 app.get('*', function(req, res){
-    console.log(path.join(__dirname ,'public/my_components',  'page-404.html'));
-    res.sendFile(path.join(__dirname ,'public/my_components',  'page-404.html'));
+    //On renvoie index.html qui ira match l'url via <app-router> de index.html ce qui renverra la page 404 si la page n'existe pas
+    res.sendFile(path.join(__dirname ,'public',  'index.html'));
 });
 
 
