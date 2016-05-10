@@ -8,8 +8,9 @@ Comment lancer l'application
 4. Lancer le serveur  
 	4.1. en ligne de commande : cd C:/Users/user/Documents/wasabi_project  
 	4.2. node bin/www  
-		4.2.1. Si ca ne fonctionne pas : taper "npm install" en ligne commande dans le projet wasabi (voir 4.1.) 
+		4.2.1. Si ca ne fonctionne pas : taper "npm install" en ligne commande dans le projet wasabi (voir 4.1.)  
 	4.3. le serveur est maintenant lancé sur http://localhost (dans le navigateur)  
+
 
 
 Architecture du code:
@@ -17,6 +18,8 @@ Architecture du code:
 ## bin/
 	www  
 	#Permet de lancer l'application  
+
+
 
 ## mongo/
 ##### mongo/backup_mongo/  
@@ -27,6 +30,9 @@ Architecture du code:
 		#rendez-vous dans le répertoire des dumps en ligne de commande   
 		#changer le nom du dossier appelé "dump" pour l'appeler "dump_old_x+1"  
 		#lancer la commande mongodump, un dossier dump sera crée  
+
+
+
 ##### mongo/request_mongo/  
 	#contient des requêtes utiles  
 	#si la base de données est recrée de zéro elle contiendra:  
@@ -46,50 +52,52 @@ Architecture du code:
 			#6- le fichier WordCount_Album.js faisant le word count des lyrics pour chaque album (~10 heures d'éxecution) (afin de voir les termes les plus utilisés dans un album)  
 			#7- le fichier WordCount_Song.js faisant le word count des lyrics pour chaque song (afin de voir les termes les plus utilisés dans une musique)   
 			#8- le fichier CreateSearchField.js permettant de créer le champs sur lequel sera effectuée la recherche (~10 minutes)  
+
+
+
 ##### mongo/sparql/
-Contient les requêtes sparql utilisées par l'application pour l'extraction du RDF pour les :  
-	* Artistes: sparql_artist_data.rq  
-	* Albums: sparql_album_data.rq  
-	* Musiques: sparql_song_data.rq  
+	Contient les requêtes sparql utilisées par l'application pour l'extraction du RDF pour les :  
+	- Artistes: sparql_artist_data.rq  
+	- Albums: sparql_album_data.rq  
+	- Musiques: sparql_song_data.rq  
+
+
 
 ## node_modules/
-	#Contient les modules installés dans node js. exemple :le module require('express') sera dans ce répertoire  
+	Contient les modules installés dans node js. exemple :le module require('express') sera dans ce répertoire  
 
 
 
 ## public/
 ##### public/bower-components/  
-	#Composant téléchargé afin de les utiliser dans l'application  
+	Composant téléchargé afin de les utiliser dans l'application  
 ##### public/img/  
-	#Les images du projet  
+	Les images du projet  
 ##### public/javascripts/ 
-	#Code javascript des pages html  
+	Code javascript des pages html  
 ##### public/my_components/  
-	#Composant crée pour être utilisé dans l'application  
+	Composant crée pour être utilisé dans l'application  
 ##### public/stylesheets/  
-	#Code css des pages html  
+	Code css des pages html  
 
 
 
 ## routes/
-	#Contient la définition des routes supportées par l'application. C'est ici que se situe la partie REST  
+	Contient la définition des routes supportées par l'application. C'est ici que se situe la partie REST  
 ##### routes/conf/  
-------conf.json  
-	#Fichier de configuration permettant  de ne pas reécrire les données redondante dans l'application  
+	conf.json : Fichier de configuration permettant  de ne pas reécrire les données redondante dans l'application  
 ##### routes/handler/  
-------xxxx.js  
-	#Contient la logique applicative à appliquer lors de requêtes sur les routes.   
+	xxxx.js : Contient la logique applicative à appliquer lors de requêtes sur les routes.   
 
 
 
 ## app.js
-	#C'est le fichier qui sera appelé par la commande node bin/www. C'est ici qu'on appellera les nouvelles routes de l'application et   
-        #qu'on configurera certaines parties de l'application  
+	C'est le fichier qui sera appelé par la commande node bin/www. C'est ici qu'on appellera les nouvelles routes de l'application et qu'on configurera certaines parties de l'application  
 
 
 
 ## package.json
-	#Fichier décrivant l'application  
+	Fichier décrivant l'application, c'est aussi le gestionnaire de dépendance de node js. 
 
 
 
