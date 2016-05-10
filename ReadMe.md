@@ -27,7 +27,7 @@ Architecture du code:
 		#rendez-vous dans le répertoire des dumps en ligne de commande   
 		#changer le nom du dossier appelé "dump" pour l'appeler "dump_old_x+1"  
 		#lancer la commande mongodump, un dossier dump sera crée  
-### request_mongo/  
+##### mongo/request_mongo/  
 	#contient des requêtes utiles  
 	#si la base de données est recrée de zéro elle contiendra:  
 		#Une collection artist contenant des documents représentant un artiste avec leurs albums et leurs musiques, il faudra donc lancer :  
@@ -47,48 +47,43 @@ Architecture du code:
 			#7- le fichier WordCount_Song.js faisant le word count des lyrics pour chaque song (afin de voir les termes les plus utilisés dans une musique)   
 			#8- le fichier CreateSearchField.js permettant de créer le champs sur lequel sera effectuée la recherche (~10 minutes)  
 
-node_modules/
------------
+## node_modules/
 	#Contient les modules installés dans node js. exemple :le module require('express') sera dans ce répertoire  
 
 
 
-public/
------------
-### bower-components/  
+## public/
+##### public/bower-components/  
 	#Composant téléchargé afin de les utiliser dans l'application  
-### img/  
+##### public/img/  
 	#Les images du projet  
-### javascripts/ 
+##### public/javascripts/ 
 	#Code javascript des pages html  
-### my_components/  
+##### public/my_components/  
 	#Composant crée pour être utilisé dans l'application  
-### stylesheets/  
+##### public/stylesheets/  
 	#Code css des pages html  
 
 
 
-routes/
------------
+## routes/
 	#Contient la définition des routes supportées par l'application. C'est ici que se situe la partie REST  
-### conf/  
+##### routes/conf/  
 ------conf.json  
 	#Fichier de configuration permettant  de ne pas reécrire les données redondante dans l'application  
-### handler/  
+##### routes/handler/  
 ------xxxx.js  
 	#Contient la logique applicative à appliquer lors de requêtes sur les routes.   
 
 
 
-app.js
------------
+## app.js
 	#C'est le fichier qui sera appelé par la commande node bin/www. C'est ici qu'on appellera les nouvelles routes de l'application et   
         #qu'on configurera certaines parties de l'application  
 
 
 
-package.json
------------
+## package.json
 	#Fichier décrivant l'application  
 
 
