@@ -3,7 +3,7 @@ Comment lancer l'application
 =======
 1. Récupérer l'application sur le GIT
 2. Installer node js : https://nodejs.org/en/
-3. Installer mongodb : version >= 3.2 : https://www.mongodb.com/
+3. Installer mongodb : version >= 3.2 : https://www.mongodb.com/  
 	3.1 (facultatif mais conseillé) Installer robomongo : https://robomongo.org/
 2. Lancer le serveur
 	2.1. en ligne de commande : cd C:/Users/user/Documents/wasabi_project  
