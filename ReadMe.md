@@ -8,7 +8,7 @@ Comment lancer l'application
 4. Lancer le serveur  
 	4.1. en ligne de commande : cd C:/Users/user/Documents/wasabi_project  
 	4.2. node bin/www  
-		4.2.1. Si ca ne fonctionne pas : taper "npm install" en ligne commande dans le projet wasabi (voir 4.1.) 
+		4.2.1. Si ca ne fonctionne pas : taper "npm install" en ligne commande dans le projet wasabi (voir 4.1.)  
 	4.3. le serveur est maintenant lancé sur http://localhost (dans le navigateur)  
 
 
