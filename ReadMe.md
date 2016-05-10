@@ -3,13 +3,13 @@ Comment lancer l'application
 =======
 1. Récupérer l'application sur le GIT
 2. Installer node js : https://nodejs.org/en/
-3. Installer mongodb : version >= 3.2 : https://www.mongodb.com/  
-	3.1 (facultatif mais conseillé) Installer robomongo : https://robomongo.org/
-4. Lancer le serveur  
-	4.1. en ligne de commande : cd C:/Users/user/Documents/wasabi_project  
-	4.2. node bin/www  
-		4.2.1. Si ca ne fonctionne pas : taper "npm install" en ligne commande dans le projet wasabi (voir 4.1.)  
-	4.3. le serveur est maintenant lancé sur http://localhost (dans le navigateur)  
+3. Installer mongodb : version >= 3.2 : https://www.mongodb.com/
+	3.1. (facultatif mais conseillé) Installer robomongo : https://robomongo.org/
+4. Lancer le serveur
+	4.1. en ligne de commande : cd C:/Users/user/Documents/wasabi_project
+	4.2. node bin/www
+		4.2.1. Si ca ne fonctionne pas : taper "npm install" en ligne commande dans le projet wasabi (voir 4.1.)
+	4.3. le serveur est maintenant lancé sur http://localhost (dans le navigateur)
 
 
 
@@ -17,7 +17,7 @@ Architecture du code:
 =======
 ## bin/
 	www  
-	#Permet de lancer l'application  
+	Permet de lancer l'application  
 
 
 
@@ -37,19 +37,19 @@ Architecture du code:
 Contient des requêtes utiles  
 Si la base de données est recrée de zéro via le webservice /createdb elle contiendra:  
 Une collection artist contenant des documents représentant un artiste avec leurs albums et leurs musiques, il faudra donc lancer :  
-1. Le fichier FindSameDocument.js dans mongo afin de trouver les documents en double (ayant le même nom d'artist) dans la base de données  
-	1.1. Il y aura toujours des documents en double dans la base de données une fois celle-ci crée car lors de l'extraction sur le site de lyrics wikia certains artistes étaient présents plusieurs fois. Il faut supprimer alors un des deux documents apparaissant en double pour n'en garder qu'un  
-2. Le fichier ConstructBDAfterCreate.js dans mongodb afin de créer :   
-	2.1. Une collection artist contenant uniquement les informations relatives à l'artiste (sans le champs album)  
-	2.2. Une collection album contenant les informations relatives à l'album  
-	2.3. Une collection song contenant les informations relatives à la musique  
-	2.4. Les index des collections artist, album et song  
-3. le fichier RefArtistInAlbum.js permettant d'ajouter une référence d'artiste dans un document album(~2 minutes)  
-4. le fichier RefAlbumInSong.js permettant dajouter une référence d'album dans un document song(~20 minutes) 
-5. le fichier WordCount_Artist.js faisant le word count des lyrics pour chaque artist (~3 heures d'éxecution)(afin de voir les termes les plus utilisés par un artiste)  
-6. le fichier WordCount_Album.js faisant le word count des lyrics pour chaque album (~10 heures d'éxecution) (afin de voir les termes les plus utilisés dans un album)  
-7. le fichier WordCount_Song.js faisant le word count des lyrics pour chaque song (afin de voir les termes les plus utilisés dans une musique)  
-8. le fichier CreateSearchField.js permettant de créer le champs sur lequel sera effectuée la recherche (~10 minutes)  
+1. Le fichier FindSameDocument.js dans mongo afin de trouver les documents en double (ayant le même nom d'artist) dans la base de données
+	1.1. Il y aura toujours des documents en double dans la base de données une fois celle-ci crée car lors de l'extraction sur le site de lyrics wikia certains artistes étaient présents plusieurs fois. Il faut supprimer alors un des deux documents apparaissant en double pour n'en garder qu'un
+2. Le fichier ConstructBDAfterCreate.js dans mongodb afin de créer :
+	2.1. Une collection artist contenant uniquement les informations relatives à l'artiste (sans le champs album)
+	2.2. Une collection album contenant les informations relatives à l'album
+	2.3. Une collection song contenant les informations relatives à la musique
+	2.4. Les index des collections artist, album et song
+3. le fichier RefArtistInAlbum.js permettant d'ajouter une référence d'artiste dans un document album(~2 minutes)
+4. le fichier RefAlbumInSong.js permettant dajouter une référence d'album dans un document song(~20 minutes)
+5. le fichier WordCount_Artist.js faisant le word count des lyrics pour chaque artist (~3 heures d'éxecution)(afin de voir les termes les plus utilisés par un artiste)
+6. le fichier WordCount_Album.js faisant le word count des lyrics pour chaque album (~10 heures d'éxecution) (afin de voir les termes les plus utilisés dans un album)
+7. le fichier WordCount_Song.js faisant le word count des lyrics pour chaque song (afin de voir les termes les plus utilisés dans une musique)
+8. le fichier CreateSearchField.js permettant de créer le champs sur lequel sera effectuée la recherche (~10 minutes)
 
 
 
