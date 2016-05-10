@@ -48,9 +48,9 @@ Architecture du code:
 			#8- le fichier CreateSearchField.js permettant de créer le champs sur lequel sera effectuée la recherche (~10 minutes)  
 ##### mongo/sparql/
 	Contient les requêtes sparql utilisées par l'application pour l'extraction du RDF pour les :  
-+ Artistes: 	sparql_artist_data.rq
-+ Albums: 	sparql_album_data.rq  
-+ Musiques: 	sparql_song_data.rq
+	- Artistes: 	sparql_artist_data.rq  
+	- Albums: 	sparql_album_data.rq  
+	- Musiques: 	sparql_song_data.rq  
 
 ## node_modules/
 	#Contient les modules installés dans node js. exemple :le module require('express') sera dans ce répertoire  
