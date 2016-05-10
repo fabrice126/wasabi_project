@@ -24,12 +24,17 @@ Architecture du code:
 ## mongo/
 ##### mongo/backup_mongo/  
 	Contient les dumps de l'application  
-	Le dump courant s'appel "dump", les anciens dumps : "dump_old_X" le dump_old_1 sera plus ancien que le dump_old_2  
+	Le dump courant est le dump avec le numéro le plus élevé "dump_x", le dump_x-2 sera plus ancien que le dump_x-1  
 	Créer un dump de la base de données :   
-		1. assurez-vous que mongodb est actif -> commande mongod en console ayant été effectué  
-		2. rendez-vous dans le répertoire des dumps en ligne de commande   
-		3. changer le nom du dossier appelé "dump" pour l'appeler "dump_old_x+1"  
-		4. lancer la commande mongodump, un dossier dump sera crée  
+		1. assurez-vous que mongodb est actif pour cela taper en ligne de commande "mongod"  
+		2. rendez-vous dans le répertoire des dumps (mongo/backup_mongo/) en ligne de commande  
+		4. lancer la commande "mongodump --out dump_x+1" par exemple: si le dernier dump a pour nom "dump_5" lancer la commande "mongodump --out dump_6" pour créer un nouveau dump, un dossier dump_6 sera crée. Vous pouvez aussi lancer la commande "mongodump" pour créer un dump nommé "dump".
+	Restorer la base de données via un dump
+		1. rendez-vous dans le répertoire des dumps (mongo/backup_mongo/) en ligne de commande  
+		2. (Facultatif) Si vous n'avez rien a garder dans la base actuel vous pouvez la drop  
+			2.1. taper en ligne de commande "mongo wasabi" pour avoir accès a la base de données wasabi
+			2.2. taper en ligne de commande "db.dropDatabase()" afin de supprimer la base de données wasabi
+		3. lancer la commande mongorestore dump_6 pour restorer la base de données wasabi (données + index)
 
 
 
