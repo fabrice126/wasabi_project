@@ -1,29 +1,27 @@
 
 Comment lancer l'application
 =======
-1. 
-2. Lancer le serveur  
-	2.1. cd C:/Users/user/Documents/wasabi_project  
+1. Récupérer l'application sur le GIT
+2. Installer node js : https://nodejs.org/en/
+3. Installer mongodb : version >= 3.2 : https://www.mongodb.com/
+	3.1 (facultatif mais conseillé) Installer robomongo : https://robomongo.org/
+2. Lancer le serveur
+	2.1. en ligne de commande : cd C:/Users/user/Documents/wasabi_project  
 	2.2. node bin/www  
+		2.2.1 Si ca ne fonctionne pas : taper "npm install" en ligne commande dans le projet wasabi : C:/Users/user/Documents/wasabi_project 
 	2.3. le serveur est maintenant lancé sur http://localhost (dans le navigateur)  
-3.  
-4. Pour recuperer l'ensemble des paroles clicker sur le bouton EXTRACTION OF LYRICS
-5. Pour recuperer les donnees relatives au texte et les enregistrer dans le local Storage clicker sur le bouton EXTRACTION OF BABEL'S DATA
-6. Pour afficher les donnees clicker sur le bouton SHOW EXTRACTED INFORMATIONS
-7. 
-8. 
 
 
 Architecture du code:
 =======
---bin/  
-----www  
+bin/
+-----------
+	www  
 	#Permet de lancer l'application  
 
-
-
---mongo/  
-----backup_mongo/  
+mongo/
+-----------
+### backup_mongo/  
 	#Contient les dumps de l'application  
 	#Le dump courant s'appel "dump", les anciens dumps : "dump_old_X" le dump_old_1 sera plus ancien que le dump_old_2  
 	#Créer un dump de la base de données :   
@@ -31,7 +29,7 @@ Architecture du code:
 		#rendez-vous dans le répertoire des dumps en ligne de commande   
 		#changer le nom du dossier appelé "dump" pour l'appeler "dump_old_x+1"  
 		#lancer la commande mongodump, un dossier dump sera crée  
-----backup_mongo/  
+### request_mongo/  
 	#contient des requêtes utiles  
 	#si la base de données est recrée de zéro elle contiendra:  
 		#Une collection artist contenant des documents représentant un artiste avec leurs albums et leurs musiques, il faudra donc lancer :  
@@ -51,43 +49,48 @@ Architecture du code:
 			#7- le fichier WordCount_Song.js faisant le word count des lyrics pour chaque song (afin de voir les termes les plus utilisés dans une musique)   
 			#8- le fichier CreateSearchField.js permettant de créer le champs sur lequel sera effectuée la recherche (~10 minutes)  
 
---node_modules/  
+node_modules/
+-----------
 	#Contient les modules installés dans node js. exemple :le module require('express') sera dans ce répertoire  
 
 
 
---public/  
-----bower-components/  
+public/
+-----------
+### bower-components/  
 	#Composant téléchargé afin de les utiliser dans l'application  
-----img/  
+### img/  
 	#Les images du projet  
-----javascripts/ 
+### javascripts/ 
 	#Code javascript des pages html  
-----my_components/  
+### my_components/  
 	#Composant crée pour être utilisé dans l'application  
-----stylesheets/  
+### stylesheets/  
 	#Code css des pages html  
 
 
 
---routes/  
+routes/
+-----------
 	#Contient la définition des routes supportées par l'application. C'est ici que se situe la partie REST  
-----conf/  
+### conf/  
 ------conf.json  
 	#Fichier de configuration permettant  de ne pas reécrire les données redondante dans l'application  
-----handler/  
+### handler/  
 ------xxxx.js  
 	#Contient la logique applicative à appliquer lors de requêtes sur les routes.   
 
 
 
---app.js  
+app.js
+-----------
 	#C'est le fichier qui sera appelé par la commande node bin/www. C'est ici qu'on appellera les nouvelles routes de l'application et   
         #qu'on configurera certaines parties de l'application  
 
 
 
---package.json  
+package.json
+-----------
 	#Fichier décrivant l'application  
 
 
