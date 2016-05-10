@@ -52,7 +52,7 @@ Une collection artist contenant des documents représentant un artiste avec leur
 8. le fichier CreateSearchField.js permettant de créer le champs sur lequel sera effectuée la recherche (~10 minutes)
 
 1. Lorem ipsum dolor sit amet
-2. Consectetur adipiscing elit
+1.1. Consectetur adipiscing elit
 3. Integer molestie lorem at massa
 4. Facilisis in pretium nisl aliquet
 5. Nulla volutpat aliquam velit
