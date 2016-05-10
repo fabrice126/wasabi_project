@@ -6,7 +6,7 @@ Comment lancer l'application
 3. Installer mongodb : version >= 3.2 : https://www.mongodb.com/
 	⋅⋅1. (facultatif mais conseillé) Installer robomongo : https://robomongo.org/
 4. Lancer le serveur
-	..1. en ligne de commande : cd C:/Users/user/Documents/wasabi_project
+	¨1. en ligne de commande : cd C:/Users/user/Documents/wasabi_project
 	..2. node bin/www
 		4.2.1. Si ca ne fonctionne pas : taper "npm install" en ligne commande dans le projet wasabi (voir 4.1.)
 	..3. le serveur est maintenant lancé sur http://localhost (dans le navigateur)
