@@ -47,10 +47,22 @@ Architecture du code:
 			#7- le fichier WordCount_Song.js faisant le word count des lyrics pour chaque song (afin de voir les termes les plus utilisés dans une musique)   
 			#8- le fichier CreateSearchField.js permettant de créer le champs sur lequel sera effectuée la recherche (~10 minutes)  
 ##### mongo/sparql/
-	#Contient les requêtes sparql utilisées par l'application pour l'extraction du RDF pour les :  
+	#Contient les requêtes sparql utilisées par l'application pour l'extraction du RDF pour les :
 	+ Artistes: 	sparql_artist_data.rq
-	+ Albums: 	sparql_album_data.rq  
+	+ Albums: 	sparql_album_data.rq
 	+ Musiques: 	sparql_song_data.rq
+	+ + Lorem ipsum dolor sit amet
++ Consectetur adipiscing elit
++ Integer molestie lorem at massa
++ Facilisis in pretium nisl aliquet
++ Nulla volutpat aliquam velit
+  - Phasellus iaculis neque
+  - Purus sodales ultricies
+  - Vestibulum laoreet porttitor sem
+  - Ac tristique libero volutpat at
++ Faucibus porta lacus fringilla vel
++ Aenean sit amet erat nunc
++ Eget porttitor lorem
 
 ## node_modules/
 	#Contient les modules installés dans node js. exemple :le module require('express') sera dans ce répertoire  
