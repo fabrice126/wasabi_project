@@ -51,7 +51,14 @@ Une collection artist contenant des documents représentant un artiste avec leur
 7. le fichier WordCount_Song.js faisant le word count des lyrics pour chaque song (afin de voir les termes les plus utilisés dans une musique)
 8. le fichier CreateSearchField.js permettant de créer le champs sur lequel sera effectuée la recherche (~10 minutes)
 
-
+1. Lorem ipsum dolor sit amet
+2. Consectetur adipiscing elit
+3. Integer molestie lorem at massa
+4. Facilisis in pretium nisl aliquet
+5. Nulla volutpat aliquam velit
+6. Faucibus porta lacus fringilla vel
+7. Aenean sit amet erat nunc
+8. Eget porttitor lorem
 
 ##### mongo/sparql/
 Contient les requêtes sparql utilisées par l'application pour l'extraction du RDF pour les :  
