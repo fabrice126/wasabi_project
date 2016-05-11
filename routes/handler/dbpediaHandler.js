@@ -4,8 +4,8 @@ var getInfosDbpedia = function(obj,sparqlRequest,urlEndpoint){
     var failRequest = 0;
     var promise = new Promise(function(resolve, reject) { 
         (function getInfos(obj,sparqlRequest,urlEndpoint ,failRequest){
-            var requestdbpedia = urlEndpoint+encodeURIComponent(sparqlRequest)+"&format=application%2Frdf%2Bxml";//&timeout=120000
-//            console.log(requestdbpedia);
+            var requestdbpedia = urlEndpoint+encodeURIComponent(sparqlRequest)+"&format=application%2Frdf%2Bxml&timeout=1000000";//
+            console.log(requestdbpedia);
             request(requestdbpedia, function(err, resp, body){
                 if (!err && resp.statusCode == 200) {
                     obj.rdf = body;
