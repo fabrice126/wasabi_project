@@ -52,4 +52,6 @@ db.getCollection('song').createIndex({ position: 1});
 //suppression du champ albums dans la collection artist      
 db.getCollection('artist').update({},{$unset: {albums:1}},false,true);
 //create index pour la collection artist
-db.getCollection('artist').createIndex({ name: 1});    
+db.getCollection('artist').createIndex({ name: 1});  
+db.getCollection('artist').createIndex({searchTags: "text"});
+db.getCollection('artist').createIndex({urlWikipedia:1});
