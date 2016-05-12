@@ -4,8 +4,8 @@ var getInfosDbpedia = function(obj,sparqlRequest,urlEndpoint){
     var failRequest = 0;
     var promise = new Promise(function(resolve, reject) { 
         (function getInfos(obj,sparqlRequest,urlEndpoint ,failRequest){
-            var requestdbpedia = urlEndpoint+encodeURIComponent(sparqlRequest)+"&format=application%2Frdf%2Bxml&timeout=1000000";//
-            console.log(requestdbpedia);
+            var requestdbpedia = urlEndpoint+encodeURIComponent(sparqlRequest)+"&format=application%2Frdf%2Bxml&timeout=60000";//
+//            console.log(requestdbpedia);
             request(requestdbpedia, function(err, resp, body){
                 if (!err && resp.statusCode == 200) {
                     obj.rdf = body;
@@ -26,6 +26,41 @@ var getInfosDbpedia = function(obj,sparqlRequest,urlEndpoint){
                 }
             });
         })(obj,sparqlRequest,urlEndpoint,failRequest);
+    });
+    return promise;
+};
+
+
+var getRedirectionOfDbpedia = function(obj,sparqlRedirect,urlEndpoint,objUrl){
+    var failRequest = 0;
+    var promise = new Promise(function(resolve, reject) { 
+        //Pour passer les parametres à la promise suivante
+        var objRedirect = {obj:obj, redirectTo:"",urlEndpoint : urlEndpoint,objUrl:objUrl};
+        (function getInfos( objRedirect,sparqlRedirect ,failRequest,objUrl){
+            var requestdbpedia = urlEndpoint+encodeURIComponent(sparqlRedirect)+"&format=application%2Fsparql-results%2Bjson&timeout=30000";//
+            request(requestdbpedia, function(err, resp, body){
+                if (!err && resp.statusCode == 200) {
+                    var jsonBody = JSON.parse(body);
+                    //si il y a un redirection a faire
+                    if(typeof jsonBody.results.bindings[0] !== "undefined"){
+                        objRedirect.redirectTo = jsonBody.results.bindings[0].redirect.value;
+                    }
+                    resolve( objRedirect);
+                }
+                else{
+                    if(failRequest <2){
+                        console.log('=====RELANCE DE LA getRedirectionOfDbpedia=====');
+                        console.log(err);
+                        failRequest++;
+                        getInfos(objRedirect.redirectTo,sparqlRedirect ,failRequest,objUrl);
+                    }
+                    else{
+                        console.log("=====LA REQUETE A ECHOUEE=====");
+                        resolve( objRedirect);
+                    }
+                }
+            });
+        })( objRedirect,sparqlRedirect ,failRequest,objUrl);
     });
     return promise;
 };
@@ -132,4 +167,5 @@ exports.getInfosDbpedia     = getInfosDbpedia;
 exports.extractInfosFromURL = extractInfosFromURL;
 exports.extractInfosFromRDF = extractInfosFromRDF;
 exports.levenshteinDistance = levenshteinDistance;
+exports.getRedirectionOfDbpedia = getRedirectionOfDbpedia;
 

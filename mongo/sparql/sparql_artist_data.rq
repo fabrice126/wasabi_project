@@ -3,40 +3,71 @@
  PREFIX prop:   <http://dbpedia.org/property/>  
 PREFIX dc: <http://purl.org/dc/terms/>  
 CONSTRUCT {               
+     <http://dbpedia.org/resource/Ángel_Parra> db-owl:bandMember ?bandMemberBand ; 
+     db-owl:abstract ?abstractBand ; 
+     db-owl:genre ?genre ; 
+     db-owl:recordLabel ?recordLabel ; 
+     db-owl:activeYearsStartYear ?activeYearsStartYearBand ; 
+     db-owl:associatedMusicalArtist ?associatedMusicalArtistBand ; 
+     dc:subject ?subjectBand ; 
 
+     prop:birthName ?birthName ; 
+     prop:instrument ?instrument ; 	
+     db-owl:activeYearsStartYear ?activeYearsStartYear ; 
+     db-owl:birthDate ?birthDate ;
+ 
+     db-owl:formerBandMember ?formerBandMemberBand .  
+     ?formerBandMemberBand  rdfs:label ?labelFormer ; 
+     prop:birthName ?birthNameFormer ; 
+     prop:instrument ?instrumentFormer ; 	
+     db-owl:abstract ?abstractFormer ; 
+     db-owl:activeYearsStartYear ?activeYearsStartYearFormer ; 
+     dc:subject ?subjectFormer ; 
+     db-owl:birthDate ?birthDateFormer . 		
+     ?bandMemberBand rdfs:label ?labelMember ; 
+     prop:birthName ?birthNameMember ; 
+     prop:instrument ?instrumentMember ; 	
+     db-owl:abstract ?abstractMember ;  
+     db-owl:activeYearsStartYear ?activeYearsStartYearMember ; 
+     dc:subject ?subjectMember ; 
+     db-owl:birthDate ?birthDateMember . 
 }    
 where {
   service <http://dbpedia.org/sparql/> {
      select  * where { 
-        { 
-        OPTIONAL {<http://dbpedia.org/resource/Metallica> 	dc:subject ?subjectBand} 
+               { 
+           	OPTIONAL {<http://dbpedia.org/resource/Metallica> 	dc:subject ?subjectBand} 
+           	OPTIONAL {<http://dbpedia.org/resource/Metallica> db-owl:genre ?genre}. 
+           	OPTIONAL {<http://dbpedia.org/resource/Metallica> db-owl:associatedMusicalArtist ?associatedMusicalArtistBand} . 
+           	OPTIONAL {<http://dbpedia.org/resource/Metallica> db-owl:recordLabel ?recordLabel} . 
+           	OPTIONAL {<http://dbpedia.org/resource/Metallica> db-owl:activeYearsStartYear ?activeYearsStartYearBand} . 
+           	OPTIONAL {<http://dbpedia.org/resource/Metallica> db-owl:abstract ?abstractBand . FILTER langMatches(lang(?abstractBand), "en")} . 
+        	OPTIONAL {<http://dbpedia.org/resource/Metallica> prop:birthName ?birthName . FILTER langMatches(lang(?birthName), "en")} . 
+        	OPTIONAL {<http://dbpedia.org/resource/Metallica> prop:instrument ?instrument . FILTER langMatches(lang(?instrument), "en")} . 
+        	OPTIONAL {<http://dbpedia.org/resource/Metallica> db-owl:activeYearsStartYear  ?activeYearsStartYear} . 
+        	OPTIONAL {<http://dbpedia.org/resource/Metallica> db-owl:birthDate ?birthDate} .
         }UNION{ 
-        OPTIONAL {<http://dbpedia.org/resource/Metallica> db-owl:genre ?genre}. 
-        OPTIONAL {<http://dbpedia.org/resource/Metallica> db-owl:associatedMusicalArtist ?associatedMusicalArtistBand} . 
-        OPTIONAL {<http://dbpedia.org/resource/Metallica> db-owl:recordLabel ?recordLabel} . 
-        OPTIONAL {<http://dbpedia.org/resource/Metallica> db-owl:activeYearsStartYear ?activeYearsStartYearBand} . 
-        OPTIONAL {<http://dbpedia.org/resource/Metallica> db-owl:abstract ?abstractBand . FILTER langMatches(lang(?abstractBand), "")} . 
-        OPTIONAL { 
-            <http://dbpedia.org/resource/Metallica> db-owl:bandMember ?bandMemberBand . 
-            OPTIONAL {?bandMemberBand 	rdfs:label ?labelMember . FILTER langMatches(lang(?labelMember), "en")} . 
-            OPTIONAL {?bandMemberBand  prop:birthName ?birthNameMember . FILTER langMatches(lang(?birthNameMember), "en")} . 
-            OPTIONAL {?bandMemberBand 	prop:instrument ?instrumentMember . FILTER langMatches(lang(?instrumentMember), "en")} . 
-            OPTIONAL {?bandMemberBand 	db-owl:abstract ?abstractMember . FILTER langMatches(lang(?abstractMember), "en")} . 
-            OPTIONAL {?bandMemberBand 	db-owl:activeYearsStartYear  ?activeYearsStartYearMember} . 
-            OPTIONAL {?bandMemberBand  db-owl:birthDate ?birthDateMember} . 
-            OPTIONAL {?bandMemberBand  dc:subject ?subjectMember} . 
-        }. 
-        OPTIONAL { 
-            <http://dbpedia.org/resource/Metallica> db-owl:formerBandMember ?formerBandMemberBand . 
-            OPTIONAL {?formerBandMemberBand rdfs:label ?labelFormer       . FILTER langMatches(lang(?labelFormer), "en")} . 
-            OPTIONAL {?formerBandMemberBand prop:birthName ?birthNameFormer	. FILTER langMatches(lang(?birthNameFormer), "en")} . 
-            OPTIONAL {?formerBandMemberBand prop:instrument ?instrumentFormer	. FILTER langMatches(lang(?instrumentFormer), "en")} . 
-            OPTIONAL {?formerBandMemberBand db-owl:abstract ?abstractFormer	. FILTER langMatches(lang(?abstractFormer), "en")} . 
-            OPTIONAL {?formerBandMemberBand db-owl:activeYearsStartYear ?activeYearsStartYearFormer} . 
-            OPTIONAL {?formerBandMemberBand dc:subject ?subjectFormer } . 
-            OPTIONAL {?formerBandMemberBand db-owl:birthDate ?birthDateFormer} . 
-        } 
-        } 
-     }ORDER BY DESC(?artistAlbum) 
+           	OPTIONAL { 
+               		<http://dbpedia.org/resource/Metallica> db-owl:formerBandMember ?formerBandMemberBand . 
+               		OPTIONAL {?formerBandMemberBand rdfs:label ?labelFormer       . FILTER langMatches(lang(?labelFormer), "en")} . 
+               		OPTIONAL {?formerBandMemberBand prop:birthName ?birthNameFormer	. FILTER langMatches(lang(?birthNameFormer), "en")} . 
+               		OPTIONAL {?formerBandMemberBand prop:instrument ?instrumentFormer	. FILTER langMatches(lang(?instrumentFormer), "en")} . 
+               		OPTIONAL {?formerBandMemberBand db-owl:abstract ?abstractFormer	. FILTER langMatches(lang(?abstractFormer), "en")} . 
+               		OPTIONAL {?formerBandMemberBand db-owl:activeYearsStartYear ?activeYearsStartYearFormer} . 
+               		OPTIONAL {?formerBandMemberBand dc:subject ?subjectFormer } . 
+               		OPTIONAL {?formerBandMemberBand db-owl:birthDate ?birthDateFormer} . 
+           	}. 
+           	OPTIONAL { 
+               		<http://dbpedia.org/resource/Metallica> db-owl:bandMember ?bandMemberBand . 
+               		OPTIONAL {?bandMemberBand 	rdfs:label ?labelMember . FILTER langMatches(lang(?labelMember), "en")} . 
+              		OPTIONAL {?bandMemberBand  prop:birthName ?birthNameMember . FILTER langMatches(lang(?birthNameMember), "en")} . 
+             		OPTIONAL {?bandMemberBand 	prop:instrument ?instrumentMember . FILTER langMatches(lang(?instrumentMember), "en")} . 
+              		OPTIONAL {?bandMemberBand 	db-owl:abstract ?abstractMember . FILTER langMatches(lang(?abstractMember), "en")} . 
+               		OPTIONAL {?bandMemberBand 	db-owl:activeYearsStartYear  ?activeYearsStartYearMember} . 
+               		OPTIONAL {?bandMemberBand  db-owl:birthDate ?birthDateMember} . 
+              		OPTIONAL {?bandMemberBand  dc:subject ?subjectMember} . 
+           } 
+       } 
+     }ORDER BY DESC(?bandMemberBand) 
   }
 }
