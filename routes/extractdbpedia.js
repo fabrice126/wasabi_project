@@ -21,14 +21,14 @@ router.get('/artist',function(req, res){
     //extraire l'url de wikipedia de objArtist.urlWikipedia 
     (function getRequestArtistLoop(loop){
         if(loop){
-//            db.collection('artist').find({$and:[{urlWikipedia:{$ne:""}},{rdf:{$exists:false}}]},{_id:1,urlWikipedia:1}).limit(limit).toArray(function(err,tObjArtist){
-            db.collection('artist').find({name:"Kiss"},{_id:1,urlWikipedia:1}).limit(limit).toArray(function(err,tObjArtist){
+            db.collection('artist').find({$and:[{urlWikipedia:{$ne:""}},{rdf:{$exists:false}}]},{_id:1,urlWikipedia:1}).limit(limit).toArray(function(err,tObjArtist){
+//            db.collection('artist').find({name:"Kiss"},{_id:1,urlWikipedia:1}).limit(limit).toArray(function(err,tObjArtist){
                 //il y a moins d'artist que la limit donc on arrive à la fin
                 if(tObjArtist.length <limit){ loop = false; }
                 var i=0;
                 if(tObjArtist.length != 0){
                     (function tObjArtistLoop(i){
-                        var objArtist = tObjArtist[i];                    
+                        var objArtist = tObjArtist[i];    
                         //permet d'extraire le pays et l'url de l'artist, retourn objUrl avec pour propriété : urlDbpedia (The_Rolling_Stones) et country de type 'it' ou 'fr' ou vide si anglais
                         var objUrl= dbpediaHandler.extractInfosFromURL(objArtist.urlWikipedia,urlWikipediaToSplit);
                         var redirectRequest = redirect_request.construct_request(objUrl.urlDbpedia,objUrl.country);

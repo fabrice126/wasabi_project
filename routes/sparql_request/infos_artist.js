@@ -22,7 +22,6 @@ var construct_request = function (artist, country) {
     ' dc:subject ?subjectBand ; '+
     ' prop:birthName ?birthName ; '+
     ' prop:instrument ?instrument ; '+	
-    ' db-owl:activeYearsStartYear ?activeYearsStartYear ; '+
     ' db-owl:birthDate ?birthDate ; '+
     ' db-owl:formerBandMember ?formerBandMemberBand .  '+
     ' ?formerBandMemberBand  rdfs:label ?labelFormer ; '+
@@ -50,7 +49,6 @@ var construct_request = function (artist, country) {
     '       OPTIONAL {<http://'+country+'dbpedia.org/resource/'+artist+'> db-owl:abstract ?abstractBand . FILTER langMatches(lang(?abstractBand), "'+countryLang+'")} . '+
     '       OPTIONAL {<http://'+country+'dbpedia.org/resource/'+artist+'> prop:birthName ?birthName . FILTER langMatches(lang(?birthName), "'+countryLang+'")} . '+
     '       OPTIONAL {<http://'+country+'dbpedia.org/resource/'+artist+'> prop:instrument ?instrument . FILTER langMatches(lang(?instrument), "'+countryLang+'")} . '+
-    '       OPTIONAL {<http://'+country+'dbpedia.org/resource/'+artist+'> db-owl:activeYearsStartYear  ?activeYearsStartYear} . '+
     '       OPTIONAL {<http://'+country+'dbpedia.org/resource/'+artist+'> db-owl:birthDate ?birthDate} . '+
     '    }UNION{ '+
     '       OPTIONAL { '+
