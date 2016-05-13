@@ -1,7 +1,7 @@
 var request = require('request');
 
 var getInfosDbpedia = function(obj,sparqlRequest,urlEndpoint){
-    var failRequest = 0;
+    var failRequest = 2;
     var promise = new Promise(function(resolve, reject) { 
         (function getInfos(obj,sparqlRequest,urlEndpoint ,failRequest){
             var requestdbpedia = urlEndpoint+encodeURIComponent(sparqlRequest)+"&format=application%2Frdf%2Bxml&timeout=60000";//
@@ -40,12 +40,16 @@ var getRedirectionOfDbpedia = function(obj,sparqlRedirect,urlEndpoint,objUrl){
             var requestdbpedia = urlEndpoint+encodeURIComponent(sparqlRedirect)+"&format=application%2Fsparql-results%2Bjson&timeout=30000";
             request(requestdbpedia, function(err, resp, body){
                 if (!err && resp.statusCode == 200) {
-                    var jsonBody = JSON.parse(body);
-                    //si il y a un redirection a faire
-                    if(typeof jsonBody.results.bindings[0] !== "undefined"){
-                        objRedirect.redirectTo = jsonBody.results.bindings[0].redirect.value;
+                    try{
+                        var jsonBody = JSON.parse(body);
+                        //si il y a un redirection a faire
+                        if(typeof jsonBody.results.bindings[0] !== "undefined"){
+                            objRedirect.redirectTo = jsonBody.results.bindings[0].redirect.value;
+                        }
+                    }catch(e){
+                        console.log(e);
                     }
-                    resolve( objRedirect);
+                    resolve(objRedirect);
                 }
                 else{
                     if(failRequest <2){
@@ -64,6 +68,32 @@ var getRedirectionOfDbpedia = function(obj,sparqlRedirect,urlEndpoint,objUrl){
     });
     return promise;
 };
+
+
+
+var mergeRDFAndDBProperties = function(objArtist){
+//    objArtist.activeYears = objArtist.activeYears.;
+    
+    console.log(objArtist.activeYears.length);
+    //Si activeYears est vide ou est de forme "89" "89' " on la modifie si notre activeYearsStartYear du RDF n'est pas aussi de cette forme
+    if(objArtist.activeYears.length<4 && objArtist.activeYearsStartYear[0].length>=4){
+        //Contrairement a un bandMember ou formerBandMember a qui peut avoir rejoint et quitté un groupe plusieurs fois
+        //un artiste/groupe n'a qu'une seule date de début(activeYearsStartYear)
+        objArtist.activeYears = objArtist.activeYearsStartYear[0]; 
+    }
+    if(objArtist.labels.length==0){
+        objArtist.labels = objArtist.recordLabel; 
+    }
+    else{
+
+    }
+    console.log(objArtist.activeYears+" = "+objArtist.activeYears.length);
+    //On supprime les propriétés qui ont été merges
+    delete objArtist.activeYearsStartYear;    
+    return objArtist;
+};
+
+
 var extractInfosFromRDF = function(description,property){
     var tInfos = [];
     var infos = '';
@@ -168,4 +198,5 @@ exports.extractInfosFromURL = extractInfosFromURL;
 exports.extractInfosFromRDF = extractInfosFromRDF;
 exports.levenshteinDistance = levenshteinDistance;
 exports.getRedirectionOfDbpedia = getRedirectionOfDbpedia;
+exports.mergeRDFAndDBProperties = mergeRDFAndDBProperties;
 

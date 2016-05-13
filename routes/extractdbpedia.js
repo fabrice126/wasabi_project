@@ -3,10 +3,12 @@ var router          = express.Router();
 var parseString     = require('xml2js').parseString;
 var db              = require('mongoskin').db('mongodb://localhost:27017/wasabi');
 var dbpediaHandler  = require('./handler/dbpediaHandler.js');
+var utilHandler     = require('./handler/utilHandler.js');
 var infos_artist    = require('./sparql_request/infos_artist.js');
 var infos_album     = require('./sparql_request/infos_album.js');
-var infos_song     = require('./sparql_request/infos_song.js');
+var infos_song      = require('./sparql_request/infos_song.js');
 var construct_endpoint = require('./sparql_request/construct_endpoint.js');
+
 var redirect_request = require('./sparql_request/redirect_request.js');
 var ObjectId        = require('mongoskin').ObjectID;
 
@@ -21,8 +23,10 @@ router.get('/artist',function(req, res){
     //extraire l'url de wikipedia de objArtist.urlWikipedia 
     (function getRequestArtistLoop(loop){
         if(loop){
-            db.collection('artist').find({$and:[{urlWikipedia:{$ne:""}},{rdf:{$exists:false}}]},{_id:1,urlWikipedia:1}).limit(limit).toArray(function(err,tObjArtist){
+//            db.collection('artist').find({$and:[{urlWikipedia:{$ne:""}},{rdf:{$exists:false}}]},{_id:1,urlWikipedia:1}).limit(limit).toArray(function(err,tObjArtist){
 //            db.collection('artist').find({name:"Kiss"},{_id:1,urlWikipedia:1}).limit(limit).toArray(function(err,tObjArtist){
+            db.collection('artist').find({$and:[{urlWikipedia:{$ne:""}},{$where: "this.rdf.length <200"}]},{_id:1,urlWikipedia:1}).limit(limit).toArray(function(err,tObjArtist){
+
                 //il y a moins d'artist que la limit donc on arrive à la fin
                 if(tObjArtist.length <limit){ loop = false; }
                 var i=0;
@@ -34,6 +38,7 @@ router.get('/artist',function(req, res){
                         var redirectRequest = redirect_request.construct_request(objUrl.urlDbpedia,objUrl.country);
                         var urlEndpoint = construct_endpoint.construct_endpoint(objUrl.country);
                         dbpediaHandler.getRedirectionOfDbpedia(objArtist,redirectRequest,urlEndpoint,objUrl).then(function(objRedirect){
+                            //Si redirectTo != '' c'est que la requête a recupérer la nouvelle URL de l'artiste
                             if(objRedirect.redirectTo!=''){ 
                                 objRedirect.objUrl.urlDbpedia = objRedirect.redirectTo.split(urlDbpediaToSplit)[1]; 
                             }
@@ -46,7 +51,7 @@ router.get('/artist',function(req, res){
                                 console.log(rdfValue.length+" RDF Added => "+objArtist.urlWikipedia);
                                 if(i < tObjArtist.length-1){
                                     i++;
-                                    setTimeout(function(){ tObjArtistLoop(i); }, Math.floor((Math.random() * 100)+200));
+                                    setTimeout(function(){ tObjArtistLoop(i); }, Math.floor((Math.random() * 200)+200));
                                 }
                                 else{
                                     console.log("===========================NEXT LIMIT : getRequestArtistLoop = "+loop+"===========================");
@@ -67,10 +72,16 @@ router.get('/artist',function(req, res){
 //TODO
 router.get('/artist/createfields',function(req, res){
 //        db.collection('artist').find({$and:[{rdf:{$ne:""}},{rdf:{$exists:true}}]},{wordCount:0}).limit(5000).toArray(function(err,tObjArtist){
-        db.collection('artist').find({name:"Kiss"},{wordCount:0}).toArray(function(err,tObjArtist){
+        db.collection('artist').find({name:"Metallica"},{wordCount:0}).toArray(function(err,tObjArtist){
             var inc = 0 ;
+            var nbWasabiMember = 0;
+            var nbWasabiFormerMember = 0;
+            var nbRDFMember = 0;
+            var nbRDFFormerMember = 0;
             for(var i = 0; i<tObjArtist.length;i++){
                 if(tObjArtist[i].rdf.length>200){
+                    //On nettoie les propriétés de la base de données
+                    tObjArtist[i] = utilHandler.sanitizeProperties(tObjArtist[i]);
                     parseString(tObjArtist[i].rdf, function (err, result) {
                         if(result !=null && typeof result['rdf:RDF']['rdf:Description'] !== "undefined"){
                             //On veut traiter le groupe avant de traiter les membres afin de connaitre les divers members/formerMembers
@@ -90,18 +101,25 @@ router.get('/artist/createfields',function(req, res){
                                         var currProperty = rdfProperties[j].substring(rdfProperties[j].indexOf(':')+1); //ex : dct:subject deviendra subject
                                         tObjArtist[i][currProperty] = dbpediaHandler.extractInfosFromRDF(description,rdfProperties[j]);
                                     }
-                                    console.log(tObjArtist[i].bandMember);
-                                    console.log(tObjArtist[i].formerBandMember);
-                                    for(var j = 0 ;j<tObjArtist[i].bandMember.length; j++){
-                                        var sanitizeStrMemberRDF = tObjArtist[i].bandMember[j].replace(/(\s+)|(\((.+)\))/g, "");
-                                        for(var x = 0 ;x<tObjArtist[i].members.length;x++){
-                                            var sanitizeStrMemberDB = tObjArtist[i].members[x].name.replace(/(\s+)|(\((.+)\))/g, "");
-                                            var relevance = dbpediaHandler.levenshteinDistance(sanitizeStrMemberRDF,sanitizeStrMemberDB);
-                                            if(relevance==0){
-                                                console.log(inc++);
-                                            }
-                                        }
-                                    }
+                                    tObjArtist[i] = dbpediaHandler.mergeRDFAndDBProperties(tObjArtist[i]);
+
+                                    
+//                                    console.log(tObjArtist[i]);
+                                    
+//                                    console.log(tObjArtist[i].bandMember);
+//                                    console.log(tObjArtist[i].formerBandMember);
+//                                    console.log(tObjArtist[i].members);
+//                                    console.log(tObjArtist[i].formerMembers);
+//                                    for(var j = 0 ;j<tObjArtist[i].bandMember.length; j++){
+//                                        var sanitizeStrMemberRDF = tObjArtist[i].bandMember[j].replace(/(\s+)|(\((.+)\))/g, "");
+//                                        for(var x = 0 ;x<tObjArtist[i].members.length;x++){
+//                                            var sanitizeStrMemberDB = tObjArtist[i].members[x].name.replace(/(\s+)|(\((.+)\))/g, "");
+//                                            var relevance = dbpediaHandler.levenshteinDistance(sanitizeStrMemberRDF,sanitizeStrMemberDB);
+//                                            if(relevance==0){
+//                                                console.log(inc++);
+//                                            }
+//                                        }
+//                                    }
                                     k=0;//On a traité le groupe maintenant on peut traiter les membres
                                 }
                                 else{//on traite les membres et anciens membres du groupe
@@ -144,12 +162,24 @@ router.get('/artist/createfields',function(req, res){
 //                                    console.log(formerOrMember)
                                 }
                             }
+//                                    nbWasabiMember += tObjArtist[i].members.length;
+//                                    nbWasabiFormerMember += tObjArtist[i].formerMembers.length;
+//                                    if(Boolean(tObjArtist[i].bandMember)){
+//                                        nbRDFMember += tObjArtist[i].bandMember.length;
+//                                    }
+//                                    if(Boolean(tObjArtist[i].formerBandMember)){
+//                                           nbRDFFormerMember += tObjArtist[i].formerBandMember.length; 
+//                                    }
+                                    
                             
                         }
                     });
                 }
-                console.log("\n\n\n\n");
             }
+            console.log("Nombre de wasabi member ="+nbWasabiMember);
+            console.log("Nombre de wasabi former member ="+nbWasabiFormerMember);
+            console.log("Nombre de RDF member ="+nbRDFMember);
+            console.log("Nombre de RDF formerMember ="+nbRDFFormerMember);
             console.log('Fin du traitement');
 //            db.collection('artist').update({_id : new ObjectId(objArtist._id)}, { $set: {"rdf": rdfValue} });
         });
@@ -162,7 +192,9 @@ router.get('/album',function(req, res){
     //extraire l'url de wikipedia de objAlbum.urlWikipedia 
     (function getRequestAlbumLoop(loop){
         if(loop){
-            db.collection('album').find({$and:[{urlWikipedia:{$ne:""}},{rdf:{$exists:false}}]},{_id:1,urlWikipedia:1}).limit(limit).toArray(function(err,tObjAlbum){
+//            db.collection('album').find({$and:[{urlWikipedia:{$ne:""}},{rdf:{$exists:false}}]},{_id:1,urlWikipedia:1}).limit(limit).toArray(function(err,tObjAlbum){
+//            db.collection('album').find({$and:[{urlWikipedia:{$ne:""}},{$where: "this.rdf.length <200"}]},{_id:1,urlWikipedia:1}).limit(limit).toArray(function(err,tObjAlbum){
+            db.collection('album').find({titre:"Are You Dead Yet?"},{_id:1,urlWikipedia:1}).limit(limit).toArray(function(err,tObjAlbum){
                 //il y a moins d'album que la limit donc on arrive à la fin
                 if(tObjAlbum.length <limit){
                     loop = false;
@@ -171,24 +203,32 @@ router.get('/album',function(req, res){
                 if(tObjAlbum.length != 0){
                     (function tObjAlbumLoop(i){
                         var objAlbum = tObjAlbum[i];
+                        
                         var objUrl= dbpediaHandler.extractInfosFromURL(objAlbum.urlWikipedia,urlWikipediaToSplit);
-                        var sparql_request = infos_album.construct_request(objUrl.urlDbpedia,objUrl.country);
+                        var redirectRequest = redirect_request.construct_request(objUrl.urlDbpedia,objUrl.country);
                         var urlEndpoint = construct_endpoint.construct_endpoint(objUrl.country);
-                        console.log("\n\nTraitement de l'album => "+objUrl.urlDbpedia+" ...");
-                        dbpediaHandler.getInfosDbpedia(objAlbum,sparql_request,urlEndpoint).then(function(objAlbum){
-                            var rdfValue= objAlbum.rdf.replace(/\n|\t/g," ").replace(/\"/g,"'");
-                            db.collection('album').update({_id : new ObjectId(objAlbum._id)}, { $set: {"rdf": rdfValue} });
-                            if(rdfValue.length<200){ console.log("!!!!!!!!!!!!!!!!!!!!! RDF VIDE !!!!!!!!!!!!!!!!!!!!!");}
-                            console.log(rdfValue.length+" RDF Added => "+objAlbum.urlWikipedia);
-                            if(i < tObjAlbum.length-1){
-                                i++;
-                                setTimeout(function(){  tObjAlbumLoop(i); }, Math.floor((Math.random() * 100)+100));
+                        dbpediaHandler.getRedirectionOfDbpedia(objAlbum,redirectRequest,urlEndpoint,objUrl).then(function(objRedirect){
+                            //Si redirectTo != '' c'est que la requête a recupérer la nouvelle URL de l'album
+                            if(objRedirect.redirectTo!=''){ 
+                                objRedirect.objUrl.urlDbpedia = objRedirect.redirectTo.split(urlDbpediaToSplit)[1]; 
                             }
-                            else{
-                                console.log("===========================NEXT LIMIT : getRequestAlbumLoop = "+loop+"===========================");
-                                getRequestAlbumLoop(loop);
-                            }
-                        });
+                            var sparql_request = infos_album.construct_request(objRedirect.objUrl.urlDbpedia,objRedirect.objUrl.country);
+                            console.log("\n\nTraitement de l'artiste => "+objRedirect.objUrl.urlDbpedia+" ...");
+                            dbpediaHandler.getInfosDbpedia(objRedirect.obj,sparql_request,objRedirect.urlEndpoint).then(function(objAlbum){
+                                var rdfValue= objAlbum.rdf.replace(/\n|\t/g," ").replace(/\"/g,"'");
+                                db.collection('album').update({_id : new ObjectId(objAlbum._id)}, { $set: {"rdf": rdfValue} });
+                                if(rdfValue.length<200){ console.log("!!!!!!!!!!!!!!!!!!!!! RDF VIDE !!!!!!!!!!!!!!!!!!!!!");}
+                                console.log(rdfValue.length+" RDF Added => "+objAlbum.urlWikipedia);
+                                if(i < tObjAlbum.length-1){
+                                    i++;
+                                    setTimeout(function(){  tObjAlbumLoop(i); }, Math.floor((Math.random() * 100)+100));
+                                }
+                                else{
+                                    console.log("===========================NEXT LIMIT : getRequestAlbumLoop = "+loop+"===========================");
+                                    getRequestAlbumLoop(loop);
+                                }
+                            });
+                         });
                     })(i);
                 }
             });
@@ -264,13 +304,14 @@ router.get('/song/createfields',function(req, res){
                                 }
                                 console.log(tObjSong[i]);
                             }
+                            db.collection('song').update({_id : new ObjectId(tObjSong[i]._id)}, { $set: tObjSong[i] });
                         }
                     });
+                    
                 }
                 console.log("\n\n\n\n");
             }
             console.log('Fin du traitement');
-//            db.collection('artist').update({_id : new ObjectId(objArtist._id)}, { $set: {"rdf": rdfValue} });
         });
     res.send("OK");
 });

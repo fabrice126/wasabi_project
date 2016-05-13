@@ -1,4 +1,6 @@
-var construct_request = function (artist, country) {
+var construct_request = function (song, country) {
+    //Nous avons besoin d'une url encodée
+    var song = encodeURIComponent(song);
     var countryLang='';
     if(country=='' || country =='en.'){
         countryLang = "en";
@@ -12,7 +14,7 @@ var construct_request = function (artist, country) {
  ' PREFIX prop: <http://dbpedia.org/property/> '+ 
  ' PREFIX dc:      <http://purl.org/dc/terms/> '+ 
  ' CONSTRUCT { '+ 
- ' <http://'+country+'dbpedia.org/resource/'+artist+'>	db-owl:writer ?writer ; '+ 
+ ' <http://'+country+'dbpedia.org/resource/'+song+'>	db-owl:writer ?writer ; '+ 
  '             db-owl:abstract ?abstract; '+ 
  '             db-owl:producer ?producer; '+ 
  '             db-owl:genre ?genre; '+ 
@@ -26,18 +28,18 @@ var construct_request = function (artist, country) {
  '             prop:award ?award. '+ 
  ' } '+ 
  ' where { '+ 
- '     OPTIONAL {<http://'+country+'dbpedia.org/resource/'+artist+'> db-owl:writer ?writer} . '+ 
- '     OPTIONAL {<http://'+country+'dbpedia.org/resource/'+artist+'> db-owl:abstract ?abstract . FILTER langMatches(lang(?abstract),  "'+ countryLang +'" )}  . '+ 
- '     OPTIONAL {<http://'+country+'dbpedia.org/resource/'+artist+'> db-owl:producer ?producer} . '+ 
- '     OPTIONAL {<http://'+country+'dbpedia.org/resource/'+artist+'> db-owl:genre ?genre} . '+ 
- '     OPTIONAL {<http://'+country+'dbpedia.org/resource/'+artist+'> db-owl:recordLabel ?recordLabel} . '+ 
- '     OPTIONAL {<http://'+country+'dbpedia.org/resource/'+artist+'> db-owl:album ?album} . '+ 
- '     OPTIONAL {<http://'+country+'dbpedia.org/resource/'+artist+'> db-owl:runtime ?runtime} . '+ 
- '     OPTIONAL {<http://'+country+'dbpedia.org/resource/'+artist+'> prop:recorded ?recorded } . '+ 
- '     OPTIONAL {<http://'+country+'dbpedia.org/resource/'+artist+'> dc:subject ?subject } . '+ 
- '     OPTIONAL {<http://'+country+'dbpedia.org/resource/'+artist+'> db-owl:format ?format } . '+ 
- '     OPTIONAL {<http://'+country+'dbpedia.org/resource/'+artist+'> db-owl:releaseDate ?releaseDate } . '+ 
- '     OPTIONAL {<http://'+country+'dbpedia.org/resource/'+artist+'> prop:award ?award . FILTER langMatches(lang(?award),  "'+ countryLang +'" )} . '+ 
+ '     OPTIONAL {<http://'+country+'dbpedia.org/resource/'+song+'> db-owl:writer ?writer} . '+ 
+ '     OPTIONAL {<http://'+country+'dbpedia.org/resource/'+song+'> db-owl:abstract ?abstract . FILTER langMatches(lang(?abstract),  "'+ countryLang +'" )}  . '+ 
+ '     OPTIONAL {<http://'+country+'dbpedia.org/resource/'+song+'> db-owl:producer ?producer} . '+ 
+ '     OPTIONAL {<http://'+country+'dbpedia.org/resource/'+song+'> db-owl:genre ?genre} . '+ 
+ '     OPTIONAL {<http://'+country+'dbpedia.org/resource/'+song+'> db-owl:recordLabel ?recordLabel} . '+ 
+ '     OPTIONAL {<http://'+country+'dbpedia.org/resource/'+song+'> db-owl:album ?album} . '+ 
+ '     OPTIONAL {<http://'+country+'dbpedia.org/resource/'+song+'> db-owl:runtime ?runtime} . '+ 
+ '     OPTIONAL {<http://'+country+'dbpedia.org/resource/'+song+'> prop:recorded ?recorded } . '+ 
+ '     OPTIONAL {<http://'+country+'dbpedia.org/resource/'+song+'> dc:subject ?subject } . '+ 
+ '     OPTIONAL {<http://'+country+'dbpedia.org/resource/'+song+'> db-owl:format ?format } . '+ 
+ '     OPTIONAL {<http://'+country+'dbpedia.org/resource/'+song+'> db-owl:releaseDate ?releaseDate } . '+ 
+ '     OPTIONAL {<http://'+country+'dbpedia.org/resource/'+song+'> prop:award ?award . FILTER langMatches(lang(?award),  "'+ countryLang +'" )} . '+ 
  ' }ORDER BY DESC(?writer)  ';
 }; 
 

@@ -1,4 +1,6 @@
 var construct_request = function (artist, country) {
+    //Nous avons besoin d'une url encodée
+    var artist = encodeURIComponent(artist);
     var countryLang='';
     if(country=='' || country =='en.'){
         countryLang = "en";
