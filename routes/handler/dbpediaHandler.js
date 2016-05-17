@@ -1,22 +1,35 @@
 var request = require('request');
 
 var getInfosDbpedia = function(obj,sparqlRequest,urlEndpoint){
-    var failRequest = 2;
+    var failRequest = 0;
+    var failEncode = false;
     var promise = new Promise(function(resolve, reject) { 
-        (function getInfos(obj,sparqlRequest,urlEndpoint ,failRequest){
-            var requestdbpedia = urlEndpoint+encodeURIComponent(sparqlRequest)+"&format=application%2Frdf%2Bxml&timeout=60000";//
+        (function getInfos(obj,sparqlRequest,urlEndpoint ,failRequest,failEncode){
+            var requestdbpedia = "";
+            if(!failEncode){
+                requestdbpedia = urlEndpoint+encodeURIComponent(sparqlRequest)+"&format=application%2Frdf%2Bxml&timeout=60000";
+            }else{
+                console.log("=====DEDANS FAILENCODE=====")
+                requestdbpedia = urlEndpoint+fixedEncodeURIComponent(sparqlRequest)+"&format=application%2Frdf%2Bxml&timeout=60000";  
+            }
 //            console.log(requestdbpedia);
             request(requestdbpedia, function(err, resp, body){
                 if (!err && resp.statusCode == 200) {
                     obj.rdf = body;
-                    resolve(obj);
+                    if(obj.rdf.length < 200 && !failEncode){
+                        failEncode = true;
+                        console.log("=====RELANCE DE LA REQUETE FAILENCODE=====")
+                        getInfos(obj,sparqlRequest,urlEndpoint,failRequest,failEncode);
+                    }else{
+                           resolve(obj); 
+                    }
                 }
                 else{
                     if(failRequest <2){
                         console.log('=====RELANCE DE LA REQUETE EXTRACT====='+obj.urlWikipedia);
                         console.log(err);
                         failRequest++;
-                        getInfos(obj,sparqlRequest,urlEndpoint,failRequest);
+                        getInfos(obj,sparqlRequest,urlEndpoint,failRequest,failEncode);
                     }
                     else{
                         console.log("=====LA REQUETE A ECHOUEE=====");
@@ -25,38 +38,55 @@ var getInfosDbpedia = function(obj,sparqlRequest,urlEndpoint){
                     }
                 }
             });
-        })(obj,sparqlRequest,urlEndpoint,failRequest);
+        })(obj,sparqlRequest,urlEndpoint,failRequest,failEncode);
     });
     return promise;
 };
 
-
+//Permet de trouver la bonne URI en cas de changement d'URI sur wikipédia/dbpedia 
 var getRedirectionOfDbpedia = function(obj,sparqlRedirect,urlEndpoint,objUrl){
     var failRequest = 0;
+    var failEncode = false;
     var promise = new Promise(function(resolve, reject) { 
         //Pour passer les parametres à la promise suivante
         var objRedirect = {obj:obj, redirectTo:"",urlEndpoint : urlEndpoint,objUrl:objUrl};
-        (function getInfos( objRedirect,sparqlRedirect ,failRequest,objUrl){
-            var requestdbpedia = urlEndpoint+encodeURIComponent(sparqlRedirect)+"&format=application%2Fsparql-results%2Bjson&timeout=30000";
+        (function getInfos( objRedirect,sparqlRedirect ,failRequest,objUrl,failEncode){
+            var requestdbpedia = "";
+            if(!failEncode){
+                requestdbpedia = urlEndpoint+encodeURIComponent(sparqlRedirect)+"&format=application%2Fsparql-results%2Bjson&timeout=30000";
+            }else{
+                requestdbpedia = urlEndpoint+fixedEncodeURIComponent(sparqlRedirect)+"&format=application%2Fsparql-results%2Bjson&timeout=30000";  
+            }
+//            console.log(requestdbpedia);
             request(requestdbpedia, function(err, resp, body){
                 if (!err && resp.statusCode == 200) {
                     try{
                         var jsonBody = JSON.parse(body);
                         //si il y a un redirection a faire
                         if(typeof jsonBody.results.bindings[0] !== "undefined"){
+//                            objRedirect.redirectTo = decodeURIComponent(jsonBody.results.bindings[0].redirect.value);
                             objRedirect.redirectTo = jsonBody.results.bindings[0].redirect.value;
+                            console.log("\n\n\nREDIRECT TO = "+objRedirect.redirectTo);
+                            failEncode = true;
+                        }
+                        if(!failEncode){
+                            failEncode = true;
+                            getInfos(objRedirect,sparqlRedirect ,failRequest,objUrl,failEncode);
+                        }
+                        else{
+                            resolve(objRedirect);
                         }
                     }catch(e){
                         console.log(e);
                     }
-                    resolve(objRedirect);
+
                 }
                 else{
                     if(failRequest <2){
                         console.log('=====RELANCE DE LA getRedirectionOfDbpedia=====');
                         console.log(err);
                         failRequest++;
-                        getInfos(objRedirect,sparqlRedirect ,failRequest,objUrl);
+                        getInfos(objRedirect,sparqlRedirect ,failRequest,objUrl,failEncode);
                     }
                     else{
                         console.log("=====LA REQUETE A ECHOUEE=====");
@@ -64,12 +94,32 @@ var getRedirectionOfDbpedia = function(obj,sparqlRedirect,urlEndpoint,objUrl){
                     }
                 }
             });
-        })( objRedirect,sparqlRedirect ,failRequest,objUrl);
+        })( objRedirect,sparqlRedirect ,failRequest,objUrl,failEncode);
     });
     return promise;
 };
+//ecnode uniquement les caractères présents dans le replace
+//Cette fonction est utilisé en cas d'uri contenant des caratéres spéciaux déjà encodé dans notre base de données
+var fixedEncodeURIComponent = function (str) {
+    //Le caractère '%' n'est pas présent car cette fonction encode les requêtes contenant des URI encodés : Are_You_Dead_Yet%3F rajouter le '% re encodera cette uri déja encodé'
+    return str.replace(/[\s"#?<>`{}|^\[\]\\]/g, function(c) {
+        return encodeURIComponent(c);
+  });
+};  
 
-
+var getCountryOfEndpoint = function(country){
+    var objCountry = {country:'',countryLang:''};
+    //Si les sparql endpoint des pays n'existe pas on envoie la requete sur le endpoint anglais
+    if(country=='' || country =='en.' || country =='fi.' || country =='no.' || country =='sv.' || country =='af.' || country =='al.' || country =='da.' || country =='cz.' || country =='ms.' || country =='lt.' ){
+        objCountry.countryLang = "en";
+        objCountry.country = '';
+    }
+    else{
+        objCountry.countryLang = country.substring(0,2);
+        objCountry.country = country;
+    }
+    return objCountry;
+}
 
 var mergeRDFAndDBProperties = function(objArtist){
 //    objArtist.activeYears = objArtist.activeYears.;
@@ -133,7 +183,7 @@ var extractInfosFromRDF = function(description,property){
     return tInfos;
 };
 
-
+//Retourne un objet avec les propriétés, country: "it" et urlDbpedia: "Adriano_Celentano"
 var extractInfosFromURL = function(urlWikipedia,urlToSplit){
         var tUrl = urlWikipedia.split(urlToSplit);
         //certaine url sont de type : de:Adoro avec "de:" désignant le wikipedia allemand, il faut donc faire la redirection sur le endpoint allemand de dbpedia
@@ -151,7 +201,6 @@ var extractInfosFromURL = function(urlWikipedia,urlToSplit){
             objUrl.country = urlDetail[0]+".";
         }
         else{objUrl.urlDbpedia = tUrl[1];}
-        objUrl.urlDbpedia = decodeURIComponent(objUrl.urlDbpedia);
         return objUrl;
 };
 
@@ -199,4 +248,5 @@ exports.extractInfosFromRDF = extractInfosFromRDF;
 exports.levenshteinDistance = levenshteinDistance;
 exports.getRedirectionOfDbpedia = getRedirectionOfDbpedia;
 exports.mergeRDFAndDBProperties = mergeRDFAndDBProperties;
-
+exports.getCountryOfEndpoint = getCountryOfEndpoint;
+exports.fixedEncodeURIComponent = fixedEncodeURIComponent;

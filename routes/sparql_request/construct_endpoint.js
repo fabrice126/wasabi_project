@@ -1,9 +1,9 @@
+var dbpediaHandler  = require('../handler/dbpediaHandler.js');
+
 var construct_endpoint = function(country) {
-    var newcountry = country;
-    if(country =='en.' ){
-        newcountry = '';
-    }
-    return "http://"+newcountry+"dbpedia.org/sparql?default-graph-uri=http://"+newcountry+"dbpedia.org&query=";
+
+    var objCountry = dbpediaHandler.getCountryOfEndpoint(country);
+    return "http://"+objCountry.country+"dbpedia.org/sparql?default-graph-uri=http://"+objCountry.country+"dbpedia.org&query=";
 };
 
 exports.construct_endpoint = construct_endpoint;

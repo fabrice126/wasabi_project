@@ -8,7 +8,7 @@ var lyricsWikia     = require('./handler/lyricsWikia.js');
 
 
 
-
+//createdb, permet de créer entierement la base de données
 router.get('/',function(req, res){
     console.log("dedans /createdb");
     //Pour chaque lettre  sur wikia et chaque catégorie on récupére pour commencer les albums de 5 artistes ainsi que tous ses albums et musiques
@@ -52,5 +52,9 @@ router.get('/:urlArtist',function(req, res){
 });
 
 
+router.get('*', function(req, res){
+    //On renvoie index.html qui ira match l'url via <app-router> de index.html ce qui renverra la page 404 si la page n'existe pas
+    res.sendFile(path.join(__dirname ,'public',  'index.html'));
+});
 
 module.exports = router;
