@@ -30,44 +30,41 @@ app.use('/search', search);
 app.use('/createdb', createdb);
 //app.use('/updatedb', updatedb);
 app.use('/extractdbpedia', extractdbpedia);
-// catch 404 and forward to error handler
-//app.use(function(req, res, next) {
-//  var err = new Error('Not Found');
-//  err.status = 404;
-//    
-//  next(err);
-//});
 
+// catch 404 and forward to error handler
 // error handlers
-//Return la page-404.html
+//Return la page-404.html via <app-router> dans index.html 
 app.get('*', function(req, res){
-    //On renvoie index.html qui ira match l'url via <app-router> de index.html ce qui renverra la page 404 si la page n'existe pas
-    res.sendFile(path.join(__dirname ,'public',  'index.html'));
+    //On renvoie le chemin tapé par l'utilisateur, ce chemin ne correspondra à rien pour <app-router> ce qui renverra la page 404
+     res.status(404).redirect('/#'+req.path);
 });
 
-
-
-//// development error handler
-//// will print stacktrace
-//if (app.get('env') === 'development') {
-//  app.use(function(err, req, res, next) {
-//    res.status(err.status || 500 || 404);
-//    res.render('error', {
-//      message: "messages d'erreurs : \n\n"+err.message,
-//      error: err
-//    });
-//  });
-//}
-//
-//// production error handler
-//// no stacktraces leaked to user
-//app.use(function(err, req, res, next) {
-//  res.status(err.status || 500);
-//  res.render('error', {
-//    message: err.message,
-//    error: {}
-//  });
-//});
+app.use(function(req, res, next) {
+  var err = new Error('Not Found 6');
+  err.status = 404;
+    
+  next(err);
+});
+// development error handler
+// will print stacktrace
+if (app.get('env') === 'development') {
+  app.use(function(err, req, res, next) {
+    res.status(err.status || 500 || 404);
+    res.render('error 2', {
+      message: "messages d'erreurs : \n\n"+err.message,
+      error: err
+    });
+  });
+}
+// production error handler
+// no stacktraces leaked to user
+app.use(function(err, req, res, next) {
+  res.status(err.status || 500);
+  res.render('error test', {
+    message: err.message,
+    error: {}
+  });
+});
 
 
 module.exports = app;

@@ -1,5 +1,6 @@
 {
     "jscodehints.detectedExclusions": [
-        "C:/Users/fjauvat/Documents/wasabi_project/mongo/request_mongo/FindSameDocument.js"
+        "C:/Users/fjauvat/Documents/wasabi_project/mongo/request_mongo/FindSameDocument.js",
+        "C:/Users/fjauvat/Documents/wasabi_project/mongo/request_mongo/BeginWith_Song.js"
     ]
 }

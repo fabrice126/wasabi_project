@@ -79,6 +79,9 @@ var getRedirectionOfDbpedia = function(obj,sparqlRedirect,urlEndpoint,objUrl){
                     }catch(e){
                         console.log(e);
                     }
+                    finally {
+                         resolve(objRedirect);
+                    }
 
                 }
                 else{
@@ -110,7 +113,7 @@ var fixedEncodeURIComponent = function (str) {
 var getCountryOfEndpoint = function(country){
     var objCountry = {country:'',countryLang:''};
     //Si les sparql endpoint des pays n'existe pas on envoie la requete sur le endpoint anglais
-    if(country=='' || country =='en.' || country =='fi.' || country =='no.' || country =='sv.' || country =='af.' || country =='al.' || country =='da.' || country =='cz.' || country =='ms.' || country =='lt.' ){
+    if(country=='' || country =='en.' || country =='fi.' || country =='no.' || country =='ja.' || country =='sv.' || country =='tr.' || country =='pt.' || country =='af.' || country =='al.' || country =='da.' || country =='cz.' || country =='ms.' || country =='lt.' ){
         objCountry.countryLang = "en";
         objCountry.country = '';
     }
