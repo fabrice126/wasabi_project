@@ -111,7 +111,7 @@
             e.preventDefault();
             var text = e.clipboardData.getData("text/plain"); 
             text = text.replace(/\n|\r\n|\r/g, "<br>\r\n");
-            var cleanText = text.replace(/(<([^>]+)>)/ig, "<br>");//pour échaper éventuellement du html ou script
+            var cleanText = text.replace(/(<([^>]+)>)/ig, "<br>");//pour échapper éventuellement du html ou script
             this.innerHTML = cleanText;
         });
     },

@@ -11,21 +11,19 @@
         <link href="bower_components/app-router/app-router.html" rel="import">
         <link href="bower_components/pushstate-anchor/pushstate-anchor.html" rel="import">
 <!--        <link rel="import" href="bower_components/paper-header-panel/paper-header-panel.html">-->
-        <link rel="import" href="/bower_components/iron-flex-layout/iron-flex-layout.html">
+        <link rel="import" href="/bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+
         <link href="my_components/nav-bar.html" rel="import">
         <link href="my_components/x-album.html" rel="import">
         <link href="my_components/x-song.html" rel="import">
 <!--        <link href="my_components/todo-app.html" rel="import">-->
 
-
-
+<style is="custom-style" include="iron-flex"></style>
 
 
 <!-- Use element -->
-
 	</head>
-    
-	<body unresolved class="fullbleed layout vertical" >
+	<body unresolved class="layout vertical">
 <!--
         <paper-drawer-panel>
             <paper-header-panel drawer>
@@ -59,7 +57,7 @@
                         <app-route path="/search/artist/:nameArtist/album/:nameAlbum/song/:nameSong/"  onUrlChange="updateModel" import="my_components/page-song.html"></app-route>
                         
                         
-                        <app-route path="*"  import="my_components/page-404.html"></app-route>
+                        <app-route path="*" onUrlChange="updateModel" import="my_components/page-404.html"></app-route>
                     </app-router>
                 </div>
 <!--            </paper-header-panel>-->

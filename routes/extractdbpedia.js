@@ -22,8 +22,8 @@ router.get('/:collection',function(req, res){
         //extraire l'url de wikipedia de objAlbum.urlWikipedia 
         (function getRequestLoop(loop){
             if(loop){
-                var objRequest = {$and:[{urlWikipedia:{$ne:""}},{rdf:{$exists:false}}]};
-//                var objRequest = {$and:[{urlWikipedia:{$ne:""}},{$where: "this.rdf.length <200"}]};//Permet d'avoir les documents n'ayant pas d'informations dans le RDF
+//                var objRequest = {$and:[{urlWikipedia:{$ne:""}},{rdf:{$exists:false}}]};
+                var objRequest = {$and:[{urlWikipedia:{$ne:""}},{$where: "this.rdf.length <200"}]};//Permet d'avoir les documents n'ayant pas d'informations dans le RDF
                 var objProjection = {_id:1,urlWikipedia:1};
                 var limit = 10000;
                 db.collection(collection).find(objRequest,objProjection).limit(limit).toArray(function(err,tObjCollection){
@@ -205,31 +205,37 @@ router.get('/album/createfields',function(req, res){
 
 });
 
-//TODO
 router.get('/song/createfields',function(req, res){
-//        db.collection('song').find({$and:[{rdf:{$ne:""}},{rdf:{$exists:true}}]},{wordCount:0}).limit(5000).toArray(function(err,tObjSong){
-        db.collection('song').find({$and:[{titre:"Help!",albumTitre:"Help!"}]}).toArray(function(err,tObjSong){
+        db.collection('song').find({$and:[{rdf:{$ne:""}},{rdf:{$exists:true}}]},{wordCount:0}).toArray(function(err,tObjSong){
+//        db.collection('song').find({$and:[{titre:"Help!",albumTitre:"Help!"}]}).toArray(function(err,tObjSong){
+            console.log('En cours de traitement ...');
             for(var i = 0; i<tObjSong.length;i++){
+                //Pour chaque musique contenant du RDF valide
                 if(tObjSong[i].rdf.length>200){
+                    //Transformation du RDF en un objet JSON
                     parseString(tObjSong[i].rdf, function (err, result) {
-                        if(result !=null && typeof result['rdf:RDF']['rdf:Description'] !== "undefined"){
+                        //Si le document est bien parsé et contient rdf:Description, c'est à dire la ou les pages DBpédia ayant servi pour l'extraction des données
+                        //Dans le cas d'une musique une seul page DBpédia a été utilisée pour extraire des données
+                        if(result != null && typeof result['rdf:RDF']['rdf:Description'] !== "undefined"){
                             for(var k = 0;k<result['rdf:RDF']['rdf:Description'].length;k++){
                                 var description = result['rdf:RDF']['rdf:Description'][k];
+                                //Propriété présent dans le RDF et dont nous avons besoin pour accèder a l'objet musique crée par parseString
                                 var rdfProperties = ['dct:subject','dbo:format','dbo:genre','dbo:producer','dbo:recordLabel',
-                                                     'dbo:writer','dbp:recorded','dbo:abstract','dbo:releaseDate','dbo:runtime',
-                                                     'dbo:releaseDate','dbp:award'];
+                                                     'dbo:writer','dbp:recorded','dbo:abstract','dbo:releaseDate','dbo:runtime','dbp:award'];
+                                //Pour chaque propriété on récupére les données de l'objet musique représentant le RDF
                                 for(var j = 0;j<rdfProperties.length;j++){
-                                    var currProperty = rdfProperties[j].substring(rdfProperties[j].indexOf(':')+1); //ex : dct:subject deviendra subject
+                                    //substring afin de créer notre propriété à ajouter en BDD par exemple dct:subject deviendra subject
+                                    var currProperty = rdfProperties[j].substring(rdfProperties[j].indexOf(':')+1);
+                                    //On va extraire le contenu de chaque propriété afin d'ajouter à l'objet tObjSong[i] les nouvelles propriétés
                                     tObjSong[i][currProperty] = dbpediaHandler.extractInfosFromRDF(description,rdfProperties[j]);
                                 }
-                                console.log(tObjSong[i]);
                             }
-                            db.collection('song').update({_id : new ObjectId(tObjSong[i]._id)}, { $set: tObjSong[i] });
+                            db.collection('song').update({_id : new ObjectId(tObjSong[i]._id)}, { $set: tObjSong[i] },function(err,result) {
+                                if (err) throw err;
+                            });
                         }
                     });
-                    
                 }
-                console.log("\n\n\n\n");
             }
             console.log('Fin du traitement');
         });
