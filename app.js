@@ -5,7 +5,7 @@ var logger          = require('morgan');
 var cookieParser    = require('cookie-parser');
 var bodyParser      = require('body-parser');
 var search          = require('./routes/search');
-var createdb        = require('./routes/createdb');
+//var createdb        = require('./routes/createdb');
 //var updatedb        = require('./routes/updatedb');
 var extractdbpedia  = require('./routes/extractdbpedia');
 var basicAuth       = require('basic-auth-connect');
@@ -27,7 +27,7 @@ app.use('/',express.static(path.join(__dirname, 'public')));
 app.use('/search', search);
 
 //Permet d'utiliser les fonctions de créations et updates de la base de données
-app.use('/createdb', createdb);
+//app.use('/createdb', createdb);
 //app.use('/updatedb', updatedb);
 app.use('/extractdbpedia', extractdbpedia);
 

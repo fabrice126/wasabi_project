@@ -40,28 +40,47 @@ Architecture du code:
 
 ##### mongo/request_mongo/  
 	Contient des requêtes utiles  
-	Si la base de données est recrée de zéro via le webservice /createdb elle contiendra:  
-	Une collection artist contenant des documents représentant un artiste avec leurs albums et leurs musiques, il faudra donc lancer :  
-	1. Le fichier FindSameDocument.js dans mongo afin de trouver les documents en double (ayant le même nom d'artist) dans la base de 	données
+	Si la base de données est recréée de zéro via le webservice /createdb elle contiendra:  
+	Une collection artist contenant des documents représentant un artiste avec ses albums et ses musiques, il faudra donc lancer :  
+    0. les fichiers ci-dessous via la commande mongodb load("FichierMongoDB.js"); pour cela:
+        0.1. assurez-vous que mongodb est lancé avec la commande "mongod"
+        0.2. aller dans votre répertoire mongo/request_mongo en ligne commande et tapez la commande "mongo wasabi", vous devriez être connecté à la base de données
+        0.3. lancer la commande load("MonFichier.js"); exemple load("FindSameDocument.js");
+        0.4. vous pouvez aussi lancer ces scripts via une interface graphique tel que robomongo: https://robomongo.org
+    
+	1. Le fichier FindSameDocument.js dans mongo afin de trouver les documents en double (ayant le même nom d'artiste car un nom d'artiste est unique en base de données, cf : comme dans lyrics wikia) dans la base de 	données
 		1.1. Il y aura toujours des documents en double dans la base de données une fois celle-ci crée car lors de l'extraction sur le site de lyrics wikia certains artistes étaient présents plusieurs fois. Il faut supprimer alors un des deux documents apparaissant en double pour n'en garder qu'un
 
 	2. Le fichier ConstructBDAfterCreate.js dans mongodb afin de créer :
-		2.1. Une collection artist contenant uniquement les informations relatives à l'artiste (sans le champs album)
+		2.1. Une collection artist contenant uniquement les informations relatives à l'artiste (sans le champ album)
 		2.2. Une collection album contenant les informations relatives à l'album
 		2.3. Une collection song contenant les informations relatives à la musique
 		2.4. Les index des collections artist, album et song
 
-	3. le fichier RefArtistInAlbum.js permettant d'ajouter une référence d'artiste dans un document album(~2 minutes)
+	3. le fichier RefArtistInAlbum.js permettant d'ajouter une référence d'artiste dans un document album(~2 minutes) et de créer l'index sur ce champ
 
-	4. le fichier RefAlbumInSong.js permettant dajouter une référence d'album dans un document song(~20 minutes)
+	4. le fichier RefAlbumInSong.js permettant dajouter une référence d'album dans un document song(~20 minutes) et de créer l'index sur ce champ
 
 	5. le fichier WordCount_Artist.js faisant le word count des lyrics pour chaque artist (~3 heures d'éxecution)(afin de voir les termes les plus utilisés par un artiste)
 
 	6. le fichier WordCount_Album.js faisant le word count des lyrics pour chaque album (~10 heures d'éxecution) (afin de voir les termes les plus utilisés dans un album)
 
 	7. le fichier WordCount_Song.js faisant le word count des lyrics pour chaque song (afin de voir les termes les plus utilisés dans une musique)
+    
+    8. le web service extractdbpedia/artist permettant d'extraire le RDF des artistes ayant un lien vers wikipédia. Ce web service envoie des requêtes sparql sur DBpédia afin d'obtenir le RDF de l'artiste. Un champ rdf contenant le RDF de l'artiste est ensuite ajouté en base de données (durée: plusieurs heures)
+    
+    9. le web service extractdbpedia/album permettant d'extraire le RDF des musiques ayant un lien vers wikipédia. Ce web service envoie des requêtes sparql sur DBpédia afin d'obtenir le RDF de la musique. Un champ rdf contenant le RDF de la musique est ensuite ajouté en base de données (durée: plusieurs heures)
+    
+    10. le web service extractdbpedia/song permettant d'extraire le RDF des albums ayant un lien vers wikipédia. Ce web service envoie des requêtes sparql sur DBpédia afin d'obtenir le RDF de l'album. Un champ rdf contenant le RDF de l'album est ensuite ajouté en base de données (durée: plusieurs heures)
+    
+    11. le web service extractdbpedia/artist/createfields transforme les propriétés de notre champ RDF en propriétés dans notre base de données
+    
+    12. le web service extractdbpedia/album/createfields transforme les propriétés de notre champ RDF en propriétés dans notre base de données
+    
+    13. le web service extractdbpedia/song/createfields transforme les propriétés de notre champ RDF en propriétés dans notre base de données
+    
+    14. le fichier CreateIndexAfterDBpediaExtraction ce fichier permet de créer les index des nouveaux champs insérés dans la base de données
 
-	8. le fichier CreateSearchField.js permettant de créer le champs sur lequel sera effectuée la recherche (~10 minutes)
 
 
 

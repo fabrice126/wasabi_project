@@ -436,9 +436,6 @@ var embeddedToRelationalSchema = function(objArtist){
                     artist.albums[i].songs[j].albumTitre = artist.albums[i].titre;
                     artist.albums[i].songs[j].lengthAlbum = artist.albums[i].length;
                     artist.albums[i].songs[j].dateSortieAlbum = artist.albums[i].dateSortie;
-                    var searchTags = artist.albums[i].songs[j].titre+" "+artist.albums[i].songs[j].name+" "+artist.albums[i].songs[j].albumTitre;
-                    searchTags = searchTags.toLowerCase();
-                    artist.albums[i].songs[j].searchTags = searchTags;
                     artist.albums[i].songs[j];
                     db.collection('song').insert(artist.albums[i].songs[j]);
                 }

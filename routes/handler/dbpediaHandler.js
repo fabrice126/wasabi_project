@@ -160,7 +160,11 @@ var extractInfosFromRDF = function(description,property){
                 //exemple : resourceDbpedia = http://fr.dbpedia.org/resource/The_Rolling_Stones
                 var splitInfo = resourceDbpedia.substring(resourceDbpedia.indexOf("dbpedia.org/resource/")+subStr.length);
                 //exemple : splitInfo = The_Rolling_Stones
-                if(property == 'dct:subject' || property == 'dbo:associatedMusicalArtist'){
+                if(property == 'dct:subject'){
+                    //Les subjects ont cette forme : Category:Songs_written_by_James_Hetfield, on supprime dont "Category:"
+                    tInfos.push(splitInfo.substring(splitInfo.indexOf(':')+1));
+                }
+                else if (property == 'dbo:associatedMusicalArtist'){
                     tInfos.push(splitInfo);
                 }
                 else{

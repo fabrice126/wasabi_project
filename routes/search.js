@@ -182,10 +182,8 @@ router.put('/artist/:artistName/album/:albumName', function (req, res) {
     //FUTURE Si un album n'a pas encore d'attribut songs. Peut se produire lors de l'ajout d'un album
     for(var j=0;j<albumBody.songs.length;j++){
         //On change le titre de l'album contenu dans les documents musiques
-        //l'attribut albumTitre est utile pour générer le champ searchTags via un script mongodb
+        //l'attribut albumTitre est utile pour générer la recherche d'une musique
         albumBody.songs[j].albumTitre = albumBody.titre; 
-        //On génére le nouveau champ searchTags d'une musique avec le titre de la musique, le nom de l'artiste et le nom de l'album 
-        albumBody.songs[j].searchTags = albumBody.songs[j].titre+' '+albumBody.name+' '+ albumBody.titre;
         var idSong = albumBody.songs[j]._id;
         // On supprime l'id car mongodb lance un avertissement si ce champ n'est pas supprimé (_id est immutable pas d'update possible)
         delete albumBody.songs[j]._id;         
@@ -215,7 +213,7 @@ router.get('/artist/:artistName/album/:albumName/song/:songsName', function (req
         if (artist == null) { return res.status(404).sendFile([{error:"Artist not found"}]);}
         db.collection('album').findOne({$and:[{"titre":albumName},{"id_artist":artist._id}]},{"_id":1,"titre":1}, function(err, album) {
             if (album == null) {  return res.status(404).sendFile([{error:"Album not found"}]); }
-            db.collection('song').findOne({$and:[{"id_album":album._id},{"titre":songsName}]},{"urlSong":0,"wordCount":0,"searchTags":0},function(err, song) {
+            db.collection('song').findOne({$and:[{"id_album":album._id},{"titre":songsName}]},{"urlSong":0,"wordCount":0},function(err, song) {
                 if (song == null) { return res.status(404).send([{error:"Song not found"}]);}
                 album.songs = song;
                 artist.albums = album;

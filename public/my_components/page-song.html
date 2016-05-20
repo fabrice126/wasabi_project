@@ -24,34 +24,26 @@
                 @apply(--layout-horizontal);
                 @apply(--layout-wrap);
             }
+            #songInfos{
+                
+            }
             #songName{
                 font-size: 34px;
                 line-height: 34px;
-                padding-top: 3%;
-                padding-right: 24px;
-                padding-bottom: 14px;
-                padding-left: 24px;
             }
-            #songLyricsNonEditable{
-                font-size: 19px;
+            #songLyricsNonEditable,#songLyricsEditable,#songName,#songInfos, nav>a{
                 padding-top: 3%;
                 padding-right: 24px;
                 padding-bottom: 14px;
                 padding-left: 24px;
                 text-align: justify;
-                transition: all 0.5s linear;
 
+            }
+            #songLyricsNonEditable,#songLyricsEditable,#songInfos{
+                font-size: 19px;
             }
             #songLyricsEditable{
-                transition: all 0.5s linear;
                 background-color: #F2F2F2;
-                font-size: 19px;
-                padding-top: 3%;
-                padding-right: 24px;
-                padding-bottom: 14px;
-                padding-left: 24px;
-                text-align: justify;
-
             }
             paper-fab{
                 float: right;
@@ -63,25 +55,63 @@
         </style>
         <template>
             <paper-material elevation="1">
-<!--                Si utilisé avec app router-->
-<!--                <iron-ajax id="get_content" url="/search/artist/{{artist}}/{{id}}" last-response="{{artist}}" handleAs="json"> </iron-ajax>-->
-
                 <iron-ajax id="get_content" auto url="/search/artist/{{_encodeUri(nameArtist)}}/album/{{_encodeUri(nameAlbum)}}/song/{{_encodeUri(nameSong)}}" last-response="{{artist}}" handleAs="json" on-response="handleResponse"> </iron-ajax>
-                
                 <iron-ajax id="put_content" method="PUT" content-type="application/json"></iron-ajax>
                                         
                 <template is="dom-if" if="{{artist.albums.songs.rdf.length}}">
                     <show-dialog labeldialog="RDF {{artist.albums.songs.titre}} :" labelbutton="Show RDF" content="{{artist.albums.songs.rdf}}" labelexitdialog="Close"></show-dialog>
                 </template>
                 
-                <div id="songName"> 
-                   {{artist.albums.songs.titre}}
+                <section id="songName"> 
+                   {{artist.albums.songs.titre}} 
                     <paper-fab hidden={{editing}}  icon="icons:create" on-tap="doEdit" class="edit" mini></paper-fab>
                     <paper-fab hidden={{!editing}} icon="icons:done"   on-tap="doEdit" class="done" mini></paper-fab>
-                </div>                
+                </section>    
+<!--                Faire un boucle -->
+                    <section id="songInfos"> 
+                        <template is="dom-if" if="{{artist.albums.songs.runtime.length}}">
+                            <article>Durée: {{artist.albums.songs.runtime}}</article>
+                        </template>
+                        <template is="dom-if" if="{{artist.albums.songs.runtime.length}}">
+                            <article>Durée: {{artist.albums.songs.runtime}}</article>
+                        </template>
+                        <template is="dom-if" if="{{artist.albums.songs.runtime.length}}">
+                            <article>Durée: {{artist.albums.songs.runtime}}</article>
+                        </template>
+                        <template is="dom-if" if="{{artist.albums.songs.runtime.length}}">
+                            <article>Durée: {{artist.albums.songs.runtime}}</article>
+                        </template>
+                        <template is="dom-if" if="{{artist.albums.songs.runtime.length}}">
+                            <article>Durée: {{artist.albums.songs.runtime}}</article>
+                        </template>                        
+                        <template is="dom-if" if="{{artist.albums.songs.runtime.length}}">
+                            <article>Durée: {{artist.albums.songs.runtime}}</article>
+                        </template>
+                        <template is="dom-if" if="{{artist.albums.songs.runtime.length}}">
+                            <article>Durée: {{artist.albums.songs.runtime}}</article>
+                        </template>
+                        <template is="dom-if" if="{{artist.albums.songs.runtime.length}}">
+                            <article>Durée: {{artist.albums.songs.runtime}}</article>
+                        </template>
+                        <template is="dom-if" if="{{artist.albums.songs.runtime.length}}">
+                            <article>Durée: {{artist.albums.songs.runtime}}</article>
+                        </template>
 
-                <div id="songLyricsNonEditable" hidden={{editing}} contenteditable=false> </div>
-                <div id="songLyricsEditable"  hidden={{!editing}} contenteditable=true> </div>                
+                       
+                        Abstract: {{artist.albums.songs.abstract}} 
+                    </section>  
+          
+                <section>
+                    <article id="songLyricsNonEditable" hidden={{editing}} contenteditable=false> </article>
+                    <article id="songLyricsEditable"  hidden={{!editing}} contenteditable=true> </article> 
+                </section> 
+                <nav>
+                    <template is="dom-if" if="{{artist.albums.songs.subject.length}}">
+                        <template is="dom-repeat" items="{{artist.albums.songs.subject}}" as="subject" index-as="idx">
+                            <a href="#/category/{{subject}}">{{subject}} <a>
+                        </template>
+                    </template>
+                </nav>                
             </paper-material>
         </template>
     </dom-module>
@@ -107,31 +137,33 @@
         }
     },
     ready: function(){   
+        //Fonction permettant de réagir a un coller dans la zone prévu pour les lyrics
         this.$.songLyricsEditable.addEventListener("paste", function(e) {
             e.preventDefault();
             var text = e.clipboardData.getData("text/plain"); 
-            text = text.replace(/\n|\r\n|\r/g, "<br>\r\n");
+            text = text.replace(/\n|\r\n|\r/g, "<br>");
             var cleanText = text.replace(/(<([^>]+)>)/ig, "<br>");//pour échapper éventuellement du html ou script
             this.innerHTML = cleanText;
         });
     },
     _encodeUri : function(titre){
         return encodeURIComponent(titre);
-    } ,
-    _htmlToText : function(html){
-        
-        return html.innerHTML;
     },
+    //Cette fonction est utilisé lorsque l'utilisateur charge la page et lorsqu'il clique sur le bouton de modification des lyrics
     handleResponse: function(request) {        
+        //Si l'utilisateur clique sur le bouton de modification des lyrics
         if(this.editing){
-            document.querySelector("#songLyricsEditable").innerHTML = request.detail.xhr.response.albums.songs.lyrics;
+            //On ajoute via innerHTML car nous récupérons du HTML en base de données (des balises <br>) cela nous permet de garder la mise en page
+            this.$.songLyricsEditable.innerHTML = request.detail.xhr.response.albums.songs.lyrics;
         }
-        if (!this.editing){
-            document.querySelector("#songLyricsNonEditable").innerHTML = request.detail.xhr.response.albums.songs.lyrics;
-            document.querySelector("#songLyricsEditable").innerHTML = this.lyrics;
-            this.lyrics = document.querySelector("#songLyricsNonEditable").innerHTML;  
+        //Si l'utilisateur clique sur le bouton pour enregistrer sa modification des lyrics ou que l'utilisateur charge la page
+        else{
+            this.$.songLyricsNonEditable.innerHTML = request.detail.xhr.response.albums.songs.lyrics;
+            this.$.songLyricsEditable.innerHTML = this.lyrics;
+            this.lyrics = this.$.songLyricsNonEditable.innerHTML
         }
     },
+    //Lorsque l'utilisateur clique sur le bouton de modification ou de sauvegarde
     doEdit: function(e){
     	this.editing=!this.editing;
         if(this.editing){  
@@ -139,15 +171,20 @@
             this.$.get_content.generateRequest();
         }
     	if (!this.editing){
-            document.querySelector("#songLyricsNonEditable").innerHTML = document.querySelector("#songLyricsEditable").innerHTML.replace(/<div>/g,"<br>").replace(/<\/div>/g,"").replace(/\n/g,""); 
-            if(this.lyrics != document.querySelector("#songLyricsNonEditable").innerHTML){
+            //On replace dans un premier temps les <div> et <p> par des br car ces élements sont utilisés par les navigateurs pour les sauts de ligne dans un contenteditable
+            //on supprime ensuite les retours chariots et les autres tags HTML
+            this.$.songLyricsNonEditable.innerHTML = this.$.songLyricsEditable.innerHTML.replace(/<div>|<p>/ig,"<br>").replace(/\\n|\\r|\\r\\n|(<((?!br)[^>]+)>)/ig,"");
+            if(this.lyrics != this.$.songLyricsNonEditable.innerHTML){
                 console.log("Des modifications");
-                this.lyrics = document.querySelector("#songLyricsNonEditable").innerHTML;
+                this.lyrics = this.$.songLyricsNonEditable.innerHTML;
                 var objLyrics = {};
                 objLyrics.lyrics = this.lyrics;
                 objLyrics._id = this.artist.albums.songs._id;
+                //Construction du body pour l'envoie
                 this.$.put_content.body = JSON.stringify(objLyrics);
+                //Construction de la requête
                 this.$.put_content.url = "/search/artist/"+this._encodeUri(this.artist.name)+"/album/"+this._encodeUri(this.artist.albums.titre)+"/song/"+this._encodeUri(this.artist.albums.songs.titre);
+                //On lance la requête
                 this.$.put_content.generateRequest();
             }
             else{
