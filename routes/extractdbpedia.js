@@ -1,7 +1,7 @@
 var express         = require('express');
 var router          = express.Router();
 var parseString     = require('xml2js').parseString;
-var db              = require('mongoskin').db('mongodb://localhost:27017/wasabi');
+//var db              = require('mongoskin').db('mongodb://localhost:27017/wasabi');
 var dbpediaHandler  = require('./handler/dbpediaHandler.js');
 var utilHandler     = require('./handler/utilHandler.js');
 var infos_artist    = require('./sparql_request/infos_artist.js');
@@ -16,6 +16,7 @@ var ObjectId        = require('mongoskin').ObjectID;
 var urlWikipediaToSplit = "http://en.wikipedia.org/wiki/";
 var urlDbpediaToSplit = "dbpedia.org/resource/";
 router.get('/:collection',function(req, res){
+    var db = req.db;
     var collection = req.params.collection
     if(collection =="artist" ||collection =="album" ||collection =="song"){
         var loop = true;
@@ -85,6 +86,7 @@ router.get('/:collection',function(req, res){
 
 //TODO
 router.get('/artist/createfields',function(req, res){
+        var db = req.db;
 //        db.collection('artist').find({$and:[{rdf:{$ne:""}},{rdf:{$exists:true}}]},{wordCount:0}).limit(5000).toArray(function(err,tObjArtist){
         db.collection('artist').find({name:"Metallica"},{wordCount:0}).toArray(function(err,tObjArtist){
             var inc = 0 ;
@@ -202,10 +204,11 @@ router.get('/artist/createfields',function(req, res){
 
 //TODO
 router.get('/album/createfields',function(req, res){
-
+        var db = req.db;
 });
 
 router.get('/song/createfields',function(req, res){
+        var db = req.db;
         db.collection('song').find({$and:[{rdf:{$ne:""}},{rdf:{$exists:true}}]},{wordCount:0, lyrics:0}).toArray(function(err,tObjSong){
 //        db.collection('song').find({$and:[{titre:"Help!",albumTitre:"Help!"}]}).toArray(function(err,tObjSong){
             console.log('En cours de traitement ...');

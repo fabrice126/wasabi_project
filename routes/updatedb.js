@@ -1,7 +1,7 @@
 var express         = require('express');
 var router          = express.Router();
 var lyricsWikia     = require('./handler/lyricsWikia.js');
-var db              = require('mongoskin').db('mongodb://localhost:27017/wasabi');
+//var db              = require('mongoskin').db('mongodb://localhost:27017/wasabi');
 var ObjectId        = require('mongoskin').ObjectID;
 
 
@@ -17,6 +17,7 @@ var urlApiWikia = 'http://lyrics.wikia.com/api.php?func=getArtist&artist=';
 
 //Cette fonction met à jour les informations existantes dans la collection artist
 router.get('/artist',function(req, res){
+    var db = req.db;
     this.console.log("dedans /updatedb/artist");
     var skip = 0;
     var limit = 500;

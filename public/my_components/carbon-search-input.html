@@ -452,17 +452,37 @@ Example:
         this.$.suggestion.style.display = "none";
     },
     search:function(e){
-        this.$.suggestion.style.display = "block";
-        this.$.get_search.url ="/search/artist/begin/"+encodeURIComponent(e.target.bindValue); 
-        this.$.get_search.generateRequest();
-    },
+        var searchField = this.$.search;
+        var currentRequestId;
+        searchField.onkeydown = function(evt) {
+            // cancel current timeOutRequest if it exists
+            if(currentRequestId !== undefined) {
+                clearTimeout(currentRequestId);
+            }
+        };
+        searchField.onkeyup = function(evt) {
+            clearTimeout(currentRequestId);
+            currentRequestId = setTimeout(function() {
+                var searchString = this.$.search.value;
+                
+                if(!searchString.length){
+                    this.doLoadSearch(evt);
+                }
+                else{
+                    this.$.suggestion.style.display = "block";
+                    this.$.get_search.url ="/search/artist/begin/"+encodeURIComponent(searchString);
+                    this.$.get_search.generateRequest(); 
+                }
+            }.bind(this), 350);
+        }.bind(this);
+        
+    },        
     _encodeUri : function(infosData){
         return encodeURIComponent(infosData);
     },
     _isArtist : function(data){
         var isArtist = false;
-        if(typeof data.urlWikipedia !== 'undefined') {
-            
+        if(typeof data.albumTitre == 'undefined') {
             isArtist = true;
         }
         return isArtist;

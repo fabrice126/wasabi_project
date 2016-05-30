@@ -20,6 +20,7 @@
     "mongodb": "^2.1.0",
     "mongoskin": "^2.0.3",
     "morgan": "~1.6.1",
+    "node-elasticsearch-sync": "0.0.8",
     "npm": "^3.5.1",
     "request": "2.72.0",
     "sanitize-filename": "^1.5.3",

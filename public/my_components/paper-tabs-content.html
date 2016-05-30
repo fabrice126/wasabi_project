@@ -123,7 +123,7 @@
             <iron-ajax id="get_db_info" url="/search/dbinfo" last-response="{{db_info}}" auto handleAs="json"> </iron-ajax>
             <!-- Génération des listes de catégories -->
             <paper-material elevation="1">
-                <paper-tabs selected={{idxCurrentTab}}>
+                <paper-tabs id="paperTabsCategorie" selected={{idxCurrentTab}}>
                     <template is="dom-repeat" items="{{categories}}" as="categorie">
                         <paper-tab id="categorie_{{categorie}}" >{{categorie}}</paper-tab>
                     </template>
@@ -143,13 +143,13 @@
                             </ul>
                         </template>
                                                             
-                        <template is="dom-if" if="{{_isNbArtist(idxCurrentTab)}}">
+                        <template is="dom-if" if="{{_countNbArtist(idxCurrentTab)}}">
                                 Nous avons actuellement {{ db_info.nbArtist}} artistes !
                         </template>
-                        <template is="dom-if" if="{{_isNbAlbum(idxCurrentTab)}}">
+                        <template is="dom-if" if="{{_countNbAlbum(idxCurrentTab)}}">
                                 Nous avons actuellement {{db_info.nbAlbum}} albums !
                         </template>                      
-                        <template is="dom-if" if="{{_isNbSong(idxCurrentTab)}}">
+                        <template is="dom-if" if="{{_countNbSong(idxCurrentTab)}}">
                                Nous avons actuellement {{db_info.nbSong}} musiques !
                         </template>
                     </iron-pages>
@@ -161,10 +161,10 @@
             <template is="dom-if" if="{{_isData(data)}}">
                 <div id="loader">
                         <paper-material elevation="1">
-                            <a class="previousPage" href="#/search/categorie/{{categorie}}/lettre/{{lettre}}/page/{{_isPrevious(numPage)}}" tabindex="-1">
+                            <a class="previousPage" href="#/search/categorie/{{categorie}}/lettre/{{lettre}}/page/{{_hasPrevious(numPage)}}" tabindex="-1">
                                 <paper-fab mini  icon="chevron-left" title="previous" class="blue"></paper-fab>
                             </a>
-                            <a class="nextPage" href="#/search/categorie/{{categorie}}/lettre/{{lettre}}/page/{{_isNext(numPage,data)}}" tabindex="-1">
+                            <a class="nextPage" href="#/search/categorie/{{categorie}}/lettre/{{lettre}}/page/{{_hasNext(numPage,data)}}" tabindex="-1">
                                 <paper-fab  mini icon="chevron-right" title="next" class="blue"></paper-fab>
                             </a>
                             <nav id="nav_sub_alphabet">
@@ -214,10 +214,10 @@
                         </paper-material>
                     </template>
                     <paper-material id="paginationBottom" elevation="1">
-                        <a class="previousPage" href="#/search/categorie/{{categorie}}/lettre/{{lettre}}/page/{{_isPrevious(numPage)}}" tabindex="-1">
+                        <a class="previousPage" href="#/search/categorie/{{categorie}}/lettre/{{lettre}}/page/{{_hasPrevious(numPage)}}" tabindex="-1">
                             <paper-fab mini icon="chevron-left" title="previous" class="blue"></paper-fab>
                         </a>
-                        <a class="nextPage" href="#/search/categorie/{{categorie}}/lettre/{{lettre}}/page/{{_isNext(numPage,data)}}" tabindex="-1">
+                        <a class="nextPage" href="#/search/categorie/{{categorie}}/lettre/{{lettre}}/page/{{_hasNext(numPage,data)}}" tabindex="-1">
                             <paper-fab  mini icon="chevron-right" title="next" class="blue"></paper-fab>
                         </a>
                     </paper-material>
@@ -255,20 +255,17 @@
         }
     },
     ready: function(){    
-            var tabs = document.querySelector('paper-tabs');
-            var pages = document.querySelector('iron-pages');
-//            //on lance la requête uniquement lorsqu'on charge la page
-//            this.$.get_db_info.generateRequest();
             for(var i = 0;i<this.categories.length;i++){
                 if(document.location.href.search(this.categories[i])!=-1){
                     this.idxCurrentTab = i; 
                 }
             }
-            document.addEventListener('iron-select', function(e) { 
-                var tabs = document.querySelector('paper-tabs');
-                var pages = document.querySelector('iron-pages');
+            //Lorsqu'on clique sur paperTabsCategorie l'event iron-select est envoyé
+            this.$.paperTabsCategorie.addEventListener('iron-select', function(e) { 
+                var tabs = this.$.paperTabsCategorie;
+                var pages = this.$.iron_alphabet;
                 pages.selected = tabs.selected;
-            });  
+            }.bind(this));  
     },
 
       doLoadCategorie:function(e){
@@ -283,6 +280,7 @@
           }
           return currLetter;
       },
+        //fonction vérifiant si le numéro de la page est bien un nombre
       _checkUrlParams:function(lettre,numPage){
             var urlParamValid = false;
             var numPage = parseInt(numPage);
@@ -291,33 +289,43 @@
             }
             return urlParamValid;
       },
+        //fonction comptant le nombre d'occurences commençant par une certaine lettre
       _getNbCount:function(infosData){
-            if(Boolean(infosData.nbcount)){
-                return infosData.nbcount
+            if(this._isData(infosData)){
+                return infosData.nbcount;
             }
-          return 0;
+            return 0;
       },
+      //fonction vérifiant si oui ou non il y a des données
     _isData:function(infosData){
         return Boolean(infosData);
     },
+      //fonction vérifiant si ce sont des données d'artistes
     _isArtist: function (infosData) {
+        if(!this._isData(infosData)){
+            return false;
+        }
         return Boolean(infosData.artists);
     },
+      //fonction vérifiant si ce sont des données d'album
     _isAlbum: function (infosData) {
+        if(!this._isData(infosData)){
+            return false;
+        }
         return Boolean(infosData.albums);
     },
+      //fonction vérifiant si ce sont des données de musiques
     _isSong: function (infosData) {
-//        var isSong = false;
-//        if(infosData != null && infosData[0].titleSong){
-//            isSong = true;
-//        }
-//        return isSong;
+        if(!this._isData(infosData)){
+            return false;
+        }
         return Boolean(infosData.songs);
     },
     _encodeUri : function(infosData){
         return encodeURIComponent(infosData);
     },
-    _isPrevious : function(numPage){
+    //Fonction vérifiant si il éxiste un page précédente ou non
+    _hasPrevious : function(numPage){
         var newNumPage =0;
         var numPage = parseInt(numPage, 10);
         if(numPage<1){           
@@ -329,13 +337,8 @@
         return newNumPage;
 
     },
-    _isFullOfItems : function(items, limit){
-        if( items.length == limit ){
-            return true;
-        }
-        return false;
-    },
-    _isNext : function(numPage,infosData){
+      //fonction verifiant si il éxiste une page suivante ou non
+    _hasNext : function(numPage,infosData){
         if( this._isArtist(infosData) && this._isFullOfItems(infosData.artists,infosData.limit) ){
             return parseInt(numPage, 10)+1;
         }
@@ -350,21 +353,31 @@
             return parseInt(numPage, 10);
         }
     },
-    _isNbArtist:function(idxCurrentTab){
+    //Fonction vérifiant si la page est pleine ou non
+    _isFullOfItems : function(items, limit){
+        if( items.length == limit ){
+            return true;
+        }
+        return false;
+    },
+      //Fonction comptant le nombre d'artistes dans la BDD
+    _countNbArtist:function(idxCurrentTab){
         var artist=false;
         if(this.categories[idxCurrentTab] == "Artists"){
             artist = true;
         }
         return artist;
     },
-    _isNbAlbum:function(idxCurrentTab){
+    //Fonction comptant le nombre d'albums dans la BDD
+    _countNbAlbum:function(idxCurrentTab){
         var album=false;
         if(this.categories[idxCurrentTab] == "Albums"){
             album = true;
         }
         return album;
     },
-    _isNbSong:function(idxCurrentTab){
+    //Fonction comptant le nombre de musiques dans la BDD
+    _countNbSong:function(idxCurrentTab){
         var song=false;
         if(this.categories[idxCurrentTab] == "Songs"){
             song = true;

@@ -1,11 +1,7 @@
 var express         = require('express');
 var router          = express.Router();
-var db              = require('mongoskin').db('mongodb://localhost:27017/wasabi');
+var request         = require('request');
 var lyricsWikia     = require('./handler/lyricsWikia.js');
-/**
-
-*/
-
 
 
 //createdb, permet de créer entierement la base de données
@@ -19,7 +15,8 @@ router.get('/',function(req, res){
     res.end();
 });
 
-router.get('/:urlArtist',function(req, res){
+//Permet d'ajouter la discographie d'un artiste manquant dans notre base de données en allant la chercher sur lyrics wikia
+router.get('/add/:urlArtist',function(req, res){
     var newLyricsWikia = lyricsWikia;
     var urlApiWikiaArtist = newLyricsWikia.urlApiWikia + req.params.urlArtist
     console.log("dedans /createdb/"+ req.params.urlArtist);
@@ -52,6 +49,66 @@ router.get('/:urlArtist',function(req, res){
 });
 
 
+router.get('/createdbelasticsearchsong', function(req, res){
+    var elasticsearchClient = req.elasticsearchClient;
+    var db = req.db;
+    var skip = 0;
+    var limit = 10000;
+    (function recursivePost(skip){
+        console.log("createdbelasticsearch 1 ="+ skip);
+        db.collection('song').find({},{"titre":1,"name":1,"albumTitre":1}).skip(skip).limit(limit).toArray(function(err,songs){
+            var bulk_request = [];
+            for (var i = 0; i < songs.length; i++) {
+                var id = songs[i]._id;
+                delete songs[i]._id;
+                // Insert index
+                bulk_request.push({index: {_index: 'idx_songs', _type: 'string',_id:id}});
+                // Insert data
+                bulk_request.push(songs[i]);    
+            }
+            elasticsearchClient.bulk({body : bulk_request}, function (err, resp) {
+                if(err) {console.log(err);}
+            });
+            skip+= limit;
+            if(songs.length !=limit){
+                console.log("FIN DU TRAITEMENT !");
+                return ;
+            }
+            recursivePost(skip);
+        });
+    })(skip)
+    res.send("OK");
+});
+router.get('/createdbelasticsearchartist', function(req, res){
+    var elasticsearchClient = req.elasticsearchClient;
+    var db = req.db;
+    var skip = 0;
+    var limit = 10000;
+    (function recursivePost(skip){
+        console.log("createdbelasticsearch 1 ="+ skip);
+        db.collection('artist').find({},{"name":1}).skip(skip).limit(limit).toArray(function(err,artists){
+            var bulk_request = [];
+            for (var i = 0; i < artists.length; i++) {
+                var id = artists[i]._id;
+                delete artists[i]._id;
+                // Insert index
+                bulk_request.push({index: {_index: 'idx_artists', _type: 'string',_id:id}});
+                // Insert data
+                bulk_request.push(artists[i]);    
+            }
+            elasticsearchClient.bulk({body : bulk_request}, function (err, resp) {
+                if(err) {console.log(err);}
+            });
+            skip+= limit;
+            if(artists.length !=limit){
+                console.log("FIN DU TRAITEMENT !");
+                return ;
+            }
+            recursivePost(skip);
+        });
+    })(skip)
+    res.send("OK");
+});
 router.get('*', function(req, res){
     //On renvoie index.html qui ira match l'url via <app-router> de index.html ce qui renverra la page 404 si la page n'existe pas
     res.sendFile(path.join(__dirname ,'public',  'index.html'));

@@ -67,38 +67,38 @@
                     <paper-fab hidden={{editing}}  icon="icons:create" on-tap="doEdit" class="edit" mini></paper-fab>
                     <paper-fab hidden={{!editing}} icon="icons:done"   on-tap="doEdit" class="done" mini></paper-fab>
                 </section>    
-<!--                Faire un boucle -->
+<!--                Faire un boucle + changer <article> et <p>-->
                     <section id="songInfos"> 
                         <template is="dom-if" if="{{artist.albums.songs.runtime.length}}">
-                            <article>Durée: {{artist.albums.songs.runtime}}</article>
+                            <article>Runtime: {{artist.albums.songs.runtime}}</article>
                         </template>
-                        <template is="dom-if" if="{{artist.albums.songs.runtime.length}}">
-                            <article>Durée: {{artist.albums.songs.runtime}}</article>
+                        <template is="dom-if" if="{{artist.albums.songs.format.length}}">
+                            <article>Format: {{artist.albums.songs.format}}</article>
                         </template>
-                        <template is="dom-if" if="{{artist.albums.songs.runtime.length}}">
-                            <article>Durée: {{artist.albums.songs.runtime}}</article>
+                        <template is="dom-if" if="{{artist.albums.songs.genre.length}}">
+                            <article>Genre: {{artist.albums.songs.genre}}</article>
                         </template>
-                        <template is="dom-if" if="{{artist.albums.songs.runtime.length}}">
-                            <article>Durée: {{artist.albums.songs.runtime}}</article>
+                        <template is="dom-if" if="{{artist.albums.songs.producer.length}}">
+                            <article>Producer: {{artist.albums.songs.producer}}</article>
                         </template>
-                        <template is="dom-if" if="{{artist.albums.songs.runtime.length}}">
-                            <article>Durée: {{artist.albums.songs.runtime}}</article>
+                        <template is="dom-if" if="{{artist.albums.songs.recordLabel.length}}">
+                            <article>RecordLabel: {{artist.albums.songs.recordLabel}}</article>
                         </template>                        
-                        <template is="dom-if" if="{{artist.albums.songs.runtime.length}}">
-                            <article>Durée: {{artist.albums.songs.runtime}}</article>
+                        <template is="dom-if" if="{{artist.albums.songs.writer.length}}">
+                            <article>Writer: {{artist.albums.songs.writer}}</article>
                         </template>
-                        <template is="dom-if" if="{{artist.albums.songs.runtime.length}}">
-                            <article>Durée: {{artist.albums.songs.runtime}}</article>
+                        <template is="dom-if" if="{{artist.albums.songs.recorded.length}}">
+                            <article>Recorded: {{artist.albums.songs.recorded}}</article>
                         </template>
-                        <template is="dom-if" if="{{artist.albums.songs.runtime.length}}">
-                            <article>Durée: {{artist.albums.songs.runtime}}</article>
+                        <template is="dom-if" if="{{artist.albums.songs.releaseDate.length}}">
+                            <article>Release Date: {{artist.albums.songs.releaseDate}}</article>
                         </template>
-                        <template is="dom-if" if="{{artist.albums.songs.runtime.length}}">
-                            <article>Durée: {{artist.albums.songs.runtime}}</article>
+                        <template is="dom-if" if="{{artist.albums.songs.award.length}}">
+                            <article>Award: {{artist.albums.songs.award}}</article>
                         </template>
-
-                       
-                        Abstract: {{artist.albums.songs.abstract}} 
+                        <template is="dom-if" if="{{artist.albums.songs.abstract.length}}">
+                            <p>Abstract: {{artist.albums.songs.abstract}}</p>
+                        </template>
                     </section>  
           
                 <section>
