@@ -9,14 +9,8 @@
         <!--Regroupe le code permettant la creation de webcomponent -->
         <script src="bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
         <link href="bower_components/app-router/app-router.html" rel="import">
-        <link href="bower_components/pushstate-anchor/pushstate-anchor.html" rel="import">
-<!--        <link rel="import" href="bower_components/paper-header-panel/paper-header-panel.html">-->
         <link rel="import" href="/bower_components/iron-flex-layout/iron-flex-layout-classes.html">
-
         <link href="my_components/nav-bar.html" rel="import">
-        <link href="my_components/x-album.html" rel="import">
-        <link href="my_components/x-song.html" rel="import">
-<!--        <link href="my_components/todo-app.html" rel="import">-->
         <style is="custom-style" include="iron-flex"></style>
 
 
@@ -40,22 +34,29 @@
                 <nav-bar></nav-bar>
                 <div id=mainContent>
                     <app-router>
+                        <!--Page d'accueil-->
                         <app-route path="/" onUrlChange="updateModel" import="my_components/paper-tabs-content.html"></app-route>
-                        
-                        
+                        <!--Page d'accueil + recherche d'artistes/albums/musiques par lettre-->
                         <app-route path="/search/categorie/:categorie/lettre/:lettre/page/:numPage"  onUrlChange="updateModel" import="my_components/paper-tabs-content.html"></app-route>  
                         <app-route path="/search/categorie/:categorie/lettre/:lettre/page/:numPage/" onUrlChange="updateModel" import="my_components/paper-tabs-content.html"></app-route>
-                        
+                        <!--Page d'un artiste contenant des infos + sa discographie-->
                         <app-route path="/search/artist/:nameArtist"  onUrlChange="updateModel" import="my_components/page-artist.html"></app-route>    
                         <app-route path="/search/artist/:nameArtist/" onUrlChange="updateModel" import="my_components/page-artist.html"></app-route> 
-                        
+                        <!--Page d'un album contenant des infos + les titres de l'album-->
                         <app-route path="/search/artist/:nameArtist/album/:nameAlbum"  onUrlChange="updateModel" import="my_components/page-album.html"></app-route>
                         <app-route path="/search/artist/:nameArtist/album/:nameAlbum/" onUrlChange="updateModel" import="my_components/page-album.html"></app-route>    
-                        
-                        <app-route path="/search/artist/:nameArtist/album/:nameAlbum/song/:nameSong" onUrlChange="updateModel" import="my_components/page-song.html"></app-route>
-                        <app-route path="/search/artist/:nameArtist/album/:nameAlbum/song/:nameSong/"  onUrlChange="updateModel" import="my_components/page-song.html"></app-route>
-                        
-                        
+                        <!--Page d'une musiques contenant des infos + les lyrics de la musique-->
+                        <app-route path="/search/artist/:nameArtist/album/:nameAlbum/song/:nameSong"  onUrlChange="updateModel" import="my_components/page-song.html"></app-route>
+                        <app-route path="/search/artist/:nameArtist/album/:nameAlbum/song/:nameSong/" onUrlChange="updateModel" import="my_components/page-song.html"></app-route>
+                        <!--Page categorie contenant les artistes/albums/musiques contenant la categorie cherchée en commun-->
+<!--
+                        <app-route path="/search/category/:nameCategory"  onUrlChange="updateModel" import="my_components/page-category.html"></app-route>
+                        <app-route path="/search/category/:nameCategory/" onUrlChange="updateModel" import="my_components/page-category.html"></app-route>
+                        Page more contenant plus de résultats de recherche
+                        <app-route path="/search/more/:searchText"  onUrlChange="updateModel" import="my_components/page-search.html"></app-route>
+                        <app-route path="/search/more/:searchText/" onUrlChange="updateModel" import="my_components/page-search.html"></app-route>
+-->
+                        <!--Lorsqu'une mauvaise URL est saisie-->
                         <app-route path="*" onUrlChange="updateModel" import="my_components/page-404.html"></app-route>
                     </app-router>
                 </div>

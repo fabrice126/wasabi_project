@@ -9,7 +9,10 @@
 <!-- Paper Elements -->
 <link rel="import" href="../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout-classes.html">
+
+
 
 <!-- Carbon Elements -->
 <link rel="import" href="carbon-voice-input.html">
@@ -470,10 +473,10 @@ Example:
                 }
                 else{
                     this.$.suggestion.style.display = "block";
-                    this.$.get_search.url ="/search/artist/begin/"+encodeURIComponent(searchString);
+                    this.$.get_search.url ="/search/fulltext/"+encodeURIComponent(searchString);
                     this.$.get_search.generateRequest(); 
                 }
-            }.bind(this), 350);
+            }.bind(this), 150);
         }.bind(this);
         
     },        

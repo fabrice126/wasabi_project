@@ -23,8 +23,8 @@ router.get('/:collection',function(req, res){
         //extraire l'url de wikipedia de objAlbum.urlWikipedia 
         (function getRequestLoop(loop){
             if(loop){
-//                var objRequest = {$and:[{urlWikipedia:{$ne:""}},{rdf:{$exists:false}}]};
-                var objRequest = {$and:[{urlWikipedia:{$ne:""}},{$where: "this.rdf.length <200"}]};//Permet d'avoir les documents n'ayant pas d'informations dans le RDF
+                var objRequest = {$and:[{urlWikipedia:{$ne:""}},{rdf:{$exists:false}}]}; // permet d'avoir les documents ayant une url wikipédia et n'ayant pas de RDF
+//                var objRequest = {$and:[{urlWikipedia:{$ne:""}},{$where: "this.rdf.length <200"}]};//Permet d'avoir les documents n'ayant pas d'informations dans le RDF
                 var objProjection = {_id:1,urlWikipedia:1};
                 var limit = 10000;
                 db.collection(collection).find(objRequest,objProjection).limit(limit).toArray(function(err,tObjCollection){
@@ -67,6 +67,9 @@ router.get('/:collection',function(req, res){
                                     }
                                     else{
                                         console.log("===========================NEXT LIMIT : getRequestLoop = "+loop+"===========================");
+                                        if(!loop){
+                                            console.log("===========================TRAITEMENT TERMINEE===========================");
+                                        }
                                         getRequestLoop(loop);
                                     }
                                 });

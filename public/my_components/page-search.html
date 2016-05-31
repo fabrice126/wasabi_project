@@ -1,11 +1,16 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="../bower_components/paper-material/paper-material.html">
-<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
-<!--my_components-->
-<link rel="import" href="show-dialog.html">
-<link rel="import" href="x-album.html">  
-   
-    <dom-module id="page-artist">
+<!--
+<link href="../bower_components/paper-tabs/paper-tabs.html" rel="import">
+<link href="../bower_components/paper-material/paper-material.html" rel="import">
+<link href="../bower_components/iron-pages/iron-pages.html" rel="import">
+<link href="../bower_components/paper-card/paper-card.html" rel="import">
+<link href="../bower_components/paper-ripple/paper-ripple.html" rel="import">
+<link href="../bower_components/iron-ajax/iron-ajax.html" rel="import">
+<link href="../bower_components/paper-item/paper-item.html" rel="import">
+<link rel="import" href="../bower_components/paper-item/paper-icon-item.html">
+<link rel="import" href="../bower_components/paper-item/paper-item-body.html">
+-->
+    <dom-module id="page-search">
         <style>
             .flex-wrap {
                 @apply(--layout-horizontal);
@@ -25,10 +30,8 @@
         </style>
         <template>
             <paper-material elevation="1">
-                <iron-ajax id="get_content" auto url="/search/artist/{{_encodeUri(nameArtist)}}" last-response="{{artist}}" handleAs="json"> </iron-ajax>
-                <template is="dom-if" if="{{artist.rdf.length}}">
-                    <show-dialog labeldialog="RDF {{artist.name}} :" labelbutton="Show RDF" content="{{artist.rdf}}" labelexitdialog="Close"></show-dialog>
-                </template>
+                <iron-ajax id="get_content" auto url="/search/artist/{{_encodeUri(nameCategorie)}}" last-response="{{categorie}}" handleAs="json"> </iron-ajax>
+
                 <div class="artistname"> {{artist.name}}</div>
                 
                 <template class="flex-wrap" is="dom-repeat" items="{{artist.albums}}" as="album" initial-count="1" >
@@ -42,7 +45,7 @@
 <script>
   // element registration
   Polymer({
-    is: "page-artist",
+    is: "page-search",
     // add properties and methods on the element's prototype
     properties: {
         artist:{
@@ -57,4 +60,5 @@
     },    
   });  
 
-</script>       
+</script>   
+    

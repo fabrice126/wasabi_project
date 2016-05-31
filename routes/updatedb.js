@@ -22,7 +22,7 @@ router.get('/artist',function(req, res){
     var skip = 0;
     var limit = 500;
     var total =0;
-    var collection = "artist_copy";
+    var collection = "artist";
     db.collection(collection).count(function(err, nbArtist) {
         console.log('There are ' + nbArtist + ' artist in the database');
         (function fetchArtist(skip,nbArtist){
@@ -74,5 +74,29 @@ router.get('/artist',function(req, res){
     });
 
 });
-
+//Permet de mettre à jour les informations de l'artiste passé en parametre
+router.get('/update/:artistName',function(req, res){
+    var db = req.db;
+    var artistName = req.params.artistName
+    this.console.log("dedans /updatedb/update/"+artistName);
+    var collection = "artist";
+    //on récupére :artistName
+    db.collection(collection).findOne({name:artistName}, function(err, result) {
+        //on appel la fonction permettant d'aller chercher des informations sur l'artiste sur lyrics wikia
+        //on récupère l'objet artist passé en parametre (result) avec les propriétés mis à jour
+        //cette fonction update uniquement les propriétés de result elle ne renvoie pas un nouvel objet
+        lyricsWikia.getInfosFromPageArtist(urlPageArtist,result).then(function(objArtist){ 
+            console.log(objArtist);
+            var idArtist = objArtist._id;
+            //si _id n'est pas supprimé avant l'update, mongo lance un avertissement car un _id ne peut être modifié
+            delete objArtist._id;
+            //On met à jour l'artist avec les nouvelles propriétés
+            db.collection(collection).update( { _id: new ObjectId(idArtist) },{ $set: objArtist }, function(err) {
+                if (err) throw err;
+                console.log("Updated => "+objArtist.name);
+            });
+        });
+    });
+    res.send("OK");
+});
 module.exports = router;

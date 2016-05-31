@@ -4,11 +4,14 @@ var favicon         = require('serve-favicon');
 var logger          = require('morgan');
 var cookieParser    = require('cookie-parser');
 var bodyParser      = require('body-parser');
+var helmet          = require('helmet');
+var escapeHTML      = require('escape-html');
 var db              = require('mongoskin').db('mongodb://localhost:27017/wasabi');
+var escapeElastic   = require('elasticsearch-sanitize');
 var search          = require('./routes/search');
 var createdb        = require('./routes/createdb');
-//var updatedb        = require('./routes/updatedb');
-//var extractdbpedia  = require('./routes/extractdbpedia');
+var updatedb        = require('./routes/updatedb');
+var extractdbpedia  = require('./routes/extractdbpedia');
 var basicAuth       = require('basic-auth-connect');
 var app             = express();
 var elasticsearch   = require('elasticsearch');
@@ -17,6 +20,8 @@ var elasticsearchClient          = new elasticsearch.Client({ host: 'localhost:9
 app.set('view cache', false); // désactivation du cache express
 // uncomment after placing your favicon in /public
 //app.set('view engine', 'html'); 
+app.use(helmet());
+app.disable('x-powered-by');
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
@@ -26,6 +31,8 @@ app.use(cookieParser());
 app.use(basicAuth('michel', 'michelbuffa'));
 app.use(function(req,res,next){
     req.db = db;
+    req.escapeHTML = escapeHTML;
+    req.escapeElastic = escapeElastic;
     req.elasticsearchClient = elasticsearchClient;
     next();
 });
@@ -33,7 +40,7 @@ app.use('/',express.static(path.join(__dirname, 'public')));
 app.use('/search', search);
 
 //Permet d'utiliser les fonctions de créations et updates de la base de données
-app.use('/createdb', createdb);
+//app.use('/createdb', createdb);
 //app.use('/updatedb', updatedb);
 //app.use('/extractdbpedia', extractdbpedia);
 
