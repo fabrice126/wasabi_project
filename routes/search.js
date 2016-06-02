@@ -2,7 +2,6 @@ var express         = require('express');
 var request         = require('request');
 var router          = express.Router();
 var searchHandler   = require('./handler/searchHandler.js');
-//var db              = require('mongoskin').db('mongodb://localhost:27017/wasabi');
 var ObjectId        = require('mongoskin').ObjectID;
 
 
@@ -235,98 +234,36 @@ router.put('/artist/:artistName/album/:albumName/song/:songsName',function(req,r
 //==========================================================================================================================\\
 //permet de chercher des artistes via la barre de recherche
 router.get('/fulltext/:searchText', function (req, res) {
-    var db = req.db;
-    var escapeHTML = req.escapeHTML;
-    var escapeElastic = req.escapeElastic;    // escape ces chars:  + - = && || > < ! ( ) { } [ ] ^ " ~ * ? : \ /
-    var elasticsearchClient = req.elasticsearchClient;
-    var searchText = escapeElastic(escapeHTML(req.params.searchText));
+    var searchText = req.escapeElastic(req.escapeHTML(req.params.searchText));// escape le html les chars spéciaux:+-= && || ><!(){}[]^"~*?:\/
     var maxinfo = 12; //12 élements doivent apparaitre dans l'autocomplétion de recherche
     var maxinfoselected = maxinfo/2;
-    var result = [];
-    var querySong = {"query": {"bool": {"should": [ {"query_string": {"default_field": "_all","query": searchText}}]}},"size": maxinfo};
+    var query = {"query": {"bool": {"should": [ {"query_string": {"default_field": "_all","query": searchText}}]}},"size": maxinfo};
     this.console.log("get '/fulltext/"+searchText);
-    var startArtist = Date.now();
-    elasticsearchClient.search({index: 'idx_artists', type: 'string', body: querySong}).then(function (respArtists) {
-        var artist = [];
-        for(var i = 0 ; i<respArtists.hits.hits.length;i++){
-            artist.push(respArtists.hits.hits[i]._source);
-        }
-        console.log(Date.now() - startArtist);
-        var startSong = Date.now();
-        elasticsearchClient.search({index: 'idx_songs',type: 'string',body: querySong}).then(function (respSongs) {
-            var song = [];
-            for(var i = 0 ; i<respSongs.hits.hits.length;i++){
-                song.push(respSongs.hits.hits[i]._source);
-            }
-            //On a récupéré 12 artists et 12 musiques
-            //Si on a - de 6 artistes, comme il nous faut 12 résultats on va ajouter + de musiques
-            if(artist.length < maxinfoselected){
-                song = song.slice(0,maxinfoselected+maxinfoselected - artist.length);
-            }
-            //il y a autant de musique que d'artist
-            else{
-                artist = artist.slice(0,maxinfoselected);
-                song = song.slice(0,maxinfoselected);
-            }
-            console.log(Date.now() - startSong);
-            result = artist.concat(song);
-            res.send(JSON.stringify(result));
-        }, function (err) {
-            res.send("Error: Song");
-        });
-    }, function (err) {
-        res.send("Error: Artist");
+    var start = Date.now();
+    searchHandler.fullTextQuery(req,maxinfo,query,maxinfoselected).then(function(resp) {
+        console.log("                       fullTextQuery time ="+ (Date.now() - start));
+        res.send(resp);
+    }).catch(function() { 
+        res.send(resp);
     });
-//    });
 });
 
 
 
 router.get('/more/:searchText', function (req, res) {
-    var db = req.db;
-    var escapeHTML = req.escapeHTML;
-    var escapeElastic = req.escapeElastic;    // escape ces chars:  + - = && || > < ! ( ) { } [ ] ^ " ~ * ? : \ /
-    var elasticsearchClient = req.elasticsearchClient;
-    var artistName = escapeElastic(escapeHTML(req.params.artistName));
+    var searchText = req.escapeElastic(req.escapeHTML(req.params.searchText));// escape le html les chars spéciaux:+-= && || ><!(){}[]^"~*?:\/
     var maxinfo = 200; //200 élements doivent apparaitre dans l'autocomplétion de recherche
     var maxinfoselected = maxinfo/2;
-    var result = [];
-    var querySong = {"query": {"bool": {"should": [ {"query_string": {"default_field": "_all","query": artistName}}]}},"size": maxinfo};
-    this.console.log("get '/more/"+artistName);
-    var startArtist = Date.now();
-    elasticsearchClient.search({index: 'idx_artists', type: 'string', body: querySong}).then(function (respArtists) {
-        var artist = [];
-        console.log(Date.now() - startArtist);
-        for(var i = 0 ; i<respArtists.hits.hits.length;i++){
-            artist.push(respArtists.hits.hits[i]._source);
-        }
-        console.log(Date.now() - startArtist);
-        var startSong = Date.now();
-        elasticsearchClient.search({index: 'idx_songs',type: 'string',body: querySong}).then(function (respSongs) {
-            var song = [];
-            console.log(Date.now() - startSong);
-            for(var i = 0 ; i<respSongs.hits.hits.length;i++){
-                song.push(respSongs.hits.hits[i]._source);
-            }
-            //On a récupéré 200 artists et 12 musiques
-            //Si on a - de 6 artistes, comme il nous faut 12 résultats on va ajouter + de musiques
-            if(artist.length < maxinfoselected){
-                song = song.slice(0,maxinfoselected+maxinfoselected - artist.length);
-            }
-            //il y a autant de musique que d'artist
-            else{
-                artist = artist.slice(0,maxinfoselected);
-                song = song.slice(0,maxinfoselected);
-            }
-            console.log(Date.now() - startSong);
-            result = artist.concat(song);
-            res.send(JSON.stringify(result));
-        }, function (err) {
-            res.send("Error: Song");
-        });
-    }, function (err) {
-        res.send("Error: Artist");
+    var query = {"query": {"bool": {"should": [ {"query_string": {"default_field": "_all","query": searchText}}]}},"size": maxinfo};
+    this.console.log("get '/more/"+searchText);
+    var start = Date.now();
+    searchHandler.fullTextQuery(req,maxinfo,query,maxinfoselected).then(function(resp) {
+        console.log("                       more fullTextQuery time ="+ (Date.now() - start));
+        res.send(resp);
+    }).catch(function() { 
+        res.send(resp);
     });
-//    });
 });
+
+
 module.exports = router;

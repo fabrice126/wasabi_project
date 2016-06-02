@@ -5,12 +5,15 @@
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../bower_components/iron-icons/hardware-icons.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+
 
 <!-- Paper Elements -->
 <link rel="import" href="../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/paper-card/paper-card.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../bower_components/paper-ripple/paper-ripple.html">
 
 
 
@@ -65,7 +68,9 @@ Example:
         }
         paper-card:hover{
             background-color: #EBEEF4;
-
+        }
+        .arrowSelector{
+            background-color: #AFC6F5;
         }
 
         a:hover, a:focus,a:active a:visited {
@@ -84,13 +89,13 @@ Example:
             display: none;
         }
 */
-      paper-material{
-        width: 100%;
-        height: 100%;
-        background-color: rgba(163,231,255,0.50);
-        border-radius: 2px;
-        transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
-      }
+        paper-material{
+            width: 100%;
+            height: 100%;
+            background-color: rgba(163,231,255,0.50);
+            border-radius: 2px;
+            transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+        }
         #search::-webkit-input-placeholder {
             color: white;
         }
@@ -120,21 +125,26 @@ Example:
             color: white;
             transition: all 0.5s linear;
         }
-        
-        .band_search_bar{
-            background-color: #3F51B5;
+        .band_search_bar,.album_search_bar,.song_search_bar{
             border-radius: 100%;  
             padding: 7px;
         }
+        .band_search_bar{
+            background-color: #3F51B5;
+        }
         .album_search_bar{
-/*            background-color: #f98b13;*/
-            border-radius: 100%;  
-            padding: 7px;
+            background-color: #f98b13;
         }
         .song_search_bar{
             background-color: #C0A805;
+        }
+        .more_search_bar{
             border-radius: 100%;  
-            padding: 7px;
+            padding-left: 7px;
+            color: #3F51B5;
+        }
+        #paper-card-more{
+            border-top: 1px solid #EBEEF4;
         }
 
 
@@ -220,7 +230,7 @@ Example:
       }
 
     </style>
-      <iron-ajax id="get_search" url="" last-response="{{data}}" handleAs="json"> </iron-ajax>
+      <iron-ajax id="get_search" last-response="{{data}}" handleAs="json"> </iron-ajax>
 
     <carbon-voice-input id="voiceInput"
                         supported="{{_supported}}"
@@ -235,19 +245,18 @@ Example:
         </paper-material>
         <div id=suggestion>
             <template is="dom-repeat" items="{{data}}" as="suggestion">
-                <template is="dom-if" if="{{_isArtist(suggestion)}}">
+                <template is="dom-if" if="{{_isArtist(suggestion)}}" restamp="true">
                     <a href="#/search/artist/{{_encodeUri(suggestion.name)}}">
-                        <paper-card on-tap='doLoadSearch' elevation="0" >
+                        <paper-card on-click='doLoadSearch' elevation="0" >
                             <img class="band_search_bar" src="../img/band_search_bar.svg" alt="Band"> 
-                            <!--                        <img class="album_search_bar" src="../img/album_search_bar.svg" alt="Album"> -->
                             <span class="search_title">{{suggestion.name}}</span>
                             <paper-ripple></paper-ripple>
                         </paper-card> 
                     </a>
                 </template>
-                <template is="dom-if" if="{{_isSong(suggestion)}}">
+                <template is="dom-if" if="{{_isSong(suggestion)}}" restamp="true">
                    <a href="#/search/artist/{{_encodeUri(suggestion.name)}}/album/{{_encodeUri(suggestion.albumTitre)}}/song/{{_encodeUri(suggestion.titre)}}">
-                        <paper-card on-tap='doLoadSearch' elevation="0" >
+                        <paper-card on-click='doLoadSearch' elevation="0" >
                             <img class="song_search_bar" src="../img/song_search_bar.svg" alt="Song"> 
                             <span class="search_title">{{suggestion.titre}} - {{suggestion.name}} <span class="search_album">(album: {{suggestion.albumTitre}})</span></span>
                             <paper-ripple></paper-ripple>
@@ -255,6 +264,12 @@ Example:
                     </a>
                 </template>
             </template>
+            <a href="#/search/more/{{_encodeUri(value)}}">
+                <paper-card id="paper-card-more" on-click='doLoadSearch' elevation="0" >
+                    <span><iron-icon class="more_search_bar" icon="icons:add-circle" ></iron-icon> Containing: {{value}}</span>
+                    <paper-ripple></paper-ripple>
+                </paper-card> 
+            </a>
         </div>
 
   </template>
@@ -264,7 +279,24 @@ Example:
       is: 'carbon-search-input',
 
       properties: {
-
+        urlFullTextAPI: {
+            type: String,
+            value: "/search/fulltext/"
+        },
+        urlMorePage: {
+            type: String,
+            value: "#/search/more/"
+        },
+        /**
+        * `listItems` contain all elements of suggestion list
+        **/
+        listItems:{
+            type: Array,
+        },
+        currentLinkHighlight:{
+            type: String,
+            value:""
+        },
         /**
          * `placeholder` The placeholder text that will show until the user types
          * something into the search input.
@@ -419,7 +451,7 @@ Example:
             this.value = this._interim;
             if(this.value!=""){
                 this.$.suggestion.style.display = "block";
-                this.$.get_search.url ="/search/artist/begin/"+encodeURIComponent(this.value); 
+                this.$.get_search.url =this.urlFullTextAPI+encodeURIComponent(this.value); 
                 this.$.get_search.generateRequest();
             }
         }
@@ -462,18 +494,36 @@ Example:
             if(currentRequestId !== undefined) {
                 clearTimeout(currentRequestId);
             }
-        };
+            if ( evt.keyCode == 40 || evt.keyCode == 38 ) {
+                this.arrowKeyHandle(evt);
+            }  
+        }.bind(this);
         searchField.onkeyup = function(evt) {
             clearTimeout(currentRequestId);
             currentRequestId = setTimeout(function() {
                 var searchString = this.$.search.value;
-                
                 if(!searchString.length){
                     this.doLoadSearch(evt);
+                }//On n'envoie pas de requete si l'utilisateur touche les fléches
+                else if ([37,38,39,40].indexOf(evt.keyCode) > -1){
+                    return;
+                }
+                else if (evt.keyCode === 13) {
+                    // enter pressed!
+                    this.doLoadSearch(evt);
+                    //Si currentLinkHighlight n'est pas vide alors on a selectionné avec les fléches un item
+                    if(this.currentLinkHighlight != ""){
+                        location.href = this.currentLinkHighlight;
+                    }
+                    else{//on cherche plus de résultat
+                        location.href = this.urlMorePage+encodeURIComponent(searchString);
+                    }
                 }
                 else{
                     this.$.suggestion.style.display = "block";
-                    this.$.get_search.url ="/search/fulltext/"+encodeURIComponent(searchString);
+                    // on supprime la class permettant d'highlight l'element choisi via les fleches du clavier
+                    this.removeClass(this.$.suggestion.getElementsByClassName("arrowSelector")[0],"arrowSelector");
+                    this.$.get_search.url =this.urlFullTextAPI+encodeURIComponent(searchString);
                     this.$.get_search.generateRequest(); 
                 }
             }.bind(this), 150);
@@ -497,6 +547,52 @@ Example:
         }
         return isSong;
     },
+    //elt : element sur lequel on supprime la class, className : nom de la classe a supprimer
+    removeClass : function(elt,className){
+        if(elt){
+            //On supprime la class arrowSelector de l'ancien element
+            elt.classList.remove(className);
+            this.currentLinkHighlight = "";
+            this.listItems = this.$.suggestion.getElementsByTagName('a');
+        }
+    },
+    arrowKeyHandle: function(evt){
+        var current; 
+        var currentItemNext = 0;
+        var currentItemPrev = 0;
+        var prevCurrentItem = 0;
+        this.listItems = this.$.suggestion.getElementsByTagName('a');
+        for(var i = 0;i<this.listItems.length;i++){
+            if(this.listItems[i].getElementsByClassName('arrowSelector')[0]){
+                prevCurrentItem = i; currentItemPrev = i-1; currentItemNext = i+1;
+                break;
+            }
+        }
+        this.removeClass(this.$.suggestion.getElementsByClassName("arrowSelector")[0],"arrowSelector");
+        if ( evt.keyCode == 40 ){// Down key
+            if ( currentItemNext == 0|| typeof this.listItems[currentItemNext] === "undefined" ) {
+                current = this.listItems[0];
+            }
+            else {
+                current = this.listItems[currentItemNext];
+            }
+        }
+        else if ( evt.keyCode == 38 ){ // Up key
+            if ( currentItemPrev == -1 || typeof this.listItems[currentItemPrev] === "undefined" ) {
+//                current = this.listItems[this.data.length];
+                this.removeClass(this.$.suggestion.getElementsByClassName("arrowSelector")[0],"arrowSelector");
+            }
+            else {
+                current = this.listItems[currentItemPrev]
+            }
+        }
+        if(typeof current !== "undefined"){
+            this.currentLinkHighlight = current.getAttribute("href");
+            current.getElementsByTagName("paper-card")[0].className += " arrowSelector";
+            this.value = current.querySelector("paper-card>span").textContent;
+            console.log();
+        }
+    }
 
         
     });

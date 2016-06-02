@@ -1,64 +1,118 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<!--
-<link href="../bower_components/paper-tabs/paper-tabs.html" rel="import">
-<link href="../bower_components/paper-material/paper-material.html" rel="import">
-<link href="../bower_components/iron-pages/iron-pages.html" rel="import">
-<link href="../bower_components/paper-card/paper-card.html" rel="import">
-<link href="../bower_components/paper-ripple/paper-ripple.html" rel="import">
-<link href="../bower_components/iron-ajax/iron-ajax.html" rel="import">
-<link href="../bower_components/paper-item/paper-item.html" rel="import">
-<link rel="import" href="../bower_components/paper-item/paper-icon-item.html">
-<link rel="import" href="../bower_components/paper-item/paper-item-body.html">
--->
-    <dom-module id="page-search">
+
+<!-- Iron Elements -->
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+
+<!-- Paper Elements -->
+<link rel="import" href="../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../bower_components/paper-ripple/paper-ripple.html">
+
+<dom-module id="page-search">
+    <template>
         <style>
             .flex-wrap {
                 @apply(--layout-horizontal);
                 @apply(--layout-wrap);
             }
-            .artistname{
-                font-size: 34px;
-                line-height: 34px;
-                padding-top: 3%;
-                padding-right: 24px;
-                padding-bottom: 14px;
-                padding-left: 24px;
-            }
             paper-material{
-                margin-bottom: 5%;
-            }            
+                width: 100%;
+                height: 100%;
+                border-radius: 2px;
+                transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+            }        
+            .search_album{
+                font-size: 12px;
+            }
+            .band_search_bar,.album_search_bar,.song_search_bar{
+                border-radius: 100%;  
+                padding: 7px;
+            }
+            .band_search_bar{
+                background-color: #3F51B5;
+            }
+            .album_search_bar{
+                background-color: #f98b13;
+            }
+            paper-card{
+                width: 100%;
+                padding-left: 5%;
+                padding-top: 1%;
+                padding-bottom: 1%;
+                cursor: pointer;
+                color: black;
+            }
+            .song_search_bar{
+                background-color: #C0A805;
+            }
+            a:hover, a:focus,a:active a:visited {
+                color:black;
+            }
+            .search_title{
+                position: absolute;
+                margin-top: 10px;
+                margin-left: 10px;
+            }
+            .center{
+                text-align: center;
+            }
         </style>
-        <template>
-            <paper-material elevation="1">
-                <iron-ajax id="get_content" auto url="/search/artist/{{_encodeUri(nameCategorie)}}" last-response="{{categorie}}" handleAs="json"> </iron-ajax>
-
-                <div class="artistname"> {{artist.name}}</div>
-                
-                <template class="flex-wrap" is="dom-repeat" items="{{artist.albums}}" as="album" initial-count="1" >
-                    <x-album album={{album}} artist={{artist}}></x-album>
+        <paper-material elevation="1">
+            <iron-ajax id="get_content" auto url="/search/more/{{_encodeUri(searchText)}}" last-response="{{searchResults}}" handleAs="json"> </iron-ajax>
+            <template is="dom-if" if="{{!searchResults.length}}">
+                <p class="center">No data found for: {{searchText}}</p>
+            </template>
+            <template class="flex-wrap" is="dom-repeat" items="{{searchResults}}" as="result" initial-count="1">
+                <template is="dom-if" if="{{_isArtist(result)}}">
+                    <a href="#/search/artist/{{_encodeUri(result.name)}}">
+                        <paper-card elevation="0" >
+                            <img class="band_search_bar" src="../img/band_search_bar.svg" alt="Band"> 
+                            <span class="search_title">{{result.name}}</span>
+                            <paper-ripple></paper-ripple>
+                        </paper-card> 
+                    </a>
                 </template>
-            </paper-material>
-        </template>
-    </dom-module>
-
-    
+                <template is="dom-if" if="{{_isSong(result)}}">
+                   <a href="#/search/artist/{{_encodeUri(result.name)}}/album/{{_encodeUri(result.albumTitre)}}/song/{{_encodeUri(result.titre)}}">
+                        <paper-card elevation="0" >
+                            <img class="song_search_bar" src="../img/song_search_bar.svg" alt="Song"> 
+                            <span class="search_title">{{result.titre}} - {{result.name}} <span class="search_album">(album: {{result.albumTitre}})</span></span>
+                            <paper-ripple></paper-ripple>
+                        </paper-card> 
+                    </a>
+                </template>
+            </template>
+        </paper-material>
+    </template>
 <script>
   // element registration
   Polymer({
     is: "page-search",
     // add properties and methods on the element's prototype
     properties: {
-        artist:{
-            type: Object,
-            value: {}
-        },
     },
     ready: function(e){    
     },
     _encodeUri : function(nameArtist){
         return encodeURIComponent(nameArtist);
     },    
+          _isArtist : function(data){
+        var isArtist = false;
+        if(typeof data.albumTitre == 'undefined') {
+            isArtist = true;
+        }
+        return isArtist;
+    },
+    _isSong : function(data){
+        var isSong = false;
+        if(typeof data.albumTitre !== 'undefined') {
+            isSong = true;
+        }
+        return isSong;
+    },
   });  
 
 </script>   
-    
+</dom-module>

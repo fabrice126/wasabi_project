@@ -6,7 +6,8 @@
 <!--my_components-->
 <link rel="import" href="show-dialog.html">
 
-    <dom-module id="page-song">
+<dom-module id="page-song">
+   <template>
         <style>
             .flex-wrap {
                 @apply(--layout-horizontal);
@@ -41,7 +42,6 @@
                 margin-bottom: 5%;
             }
         </style>
-        <template>
             <paper-material elevation="1">
                 <iron-ajax id="get_content" auto url="/search/artist/{{_encodeUri(nameArtist)}}/album/{{_encodeUri(nameAlbum)}}/song/{{_encodeUri(nameSong)}}" last-response="{{artist}}" handleAs="json" on-response="handleResponse"> </iron-ajax>
                 <iron-ajax id="put_content" method="PUT" content-type="application/json"></iron-ajax>
@@ -102,7 +102,6 @@
                 </nav>                
             </paper-material>
         </template>
-    </dom-module>
 
     
 <script>
@@ -185,4 +184,4 @@
   });  
 
 </script>   
-    
+</dom-module>

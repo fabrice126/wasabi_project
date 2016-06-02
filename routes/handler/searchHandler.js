@@ -27,6 +27,37 @@ var optimizeFind = function(lettre){
     return tParamToFind;
 };
 
-
+var fullTextQuery = function (req,maxinfo,query,maxinfoselected){
+    var promise = new Promise(function(resolve, reject) { 
+        var result = [];
+        req.elasticsearchClient.search({index: 'idx_artists', type: 'string', body: query}).then(function (respArtists) {
+            var artist = [];
+            for(var i = 0 ; i<respArtists.hits.hits.length;i++){
+                artist.push(respArtists.hits.hits[i]._source);
+            }
+            req.elasticsearchClient.search({index: 'idx_songs',type: 'string',body: query}).then(function (respSongs) {
+                    var song = [];
+                    for(var i = 0 ; i<respSongs.hits.hits.length;i++){
+                        song.push(respSongs.hits.hits[i]._source);
+                    }
+                    if(artist.length < maxinfoselected){//Si on a moins d'artiste que de musique on ajoute plus de musique
+                        song = song.slice(0,maxinfoselected+maxinfoselected - artist.length);
+                    }
+                    else{//il y a autant de musique que d'artist
+                        artist = artist.slice(0,maxinfoselected);
+                        song = song.slice(0,maxinfoselected);
+                    }
+                    result = artist.concat(song);
+                    resolve(JSON.stringify(result));
+                }, function (err) {
+                    reject("Error: Song "+err);
+            });
+        }, function (err) {
+            reject("Error: Artist "+err);
+        });
+    });
+    return promise;
+}
 exports.constructData = constructData;
 exports.optimizeFind = optimizeFind;
+exports.fullTextQuery = fullTextQuery;

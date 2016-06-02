@@ -10,7 +10,8 @@
 <link href="x-song.html" rel="import"> 
 
 
-    <dom-module id="x-album">
+<dom-module id="x-album">
+   <template>
         <style>
             .done {
                 background: green;
@@ -66,36 +67,34 @@
             }
 
         </style>
-        <template>
-            <iron-ajax id="get_content" method="GET" on-response="responseHandler" last-response="{{data}}" handleAs="json"> </iron-ajax>
-            <iron-ajax id="put_content" method="PUT" content-type="application/json" last-response="{{response}}"></iron-ajax>
-            <article>
-               
-                <paper-card on-tap="doLoadAlbum" link="#/search/artist/{{_encodeUri(artist.name)}}/album/{{_encodeUri(album.titre)}}"  hidden="{{editing}}" class="album" elevation="0">
-                        Album:  {{album.titre}} {{album.dateSortie}}
-                    <paper-ripple></paper-ripple>
-                </paper-card> 
-                
-                <paper-input label="Nom de l'album" id="editTitre" hidden="{{!editing}}" value="{{album.titre}}"></paper-input>
-                <paper-input label="Date de sortie" id="editDateSortie" hidden="{{!editing}}" value="{{album.dateSortie}}"></paper-input>
+        <iron-ajax id="get_content" method="GET" on-response="responseHandler" last-response="{{data}}" handleAs="json"> </iron-ajax>
+        <iron-ajax id="put_content" method="PUT" content-type="application/json" last-response="{{response}}"></iron-ajax>
+        <article>
 
-                <paper-fab hidden={{editing}}  icon="icons:create" on-tap="doEdit" class="edit" mini></paper-fab>
-                <paper-fab hidden={{!editing}} icon="icons:done"   on-tap="doEdit" class="done" mini></paper-fab>
+            <paper-card on-tap="doLoadAlbum" link="#/search/artist/{{_encodeUri(artist.name)}}/album/{{_encodeUri(album.titre)}}"  hidden="{{editing}}" class="album" elevation="0">
+                    Album:  {{album.titre}} {{album.dateSortie}}
+                <paper-ripple></paper-ripple>
+            </paper-card> 
 
-            </article>
-            <div role="listbox">
-                <ol id="listSong">
-                <template id="songs" class="flex-wrap" is="dom-repeat" items="{{album.songs}}" as="song">
-                    <x-song artist={{artist}} album={{album}} editing={{editing}} song={{song}}></x-song>
-                </template>
-                </ol>
-            </div>
-            <paper-button class="addSong"on-tap="addSong" hidden="{{!editing}}" raised elevation="2">
-                Ajouter une musique 
-                <iron-icon icon="add"></iron-icon>
-            </paper-button>
-        </template>
-    </dom-module>
+            <paper-input label="Nom de l'album" id="editTitre" hidden="{{!editing}}" value="{{album.titre}}"></paper-input>
+            <paper-input label="Date de sortie" id="editDateSortie" hidden="{{!editing}}" value="{{album.dateSortie}}"></paper-input>
+
+            <paper-fab hidden={{editing}}  icon="icons:create" on-tap="doEdit" class="edit" mini></paper-fab>
+            <paper-fab hidden={{!editing}} icon="icons:done"   on-tap="doEdit" class="done" mini></paper-fab>
+
+        </article>
+        <div role="listbox">
+            <ol id="listSong">
+            <template id="songs" class="flex-wrap" is="dom-repeat" items="{{album.songs}}" as="song">
+                <x-song artist={{artist}} album={{album}} editing={{editing}} song={{song}}></x-song>
+            </template>
+            </ol>
+        </div>
+        <paper-button class="addSong"on-tap="addSong" hidden="{{!editing}}" raised elevation="2">
+            Ajouter une musique 
+            <iron-icon icon="add"></iron-icon>
+        </paper-button>
+    </template>
 
     
 <script>
@@ -162,5 +161,4 @@
   });  
 
 </script>   
-
-    
+</dom-module>

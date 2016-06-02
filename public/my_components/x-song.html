@@ -5,7 +5,8 @@
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
 
 
-    <dom-module id="x-song">
+<dom-module id="x-song">
+   <template>
         <style>
             .flex-wrap {
                 @apply(--layout-horizontal);
@@ -28,8 +29,6 @@
                 background-color: #F2F2F2;
             }
         </style>
-        <template>
-
             <paper-card hidden="{{editing}}" on-tap="doLoadSong" link="#/search/artist/{{_encodeUri(artist.name)}}/album/{{_encodeUri(album.titre)}}/song/{{_encodeUri(song.titre)}}" class="song" elevation="0" >
                 <li link="#/search/artist/{{_encodeUri(artist.name)}}/album/{{_encodeUri(album.titre)}}/song/{{_encodeUri(song.titre)}}">
                     {{song.titre}}
@@ -38,10 +37,7 @@
             </paper-card>
 
             <paper-input label="titre: {{song.titre}}" id="edit" hidden="{{!editing}}" value="{{song.titre}}"></paper-input>        
-        </template>
-    </dom-module>
-    
-    
+    </template>     
 <script>
   // element registration
   Polymer({
@@ -78,4 +74,5 @@
   });  
 
 </script>   
-    
+</dom-module>
+

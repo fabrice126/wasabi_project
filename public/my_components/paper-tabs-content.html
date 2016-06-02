@@ -9,6 +9,7 @@
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
 
     <dom-module id="paper-tabs-content">
+       <template>
         <style>
             paper-tab{
                 --paper-tab-ink :#E0E0E0;
@@ -109,7 +110,6 @@
                 padding-bottom: 2%;
             }
         </style>
-        <template>
             <!--Chargement en ajax du contenu -->
             
             <template is="dom-if" if="{{_checkUrlParams(lettre,numPage)}}">
@@ -219,7 +219,6 @@
                 </div>
             </template>
         </template>
-    </dom-module>
 
     
 <script>
@@ -384,3 +383,4 @@
   });  
 
 </script>   
+</dom-module>

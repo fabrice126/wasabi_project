@@ -5,7 +5,8 @@
 <link rel="import" href="show-dialog.html">  
 <link rel="import" href="x-album.html">  
 
-    <dom-module id="page-album">
+<dom-module id="page-album">
+   <template>
         <style>
             .flex-wrap {
                 @apply(--layout-horizontal);
@@ -23,17 +24,16 @@
                 margin-bottom: 5%;
             }
         </style>
-        <template>
-            <paper-material elevation="1">
-                <iron-ajax id="get_content" auto url="/search/artist/{{_encodeUri(nameArtist)}}/album/{{_encodeUri(nameAlbum)}}" last-response="{{artist}}" handleAs="json"> </iron-ajax>
-                <template is="dom-if" if="{{artist.albums.rdf.length}}">           
-                    <show-dialog labeldialog="RDF {{artist.albums.titre}} :" labelbutton="Show RDF" content="{{artist.albums.rdf}}" labelexitdialog="Close"></show-dialog>
-                </template>
-                <div class="artistname"> {{artist.name}}</div>
-                <x-album album={{artist.albums}} artist={{artist}}></x-album>
-            </paper-material>
-        </template>
-    </dom-module>
+        <paper-material elevation="1">
+            <iron-ajax id="get_content" auto url="/search/artist/{{_encodeUri(nameArtist)}}/album/{{_encodeUri(nameAlbum)}}" last-response="{{artist}}" handleAs="json"> </iron-ajax>
+            <template is="dom-if" if="{{artist.albums.rdf.length}}">           
+                <show-dialog labeldialog="RDF {{artist.albums.titre}} :" labelbutton="Show RDF" content="{{artist.albums.rdf}}" labelexitdialog="Close"></show-dialog>
+            </template>
+            <div class="artistname"> {{artist.name}}</div>
+            <x-album album={{artist.albums}} artist={{artist}}></x-album>
+        </paper-material>
+    </template>
+
 
     
 <script>
@@ -56,4 +56,4 @@
   });  
 
 </script>   
-    
+</dom-module> 

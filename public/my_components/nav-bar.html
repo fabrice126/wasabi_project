@@ -6,28 +6,28 @@
 <!--my_components-->
 <link rel="import" href="carbon-search-input.html">  
 
-    <dom-module id="nav-bar">
-        <style>
-/*
-            paper-input-search{
-                flex: 1;
-            }
-*/
-            paper-icon-button{
-                flex:1;
-            }
-            carbon-search-input{
-                flex: 1;
-            }
-            paper-icon-button{
-                flex:1;
-            }
-            paper-toolbar{
-                box-shadow : 0 4px 5px 0 rgba(0,0,0,0.14),0 1px 10px 0 rgba(0,0,0,0.12),0 2px 4px -1px rgba(0,0,0,0.2);
-            }
-            
-        </style>
-        <template>
+<dom-module id="nav-bar">
+       <template>
+            <style>
+    /*
+                paper-input-search{
+                    flex: 1;
+                }
+    */
+                paper-icon-button{
+                    flex:1;
+                }
+                carbon-search-input{
+                    flex: 1;
+                }
+                paper-icon-button{
+                    flex:1;
+                }
+                paper-toolbar{
+                    box-shadow : 0 4px 5px 0 rgba(0,0,0,0.14),0 1px 10px 0 rgba(0,0,0,0.12),0 2px 4px -1px rgba(0,0,0,0.2);
+                }
+
+            </style>
             <!-- local DOM for your element -->
             <!--permet d'envoyer une requête ajax-->
             <iron-request id="createdb"></iron-request>
@@ -45,7 +45,6 @@
 -->
             </paper-toolbar>
         </template>
-    </dom-module>
 <script>
   // element registration
   Polymer({
@@ -58,4 +57,4 @@
     }
   });
 </script>
-    
+</dom-module>
