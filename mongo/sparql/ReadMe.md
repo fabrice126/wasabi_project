@@ -80,6 +80,7 @@ Les requêtes peuvent être exécutées via l'application Corese que vous pourre
     </tbody>
 </table>
   <br>
+  ## sparql_album_data.rq
 <table>
     <thead>
         <tr>
@@ -140,7 +141,9 @@ Les requêtes peuvent être exécutées via l'application Corese que vous pourre
 
 
 
-## sparql_album_data.rq
+
+## sparql_song_data.rq
+
 <center>
 <table>
     <thead>
@@ -228,4 +231,4 @@ Les requêtes peuvent être exécutées via l'application Corese que vous pourre
 </table>
 </center>
 
-## sparql_song_data.rq
+
