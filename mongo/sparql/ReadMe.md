@@ -79,8 +79,8 @@ Les requêtes peuvent être exécutées via l'application Corese que vous pourre
         </tr>
     </tbody>
 </table>
-  <br>
-  ## sparql_album_data.rq
+<br>
+## sparql_album_data.rq
 <table>
     <thead>
         <tr>
