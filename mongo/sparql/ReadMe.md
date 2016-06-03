@@ -1,7 +1,8 @@
 # Introduction
 
-Ce ReadMe a pour but de détailler les propriétés DBpédia que nous avons extrait.
+Ce ReadMe a pour but de détailler les propriétés DBpédia que nous avons extraites.
 Les requêtes peuvent être exécutées via l'application Corese que vous pourrez télécharger ici : wimmics.inria.fr/corese
+# Description des propriétés DBpédia récupérées
 ## sparql_artist_data.rq
 
 </style>
@@ -79,7 +80,8 @@ Les requêtes peuvent être exécutées via l'application Corese que vous pourre
         </tr>
     </tbody>
 </table>
-  <br>
+<br>
+## sparql_album_data.rq
 <table>
     <thead>
         <tr>
@@ -136,11 +138,12 @@ Les requêtes peuvent être exécutées via l'application Corese que vous pourre
 </table>
 </center>
 
-### Description des propriétés DBpédia à récupérer
 
 
 
-## sparql_album_data.rq
+
+## sparql_song_data.rq
+
 <center>
 <table>
     <thead>
@@ -228,4 +231,4 @@ Les requêtes peuvent être exécutées via l'application Corese que vous pourre
 </table>
 </center>
 
-## sparql_song_data.rq
+
