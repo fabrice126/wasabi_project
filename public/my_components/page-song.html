@@ -13,20 +13,24 @@
                 @apply(--layout-horizontal);
                 @apply(--layout-wrap);
             }
-            #songInfos{
-                
-            }
             #songName{
                 font-size: 34px;
                 line-height: 34px;
             }
-            #songLyricsNonEditable,#songLyricsEditable,#songName,#songInfos, nav>a{
+            #songLyricsNonEditable,#songLyricsEditable,#songName,#songInfos{
                 padding-top: 3%;
                 padding-right: 24px;
                 padding-bottom: 14px;
                 padding-left: 24px;
                 text-align: justify;
 
+            }
+            nav{
+                padding: 3%;
+            }
+            nav>a{
+                margin-right: 5px;
+                margin-left: 5px;
             }
             #songLyricsNonEditable,#songLyricsEditable,#songInfos{
                 font-size: 19px;
@@ -95,8 +99,8 @@
                 </section> 
                 <nav>
                     <template is="dom-if" if="{{artist.albums.songs.subject.length}}">
-                        <template is="dom-repeat" items="{{artist.albums.songs.subject}}" as="subject" index-as="idx">
-                            <a href="#/category/{{subject}}">{{subject}} <a>
+                        <template is="dom-repeat" items="{{artist.albums.songs.subject}}" as="subject">
+                            <a href="#/search/category/song/{{subject}}"> {{subject}}</a>
                         </template>
                     </template>
                 </nav>                

@@ -33,7 +33,6 @@ router.get('/categorie/:nomCategorie/lettre/:lettre/page/:numPage', function (re
             tObjectRequest = searchHandler.constructData("name", tParamToFind);
             var start = Date.now();
             db.collection('artist').find({$or:tObjectRequest},{"name":1}).skip(skip).limit(limit).toArray(function(err,artists){
-                console.log("Benchmark find artist : "+ (Date.now()-start));
                 if (err) throw err;
 //                db.collection('artist').find({$or:tObjectRequest}).count(function(err, count) {
                     if (err) throw err;
@@ -51,15 +50,14 @@ router.get('/categorie/:nomCategorie/lettre/:lettre/page/:numPage', function (re
             var start = Date.now();
             db.collection('album').aggregate([{"$match": { $or: tObjectRequest }}, {"$skip" :  skip},{"$limit" : limit},{$project : { "titleAlbum" : "$titre" ,"name":1}}
             ],function(err, albums) {
-                console.log("Benchmark find albums : "+(Date.now()-start));
                 if (err) throw err;
 //                db.collection('album').find({ $or: tObjectRequest }).count(function(err, count) {
-                    console.log("Benchmark count albums : "+(Date.now()-start));
                     if (err) throw err;
                     var objAlbum = {};
                     objAlbum.albums = albums;
                     objAlbum.nbcount = "count";
                     objAlbum.limit = limit;
+                    console.log("Benchmark count albums : "+(Date.now()-start));
                     res.send(JSON.stringify(objAlbum));
 //                });
             });
@@ -85,10 +83,27 @@ router.get('/categorie/:nomCategorie/lettre/:lettre/page/:numPage', function (re
             break;
     }
 });
+
+//==========================================================================================================================\\
+//===================================WEBSERVICE REST POUR LA NAVIGATION ENTRE CATEGORIES====================================\\
+//==========================================================================================================================\\
+//GET CATEGORY PAR NOM DE CATEGORY ET PAR COLLECTION
+router.get('/category/:collection/:categoryName',function(req,res){
+    var db = req.db;
+    var collection= req.params.collection;
+    console.log("testseffhzejf ="+ collection);
+    if(collection !=="artist" && collection !=="album" && collection !=="song"){
+        return res.status(404).send([{error:"Page not found"}]);
+    }
+    var limit = 200;
+    var categoryName= req.params.categoryName;
+    db.collection(collection).find({subject:categoryName},{name:1,titre:1,albumTitre:1}).sort({titre:1}).limit(limit).toArray(function(err,objs){
+        res.send(JSON.stringify(objs));
+    })
+});
 //==========================================================================================================================\\
 //============================WEBSERVICE REST POUR L'AFFICHAGE DU NOMBRE D'ARTISTES/ALBUMS/SONGS============================\\
 //==========================================================================================================================\\
-//
 //GET PERMET D'OBTENIR LE NOMBRE D'ARTISTES/ALBUMS/SONGS
 router.get('/dbinfo', function (req, res) {
     var db = req.db;
@@ -111,9 +126,7 @@ router.get('/dbinfo', function (req, res) {
 router.get('/artist/:artistName', function (req, res) {
     var db = req.db;
     var artistName= req.params.artistName;
-    this.console.log("get /artist/"+artistName); 
     var start = Date.now();
-    
     db.collection('artist').findOne({name:artistName},{"urlWikia":0,wordCount:0}, function(err, artist) {
         if (artist===null) { return res.status(404).send([{error:"Artist not found"}]);}
         db.collection('album').find({id_artist:artist._id},{"urlWikipedia":0,"genres":0,"urlAlbum":0,"wordCount":0,"rdf":0}).sort( { "dateSortie": -1} ).toArray(function(err,albums){
@@ -145,13 +158,12 @@ router.get('/artist/:artistName/album/:albumName', function (req, res) {
     var db = req.db;
     var albumName= req.params.albumName;
     var artistName = req.params.artistName;
-    this.console.log("get /artist/"+artistName+"/album/"+albumName); 
     var start = Date.now();
     db.collection('artist').findOne({name:artistName},{"urlAlbum":0,"wordCount":0}, function(err, artist) {
         if (artist==null) { return res.status(404).send([{error:"Page not found"}]);}
         //!\ UN ARTIST PEUT AVOIR PLUSIEURS FOIS UN MEME TITRE D'ALBUM /!\ ERREUR A CORRIGER
         db.collection('album').findOne({$and:[{"titre":albumName},{"id_artist":artist._id}]},{"urlAlbum":0,"wordCount":0}, function(err, album) {
-            if (album==null) {   return res.status(404).send([{error:"Page not found"}]); }
+            if (album==null) {   return res.status(404).send([{error:"Page not found"}]); } 
             db.collection('song').find({"id_album":album._id},{"position":1,"titre":1}).toArray(function(err,song){
                 album.songs = song;
                 artist.albums = album;
@@ -170,7 +182,6 @@ router.put('/artist/:artistName/album/:albumName', function (req, res) {
     var albumName= req.params.albumName;
     var artistName = req.params.artistName;
     var albumBody = req.body;
-    this.console.log("put /artist/"+artistName+"/album/"+albumName);    
     //FUTURE Si un album n'a pas encore d'attribut songs. Peut se produire lors de l'ajout d'un album
     for(var j=0;j<albumBody.songs.length;j++){
         //On change le titre de l'album contenu dans les documents musiques
@@ -202,13 +213,10 @@ router.get('/artist/:artistName/album/:albumName/song/:songsName', function (req
     var albumName = req.params.albumName;
     var songsName = req.params.songsName;
     var start = Date.now();
-    this.console.log("get /artist/"+artistName+"/album/"+albumName+"/song/"+songsName);   
     db.collection('artist').findOne({name:artistName},{"_id":1,"name":1}, function(err, artist) {
         if (artist == null) { return res.status(404).sendFile([{error:"Artist not found"}]);}
-        console.log(Date.now() - start);
         db.collection('album').findOne({$and:[{"id_artist":artist._id},{"titre":albumName}]},{"_id":1,"titre":1}, function(err, album) {
             if (album == null) {  return res.status(404).sendFile([{error:"Album not found"}]); }
-            console.log(Date.now() - start);
             db.collection('song').findOne({$and:[{"id_album":album._id},{"titre":songsName}]},{"urlSong":0,"wordCount":0},function(err, song) {
                 if (song == null) { return res.status(404).send([{error:"Song not found"}]);}
                 album.songs = song;
@@ -238,7 +246,6 @@ router.get('/fulltext/:searchText', function (req, res) {
     var maxinfo = 12; //12 élements doivent apparaitre dans l'autocomplétion de recherche
     var maxinfoselected = maxinfo/2;
     var query = {"query": {"bool": {"should": [ {"query_string": {"default_field": "_all","query": searchText}}]}},"size": maxinfo};
-    this.console.log("get '/fulltext/"+searchText);
     var start = Date.now();
     searchHandler.fullTextQuery(req,maxinfo,query,maxinfoselected).then(function(resp) {
         console.log("                       fullTextQuery time ="+ (Date.now() - start));
@@ -247,15 +254,11 @@ router.get('/fulltext/:searchText', function (req, res) {
         res.send(resp);
     });
 });
-
-
-
 router.get('/more/:searchText', function (req, res) {
     var searchText = req.escapeElastic(req.escapeHTML(req.params.searchText));// escape le html les chars spéciaux:+-= && || ><!(){}[]^"~*?:\/
     var maxinfo = 200; //200 élements doivent apparaitre dans l'autocomplétion de recherche
     var maxinfoselected = maxinfo/2;
     var query = {"query": {"bool": {"should": [ {"query_string": {"default_field": "_all","query": searchText}}]}},"size": maxinfo};
-    this.console.log("get '/more/"+searchText);
     var start = Date.now();
     searchHandler.fullTextQuery(req,maxinfo,query,maxinfoselected).then(function(resp) {
         console.log("                       more fullTextQuery time ="+ (Date.now() - start));

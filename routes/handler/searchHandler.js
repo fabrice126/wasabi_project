@@ -26,7 +26,7 @@ var optimizeFind = function(lettre){
     } 
     return tParamToFind;
 };
-
+//Permet de construire les requetes elasticsearch
 var fullTextQuery = function (req,maxinfo,query,maxinfoselected){
     var promise = new Promise(function(resolve, reject) { 
         var result = [];
@@ -58,6 +58,6 @@ var fullTextQuery = function (req,maxinfo,query,maxinfoselected){
     });
     return promise;
 }
-exports.constructData = constructData;
-exports.optimizeFind = optimizeFind;
-exports.fullTextQuery = fullTextQuery;
+exports.constructData   = constructData;
+exports.optimizeFind    = optimizeFind;
+exports.fullTextQuery   = fullTextQuery;

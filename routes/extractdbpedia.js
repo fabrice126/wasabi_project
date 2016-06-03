@@ -228,6 +228,7 @@ router.get('/song/createfields',function(req, res){
                                 //Propriété présent dans le RDF et dont nous avons besoin pour accèder a l'objet musique crée par parseString
                                 var rdfProperties = ['dct:subject','dbo:format','dbo:genre','dbo:producer','dbo:recordLabel',
                                                      'dbo:writer','dbp:recorded','dbo:abstract','dbo:releaseDate','dbo:runtime','dbp:award'];
+
                                 //Pour chaque propriété on récupére les données de l'objet musique représentant le RDF
                                 for(var j = 0;j<rdfProperties.length;j++){
                                     //substring afin de créer notre propriété à ajouter en BDD par exemple dct:subject deviendra subject

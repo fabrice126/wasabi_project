@@ -177,7 +177,7 @@
                         <paper-material class="listData" elevation="1">
                             <div>Il y a actuellement {{_getNbCount(data)}} artists commençant par la lettre {{lettre}}</div>
                              <template class="flex-wrap" is="dom-repeat" items="{{data.artists}}" as="artist">
-                                 <paper-button on-tap='doLoadCategorie' animated id="#/search/artist/{{_encodeUri(artist.name)}}" raised>
+                                 <paper-button on-tap='doLoadCategorie' id="#/search/artist/{{_encodeUri(artist.name)}}" raised>
                                      {{artist.name}}
                                  </paper-button>
                              </template>

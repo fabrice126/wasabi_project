@@ -9,8 +9,8 @@ var escapeHTML      = require('escape-html');
 var db              = require('mongoskin').db('mongodb://localhost:27017/wasabi');
 var escapeElastic   = require('elasticsearch-sanitize');
 var search          = require('./routes/search');
-var createdb        = require('./routes/createdb');
-var updatedb        = require('./routes/updatedb');
+//var createdb        = require('./routes/createdb');
+//var updatedb        = require('./routes/updatedb');
 var extractdbpedia  = require('./routes/extractdbpedia');
 var basicAuth       = require('basic-auth-connect');
 var app             = express();
@@ -42,7 +42,7 @@ app.use('/search', search);
 //Permet d'utiliser les fonctions de créations et updates de la base de données
 //app.use('/createdb', createdb);
 //app.use('/updatedb', updatedb);
-//app.use('/extractdbpedia', extractdbpedia);
+app.use('/extractdbpedia', extractdbpedia);
 
 // catch 404 and forward to error handler
 // error handlers

@@ -49,10 +49,8 @@
                         <app-route path="/search/artist/:nameArtist/album/:nameAlbum/song/:nameSong"  onUrlChange="updateModel" import="my_components/page-song.html"></app-route>
                         <app-route path="/search/artist/:nameArtist/album/:nameAlbum/song/:nameSong/" onUrlChange="updateModel" import="my_components/page-song.html"></app-route>
                         <!--Page categorie contenant les artistes/albums/musiques contenant la categorie cherchée en commun-->
-<!--
-                        <app-route path="/search/category/:nameCategory"  onUrlChange="updateModel" import="my_components/page-category.html"></app-route>
-                        <app-route path="/search/category/:nameCategory/" onUrlChange="updateModel" import="my_components/page-category.html"></app-route>
--->
+                        <app-route path="/search/category/:collection/:categoryName"  onUrlChange="updateModel" import="my_components/page-category.html"></app-route>
+                        <app-route path="/search/category/:collection/:categoryName/" onUrlChange="updateModel" import="my_components/page-category.html"></app-route>
                         <!--Page more contenant plus de résultats de recherche-->
                         <app-route path="/search/more/:searchText"  onUrlChange="updateModel" import="my_components/page-search.html"></app-route>
                         <app-route path="/search/more/:searchText/" onUrlChange="updateModel" import="my_components/page-search.html"></app-route>

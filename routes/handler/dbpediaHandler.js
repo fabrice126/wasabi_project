@@ -162,7 +162,8 @@ var extractInfosFromRDF = function(description,property){
                 //exemple : splitInfo = The_Rolling_Stones
                 if(property == 'dct:subject'){
                     //Les subjects ont cette forme : Category:Songs_written_by_James_Hetfield, on supprime dont "Category:"
-                    tInfos.push(splitInfo.substring(splitInfo.indexOf(':')+1));
+                    
+                    tInfos.push(splitInfo.substring(splitInfo.indexOf(':')+1).replace(/_/g," "));
                 }
                 else if (property == 'dbo:associatedMusicalArtist'){
                     tInfos.push(splitInfo);

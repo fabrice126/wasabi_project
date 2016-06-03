@@ -117,6 +117,9 @@ Example:
         :host[focused] paper-material #search::-webkit-input-placeholder{ 
             color: #737373;
         }
+        :host[focused] #search{ 
+            color: black;
+        }
         .searchIcon{
             fill: white;
             transition: all 0.5s linear;
@@ -153,12 +156,15 @@ Example:
         box-sizing: border-box;
         border: none;
         outline: none;
-        font-size: 15px;
+        font-size: 17px;
+        font-family: roboto;    
         background-color: transparent;
         height: 100%;
+        color: white;
         transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
       }
-        :host[blend] [is="iron-input"]{ color: var(--dark-theme-secondary-color); }
+        :host[blend] [is="iron-input"]{ color: var(--dark-theme-secondary-color); 
+        }
 
         :host[listening] [is="iron-input"]{ 
             color: var(--light-theme-secondary-color); 
@@ -483,7 +489,7 @@ Example:
           this._elevation = 1;
       },
     doLoadSearch:function(e){
-        this.$.search.value = "";
+//        this.$.search.value = "";
         this.$.suggestion.style.display = "none";
     },
     search:function(e){
