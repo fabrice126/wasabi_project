@@ -2,7 +2,7 @@
 
 Ce ReadMe a pour but de détailler les propriétés DBpédia que nous avons extraites.
 Les requêtes peuvent être exécutées via l'application Corese que vous pourrez télécharger ici : wimmics.inria.fr/corese
-# Description des propriétés DBpédia à récupérer
+# Description des propriétés DBpédia récupérées
 ## sparql_artist_data.rq
 
 </style>
