@@ -12,7 +12,23 @@
             "html": "text/html"
         },
         "error" : {
-            "404" : "404.html"
+            "global_404": "Page not found",
+            "artist_404": "Artist not found",
+            "album_404" : "Album not found",
+            "song_404"  : "Song not found"
         }
+    },
+    "database" : {
+        "mongodb_connect"       : "mongodb://localhost:27017/wasabi",
+        "elasticsearch_connect" : "localhost:9200",
+        "collection_artist"     : "artist",
+        "collection_album"      : "album",
+        "collection_song"       : "song"
+    },
+    "request" : {
+        "limit" : 200
     }
+    
+    
 }
+

@@ -4,24 +4,23 @@ var router          = express.Router();
 var searchHandler   = require('./handler/searchHandler.js');
 var ObjectId        = require('mongoskin').ObjectID;
 
-
 //==========================================================================================================================\\
 //===========================WEBSERVICE REST POUR L'AFFICHAGE DU LISTING DES ARTISTES/ALBUMS/SONGS==========================\\
 //==========================================================================================================================\\
 //GET LISTING DES ARTISTES ALBUMS ET MUSIQUES EN FONCTION DE OU DES LETTRES 
 router.get('/categorie/:nomCategorie/lettre/:lettre/page/:numPage', function (req, res, next) {
+    var config = req.app.get('config');
     var tObjectRequest,limit,skip,tParamToFind,nomCategorie,lettre,numPage,urlParamValid,numPageTest,db;
     db = req.db;
     nomCategorie = req.params.nomCategorie.toLowerCase();
     lettre = req.params.lettre;
     numPage = req.params.numPage;
     urlParamValid = false;
-    
     numPageTest = parseInt(numPage);
     //Si le numéro de page est un entier supérieur a 0 et qu'il y a moins de 3 lettres dans :lettre
     if(Number.isInteger(numPageTest) && numPageTest>=0 && lettre.length<=2){
         urlParamValid = true;
-        limit = 200;
+        limit = config.request.limit;
         skip = numPage*limit;
         tParamToFind = searchHandler.optimizeFind(lettre);
     }
@@ -79,7 +78,7 @@ router.get('/categorie/:nomCategorie/lettre/:lettre/page/:numPage', function (re
             });
             break;
         default:
-                res.status(404).send([{error:"Page not found"}]);
+                res.status(404).send([{error:config.error.global_404}]);
             break;
     }
 });
@@ -89,13 +88,14 @@ router.get('/categorie/:nomCategorie/lettre/:lettre/page/:numPage', function (re
 //==========================================================================================================================\\
 //GET CATEGORY PAR NOM DE CATEGORY ET PAR COLLECTION
 router.get('/category/:collection/:categoryName',function(req,res){
+    var config = req.app.get('config');
     var db = req.db;
     var collection= req.params.collection;
     console.log("testseffhzejf ="+ collection);
-    if(collection !=="artist" && collection !=="album" && collection !=="song"){
-        return res.status(404).send([{error:"Page not found"}]);
+    if(collection !== config.database.collection_artist && collection !==config.database.collection_album && collection !==config.database.collection_song){
+        return res.status(404).send([{error:config.http.error.global_404}]);
     }
-    var limit = 200;
+    var limit = config.request.limit;
     var categoryName= req.params.categoryName;
     db.collection(collection).find({subject:categoryName},{name:1,titre:1,albumTitre:1}).sort({titre:1}).limit(limit).toArray(function(err,objs){
         res.send(JSON.stringify(objs));
@@ -106,13 +106,14 @@ router.get('/category/:collection/:categoryName',function(req,res){
 //==========================================================================================================================\\
 //GET PERMET D'OBTENIR LE NOMBRE D'ARTISTES/ALBUMS/SONGS
 router.get('/dbinfo', function (req, res) {
+    var config = req.app.get('config');
     var db = req.db;
     var dbinfo = {};
-    db.collection('artist').count(function(err, count) {
+    db.collection(config.database.collection_artist).count(function(err, count) {
         dbinfo.nbArtist = count;
-        db.collection('album').count(function(err, count) {
+        db.collection(config.database.collection_album).count(function(err, count) {
             dbinfo.nbAlbum = count;
-            db.collection('song').count(function(err, count) {
+            db.collection(config.database.collection_song).count(function(err, count) {
                 dbinfo.nbSong = count;
                 res.send(JSON.stringify(dbinfo));
             });
@@ -124,19 +125,20 @@ router.get('/dbinfo', function (req, res) {
 //==========================================================================================================================\\
 //GET ARTIST PAR NOM D'ARTISTE (UN NOM D'ARTISTE EST UNIQUE -> REGLE DE LYRICS WIKIA LORS DE L'EXTRACTION DES DONNEES)
 router.get('/artist/:artistName', function (req, res) {
+    var config = req.app.get('config');
     var db = req.db;
     var artistName= req.params.artistName;
     var start = Date.now();
-    db.collection('artist').findOne({name:artistName},{"urlWikia":0,wordCount:0}, function(err, artist) {
-        if (artist===null) { return res.status(404).send([{error:"Artist not found"}]);}
-        db.collection('album').find({id_artist:artist._id},{"urlWikipedia":0,"genres":0,"urlAlbum":0,"wordCount":0,"rdf":0}).sort( { "dateSortie": -1} ).toArray(function(err,albums){
+    db.collection(config.database.collection_artist).findOne({name:artistName},{"urlWikia":0,wordCount:0}, function(err, artist) {
+        if (artist===null) { return res.status(404).send([{error:config.http.error.artist_404}]);}
+        db.collection(config.database.collection_album).find({id_artist:artist._id},{"urlWikipedia":0,"genres":0,"urlAlbum":0,"wordCount":0,"rdf":0}).sort( { "dateSortie": -1} ).toArray(function(err,albums){
             var nbAlbum = albums.length;
             var cnt = 0;
             //On construit le tableau albums afin d'y ajouter les infos des albums
             artist.albums = albums;
             for(var i = 0;i<albums.length;i++){
                 (function(album){
-                    db.collection('song').find({"id_album":album._id},{"position":1,"titre":1}).sort( { "position": 1} ).toArray(function(err,songs){
+                    db.collection(config.database.collection_song).find({"id_album":album._id},{"position":1,"titre":1}).sort( { "position": 1} ).toArray(function(err,songs){
                         if (err) throw err;
                         
                         //On construit le tableau songs afin d'y ajouter les infos des musiques
@@ -155,16 +157,17 @@ router.get('/artist/:artistName', function (req, res) {
 //GET ALBUM PAR NOM D'ARTISTE ET TITRE D'ALBUM
 //FIXME /!\ UN ARTIST PEUT AVOIR PLUSIEURS FOIS UN MEME TITRE D'ALBUM /!\ ERREUR A CORRIGER
 router.get('/artist/:artistName/album/:albumName', function (req, res) {
+    var config = req.app.get('config');
     var db = req.db;
     var albumName= req.params.albumName;
     var artistName = req.params.artistName;
     var start = Date.now();
-    db.collection('artist').findOne({name:artistName},{"urlAlbum":0,"wordCount":0}, function(err, artist) {
-        if (artist==null) { return res.status(404).send([{error:"Page not found"}]);}
+    db.collection(config.database.collection_artist).findOne({name:artistName},{"urlAlbum":0,"wordCount":0}, function(err, artist) {
+        if (artist==null) { return res.status(404).send([{error:config.http.error.artist_404}]);}
         //!\ UN ARTIST PEUT AVOIR PLUSIEURS FOIS UN MEME TITRE D'ALBUM /!\ ERREUR A CORRIGER
-        db.collection('album').findOne({$and:[{"titre":albumName},{"id_artist":artist._id}]},{"urlAlbum":0,"wordCount":0}, function(err, album) {
-            if (album==null) {   return res.status(404).send([{error:"Page not found"}]); } 
-            db.collection('song').find({"id_album":album._id},{"position":1,"titre":1}).toArray(function(err,song){
+        db.collection(config.database.collection_album).findOne({$and:[{"titre":albumName},{"id_artist":artist._id}]},{"urlAlbum":0,"wordCount":0}, function(err, album) {
+            if (album==null) {   return res.status(404).send([{error:config.http.error.album_404}]); } 
+            db.collection(config.database.collection_song).find({"id_album":album._id},{"position":1,"titre":1}).toArray(function(err,song){
                 album.songs = song;
                 artist.albums = album;
                 console.log(Date.now() - start);
@@ -178,6 +181,7 @@ router.get('/artist/:artistName/album/:albumName', function (req, res) {
 
 //PUT ALBUM PAR ID D'ABUM ET DE MUSIQUE
 router.put('/artist/:artistName/album/:albumName', function (req, res) {
+    var config = req.app.get('config');
     var db = req.db;
     var albumName= req.params.albumName;
     var artistName = req.params.artistName;
@@ -191,7 +195,7 @@ router.put('/artist/:artistName/album/:albumName', function (req, res) {
         // On supprime l'id car mongodb lance un avertissement si ce champ n'est pas supprimé (_id est immutable pas d'update possible)
         delete albumBody.songs[j]._id;         
         delete albumBody.songs[j].id_album;
-        db.collection('song').update( { _id: new ObjectId(idSong) },{ $set: albumBody.songs[j] } );
+        db.collection(config.database.collection_song).update( { _id: new ObjectId(idSong) },{ $set: albumBody.songs[j] } );
     }
     //On supprime le champ songs car il n'éxiste pas dans la collection album
     delete albumBody.songs;     //FUTURE Si un album n'a pas encore d'attribut songs. Peut se produire lors de l'ajout d'un album
@@ -199,7 +203,7 @@ router.put('/artist/:artistName/album/:albumName', function (req, res) {
     // On supprime l'id car mongodb lance un avertissement si ce champ n'est pas supprimé (_id est immutable pas d'update possible)
     delete albumBody._id; 
     delete albumBody.id_artist; 
-    db.collection('album').update( { _id: new ObjectId(idAlbum) },{ $set: albumBody } );
+    db.collection(config.database.collection_album).update( { _id: new ObjectId(idAlbum) },{ $set: albumBody } );
     res.send("OK");
 });
 
@@ -208,17 +212,18 @@ router.put('/artist/:artistName/album/:albumName', function (req, res) {
 //==========================================================================================================================\\
 //GET SONG PAR NOM D'ARTISTE TITRE D'ALBUM ET TITRE DE MUSIQUE
 router.get('/artist/:artistName/album/:albumName/song/:songsName', function (req, res) {
+    var config = req.app.get('config');
     var db = req.db;
     var artistName = req.params.artistName;
     var albumName = req.params.albumName;
     var songsName = req.params.songsName;
     var start = Date.now();
-    db.collection('artist').findOne({name:artistName},{"_id":1,"name":1}, function(err, artist) {
-        if (artist == null) { return res.status(404).sendFile([{error:"Artist not found"}]);}
-        db.collection('album').findOne({$and:[{"id_artist":artist._id},{"titre":albumName}]},{"_id":1,"titre":1}, function(err, album) {
-            if (album == null) {  return res.status(404).sendFile([{error:"Album not found"}]); }
-            db.collection('song').findOne({$and:[{"id_album":album._id},{"titre":songsName}]},{"urlSong":0,"wordCount":0},function(err, song) {
-                if (song == null) { return res.status(404).send([{error:"Song not found"}]);}
+    db.collection(config.database.collection_artist).findOne({name:artistName},{"_id":1,"name":1}, function(err, artist) {
+        if (artist == null) { return res.status(404).sendFile([{error:config.http.error.artist_404}]);}
+        db.collection(config.database.collection_album).findOne({$and:[{"id_artist":artist._id},{"titre":albumName}]},{"_id":1,"titre":1}, function(err, album) {
+            if (album == null) {  return res.status(404).sendFile([{error:config.http.error.album_404}]); }
+            db.collection(config.database.collection_song).findOne({$and:[{"id_album":album._id},{"titre":songsName}]},{"urlSong":0,"wordCount":0},function(err, song) {
+                if (song == null) { return res.status(404).send([{error:config.http.error.song_404}]);}
                 album.songs = song;
                 artist.albums = album;
                 console.log(Date.now() - start);
@@ -229,11 +234,12 @@ router.get('/artist/:artistName/album/:albumName/song/:songsName', function (req
     });
 });
 router.put('/artist/:artistName/album/:albumName/song/:songsName',function(req,res){
+    var config = req.app.get('config');   
     var db = req.db;
     var songBody = req.body;
     var idSong = songBody._id;
     delete songBody._id;
-    db.collection('song').update( { _id: new ObjectId(idSong) },{ $set: songBody } );
+    db.collection(config.database.collection_song).update( { _id: new ObjectId(idSong) },{ $set: songBody } );
     res.send("OK");
 });
 
@@ -241,6 +247,7 @@ router.put('/artist/:artistName/album/:albumName/song/:songsName',function(req,r
 //=============================================WEBSERVICE REST POUR LA RECHERCHE============================================\\
 //==========================================================================================================================\\
 //permet de chercher des artistes via la barre de recherche
+//FUTURE voir la configuration
 router.get('/fulltext/:searchText', function (req, res) {
     var searchText = req.escapeElastic(req.escapeHTML(req.params.searchText));// escape le html les chars spéciaux:+-= && || ><!(){}[]^"~*?:\/
     var maxinfo = 12; //12 élements doivent apparaitre dans l'autocomplétion de recherche
