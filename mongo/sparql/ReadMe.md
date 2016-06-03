@@ -1,6 +1,6 @@
 # Introduction
 
-Ce ReadMe a pour but de détailler les propriétés DBpédia que nous avons extrait.
+Ce ReadMe a pour but de détailler les propriétés DBpédia que nous avons extraites.
 Les requêtes peuvent être exécutées via l'application Corese que vous pourrez télécharger ici : wimmics.inria.fr/corese
 ## sparql_artist_data.rq
 
