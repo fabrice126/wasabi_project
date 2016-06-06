@@ -30,7 +30,6 @@
                     <show-dialog labeldialog="RDF {{artist.name}} :" labelbutton="Show RDF" content="{{artist.rdf}}" labelexitdialog="Close"></show-dialog>
                 </template>
                 <div class="artistname"> {{artist.name}}</div>
-                
                 <template class="flex-wrap" is="dom-repeat" items="{{artist.albums}}" as="album" initial-count="1" >
                     <x-album album={{album}} artist={{artist}}></x-album>
                 </template>

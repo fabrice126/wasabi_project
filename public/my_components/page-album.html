@@ -1,6 +1,8 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+
 <!--my_components-->
 <link rel="import" href="show-dialog.html">  
 <link rel="import" href="x-album.html">  
@@ -13,12 +15,20 @@
                 @apply(--layout-wrap);
             }
             .artistname{
-                font-size: 34px;
+                font-size: 2em;
                 line-height: 34px;
                 padding-top: 3%;
                 padding-right: 24px;
                 padding-bottom: 14px;
                 padding-left: 24px;
+            }
+            .inherit {
+                color: inherit;
+                background-color: inherit;
+            }
+            paper-button{
+                padding: 0;
+                margin :0;
             }
             paper-material{
                 margin-bottom: 5%;
@@ -29,8 +39,12 @@
             <template is="dom-if" if="{{artist.albums.rdf.length}}">           
                 <show-dialog labeldialog="RDF {{artist.albums.titre}} :" labelbutton="Show RDF" content="{{artist.albums.rdf}}" labelexitdialog="Close"></show-dialog>
             </template>
-            <div class="artistname"> {{artist.name}}</div>
-            <x-album album={{artist.albums}} artist={{artist}}></x-album>
+            <div class="artistname"> 
+                <a href="#/search/artist/{{_encodeUri(artist.name)}}" tabindex="-1" class="inherit" >
+                    <paper-button tabindex="0" role="button" elevation="0" class="artist">{{artist.name}}</paper-button>
+                </a>
+            </div>
+            <x-album album={{artist.albums}} artist={{artist}} moredata></x-album>
         </paper-material>
     </template>
 

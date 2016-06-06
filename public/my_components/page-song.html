@@ -3,6 +3,10 @@
 <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../bower_components/paper-item/paper-icon-item.html">
 <link rel="import" href="../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-ripple/paper-ripple.html">
+
+
 <!--my_components-->
 <link rel="import" href="show-dialog.html">
 
@@ -13,17 +17,31 @@
                 @apply(--layout-horizontal);
                 @apply(--layout-wrap);
             }
-            #songName{
-                font-size: 34px;
-                line-height: 34px;
-            }
             #songLyricsNonEditable,#songLyricsEditable,#songName,#songInfos{
                 padding-top: 3%;
                 padding-right: 24px;
                 padding-bottom: 14px;
                 padding-left: 24px;
                 text-align: justify;
-
+            }
+            paper-button{
+                padding: 0;
+                margin :0;
+            }
+            .song{
+                font-size: 2em;
+                font-weight: 400;
+                line-height: 28px;
+                padding: 0.2em;
+            }
+            .artist .album .song{
+                font-size: 0.2em;
+                font-weight: 400;
+                line-height: 28px;
+                padding: 0.2em;
+            }
+            .titre{
+                display: inline-block;
             }
             nav{
                 padding: 3%;
@@ -45,6 +63,10 @@
             paper-material{
                 margin-bottom: 5%;
             }
+            .inherit {
+                color: inherit;
+                background-color: inherit;
+            }
         </style>
             <paper-material elevation="1">
                 <iron-ajax id="get_content" auto url="/search/artist/{{_encodeUri(nameArtist)}}/album/{{_encodeUri(nameAlbum)}}/song/{{_encodeUri(nameSong)}}" last-response="{{artist}}" handleAs="json" on-response="handleResponse"> </iron-ajax>
@@ -53,12 +75,26 @@
                 <template is="dom-if" if="{{artist.albums.songs.rdf.length}}">
                     <show-dialog labeldialog="RDF {{artist.albums.songs.titre}} :" labelbutton="Show RDF" content="{{artist.albums.songs.rdf}}" labelexitdialog="Close"></show-dialog>
                 </template>
-                
                 <section id="songName"> 
-                   {{artist.albums.songs.titre}} 
+                    <div class="titre song">
+                        <a href="#/search/more/{{_concat(artist.name,artist.albums.songs.titre)}}" tabindex="-1" class="inherit" >
+                            <paper-button tabindex="0" role="button" elevation="0">{{artist.albums.songs.titre}}</paper-button>
+                        </a>
+                    </div>
+                   <div class="titre">
+                        <a href="#/search/artist/{{_encodeUri(artist.name)}}" tabindex="-1" class="inherit" >
+                            <paper-button tabindex="0" role="button" elevation="0" class="artist">Artist: {{artist.name}}</paper-button>
+                        </a>
+                    </div>
+                    <div class="titre">
+                        <a href="#/search/artist/{{_encodeUri(artist.name)}}/album/{{_encodeUri(artist.albums.titre)}}" tabindex="-1" class="inherit" >
+                            <paper-button tabindex="0" role="button" elevation="0" class="album">Album: {{artist.albums.titre}}</paper-button>
+                        </a>
+                    </div>
+                </section>
                     <paper-fab hidden={{editing}}  icon="icons:create" on-tap="doEdit" class="edit" mini></paper-fab>
                     <paper-fab hidden={{!editing}} icon="icons:done"   on-tap="doEdit" class="done" mini></paper-fab>
-                </section>    
+                    
 <!--                Faire un boucle + changer <article> et <p>-->
                     <section id="songInfos"> 
                         <template is="dom-if" if="{{artist.albums.songs.runtime.length}}">
@@ -93,7 +129,7 @@
                         </template>
                     </section>  
           
-                <section>
+                <section id="songLyricsSection">
                     <article id="songLyricsNonEditable" hidden={{editing}} contenteditable=false> </article>
                     <article id="songLyricsEditable"  hidden={{!editing}} contenteditable=true> </article> 
                 </section> 
@@ -129,7 +165,7 @@
     },
     ready: function(){   
         //Fonction permettant de réagir a un coller dans la zone prévu pour les lyrics
-        this.$.songLyricsEditable.addEventListener("paste", function(e) {
+            this.$.songLyricsEditable.addEventListener("paste", function(e) {
             e.preventDefault();
             var text = e.clipboardData.getData("text/plain"); 
             text = text.replace(/\n|\r\n|\r/g, "<br>");
@@ -153,6 +189,9 @@
             this.$.songLyricsEditable.innerHTML = this.lyrics;
             this.lyrics = this.$.songLyricsNonEditable.innerHTML
         }
+    },
+    _concat: function(str1,str2){
+        return this._encodeUri(str1+' '+str2);
     },
     //Lorsque l'utilisateur clique sur le bouton de modification ou de sauvegarde
     doEdit: function(e){
