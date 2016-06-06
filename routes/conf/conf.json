@@ -26,9 +26,8 @@
         "collection_song"       : "song"
     },
     "request" : {
-        "limit" : 200
+        "limit" : 200,
+        "limit_search_bar":12
     }
-    
-    
 }
 

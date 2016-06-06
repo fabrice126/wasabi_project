@@ -1,5 +1,6 @@
 var config          = require('./routes/conf/conf.json');
 var express         = require('express');
+var app             = express();
 var path            = require('path');
 var favicon         = require('serve-favicon');
 var logger          = require('morgan');
@@ -14,16 +15,15 @@ var search          = require('./routes/search');
 //var updatedb        = require('./routes/updatedb');
 var extractdbpedia  = require('./routes/extractdbpedia');
 var basicAuth       = require('basic-auth-connect');
-var app             = express();
 var elasticsearch   = require('elasticsearch');
-var elasticsearchClient          = new elasticsearch.Client({ host: config.database.elasticsearch_connect});
+var elasticsearchClient = new elasticsearch.Client({ host: config.database.elasticsearch_connect});
+
+app.disable('x-powered-by');
 // view cache
 app.set('view cache', false); // désactivation du cache express
 // uncomment after placing your favicon in /public
-//app.set('view engine', 'html'); 
 app.set('config', config); 
 app.use(helmet());
-app.disable('x-powered-by');
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());

@@ -1,15 +1,15 @@
 var express         = require('express');
-var request         = require('request');
 var router          = express.Router();
+var request         = require('request');
 var searchHandler   = require('./handler/searchHandler.js');
 var ObjectId        = require('mongoskin').ObjectID;
+var config         = require('./conf/conf.json');
 
 //==========================================================================================================================\\
 //===========================WEBSERVICE REST POUR L'AFFICHAGE DU LISTING DES ARTISTES/ALBUMS/SONGS==========================\\
 //==========================================================================================================================\\
 //GET LISTING DES ARTISTES ALBUMS ET MUSIQUES EN FONCTION DE OU DES LETTRES 
 router.get('/categorie/:nomCategorie/lettre/:lettre/page/:numPage', function (req, res, next) {
-    var config = req.app.get('config');
     var tObjectRequest,limit,skip,tParamToFind,nomCategorie,lettre,numPage,urlParamValid,numPageTest,db;
     db = req.db;
     nomCategorie = req.params.nomCategorie.toLowerCase();
@@ -31,7 +31,7 @@ router.get('/categorie/:nomCategorie/lettre/:lettre/page/:numPage', function (re
         case "artists":
             tObjectRequest = searchHandler.constructData("name", tParamToFind);
             var start = Date.now();
-            db.collection('artist').find({$or:tObjectRequest},{"name":1}).skip(skip).limit(limit).toArray(function(err,artists){
+            db.collection(config.database.collection_artist).find({$or:tObjectRequest},{"name":1}).skip(skip).limit(limit).toArray(function(err,artists){
                 if (err) throw err;
 //                db.collection('artist').find({$or:tObjectRequest}).count(function(err, count) {
                     if (err) throw err;
@@ -47,7 +47,7 @@ router.get('/categorie/:nomCategorie/lettre/:lettre/page/:numPage', function (re
         case "albums":   
             tObjectRequest = searchHandler.constructData("titre",tParamToFind);
             var start = Date.now();
-            db.collection('album').aggregate([{"$match": { $or: tObjectRequest }}, {"$skip" :  skip},{"$limit" : limit},{$project : { "titleAlbum" : "$titre" ,"name":1}}
+            db.collection(config.database.collection_album).aggregate([{"$match": { $or: tObjectRequest }}, {"$skip" :  skip},{"$limit" : limit},{$project : { "titleAlbum" : "$titre" ,"name":1}}
             ],function(err, albums) {
                 if (err) throw err;
 //                db.collection('album').find({ $or: tObjectRequest }).count(function(err, count) {
@@ -63,7 +63,7 @@ router.get('/categorie/:nomCategorie/lettre/:lettre/page/:numPage', function (re
             break;
         case "songs":
             tObjectRequest = searchHandler.constructData("titre",tParamToFind);
-            db.collection('song').aggregate([{"$match": { $or: tObjectRequest }},{"$skip" :  skip}, {"$limit" : limit}, {$project : { "albumTitre" : 1 ,"name":1,"titleSong":"$titre"}}
+            db.collection(config.database.collection_song).aggregate([{"$match": { $or: tObjectRequest }},{"$skip" :  skip}, {"$limit" : limit}, {$project : { "albumTitre" : 1 ,"name":1,"titleSong":"$titre"}}
             ],function(err, songs) {
                 if (err) throw err;
                 //Le count sur des millions de data est long ~250ms
@@ -88,10 +88,8 @@ router.get('/categorie/:nomCategorie/lettre/:lettre/page/:numPage', function (re
 //==========================================================================================================================\\
 //GET CATEGORY PAR NOM DE CATEGORY ET PAR COLLECTION
 router.get('/category/:collection/:categoryName',function(req,res){
-    var config = req.app.get('config');
     var db = req.db;
     var collection= req.params.collection;
-    console.log("testseffhzejf ="+ collection);
     if(collection !== config.database.collection_artist && collection !==config.database.collection_album && collection !==config.database.collection_song){
         return res.status(404).send([{error:config.http.error.global_404}]);
     }
@@ -106,7 +104,6 @@ router.get('/category/:collection/:categoryName',function(req,res){
 //==========================================================================================================================\\
 //GET PERMET D'OBTENIR LE NOMBRE D'ARTISTES/ALBUMS/SONGS
 router.get('/dbinfo', function (req, res) {
-    var config = req.app.get('config');
     var db = req.db;
     var dbinfo = {};
     db.collection(config.database.collection_artist).count(function(err, count) {
@@ -125,7 +122,6 @@ router.get('/dbinfo', function (req, res) {
 //==========================================================================================================================\\
 //GET ARTIST PAR NOM D'ARTISTE (UN NOM D'ARTISTE EST UNIQUE -> REGLE DE LYRICS WIKIA LORS DE L'EXTRACTION DES DONNEES)
 router.get('/artist/:artistName', function (req, res) {
-    var config = req.app.get('config');
     var db = req.db;
     var artistName= req.params.artistName;
     var start = Date.now();
@@ -157,7 +153,6 @@ router.get('/artist/:artistName', function (req, res) {
 //GET ALBUM PAR NOM D'ARTISTE ET TITRE D'ALBUM
 //FIXME /!\ UN ARTIST PEUT AVOIR PLUSIEURS FOIS UN MEME TITRE D'ALBUM /!\ ERREUR A CORRIGER
 router.get('/artist/:artistName/album/:albumName', function (req, res) {
-    var config = req.app.get('config');
     var db = req.db;
     var albumName= req.params.albumName;
     var artistName = req.params.artistName;
@@ -181,7 +176,6 @@ router.get('/artist/:artistName/album/:albumName', function (req, res) {
 
 //PUT ALBUM PAR ID D'ABUM ET DE MUSIQUE
 router.put('/artist/:artistName/album/:albumName', function (req, res) {
-    var config = req.app.get('config');
     var db = req.db;
     var albumName= req.params.albumName;
     var artistName = req.params.artistName;
@@ -212,7 +206,6 @@ router.put('/artist/:artistName/album/:albumName', function (req, res) {
 //==========================================================================================================================\\
 //GET SONG PAR NOM D'ARTISTE TITRE D'ALBUM ET TITRE DE MUSIQUE
 router.get('/artist/:artistName/album/:albumName/song/:songsName', function (req, res) {
-    var config = req.app.get('config');
     var db = req.db;
     var artistName = req.params.artistName;
     var albumName = req.params.albumName;
@@ -234,7 +227,6 @@ router.get('/artist/:artistName/album/:albumName/song/:songsName', function (req
     });
 });
 router.put('/artist/:artistName/album/:albumName/song/:songsName',function(req,res){
-    var config = req.app.get('config');   
     var db = req.db;
     var songBody = req.body;
     var idSong = songBody._id;
@@ -250,7 +242,7 @@ router.put('/artist/:artistName/album/:albumName/song/:songsName',function(req,r
 //FUTURE voir la configuration
 router.get('/fulltext/:searchText', function (req, res) {
     var searchText = req.escapeElastic(req.escapeHTML(req.params.searchText));// escape le html les chars spéciaux:+-= && || ><!(){}[]^"~*?:\/
-    var maxinfo = 12; //12 élements doivent apparaitre dans l'autocomplétion de recherche
+    var maxinfo = config.request.limit_search_bar; //12 élements doivent apparaitre dans l'autocomplétion de recherche
     var maxinfoselected = maxinfo/2;
     var query = {"query": {"bool": {"should": [ {"query_string": {"default_field": "_all","query": searchText}}]}},"size": maxinfo};
     var start = Date.now();
@@ -263,7 +255,7 @@ router.get('/fulltext/:searchText', function (req, res) {
 });
 router.get('/more/:searchText', function (req, res) {
     var searchText = req.escapeElastic(req.escapeHTML(req.params.searchText));// escape le html les chars spéciaux:+-= && || ><!(){}[]^"~*?:\/
-    var maxinfo = 200; //200 élements doivent apparaitre dans l'autocomplétion de recherche
+    var maxinfo = config.request.limit; //200 élements doivent apparaitre dans l'autocomplétion de recherche
     var maxinfoselected = maxinfo/2;
     var query = {"query": {"bool": {"should": [ {"query_string": {"default_field": "_all","query": searchText}}]}},"size": maxinfo};
     var start = Date.now();

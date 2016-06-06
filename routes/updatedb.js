@@ -1,5 +1,6 @@
 var express         = require('express');
 var router          = express.Router();
+var config         = require('./conf/conf.json');
 var lyricsWikia     = require('./handler/lyricsWikia.js');
 //var db              = require('mongoskin').db('mongodb://localhost:27017/wasabi');
 var ObjectId        = require('mongoskin').ObjectID;
@@ -22,7 +23,8 @@ router.get('/artist',function(req, res){
     var skip = 0;
     var limit = 500;
     var total =0;
-    var collection = "artist";
+    //Permet de nommer la collection 
+    var collection = config.database.collection_artist;
     db.collection(collection).count(function(err, nbArtist) {
         console.log('There are ' + nbArtist + ' artist in the database');
         (function fetchArtist(skip,nbArtist){
@@ -78,8 +80,7 @@ router.get('/artist',function(req, res){
 router.get('/update/:artistName',function(req, res){
     var db = req.db;
     var artistName = req.params.artistName
-    this.console.log("dedans /updatedb/update/"+artistName);
-    var collection = "artist";
+    var collection = config.database.collection_artist;
     //on récupére :artistName
     db.collection(collection).findOne({name:artistName}, function(err, result) {
         //on appel la fonction permettant d'aller chercher des informations sur l'artiste sur lyrics wikia
