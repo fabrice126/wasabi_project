@@ -15,12 +15,12 @@
 
 **Architecture du code:**
 =======
-## **bin/**
+## bin/
 **Permet de lancer l'application:** `node  bin/www`   
 
 
 
-## **mongo/**
+## mongo/
 ### mongo/backup_mongo/  
 **Contient les dumps de l'application :**  
 **Convention de nommage des dumps :**  Le dump courant est le dump avec le numéro le plus élevé `dump_x`, le `dump_x-2` sera plus ancien que le `dump_x-1`  
@@ -97,14 +97,14 @@ ___
 
 
 
-## **node_modules/**
+## node_modules/
 **Contient les modules installés dans node js. exemple :le module require('express') sera dans ce répertoire**  
 
 ___
 
 
 
-## **public/**
+## public/
 ### public/bower-components/  
 	Composant téléchargé afin de les utiliser dans l'application
 
@@ -124,7 +124,7 @@ ___
 
 
 
-## **routes/**
+## routes/
 	Contient la définition des routes supportées par l'application. C'est ici que se situe la partie REST  
 ### routes/conf/  
 	conf.json : Fichier de configuration permettant  de ne pas réécrire les données redondante dans l'application  
@@ -135,14 +135,14 @@ ___
 
 
 
-## **app.js**
+## app.js
 	C'est le fichier qui sera appelé par la commande node bin/www. C'est ici qu'on appellera les nouvelles routes de l'application et qu'on configurera certaines parties de l'application  
 	
 ___
 
 
 
-## **package.json**
+## package.json
 	Fichier décrivant l'application, c'est aussi le gestionnaire de dépendance de node js. 
 	
 ___
