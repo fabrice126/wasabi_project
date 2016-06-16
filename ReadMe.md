@@ -93,10 +93,10 @@ Une collection artist contenant des documents représentant un artiste avec ses 
  - Albums: sparql_album_data.rq 
  - Musiques: sparql_song_data.rq 
  
-___
+
 ## node_modules/
 **Contient les modules installés dans node js. exemple :le module require('express') sera dans ce répertoire**  
-___
+
 
 
 ## public/
@@ -115,9 +115,6 @@ ___
 #### public/stylesheets/  
 	Code css des pages html 
 	 
-___
-
-
 
 ## routes/
 	Contient la définition des routes supportées par l'application. C'est ici que se situe la partie REST  
@@ -126,14 +123,13 @@ ___
 #### routes/handler/  
 	xxxx.js : Contient la logique applicative à appliquer lors de requêtes sur les routes.   
 	
-___
+
 
 
 
 ## app.js
 	C'est le fichier qui sera appelé par la commande node bin/www. C'est ici qu'on appellera les nouvelles routes de l'application et qu'on configurera certaines parties de l'application  
 	
-___
 
 
 
