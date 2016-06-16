@@ -94,14 +94,9 @@ Une collection artist contenant des documents représentant un artiste avec ses 
  - Musiques: sparql_song_data.rq 
  
 ___
-
-
-
 ## node_modules/
 **Contient les modules installés dans node js. exemple :le module require('express') sera dans ce répertoire**  
-
 ___
-
 
 
 ## public/
