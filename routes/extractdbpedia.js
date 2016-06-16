@@ -1,90 +1,115 @@
-var express         = require('express');
-var router          = express.Router();
-var parseString     = require('xml2js').parseString;
-//var db              = require('mongoskin').db('mongodb://localhost:27017/wasabi');
-var dbpediaHandler  = require('./handler/dbpediaHandler.js');
-var utilHandler     = require('./handler/utilHandler.js');
-var infos_artist    = require('./sparql_request/infos_artist.js');
-var infos_album     = require('./sparql_request/infos_album.js');
-var infos_song      = require('./sparql_request/infos_song.js');
-var construct_endpoint = require('./sparql_request/construct_endpoint.js');
-
-var redirect_request = require('./sparql_request/redirect_request.js');
-var ObjectId        = require('mongoskin').ObjectID;
+var express             = require('express');
+var router              = express.Router();
+var parseString         = require('xml2js').parseString;
+var dbpediaHandler      = require('./handler/dbpediaHandler.js');
+var utilHandler         = require('./handler/utilHandler.js');
+var construct_endpoint  = require('./sparql_request/construct_endpoint.js');
+var redirect_request    = require('./sparql_request/redirect_request.js');
+var sameas_request      = require('./sparql_request/sameas_request.js');
+var ObjectId            = require('mongoskin').ObjectID;
 
 //Lorsque nous récupérons le champ urlWikipedia nous devons le spliter pour ne garder que le nom de l'artiste dans le but de construct la requête sparql
 var urlWikipediaToSplit = "http://en.wikipedia.org/wiki/";
 var urlDbpediaToSplit = "dbpedia.org/resource/";
+//WEBSERVICE permettant d'extraire les données de dbpédia en fonction de la propriété urlWikipedia présent dans chaque document de notre base de données
 router.get('/:collection',function(req, res){
     var db = req.db;
-    var collection = req.params.collection
-    if(collection =="artist" ||collection =="album" ||collection =="song"){
-        var loop = true;
-        //extraire l'url de wikipedia de objAlbum.urlWikipedia 
-        (function getRequestLoop(loop){
-            if(loop){
-                var objRequest = {$and:[{urlWikipedia:{$ne:""}},{rdf:{$exists:false}}]}; // permet d'avoir les documents ayant une url wikipédia et n'ayant pas de RDF
-//                var objRequest = {$and:[{urlWikipedia:{$ne:""}},{$where: "this.rdf.length <200"}]};//Permet d'avoir les documents n'ayant pas d'informations dans le RDF
-                var objProjection = {_id:1,urlWikipedia:1};
-                var limit = 10000;
-                db.collection(collection).find(objRequest,objProjection).limit(limit).toArray(function(err,tObjCollection){
-                    //il y a moins d'objet dans la collection recherché que la limit donc on arrive à la fin
-                    if(tObjCollection.length <limit){
-                        loop = false;
-                    }
-                    var i=0;
-                    if(tObjCollection.length != 0){
-                        (function tObjCollectionLoop(i){
-                            var objCollection = tObjCollection[i];
+    var collection = req.params.collection;
+    if(collection !="artist" && collection !="album" && collection !="song"){
+        return res.status(404).send([{error:"Page not found"}]);
+    }
+    var loop = true;
+    //extraire l'url de wikipedia de objAlbum.urlWikipedia
+    (function getRequestLoop(loop){
+        if(loop){
+//            var objRequest = {$and:[{urlWikipedia:{$ne:""}},{$where: "this.rdf.length <200"}]};//Permet d'avoir les documents n'ayant pas d'informations dans le RDF
+//             var objRequest = {$and:[{ urlWikipedia:{$ne:""} },{$where:'this.locationInfo[0] == "France"'}]};
+           var objRequest = {urlWikipedia:{$ne:""}}; // permet de mettre a jour le RDF de la base de données
+//            var objRequest = {name:"Akhenaton"}; // permet d'avoir un document
+            var objProjection = {_id:1,urlWikipedia:1,name:1,locationInfo:1};
+            var limit = 10000;
 
-                            var objUrl= dbpediaHandler.extractInfosFromURL(objCollection.urlWikipedia,urlWikipediaToSplit);
+            //find sur les artistes / albums / musiques
+            db.collection(collection).find(objRequest,objProjection).limit(limit).toArray(function(err,tObjCollection){
+                //il y a moins d'objet dans la collection recherché que la limit donc on arrive à la fin
+                if(tObjCollection.length <limit){ loop = false; }
+                var i=0;
+                if(tObjCollection.length != 0){
+                    //Utilisation de la récursivité afin de ne pas se faire bannir par DBpédia pour avoir envoyé trop de requêtes
+                    (function tObjCollectionLoop(i){
+                        var objCollection = tObjCollection[i];
+                        //On doit récupérer l'attribut locationInfo
+                        db.collection("artist").findOne({name : objCollection.name}, objProjection,function(err,artistLocation){
+                            //Si indique qu'on veut chercher dans le dbpédia fr
+                            console.log("\n\n\n");
+                            //fonction nous retournant un objet ayant 2 propriétés :{ country: 'fr.', urlDbpedia: 'Georges_Brassens', fillIfFr:'' }
+                            var objUrl = dbpediaHandler.extractInfosFromURL(objCollection.urlWikipedia,artistLocation,urlWikipediaToSplit);
+                            //On construit la requête permettant de verifier si la page a une redirection
                             var redirectRequest = redirect_request.construct_request(objUrl.urlDbpedia,objUrl.country);
+                            //On construit l'url endpoint
                             var urlEndpoint = construct_endpoint.construct_endpoint(objUrl.country);
-                            console.log("\n\n\nVerification de l'objet "+collection+" => "+objUrl.urlDbpedia+" ...");
-                            //On vérifie si l'url à une redirection vers la bonne page DBpédia
-                            dbpediaHandler.getRedirectionOfDbpedia(objCollection,redirectRequest,urlEndpoint,objUrl).then(function(objRedirect){
-                                //Si redirectTo != '' c'est que la requête a recupérer la nouvelle URL de l'album
-                                if(objRedirect.redirectTo!=''){ 
-                                    objRedirect.objUrl.urlDbpedia = objRedirect.redirectTo.split(urlDbpediaToSplit)[1]; 
-                                }
-                                var sparql_request = "";
-                                if(collection == "artist"){
-                                    sparql_request = infos_artist.construct_request(objRedirect.objUrl.urlDbpedia,objRedirect.objUrl.country);
-                                }else if (collection == "album"){
-                                    sparql_request = infos_album.construct_request(objRedirect.objUrl.urlDbpedia,objRedirect.objUrl.country);
-                                }else {//sinon c'est une musique
-                                    sparql_request = infos_song.construct_request(objRedirect.objUrl.urlDbpedia,objRedirect.objUrl.country);    
-                                }
-                                console.log("Traitement de l'objet "+collection+" => "+objRedirect.objUrl.urlDbpedia+" ...");
-                                dbpediaHandler.getInfosDbpedia(objRedirect.obj,sparql_request,objRedirect.urlEndpoint).then(function(objCollection){
-                                    var rdfValue= objCollection.rdf.replace(/\n|\t/g," ").replace(/\"/g,"'");
-                                    db.collection(collection).update({_id : new ObjectId(objCollection._id)}, { $set: {"rdf": rdfValue} });
-                                    if(rdfValue.length<200){ console.log("                                              !!!!!!!!!!!!!!!!!!!!! RDF VIDE !!!!!!!!!!!!!!!!!!!!!");}
-                                    console.log(rdfValue.length+" RDF Added => "+objCollection.urlWikipedia);
-                                    if(i < tObjCollection.length-1){
-                                        i++;
-                                        setTimeout(function(){  tObjCollectionLoop(i); }, Math.floor((Math.random() * 100)+100));
-                                    }
-                                    else{
-                                        console.log("===========================NEXT LIMIT : getRequestLoop = "+loop+"===========================");
-                                        if(!loop){
-                                            console.log("===========================TRAITEMENT TERMINEE===========================");
-                                        }
-                                        getRequestLoop(loop);
+                            console.log("Verification de l'objet "+collection+" => "+objUrl.urlDbpedia+" ...");
+                            (function requestsDbpedia(objCollection,redirectRequest,urlEndpoint,objUrl){
+                                //On vérifie si l'url à une redirection vers la bonne page DBpédia
+                                dbpediaHandler.getRedirectionOfDbpedia(objCollection,redirectRequest,urlEndpoint,objUrl).then(function(objRedirect){
+                                    console.log("Traitement de l'objet "+collection+" => "+objRedirect.objUrl.urlDbpedia+" ...");
+                                    //Si nous l'artiste/album/musique est français et que l'urlWikipedia ne pointe pas vers le dbpédia fr
+                                    if(objRedirect.objUrl.fillIfFr == 'fr.'){
+                                        console.log("FRENCH ARTIST FOUND");
+                                        // on lance la requête SPARQL vers le dbpédia non français afin de récupérer l'attribut sameAs contenant une URI vers dbpédia fr
+                                        var sameAsRequest = sameas_request.construct_request(objRedirect.objUrl.urlDbpedia,objRedirect.objUrl.country);
+                                        dbpediaHandler.getSameAsOfDbpedia(objRedirect,sameAsRequest).then(function(objSameAs){
+                                            //On transforme l'objet objUrl afin qu'il soit de même forme qu'un objUrl ayant une url pointant vers le dbpédia fr : http://en.wikipedia.org/wiki/fr:Artist_Name"
+                                            //{ country: 'fr.',urlDbpedia: 'Artist_Name',fillIfFr: '', sameAs: '' }
+                                            if(objSameAs.objUrl.sameAs != ""){//si une URI vers dbpédia fr existe
+                                                console.log("FRENCH ARTIST FOUND : With SameAs")
+                                                objSameAs.objUrl.country = objSameAs.objUrl.fillIfFr;
+                                                // objSameAs.objUrl.sameAs = http://fr.dbpedia.org/resource/Akhenaton_(rappeur)
+                                                objSameAs.objUrl.urlDbpedia = objSameAs.objUrl.sameAs.split(urlDbpediaToSplit)[1];
+                                            }
+                                            objSameAs.objUrl.sameAs = "";
+                                            objSameAs.objUrl.fillIfFr = "";
+                                            //On recrée le endpoint et les requêtes SPARQL afin qu'elles puissent extraire les informations sur le dbpédia français
+                                            var redirectRequest = redirect_request.construct_request(objSameAs.objUrl.urlDbpedia,objSameAs.objUrl.country);
+                                            //On construit l'url endpoint
+                                            var urlEndpoint = construct_endpoint.construct_endpoint(objSameAs.objUrl.country);
+                                            //On relance la fonction requestsDbpedia avec l'objUrl ne contenant plus de fillIfFr
+                                            requestsDbpedia(objSameAs.obj,redirectRequest,urlEndpoint,objSameAs.objUrl)
+                                        });
+                                    }else{
+                                        //Permet de construire les requêtes d'éxtraction de RDF pour un artiste, album ou musique
+                                        var sparql_request = dbpediaHandler.constructExtractionRequest(collection,objRedirect);
+                                        dbpediaHandler.getInfosDbpedia(objRedirect.obj,sparql_request,objRedirect.urlEndpoint).then(function(objCollection){
+                                            var rdfValue= objCollection.rdf.replace(/\n|\t/g," ").replace(/\"/g,"'");
+                                           db.collection(collection).update({_id : new ObjectId(objCollection._id)}, { $set: {"rdf": rdfValue} });
+                                            if(rdfValue.length<200){ console.log("                                              !!!!!!!!!!!!!!!!!!!!! RDF VIDE !!!!!!!!!!!!!!!!!!!!!");}
+                                            console.log(rdfValue.length+" RDF Added => "+objRedirect.objUrl.urlDbpedia);
+                                            if(i < tObjCollection.length-1){
+                                                i++;
+                                                //On attend avant l'envoie de la prochaine requête -> évite de se faire bannir
+                                                // setTimeout(function(){
+                                                    tObjCollectionLoop(i);
+                                                // }, Math.floor((Math.random() * 100)+100));
+                                            }
+                                            else{
+                                                console.log("===========================NEXT LIMIT : getRequestLoop = "+loop+"===========================");
+                                                if(!loop){
+                                                    console.log("===========================TRAITEMENT TERMINEE===========================");
+                                                }
+                                                getRequestLoop(loop);
+                                            }
+                                        });
                                     }
                                 });
-                             });
-                        })(i);
-                    }
-                });
-            }
-        })(loop);
-        res.send("OK");
-    }
-    else{
-        res.status(404).send([{error:"Page not found"}]);
-    }
-    
+                            })(objCollection,redirectRequest,urlEndpoint,objUrl)
+
+                        });
+                    })(i);
+                }
+            });
+        }
+    })(loop);
+    res.send("OK");
 });
 
 //TODO
@@ -108,7 +133,7 @@ router.get('/artist/createfields',function(req, res){
                             //Pour chaque description, c'est a dire, pour les members et anciens membres + pour l'artiste
                             for(var k = 0;k<result['rdf:RDF']['rdf:Description'].length;k++){
                                 var description = result['rdf:RDF']['rdf:Description'][k];
-                                var objUrl = dbpediaHandler.extractInfosFromURL(tObjArtist[i].urlWikipedia,urlWikipediaToSplit);
+                                var objUrl = dbpediaHandler.extractInfosFromURL(tObjArtist[i].urlWikipedia,"",urlWikipediaToSplit);
                                 //On traite l'artiste/groupe
                                 if("http://"+objUrl.country+"dbpedia.org/resource/"+objUrl.urlDbpedia == description['$']['rdf:about'] && artistDone == false){
                                     artistDone = true;
@@ -211,9 +236,11 @@ router.get('/album/createfields',function(req, res){
 });
 
 router.get('/song/createfields',function(req, res){
-        var db = req.db;
+    var db = req.db;
+    //Propriété présent dans le RDF et dont nous avons besoin pour accèder a l'objet musique crée par parseString
+    var rdfProperties = ['subject','format','genre','producer','recordLabel','writer','recorded','abstract','releaseDate','runtime','award'];
+        // db.collection('song').find({$and:[{albumTitre:"Help!"},{titre:"Help!"}]},{wordCount:0, lyrics:0}).toArray(function(err,tObjSong){
         db.collection('song').find({$and:[{rdf:{$ne:""}},{rdf:{$exists:true}}]},{wordCount:0, lyrics:0}).toArray(function(err,tObjSong){
-//        db.collection('song').find({$and:[{titre:"Help!",albumTitre:"Help!"}]}).toArray(function(err,tObjSong){
             console.log('En cours de traitement ...');
             for(var i = 0; i<tObjSong.length;i++){
                 //Pour chaque musique contenant du RDF valide
@@ -225,16 +252,11 @@ router.get('/song/createfields',function(req, res){
                         if(result != null && typeof result['rdf:RDF']['rdf:Description'] !== "undefined"){
                             for(var k = 0;k<result['rdf:RDF']['rdf:Description'].length;k++){
                                 var description = result['rdf:RDF']['rdf:Description'][k];
-                                //Propriété présent dans le RDF et dont nous avons besoin pour accèder a l'objet musique crée par parseString
-                                var rdfProperties = ['dct:subject','dbo:format','dbo:genre','dbo:producer','dbo:recordLabel',
-                                                     'dbo:writer','dbp:recorded','dbo:abstract','dbo:releaseDate','dbo:runtime','dbp:award'];
-
                                 //Pour chaque propriété on récupére les données de l'objet musique représentant le RDF
                                 for(var j = 0;j<rdfProperties.length;j++){
-                                    //substring afin de créer notre propriété à ajouter en BDD par exemple dct:subject deviendra subject
-                                    var currProperty = rdfProperties[j].substring(rdfProperties[j].indexOf(':')+1);
+                                    var currProperty = rdfProperties[j];
                                     //On va extraire le contenu de chaque propriété afin d'ajouter à l'objet tObjSong[i] les nouvelles propriétés
-                                    tObjSong[i][currProperty] = dbpediaHandler.extractInfosFromRDF(description,rdfProperties[j]);
+                                    tObjSong[i][currProperty] = dbpediaHandler.extractInfosFromRDF(description,currProperty);
                                 }
                             }
                             db.collection('song').update({_id : new ObjectId(tObjSong[i]._id)}, { $set: tObjSong[i] },function(err,result) {

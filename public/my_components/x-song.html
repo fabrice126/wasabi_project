@@ -29,8 +29,8 @@
                 background-color: #F2F2F2;
             }
         </style>
-            <paper-card hidden="{{editing}}" on-tap="doLoadSong" link="#/search/artist/{{_encodeUri(artist.name)}}/album/{{_encodeUri(album.titre)}}/song/{{_encodeUri(song.titre)}}" class="song" elevation="0" >
-                <li link="#/search/artist/{{_encodeUri(artist.name)}}/album/{{_encodeUri(album.titre)}}/song/{{_encodeUri(song.titre)}}">
+            <paper-card hidden="{{editing}}" on-tap="doLoadSong" link="#/search/artist/{{_encodeUri(album.name)}}/album/{{_encodeUri(album.titre)}}/song/{{_encodeUri(song.titre)}}" class="song" elevation="0" >
+                <li link="#/search/artist/{{_encodeUri(album.name)}}/album/{{_encodeUri(album.titre)}}/song/{{_encodeUri(song.titre)}}">
                     {{song.titre}}
                 </li>
                 <paper-ripple></paper-ripple>
@@ -44,10 +44,10 @@
     is: "x-song",
     // add properties and methods on the element's prototype
     properties: {
-        artist:{
-            type: Object,
-            value: {}
-        },
+//        artist:{
+//            type: Object,
+//            value: {}
+//        },
         song:{
             type: Object,
             value: {}

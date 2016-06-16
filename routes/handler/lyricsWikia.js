@@ -140,7 +140,7 @@ var getInfosFromPageArtist = function(url,objArtist){
                 objArtist.activeYears = $("#mw-content-text>table div:contains('Years active') + div") != null ?$("#mw-content-text>table div:contains('Years active') + div").text() : ""; 
                 objArtist.genres = $("#mw-content-text>table div>ul>li>a[title^='Category:Genre/']").map(function() { return $(this).text() !=""?$(this).text():""; }).get();
                 objArtist.labels = $("#mw-content-text>table div>ul>li>a[title^='Category:Label/']").map(function() { return $(this).text() !=""?$(this).text():""; }).get();
-                objArtist.locationInfo = $("table.plainlinks a[title^='Category:Hometown/']").map(function() { return $(this).text() !=""?$(this).text():""; }).get();
+                objArtist.locationInfo = $("table.plainlinks a[title^='Category:Hometown/']").map(function() { return $(this).text() !=""?$(this).text():[]; }).get();
                 
                 //Si memberName != "" alors c'est un artiste solo
                 var memberName = $("#mw-content-text>table div:contains('Real name') + div").text();

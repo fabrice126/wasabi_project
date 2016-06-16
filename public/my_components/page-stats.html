@@ -1,0 +1,84 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-material/paper-material.html">
+<dom-module id="page-stats">
+   <template>
+        <style>
+            .flex-wrap {
+                @apply(--layout-horizontal);
+                @apply(--layout-wrap);
+            }
+            .artistname{
+                font-size: 2em;
+                line-height: 34px;
+                padding-top: 3%;
+                padding-right: 24px;
+                padding-bottom: 14px;
+                padding-left: 24px;
+            }
+            .inherit {
+                color: inherit;
+                background-color: inherit;
+            }
+            paper-button{
+                padding: 0;
+                margin :0;
+            }
+            paper-material{
+                margin-bottom: 5%;
+            }
+        </style>
+        <paper-material elevation="1">
+            {{_stringify(statsArtist)}}<br>
+            {{_stringify(statsAlbum)}}<br>
+            {{_stringify(statsSong)}}<br>
+            {{_stringify(statsTotal)}}
+        </paper-material>
+    </template>
+
+
+    
+<script>
+  // element registration
+  Polymer({
+    is: "page-stats",
+    // add properties and methods on the element's prototype
+      
+    properties :{
+        statsArtist :{
+            type: Object,
+            value: {"documents":77490,"urlWikipedia":34490,"usableRDF":32083,"unusableRDF":2407}
+        },
+        statsAlbum :{
+            type: Object,
+            value: {"documents":208717,"urlWikipedia":50057,"usableRDF":45152,"unusableRDF":4905}
+        },
+        statsSong :{
+            type: Object,
+            value: {"documents":2098719,"urlWikipedia":77526,"usableRDF":73444,"unusableRDF":4082}
+        },
+        statsTotal :{
+            type: Object,
+            value: function(){
+                return {"documents":0,"urlWikipedia":0,"usableRDF":0,"unusableRDF":0}
+            },
+            notify:true
+        }
+    },
+    ready: function(e){
+        this.statsTotal = { "documents":(this.statsArtist.documents + this.statsAlbum.documents + this.statsSong.documents),
+                            "urlWikipedia":(this.statsArtist.urlWikipedia + this.statsAlbum.urlWikipedia + this.statsSong.urlWikipedia),
+                            "usableRDF":(this.statsArtist.usableRDF + this.statsAlbum.usableRDF + this.statsSong.usableRDF ),
+                            "unusableRDF":(this.statsArtist.unusableRDF + this.statsAlbum.unusableRDF + this.statsSong.unusableRDF)};
+
+
+//        this.updateStatsTotal(this.statsTotal);
+//        this.statsTotal
+//        this.statsTotal = this.statsTotal;
+    }, 
+    _stringify: function(obj){
+        return JSON.stringify(obj);
+    },
+  });  
+
+</script>   
+</dom-module> 

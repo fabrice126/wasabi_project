@@ -1,17 +1,20 @@
-var request = require('request');
+var request         = require('request');
+var LanguageDetect  = require('languagedetect');
+var redirect_request= require('../sparql_request/redirect_request.js');
+var construct_endpoint = require('../sparql_request/construct_endpoint.js');
+var infos_artist    = require('../sparql_request/infos_artist.js');
+var infos_album     = require('../sparql_request/infos_album.js');
+var infos_song      = require('../sparql_request/infos_song.js');
+var urlDbpediaToSplit = "dbpedia.org/resource/";
+
+var lngDetector = new LanguageDetect();
 
 var getInfosDbpedia = function(obj,sparqlRequest,urlEndpoint){
     var failRequest = 0;
     var failEncode = false;
     var promise = new Promise(function(resolve, reject) { 
         (function getInfos(obj,sparqlRequest,urlEndpoint ,failRequest,failEncode){
-            var requestdbpedia = "";
-            if(!failEncode){
-                requestdbpedia = urlEndpoint+encodeURIComponent(sparqlRequest)+"&format=application%2Frdf%2Bxml&timeout=60000";
-            }else{
-                console.log("=====DEDANS FAILENCODE=====")
-                requestdbpedia = urlEndpoint+fixedEncodeURIComponent(sparqlRequest)+"&format=application%2Frdf%2Bxml&timeout=60000";  
-            }
+            var requestdbpedia = checkURLEncode(failEncode,urlEndpoint,sparqlRequest,"&format=application%2Frdf%2Bxml&timeout=60000");
 //            console.log(requestdbpedia);
             request(requestdbpedia, function(err, resp, body){
                 if (!err && resp.statusCode == 200) {
@@ -42,54 +45,48 @@ var getInfosDbpedia = function(obj,sparqlRequest,urlEndpoint){
     });
     return promise;
 };
+//var languageDetect = function(text){
+//    console.log(lngDetector.detect(text,2));
+//}
 
-//Permet de trouver la bonne URI en cas de changement d'URI sur wikipédia/dbpedia 
+
+/*Avec le temps, les URIs d'un artist/album/musique peuvent changer, les anciens liens ne sont pas pour autant abandonnée, une redirection est effectuée sur le navigateur, 
+chose non réalisée avec une requête ajax. Cette fonction permet donc de retrouver la nouvelle URI en cas de changement sur sur site wikipédia et donc dbpedia */
 var getRedirectionOfDbpedia = function(obj,sparqlRedirect,urlEndpoint,objUrl){
     var failRequest = 0;
     var failEncode = false;
     var promise = new Promise(function(resolve, reject) { 
         //Pour passer les parametres à la promise suivante
         var objRedirect = {obj:obj, redirectTo:"",urlEndpoint : urlEndpoint,objUrl:objUrl};
-        (function getInfos( objRedirect,sparqlRedirect ,failRequest,objUrl,failEncode){
-            var requestdbpedia = "";
-            if(!failEncode){
-                requestdbpedia = urlEndpoint+encodeURIComponent(sparqlRedirect)+"&format=application%2Fsparql-results%2Bjson&timeout=30000";
-            }else{
-                requestdbpedia = urlEndpoint+fixedEncodeURIComponent(sparqlRedirect)+"&format=application%2Fsparql-results%2Bjson&timeout=30000";  
-            }
+        (function getInfos( objRedirect,sparqlRedirect ,failRequest,failEncode){
+            var requestdbpedia = checkURLEncode(failEncode,urlEndpoint,sparqlRedirect,"&format=application%2Fsparql-results%2Bjson&timeout=30000");
 //            console.log(requestdbpedia);
             request(requestdbpedia, function(err, resp, body){
                 if (!err && resp.statusCode == 200) {
                     try{
                         var jsonBody = JSON.parse(body);
-                        //si il y a un redirection a faire
                         if(typeof jsonBody.results.bindings[0] !== "undefined"){
-//                            objRedirect.redirectTo = decodeURIComponent(jsonBody.results.bindings[0].redirect.value);
                             objRedirect.redirectTo = jsonBody.results.bindings[0].redirect.value;
-                            console.log("\n\n\nREDIRECT TO = "+objRedirect.redirectTo);
+                            console.log("\nREDIRECT TO = "+objRedirect.redirectTo);
+                            // on split le contenu sur "dbpedia.org/resource/" afin d'obtenir le nouveau nom d'artiste/album/musique
+                            objRedirect.objUrl.urlDbpedia = objRedirect.redirectTo.split(urlDbpediaToSplit)[1];
                             failEncode = true;
                         }
                         if(!failEncode){
                             failEncode = true;
-                            getInfos(objRedirect,sparqlRedirect ,failRequest,objUrl,failEncode);
+                            getInfos(objRedirect,sparqlRedirect ,failRequest,failEncode);
                         }
                         else{
                             resolve(objRedirect);
                         }
-                    }catch(e){
-                        console.log(e);
-                    }
-                    finally {
-                         resolve(objRedirect);
-                    }
-
+                    }catch(e){console.log(e); }//Ne pas traiter le resolve dans un finally
                 }
                 else{
                     if(failRequest <2){
                         console.log('=====RELANCE DE LA getRedirectionOfDbpedia=====');
                         console.log(err);
                         failRequest++;
-                        getInfos(objRedirect,sparqlRedirect ,failRequest,objUrl,failEncode);
+                        getInfos(objRedirect,sparqlRedirect ,failRequest,failEncode);
                     }
                     else{
                         console.log("=====LA REQUETE A ECHOUEE=====");
@@ -97,10 +94,44 @@ var getRedirectionOfDbpedia = function(obj,sparqlRedirect,urlEndpoint,objUrl){
                     }
                 }
             });
-        })( objRedirect,sparqlRedirect ,failRequest,objUrl,failEncode);
+        })( objRedirect,sparqlRedirect ,failRequest,failEncode);
     });
     return promise;
 };
+
+//Si l'artiste /l'album/musique est d'un artiste francais alors on doit chercher dans le dbpédia francais pour cela il faut envoyer une requ^te vers la page non francaise pour recupérer l'attribut
+//same as contenant pouvant contenir l'URI vers dbpédia fr
+var getSameAsOfDbpedia = function(objSameAs,sameAsRequest){
+    var failEncode = false;
+    var promise = new Promise(function(resolve, reject) {
+        (function getInfos(objSameAs,sameAsRequest, failEncode){
+            var requestdbpedia = checkURLEncode(failEncode,objSameAs.urlEndpoint,sameAsRequest,"&format=application%2Fsparql-results%2Bjson&timeout=30000");
+           // console.log(requestdbpedia);
+            request(requestdbpedia, function(err, resp, body){
+                if (!err && resp.statusCode == 200) {
+                    try{
+                        var jsonBody = JSON.parse(body);
+                        if(typeof jsonBody.results.bindings[0] !== "undefined"){
+                            objSameAs.objUrl.sameAs = jsonBody.results.bindings[0].sameAs.value;
+                            failEncode = true;
+                        }
+                        if(!failEncode){
+                            failEncode = true;
+                            getInfos(objSameAs,sameAsRequest ,failEncode);
+                        }
+                        else{
+                            resolve(objSameAs);
+                        }
+                    }catch(e){ console.log(e);}//Ne pas traiter le resolve dans un finally
+                }
+                else{
+                    resolve(objSameAs);
+                }
+            });
+        })(objSameAs,sameAsRequest,failEncode);
+    });
+    return promise;
+}
 //encode uniquement les caractères présents dans le replace
 //Cette fonction est utilisé 
 var fixedEncodeURIComponent = function (str) {
@@ -108,11 +139,36 @@ var fixedEncodeURIComponent = function (str) {
     return str.replace(/[\s"#?<>`{}|^\[\]\\]/g, function(c) {
         return encodeURIComponent(c);
   });
-};  
+};
 
+//Permet de gérer certains cas d'URL : le '?' doit être encodé deux fois dans la partie de l'url représentant l'artiste/album/musique et qu'une seule fois pour les variables sparql ?mavar
+var checkURLEncode = function(failEncode,urlEndpoint,sparqlRequest,paramRequest){
+    requestdbpedia = "";
+    if(!failEncode){
+        requestdbpedia = urlEndpoint+encodeURIComponent(sparqlRequest)+paramRequest;
+    }else{
+        console.log("===== FAILENCODE REDO REQUEST=====")
+        requestdbpedia = urlEndpoint+fixedEncodeURIComponent(sparqlRequest)+paramRequest;
+    }
+    return requestdbpedia;
+}
+
+var constructExtractionRequest = function(collection,objRedirect){
+    var sparql_request;
+    if(collection == "artist"){
+        sparql_request = infos_artist.construct_request(objRedirect.objUrl.urlDbpedia,objRedirect.objUrl.country);
+    }else if (collection == "album"){
+        sparql_request = infos_album.construct_request(objRedirect.objUrl.urlDbpedia,objRedirect.objUrl.country);
+    }else {//sinon c'est une musique
+        sparql_request = infos_song.construct_request(objRedirect.objUrl.urlDbpedia,objRedirect.objUrl.country);
+    }
+    return sparql_request;
+};
+
+//Fonction permettant de récupérer le prefix du pays afin de récupérer des données sur les differents dbpédia dans le monde
 var getCountryOfEndpoint = function(country){
     var objCountry = {country:'',countryLang:''};
-    //Si les sparql endpoint des pays n'existe pas on envoie la requete sur le endpoint anglais
+    //Si les sparql endpoint des pays n'existe pas on envoie la requete sur le endpoint anglais c'est a dire un endpoint sans préfix
     if(country=='' || country =='en.' || country =='fi.' || country =='no.' || country =='ja.' || country =='sv.' || country =='tr.' || country =='pt.' || country =='af.' || country =='al.' || country =='da.' || country =='cz.' || country =='ms.' || country =='lt.' || country =='hu.' ){
         objCountry.countryLang = "en";
         objCountry.country = '';
@@ -150,22 +206,34 @@ var mergeRDFAndDBProperties = function(objArtist){
 var extractInfosFromRDF = function(description,property){
     var tInfos = [];
     var infos = '';
+    // console.log(property);
+    // console.log(Object.keys(description).indexOf("writer"));
+    //l
+    var tProperties = Object.keys(description);
+    //Permet de trouver uniquement la propriété passé en parametre
+    for(var i = 0 ; i<tProperties.length;i++){
+        if(tProperties[i].endsWith(property)){
+            property = tProperties[i];
+            break;
+        }
+    }
     if(typeof description[property] !== "undefined"){
-        //On va itérer sur les champs de la variable property 
+        //On va itérer sur les champs de la variable property
         for(var j = 0;j<description[property].length;j++){
             //Traitement des champs RDF de type tableau d'objets
+
             if(typeof description[property][j]['_'] === "undefined"){
                 var resourceDbpedia = description[property][j]['$']['rdf:resource'];
                 var subStr = "dbpedia.org/resource/";
                 //exemple : resourceDbpedia = http://fr.dbpedia.org/resource/The_Rolling_Stones
                 var splitInfo = resourceDbpedia.substring(resourceDbpedia.indexOf("dbpedia.org/resource/")+subStr.length);
                 //exemple : splitInfo = The_Rolling_Stones
-                if(property == 'dct:subject'){
+                if(property.endsWith('subject')){// property == 'dct:subject'
                     //Les subjects ont cette forme : Category:Songs_written_by_James_Hetfield, on supprime dont "Category:"
                     
                     tInfos.push(splitInfo.substring(splitInfo.indexOf(':')+1).replace(/_/g," "));
                 }
-                else if (property == 'dbo:associatedMusicalArtist'){
+                else if (property.endsWith('associatedMusicalArtist')){//property == 'dbo:associatedMusicalArtist'
                     tInfos.push(splitInfo);
                 }
                 else{
@@ -175,41 +243,56 @@ var extractInfosFromRDF = function(description,property){
             //Traitement des champs RDF de type tableau de primitive
             else{
                 //Le champs abstract ne doit pas être un tableau
-                if(property == 'dbo:abstract' || property == 'dbo:birthDate' || property == 'dbp:birthName' || property == 'rdfs:label'){
+                if(property.endsWith('abstract') || property.endsWith('birthDate') || property.endsWith('birthName') || property.endsWith('label')){
+                    //property == 'dbo:abstract' || property == 'dbo:birthDate' || property == 'dbp:birthName' || property == 'rdfs:label'
                     tInfos = '';
 //                    console.log(property+": "+description[property][j]['_']);
-                    tInfos = description[property][j]['_'];  
+                    tInfos = description[property][j]['_'];
                 }
                 else{
 //                    console.log(property+": "+description[property][j]['_']);
                     tInfos.push(description[property][j]['_']);  
                 }
-
             }
         }
     }
     return tInfos;
 };
-
-//Retourne un objet avec les propriétés, country: "it" et urlDbpedia: "Adriano_Celentano"
-var extractInfosFromURL = function(urlWikipedia,urlToSplit){
-        var tUrl = urlWikipedia.split(urlToSplit);
+/*
+ *  Retourne un objet .Exemple d'un objet pouvant être crée {country: "it.", urlDbpedia: "Adriano_Celentano",fillIfFr:"fr.", sameAs:""}
+ *  PARAM 1 : string, urlWikipédia de l'objet
+ *  PARAM 2 : object, objet artiste contenant la localisation de l'artiste et son urlWikipédia
+ *  PARAM 3 : string, chaine a couper afin d'avoir le prefix  permettant"http://en.wikipedia.org/wiki/"
+ */
+var extractInfosFromURL = function(url,artistLocation,urlToSplit){
+        var tUrl = url.split(urlToSplit);
         //certaine url sont de type : de:Adoro avec "de:" désignant le wikipedia allemand, il faut donc faire la redirection sur le endpoint allemand de dbpedia
         var objUrl = {};
         objUrl.country = '';
         objUrl.urlDbpedia = '';
+        objUrl.fillIfFr = '';
+        objUrl.sameAs = '';
         //Si tUrl[1] de forme: "it:Adriano_Celentano"
         if(/^[a-z]{2}:/.test(tUrl[1])){
             //On obtient le tableau suivant :urlDetail = ["it","Adriano_Celentano"]
             var urlDetail  = tUrl[1].split(":");
             objUrl.urlDbpedia = urlDetail[1];
+            //certain nom d'artiste commence par '_' -> _Un_Artist on supprime donc ce char
             if(objUrl.urlDbpedia[0] =='_'){
                 objUrl.urlDbpedia = objUrl.urlDbpedia.substr(1);
             }
             objUrl.country = urlDetail[0]+".";
         }
-        else{objUrl.urlDbpedia = tUrl[1];}
-        return objUrl;
+        else{
+            objUrl.urlDbpedia = tUrl[1];
+        }
+        //Demande spécifique afin d'aller chercher les artistes français dans le DBpédia français
+        //On recherche les artistes/albums/musiques francais n'ayant pas de liens vers DBpédia fr mais vers un autre dbpédia (anglais par exemple)
+        if(artistLocation != "" && typeof artistLocation.locationInfo[0] != "undefined" && artistLocation.locationInfo[0] == "France" && !url.startsWith(urlToSplit+"fr:")){
+            //Si indique qu'on veut chercher dans le dbpédia fr
+            objUrl.fillIfFr = "fr.";
+        }
+    return objUrl;
 };
 
 /*
@@ -250,11 +333,13 @@ var levenshteinDistance = function(a, b){
 
     return matrix[b.length][a.length];
 };
-exports.getInfosDbpedia     = getInfosDbpedia;
-exports.extractInfosFromURL = extractInfosFromURL;
-exports.extractInfosFromRDF = extractInfosFromRDF;
-exports.levenshteinDistance = levenshteinDistance;
-exports.getRedirectionOfDbpedia = getRedirectionOfDbpedia;
-exports.mergeRDFAndDBProperties = mergeRDFAndDBProperties;
-exports.getCountryOfEndpoint = getCountryOfEndpoint;
-exports.fixedEncodeURIComponent = fixedEncodeURIComponent;
+exports.getInfosDbpedia             = getInfosDbpedia;
+exports.extractInfosFromURL         = extractInfosFromURL;
+exports.extractInfosFromRDF         = extractInfosFromRDF;
+exports.levenshteinDistance         = levenshteinDistance;
+exports.getRedirectionOfDbpedia     = getRedirectionOfDbpedia;
+exports.mergeRDFAndDBProperties     = mergeRDFAndDBProperties;
+exports.getCountryOfEndpoint        = getCountryOfEndpoint;
+exports.fixedEncodeURIComponent     = fixedEncodeURIComponent;
+exports.constructExtractionRequest  = constructExtractionRequest;
+exports.getSameAsOfDbpedia          = getSameAsOfDbpedia;

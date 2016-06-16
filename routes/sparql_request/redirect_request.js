@@ -8,9 +8,10 @@ var construct_request = function (obj, country) {
     var objCountry = dbpediaHandler.getCountryOfEndpoint(country);
     
     
-    return   ' PREFIX db-owl: <http://dbpedia.org/ontology/> '+ 
+    return   ' PREFIX db-owl: <http://dbpedia.org/ontology/> '+
+    ' PREFIX owl: <http://www.w3.org/2002/07/owl#> '+
     ' SELECT ?redirect WHERE { '+
-    '    <http://'+objCountry.country+'dbpedia.org/resource/'+obj+'> db-owl:wikiPageRedirects ?redirect  '+
+    '    <http://'+objCountry.country+'dbpedia.org/resource/'+obj+'> db-owl:wikiPageRedirects ?redirect '+
     ' } ';
 }; 
 

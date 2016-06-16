@@ -84,11 +84,6 @@ Example:
         .search_album{
             font-size: 12px;
         }
-/*
-        #suggestion:not(paper-material:focus){
-            display: none;
-        }
-*/
         paper-material{
             width: 100%;
             height: 100%;
@@ -128,8 +123,8 @@ Example:
             color: white;
             transition: all 0.5s linear;
         }
-        .band_search_bar,.album_search_bar,.song_search_bar{
-            border-radius: 100%;  
+        .band_search_bar,.album_search_bar,.song_search_bar,.more_search_bar{
+            border-radius: 4px;  
             padding: 7px;
         }
         .band_search_bar{
@@ -139,11 +134,9 @@ Example:
             background-color: #f98b13;
         }
         .song_search_bar{
-            background-color: #C0A805;
+            background-color: #F39C12;
         }
         .more_search_bar{
-            border-radius: 100%;  
-            padding-left: 7px;
             color: #3F51B5;
         }
         #paper-card-more{

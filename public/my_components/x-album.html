@@ -72,13 +72,13 @@
         <article>
 
            <template is="dom-if" if="{{!moredata}}">
-                <paper-card on-tap="doLoadAlbum" link="#/search/artist/{{_encodeUri(artist.name)}}/album/{{_encodeUri(album.titre)}}"  hidden="{{editing}}" class="album" elevation="0">
+                <paper-card on-tap="doLoadAlbum" link="#/search/artist/{{_encodeUri(album.name)}}/album/{{_encodeUri(album.titre)}}"  hidden="{{editing}}" class="album" elevation="0">
                         Album:  {{album.titre}} {{album.dateSortie}}
                     <paper-ripple></paper-ripple>
                 </paper-card> 
             </template>
             <template is="dom-if" if="{{moredata}}">
-                <paper-card on-tap="doLoadAlbum" link="#/search/more/{{_concat(artist.name,album.titre)}}"  hidden="{{editing}}" class="album" elevation="0">
+                <paper-card on-tap="doLoadAlbum" link="#/search/more/{{_concat(album.name,album.titre)}}"  hidden="{{editing}}" class="album" elevation="0">
                     Album:  {{album.titre}} {{album.dateSortie}}
                     <paper-ripple></paper-ripple>
                 </paper-card> 
@@ -93,7 +93,7 @@
         <div role="listbox">
             <ol id="listSong">
             <template id="songs" class="flex-wrap" is="dom-repeat" items="{{album.songs}}" as="song">
-                <x-song artist={{artist}} album={{album}} editing={{editing}} song={{song}}></x-song>
+                <x-song  album={{album}} editing={{editing}} song={{song}}></x-song><!--artist={{artist}}-->
             </template>
             </ol>
         </div>
@@ -116,10 +116,10 @@
             notify: true,
             reflectToAttribute: true,
         },
-        artist:{
-            type: Object,
-            value: {}
-        },
+//        artist:{
+//            type: Object,
+//            value: {}
+//        },
     	editing: {
 	    	type: Boolean,
 	    	value: false	
@@ -138,28 +138,31 @@
     doLoadAlbum:function(e){
       window.location.href = e.target.link;
     },
-    addSong:function(e){
-        var xsong = document.createElement("x-song");
-        xsong.artist = this.artist;    
-        xsong.album = this.album;
-        xsong.editing = this.editing;
-        Polymer.dom(this.$.listSong).appendChild(xsong);
-        
-    },
+//    addSong:function(e){
+//        var xsong = document.createElement("x-song");
+//        xsong.artist = this.artist;    
+//        xsong.album = this.album;
+//        xsong.editing = this.editing;
+//        Polymer.dom(this.$.listSong).appendChild(xsong);
+//        
+//    },
     _concat: function(str1,str2){
         return this._encodeUri(str1+' '+str2);
+    },
+    _stringify: function(obj){
+        return JSON.stringify(obj);
     },
     doEdit: function(e){
     	this.editing=!this.editing;
         if(this.editing){  
-            this.$.get_content.url = "/search/artist/"+this._encodeUri(this.artist.name)+"/album/"+this._encodeUri(this.album.titre); 
+            this.$.get_content.url = "/search/artist/"+this._encodeUri(this.album.name)+"/album/"+this._encodeUri(this.album.titre); 
             console.log("URL DE L'ALBUM A MODIFIER :"+this.$.get_content.url);
             this.$.get_content.generateRequest();
         }
     	if (!this.editing){
             console.log("DANS !THIS EDITING");
             this.$.put_content.body = JSON.stringify(this.album);
-            this.$.put_content.url = "/search/artist/"+this._encodeUri(this.artist.name)+"/album/"+this._encodeUri(this.album.titre);
+            this.$.put_content.url = "/search/artist/"+this._encodeUri(this.album.name)+"/album/"+this._encodeUri(this.album.titre);
             this.$.put_content.generateRequest();
         }
 	},

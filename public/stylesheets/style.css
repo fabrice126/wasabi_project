@@ -3,13 +3,6 @@ body{
     margin: 0;
     background-color: #f2f2f2;
 }
-
-/*
-paper-button.nav-bar {
-    background: #245756;
-    color:red;
-}
-*/
 html{
     overflow: scroll;
 }

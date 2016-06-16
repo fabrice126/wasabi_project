@@ -5,6 +5,8 @@
 <link rel="import" href="../bower_components/paper-fab/paper-fab.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/paper-ripple/paper-ripple.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+
 
 
 <!--my_components-->
@@ -32,16 +34,6 @@
                 font-size: 2em;
                 font-weight: 400;
                 line-height: 28px;
-                padding: 0.2em;
-            }
-            .artist .album .song{
-                font-size: 0.2em;
-                font-weight: 400;
-                line-height: 28px;
-                padding: 0.2em;
-            }
-            .titre{
-                display: inline-block;
             }
             nav{
                 padding: 3%;
@@ -60,6 +52,9 @@
                 float: right;
                 margin-right: 3%;
             }
+            paper-input{
+                font-size: 12px;
+            }
             paper-material{
                 margin-bottom: 5%;
             }
@@ -69,26 +64,31 @@
             }
         </style>
             <paper-material elevation="1">
-                <iron-ajax id="get_content" auto url="/search/artist/{{_encodeUri(nameArtist)}}/album/{{_encodeUri(nameAlbum)}}/song/{{_encodeUri(nameSong)}}" last-response="{{artist}}" handleAs="json" on-response="handleResponse"> </iron-ajax>
+                <!--permet de lancer automatiquement la requête get chargeant la page-->
+                <iron-ajax id="get_content_auto" auto url="/search/artist/{{_encodeUri(nameArtist)}}/album/{{_encodeUri(nameAlbum)}}/song/{{_encodeUri(nameSong)}}" last-response="{{artist}}" handleAs="json" on-response="handleResponse"> </iron-ajax>
+                <!--permet de faire des requêtes get permettant de recupérer les données avant modification-->
+                <iron-ajax id="get_content" last-response="{{artist}}" handleAs="json" on-response="handleResponse"> </iron-ajax>
+                <!--permet de faire des requêtes de modification-->
                 <iron-ajax id="put_content" method="PUT" content-type="application/json"></iron-ajax>
                                         
                 <template is="dom-if" if="{{artist.albums.songs.rdf.length}}">
                     <show-dialog labeldialog="RDF {{artist.albums.songs.titre}} :" labelbutton="Show RDF" content="{{artist.albums.songs.rdf}}" labelexitdialog="Close"></show-dialog>
                 </template>
                 <section id="songName"> 
-                    <div class="titre song">
-                        <a href="#/search/more/{{_concat(artist.name,artist.albums.songs.titre)}}" tabindex="-1" class="inherit" >
+                    <div class="song">
+                        <a href="#/search/more/{{_concat(artist.name,artist.albums.songs.titre)}}"  tabindex="-1" class="inherit" > <!--hidden="{{editing}}"-->
                             <paper-button tabindex="0" role="button" elevation="0">{{artist.albums.songs.titre}}</paper-button>
                         </a>
+<!--                        <paper-input label="titre: {{song.titre}}" id="edit_song" hidden="{{!editing}}" value="{{artist.albums.songs.titre}}"></paper-input>-->
                     </div>
-                   <div class="titre">
+                   <div>
                         <a href="#/search/artist/{{_encodeUri(artist.name)}}" tabindex="-1" class="inherit" >
-                            <paper-button tabindex="0" role="button" elevation="0" class="artist">Artist: {{artist.name}}</paper-button>
+                            <paper-button tabindex="0" role="button" elevation="0">Artist: {{artist.name}}</paper-button>
                         </a>
                     </div>
-                    <div class="titre">
+                    <div>
                         <a href="#/search/artist/{{_encodeUri(artist.name)}}/album/{{_encodeUri(artist.albums.titre)}}" tabindex="-1" class="inherit" >
-                            <paper-button tabindex="0" role="button" elevation="0" class="album">Album: {{artist.albums.titre}}</paper-button>
+                            <paper-button tabindex="0" role="button" elevation="0" >Album: {{artist.albums.titre}}</paper-button>
                         </a>
                     </div>
                 </section>
@@ -157,15 +157,11 @@
         editing: {
 	    	type: Boolean,
 	    	value: false	
-    	},
-        lyrics:{
-            type:String,
-            value:""
-        }
+    	}
     },
     ready: function(){   
         //Fonction permettant de réagir a un coller dans la zone prévu pour les lyrics
-            this.$.songLyricsEditable.addEventListener("paste", function(e) {
+        this.$.songLyricsEditable.addEventListener("paste", function(e) {
             e.preventDefault();
             var text = e.clipboardData.getData("text/plain"); 
             text = text.replace(/\n|\r\n|\r/g, "<br>");
@@ -177,17 +173,19 @@
         return encodeURIComponent(titre);
     },
     //Cette fonction est utilisé lorsque l'utilisateur charge la page et lorsqu'il clique sur le bouton de modification des lyrics
-    handleResponse: function(request) {        
+    handleResponse: function(request) { 
+        console.log("DANS handleResponse");
         //Si l'utilisateur clique sur le bouton de modification des lyrics
         if(this.editing){
-            //On ajoute via innerHTML car nous récupérons du HTML en base de données (des balises <br>) cela nous permet de garder la mise en page
-            this.$.songLyricsEditable.innerHTML = request.detail.xhr.response.albums.songs.lyrics;
+            //On ajoute via innerHTML els lyrics car nous récupérons du HTML en base de données (des balises <br>) cela nous permet de garder la mise en page
+            //Nous ne pouvons donc pas bind les lyrics directement dans le html
+            this.$.songLyricsEditable.innerHTML = this.artist.albums.songs.lyrics;
         }
-        //Si l'utilisateur clique sur le bouton pour enregistrer sa modification des lyrics ou que l'utilisateur charge la page
+        //Si l'utilisateur l'utilisateur charge
         else{
-            this.$.songLyricsNonEditable.innerHTML = request.detail.xhr.response.albums.songs.lyrics;
-            this.$.songLyricsEditable.innerHTML = this.lyrics;
-            this.lyrics = this.$.songLyricsNonEditable.innerHTML
+            this.$.songLyricsNonEditable.innerHTML = this.artist.albums.songs.lyrics;
+            /*On rempli le contenu éditable cela permet de ne pas avoir des lyrics vide lors de l'attente de la reponse ajax*/
+            this.$.songLyricsEditable.innerHTML = this.artist.albums.songs.lyrics;
         }
     },
     _concat: function(str1,str2){
@@ -196,30 +194,31 @@
     //Lorsque l'utilisateur clique sur le bouton de modification ou de sauvegarde
     doEdit: function(e){
     	this.editing=!this.editing;
+        //lorsque l'utilisateur clique sur l'icone de modification
         if(this.editing){  
-            this.$.get_content.url ="/search/artist/"+this._encodeUri(this.artist.name)+"/album/"+this._encodeUri(this.artist.albums.titre)+"/song/"+this._encodeUri(this.artist.albums.songs.titre);
+//this.$.get_content.url ="/search/artist/"+this._encodeUri(this.artist.name)+"/album/"+this._encodeUri(this.artist.albums.titre)+"/song/"+this._encodeUri(this.artist.albums.songs.titre);
+            //on récupére les infos en fonction de l'id de l'artiste/album/musique
+            this.$.get_content.url ="/search/artist_id/"+this.artist._id+"/album_id/"+this.artist.albums._id+"/song_id/"+this.artist.albums.songs._id;
             this.$.get_content.generateRequest();
         }
-    	if (!this.editing){
-            //On replace dans un premier temps les <div> et <p> par des br car ces élements sont utilisés par les navigateurs pour les sauts de ligne dans un contenteditable
-            //on supprime ensuite les retours chariots et les autres tags HTML
+        //Si l'utilisateur veut enregistrer ses modifications
+    	else{
+            //On replace dans un premier temps les <div> et <p> par des br car ces élements (<div> et <p>) sont utilisés par les navigateurs pour les sauts de ligne dans un contenteditable
+            //On supprime ensuite les retours chariots et les autres tags HTML de l'utilisateur
             this.$.songLyricsNonEditable.innerHTML = this.$.songLyricsEditable.innerHTML.replace(/<div>|<p>/ig,"<br>").replace(/\\n|\\r|\\r\\n|(<((?!br)[^>]+)>)/ig,"");
-            if(this.lyrics != this.$.songLyricsNonEditable.innerHTML){
-                console.log("Des modifications");
-                this.lyrics = this.$.songLyricsNonEditable.innerHTML;
-                var objLyrics = {};
-                objLyrics.lyrics = this.lyrics;
-                objLyrics._id = this.artist.albums.songs._id;
-                //Construction du body pour l'envoie
-                this.$.put_content.body = JSON.stringify(objLyrics);
-                //Construction de la requête
-                this.$.put_content.url = "/search/artist/"+this._encodeUri(this.artist.name)+"/album/"+this._encodeUri(this.artist.albums.titre)+"/song/"+this._encodeUri(this.artist.albums.songs.titre);
-                //On lance la requête
-                this.$.put_content.generateRequest();
-            }
-            else{
-                console.log("Pas de modifications");
-            }
+            //Construction du body pour l'envoie
+            this.$.put_content.body = JSON.stringify(this.artist.albums.songs);
+            //Construction de la requête
+            this.$.put_content.url = "/search/artist/"+this._encodeUri(this.artist.name)+"/album/"+this._encodeUri(this.artist.albums.titre)+"/song/"+this._encodeUri(this.artist.albums.songs.titre);
+            //On lance la requête
+            this.$.put_content.generateRequest();
+              //Si des modifications on eu lieu alors il faudra envoyé la requête ajax
+//            if(this.artist.albums.songs.lyrics != this.$.songLyricsNonEditable.innerHTML){
+//                console.log("Des modifications");
+//            }
+//            else{
+//                console.log("Pas de modifications");
+//            }
         }
 	},
  
