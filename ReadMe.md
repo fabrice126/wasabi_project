@@ -7,9 +7,9 @@
 3.1. (facultatif mais conseillé) Installer robomongo : *https://robomongo.org/*
 4. Lancer le serveur  
 4.1. en ligne de commande : `cd C:/Users/user/Documents/wasabi_project`  
-4.2. node bin/www  
+4.2. taper la commande : `node bin/www`  
 4.2.1. Si ça ne fonctionne pas : taper `npm install` en ligne commande dans le projet wasabi (voir 4.1.)  
-4.3. le serveur est maintenant lancé sur *http://localhost* (dans le navigateur)
+4.3. le serveur est maintenant lancé sur *http://localhost/* (dans le navigateur)
 
 
 
@@ -23,7 +23,7 @@
 ## **mongo/**
 ### mongo/backup_mongo/  
 **Contient les dumps de l'application :**  
-**Convention de nommage des dumps** : Le dump courant est le dump avec le numéro le plus élevé `dump_x`, le `dump_x-2` sera plus ancien que le `dump_x-1`  
+**Convention de nommage des dumps :**  Le dump courant est le dump avec le numéro le plus élevé `dump_x`, le `dump_x-2` sera plus ancien que le `dump_x-1`  
 
 **Créer un dump de la base de données :**   
 
@@ -92,12 +92,14 @@ Une collection artist contenant des documents représentant un artiste avec ses 
  - Artistes: sparql_artist_data.rq  
  - Albums: sparql_album_data.rq 
  - Musiques: sparql_song_data.rq 
+ 
 ___
 
 
 
 ## **node_modules/**
 **Contient les modules installés dans node js. exemple :le module require('express') sera dans ce répertoire**  
+
 ___
 
 
@@ -116,7 +118,8 @@ ___
 	Composant crée pour être utilisé dans l'application  
 
 ### public/stylesheets/  
-	Code css des pages html  
+	Code css des pages html 
+	 
 ___
 
 
@@ -127,18 +130,21 @@ ___
 	conf.json : Fichier de configuration permettant  de ne pas réécrire les données redondante dans l'application  
 ### routes/handler/  
 	xxxx.js : Contient la logique applicative à appliquer lors de requêtes sur les routes.   
+	
 ___
 
 
 
 ## **app.js**
 	C'est le fichier qui sera appelé par la commande node bin/www. C'est ici qu'on appellera les nouvelles routes de l'application et qu'on configurera certaines parties de l'application  
+	
 ___
 
 
 
 ## **package.json**
 	Fichier décrivant l'application, c'est aussi le gestionnaire de dépendance de node js. 
+	
 ___
 
 
