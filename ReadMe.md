@@ -16,6 +16,7 @@
 ## MongoDB  sous Linux RedHat
 - Installer MongoDB sur RedHat : *https://docs.mongodb.com/manual/tutorial/install-mongodb-on-red-hat/*
 - Lancer MongoDB : `mongod --dbpath /var/lib/mongo`
+
 ## MongoDB  sous Windows
 - En console tapez: `mongod` 
 
