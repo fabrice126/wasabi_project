@@ -20,7 +20,7 @@
 ## MongoDB  sous Windows
 - En console tapez: `mongod` 
 
-=======
+
 
 ## Elasticsearch sous Linux RedHat
 - Pour lancer elasticsearch : `service elasticsearch start`
