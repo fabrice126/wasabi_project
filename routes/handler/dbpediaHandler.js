@@ -206,9 +206,6 @@ var mergeRDFAndDBProperties = function(objArtist){
 var extractInfosFromRDF = function(description,property){
     var tInfos = [];
     var infos = '';
-    // console.log(property);
-    // console.log(Object.keys(description).indexOf("writer"));
-    //l
     var tProperties = Object.keys(description);
     //Permet de trouver uniquement la propriété passé en parametre
     for(var i = 0 ; i<tProperties.length;i++){

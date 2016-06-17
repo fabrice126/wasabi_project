@@ -78,7 +78,6 @@ router.get('/categorie/:nomCategorie/lettre/:lettre/page/:numPage', function (re
             });
             break;
         default:
-//                console.log("ERREUR");
                 res.status(404).send([{error:config.http.error.global_404}]);
             break;
     }
@@ -216,7 +215,6 @@ router.get('/artist/:artistName/album/:albumName/song/:songsName', function (req
         if (artist == null) { return res.status(404).sendFile([{error:config.http.error.artist_404}]);}
         db.collection(config.database.collection_album).findOne({$and:[{"id_artist":artist._id},{"titre":albumName}]},{"_id":1,"titre":1}, function(err, album) {
             if (album == null) {  return res.status(404).sendFile([{error:config.http.error.album_404}]); }
-            console.log(album);
             db.collection(config.database.collection_song).findOne({$and:[{"id_album":album._id},{"titre":songsName}]},{"urlSong":0,"wordCount":0},function(err, song) {
                 if (song == null) { return res.status(404).send([{error:config.http.error.song_404}]);}
                 album.songs = song;
@@ -253,9 +251,7 @@ router.get('/artist_id/:artistId/album_id/:albumId/song_id/:songsId', function (
 //PUT SONG OBJECT
 router.put('/artist/:artistName/album/:albumName/song/:songsName',function(req,res){
     var db = req.db;
-    console.log("testestsetsetsts");
     var songBody = req.body;
-    console.log(songBody);
     //On récupére l'id de la musique afin de modifier l'objet en base de données
     var idSong = songBody._id;
     //!\ Il faut supprimer les attributs qui sont de type objectId dans notre base car songBody les récupéres en string
