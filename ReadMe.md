@@ -37,7 +37,7 @@
 
 
 ## mongo/
-##### mongo/backup_mongo/  
+#### mongo/backup_mongo/  
 **Contient les dumps de l'application :**  
 **Convention de nommage des dumps :**  Le dump courant est le dump avec le numéro le plus élevé `dump_x`, le `dump_x-2` sera plus ancien que le `dump_x-1`  
 
@@ -59,7 +59,7 @@
 
 
 
-##### mongo/request_mongo/  
+#### mongo/request_mongo/  
 **Contient des requêtes utiles :**
 Si la base de données est recréée de zéro via le web-service `/createdb` elle contiendra:  
 Une collection artist contenant des documents représentant un artiste avec ses albums et ses musiques, il faudra donc lancer :  
@@ -102,7 +102,7 @@ Une collection artist contenant des documents représentant un artiste avec ses 
  
  15.  le fichier `CreateIndexAfterDBpediaExtraction` ce fichier permet de créer les index des nouveaux champs insérés dans la base de données
 
-##### mongo/sparql/
+#### mongo/sparql/
 **Contient les requêtes sparql utilisées par l'application pour l'extraction du RDF pour les :**  
 
  - Artistes: sparql_artist_data.rq  
@@ -116,27 +116,27 @@ Une collection artist contenant des documents représentant un artiste avec ses 
 
 
 ## public/
-##### public/bower-components/  
+#### public/bower-components/  
 	Composant téléchargé afin de les utiliser dans l'application
 
-##### public/img/  
+#### public/img/  
 	Les images du projet
 
-##### public/javascripts/ 
+#### public/javascripts/ 
 	Code javascript des pages html
 
-##### public/my_components/  
+#### public/my_components/  
 	Composant crée pour être utilisé dans l'application  
 
-##### public/stylesheets/  
+#### public/stylesheets/  
 	Code css des pages html 
 	 
 
 ## routes/
 	Contient la définition des routes supportées par l'application. C'est ici que se situe la partie REST  
-##### routes/conf/  
+#### routes/conf/  
 	conf.json : Fichier de configuration permettant  de ne pas réécrire les données redondante dans l'application  
-##### routes/handler/  
+#### routes/handler/  
 	xxxx.js : Contient la logique applicative à appliquer lors de requêtes sur les routes.   
 	
 
@@ -152,6 +152,6 @@ Une collection artist contenant des documents représentant un artiste avec ses 
 ## package.json
 	Fichier décrivant l'application, c'est aussi le gestionnaire de dépendance de node js. 
 	
-___
+
 
 
