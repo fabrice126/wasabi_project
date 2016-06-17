@@ -11,18 +11,21 @@
 4.2.1. Si ça ne fonctionne pas : taper `npm install` en ligne commande dans le projet wasabi (voir 4.1.)  
 4.3. le serveur est maintenant lancé sur *http://localhost/* (dans le navigateur)
 
-
+**Comment lancer les bases de données**
+=======
 ## MongoDB  sous Linux RedHat
-=======
 - Installer MongoDB sur RedHat : *https://docs.mongodb.com/manual/tutorial/install-mongodb-on-red-hat/*
-- Lancer MongoDB : mongod --dbpath /var/lib/mongo
+- Lancer MongoDB : `mongod --dbpath /var/lib/mongo`
+## MongoDB  sous Windows
+- En console tapez: `mongod` 
 
-
-
-## Elasticsearch  sous Linux RedHat
 =======
+
+## Elasticsearch sous Linux RedHat
 - Pour lancer elasticsearch : `service elasticsearch start`
 - Pour arrêter elasticsearch : `service elasticsearch stop` 
+## Elasticsearch sous Windows
+- Lancer le fichier `elasticsearch.bat` dans le dossier `bin` de  votre répertoire elasticsearch
 
 **Architecture du code:**
 =======
