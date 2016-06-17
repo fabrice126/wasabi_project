@@ -25,6 +25,7 @@
 ## Elasticsearch sous Linux RedHat
 - Pour lancer elasticsearch : `service elasticsearch start`
 - Pour arrêter elasticsearch : `service elasticsearch stop` 
+
 ## Elasticsearch sous Windows
 - Lancer le fichier `elasticsearch.bat` dans le dossier `bin` de  votre répertoire elasticsearch
 
