@@ -267,9 +267,9 @@ router.put('/artist/:artistName/album/:albumName/song/:songsName',function(req,r
 //permet de chercher des artistes via la barre de recherche
 //FUTURE voir la configuration
 router.get('/fulltext/:searchText', function (req, res) {
-    
-    var searchText = req.escapeElastic(req.escapeHTML(req.params.searchText));// escape le html les chars spéciaux:+-= && || ><!(){}[]^"~*?:\/
+    var searchText = req.escapeElastic(req.params.searchText);// escape le html les chars spéciaux:+-= && || ><!(){}[]^"~*?:\/
     var maxinfo = config.request.limit_search_bar; //12 élements doivent apparaitre dans l'autocomplétion de recherche
+    console.log(req.escapeHTML(req.params.searchText))
     console.log(searchText);
     var maxinfoselected = maxinfo/2;
     // var queryAutocompleteArtist = {"artist": {"text": searchText, "completion": { "size": maxinfo,"field": "name"}}}
