@@ -2,6 +2,8 @@ var express         = require('express');
 var router          = express.Router();
 var request         = require('request');
 var lyricsWikia     = require('./handler/lyricsWikia.js');
+var config         = require('./conf/conf.json');
+var elasticSearchHandler = require('./handler/elasticSearchHandler.js');
 
 
 //createdb, permet de créer entierement la base de données
@@ -50,63 +52,60 @@ router.get('/add/:urlArtist',function(req, res){
 
 
 router.get('/createdbelasticsearchsong', function(req, res){
-    var elasticsearchClient = req.elasticsearchClient;
-    var db = req.db;
-    var skip = 0;
-    var limit = 10000;
-    (function recursivePost(skip){
-        console.log("createdbelasticsearch 1 ="+ skip);
-        db.collection('song').find({},{"titre":1,"name":1,"albumTitre":1}).skip(skip).limit(limit).toArray(function(err,songs){
-            var bulk_request = [];
-            for (var i = 0; i < songs.length; i++) {
-                var id = songs[i]._id;
-                delete songs[i]._id;
-                // Insert index
-                bulk_request.push({index: {_index: 'idx_songs', _type: 'string',_id:id}});
-                // Insert data
-                bulk_request.push(songs[i]);    
-            }
-            elasticsearchClient.bulk({body : bulk_request}, function (err, resp) {
-                if(err) {console.log(err);}
-            });
-            skip+= limit;
-            if(songs.length !=limit){
-                console.log("FIN DU TRAITEMENT !");
-                return ;
-            }
-            recursivePost(skip);
-        });
-    })(skip)
+    var urlElasticSearch = config.database.elasticsearch_url;
+    var typeName = config.database.index_type_song;
+    var indexName = config.database.index_song;
+    var collection = config.database.collection_song; //dans quelle collection nous voulons récupérer des données
+    var projectObj = {"titre":1,"name":1,"albumTitre":1};//ce que nous voulons récupérer dans la base de données mongodb
+    var urlIndex = urlElasticSearch+indexName;
+    var mappingObj= {};
+    mappingObj[typeName] = {"properties": { "titre": {"type": "string", "analyzer": "folding"},
+                                            "name": {"type": "string", "analyzer": "folding"},
+                                            "albumTitre": {"type": "string", "analyzer": "folding"}}};
+    // var urlMapping = urlElasticSearch+indexName+"/"+typeName+"/_mapping";
+    // var indexMappingObj = {};
+    // indexMappingObj[typeName] = {"properties": {"name": {"type": "completion","payloads": true},"titre": {"type": "completion","payloads": true},"albumTitre": {"type": "completion","payloads": true}}};
+    //Suppression de l'index
+    elasticSearchHandler.deleteElasticSearchIndex(urlIndex).then(function(resolve){
+        console.log("Index "+typeName+" Supprimée");
+        //Création de l'index
+        elasticSearchHandler.createElasticSearchIndex(urlIndex,mappingObj);
+    }).then(function(resolve){
+        console.log("Index "+typeName+" Crée");
+        //création du mapping
+    //     elasticSearchHandler.createMappingElasticSearchIndex(urlMapping,indexMappingObj);
+    // }).then(function(resolve){
+    //     console.log("Mapping "+typeName+" Crée");
+        elasticSearchHandler.insertBulkData(req,collection,projectObj,indexName,typeName);
+    })
     res.send("OK");
 });
 router.get('/createdbelasticsearchartist', function(req, res){
-    var elasticsearchClient = req.elasticsearchClient;
-    var db = req.db;
-    var skip = 0;
-    var limit = 10000;
-    (function recursivePost(skip){
-        console.log("createdbelasticsearch 1 ="+ skip);
-        db.collection('artist').find({},{"name":1}).skip(skip).limit(limit).toArray(function(err,artists){
-            var bulk_request = [];
-            for (var i = 0; i < artists.length; i++) {
-                var id = artists[i]._id;
-                delete artists[i]._id;
-                // Insert index
-                bulk_request.push({index: {_index: 'idx_artists', _type: 'string',_id:id}});
-                // Insert data
-                bulk_request.push(artists[i]);    
-            }
-            elasticsearchClient.bulk({body : bulk_request}, function (err, resp) {
-                if(err) {console.log(err);}
-            });
-            skip+= limit;
-            if(artists.length !=limit){
-                console.log("FIN DU TRAITEMENT !");
-                return ;
-            }
-            recursivePost(skip);
-        });
-    })(skip)
+    var urlElasticSearch = config.database.elasticsearch_url;
+    var typeName = config.database.index_type_artist;
+    var indexName = config.database.index_artist;
+    var collection = config.database.collection_artist; //dans quelle collection nous voulons récupérer des données
+    var projectObj = {"name":1};//ce que nous voulons récupérer dans la base de données mongodb
+    var urlIndex = urlElasticSearch+indexName;
+    var mappingObj= {};
+    mappingObj[typeName] = {"properties": {"name": { "type": "string", "analyzer": "folding" }}};
+    // var urlMapping = urlElasticSearch+indexName+"/_mapping/"+typeName;
+    // console.log(urlMapping);
+    // var indexMappingObj = {};
+    // indexMappingObj[typeName] = {"properties": {"name": {"type": "completion","payloads": true}}};
+    //Suppression de l'index
+    elasticSearchHandler.deleteElasticSearchIndex(urlIndex).then(function(resolve){
+        console.log("Index "+typeName+" Supprimée");
+        //Création de l'index
+        elasticSearchHandler.createElasticSearchIndex(urlIndex,mappingObj);
+    }).then(function(resolve){
+        console.log("Index "+typeName+" Crée");
+        //création du mapping
+    //     elasticSearchHandler.createMappingElasticSearchIndex(urlMapping,indexMappingObj);
+    // }).then(function(resolve){
+    //     console.log("Mapping "+typeName+" Crée");
+        elasticSearchHandler.insertBulkData(req,collection,projectObj,indexName,typeName);
+    })
     res.send("OK");
 });
 router.get('*', function(req, res){

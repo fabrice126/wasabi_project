@@ -20,14 +20,18 @@
     },
     "database" : {
         "mongodb_connect"       : "mongodb://localhost:27017/wasabi",
-        "elasticsearch_connect" : "localhost:9200",
         "collection_artist"     : "artist",
         "collection_album"      : "album",
-        "collection_song"       : "song"
+        "collection_song"       : "song",
+        "elasticsearch_connect" : "localhost:9200",
+        "elasticsearch_url"     : "http://127.0.0.1:9200/",
+        "index_artist"          : "idx_artists",
+        "index_song"            : "idx_songs",
+        "index_type_artist"     : "artist",
+        "index_type_song"       : "song"
     },
     "request" : {
         "limit" : 200,
         "limit_search_bar":12
     }
 }
-

@@ -1,7 +1,7 @@
-var cheerio = require('cheerio');
-var request = require('request');
-var db              = require('mongoskin').db('mongodb://localhost:27017/wasabi');
-var ObjectId        = require('mongoskin').ObjectID;
+var cheerio     = require('cheerio');
+var request     = require('request');
+var db          = require('mongoskin').db('mongodb://localhost:27017/wasabi');
+var ObjectId    = require('mongoskin').ObjectID;
 
 //Permet de changer de page pour récupérer tout les noms d'artistes d'une catégorie (exemple catégorie des artistes commencant par la lettre A)        
 var paramNextPage = "?pagefrom=";

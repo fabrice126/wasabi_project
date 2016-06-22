@@ -270,11 +270,18 @@ router.get('/fulltext/:searchText', function (req, res) {
     
     var searchText = req.escapeElastic(req.escapeHTML(req.params.searchText));// escape le html les chars spéciaux:+-= && || ><!(){}[]^"~*?:\/
     var maxinfo = config.request.limit_search_bar; //12 élements doivent apparaitre dans l'autocomplétion de recherche
+    console.log(searchText);
     var maxinfoselected = maxinfo/2;
-    var query = {"query": {"bool": {"should": [ {"query_string": {"default_field": "_all","query": searchText}}]}},"size": maxinfo};
+    // var queryAutocompleteArtist = {"artist": {"text": searchText, "completion": { "size": maxinfo,"field": "name"}}}
+    // var queryArtist = {"query": {"bool": {"should": [ {"query_string": {"default_field": "_all","query": searchText}}]}},"size": maxinfo};
+    var queryArtist = { "query": { "query_string" : {"query": searchText,"fields": ["name"]}},"size": maxinfo};
+    var querySong = { "query": { "query_string" : {"query": searchText,"fields": ["titre","name","albumTitre"]}},"size": maxinfo};
+    // var querySong = {"query": {"bool": {"should": [ {"query_string": {"default_field": "_all","query": searchText}}]}},"size": maxinfo};
+    // var queryAutocompleteSong = {"query": {"bool": {"should": [ {"query_string": {"query": "titre:"+searchText+" name:"+searchText+" albumTitre:"+searchText}}]}},"size": maxinfo};
     var start = Date.now();
-    searchHandler.fullTextQuery(req,maxinfo,query,maxinfoselected).then(function(resp) {
-        console.log("                       fullTextQuery time ="+ (Date.now() - start));
+    searchHandler.fullTextQuery(req,maxinfo,queryArtist,querySong,maxinfoselected).then(function(resp) {
+        var end = (Date.now() - start);
+        console.log("                       fullTextQuery time ="+ end);
         res.send(resp);
     }).catch(function() { 
         res.send(resp);
@@ -284,9 +291,10 @@ router.get('/more/:searchText', function (req, res) {
     var searchText = req.escapeElastic(req.escapeHTML(req.params.searchText));// escape le html les chars spéciaux:+-= && || ><!(){}[]^"~*?:\/
     var maxinfo = config.request.limit; //200 élements doivent apparaitre dans l'autocomplétion de recherche
     var maxinfoselected = maxinfo/2;
+    var queryAutocomplete = {"artist": {"text": searchText, "completion": {"field": "name", "size": maxinfo}}}
     var query = {"query": {"bool": {"should": [ {"query_string": {"default_field": "_all","query": searchText}}]}},"size": maxinfo};
     var start = Date.now();
-    searchHandler.fullTextQuery(req,maxinfo,query,maxinfoselected).then(function(resp) {
+    searchHandler.fullTextQuery(req,maxinfo,query,queryAutocomplete,maxinfoselected).then(function(resp) {
         console.log("                       more fullTextQuery time ="+ (Date.now() - start));
         res.send(resp);
     }).catch(function() { 

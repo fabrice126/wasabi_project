@@ -1,4 +1,4 @@
-
+var config  = require('../conf/conf.json');
 var constructData = function (field, tParamToFind) {
     'use strict';
     var tObjectRequest, i, objRequest;
@@ -27,30 +27,32 @@ var optimizeFind = function(lettre){
     return tParamToFind;
 };
 //Permet de construire les requetes elasticsearch
-var fullTextQuery = function (req,maxinfo,query,maxinfoselected){
+var fullTextQuery = function (req,maxinfo,queryArtist,querySong,maxinfoselected){
     var promise = new Promise(function(resolve, reject) { 
         var result = [];
-        req.elasticsearchClient.search({index: 'idx_artists', type: 'string', body: query}).then(function (respArtists) {
+        config.database.index_artist
+        req.elasticsearchClient.search({index: config.database.index_artist, type: config.database.index_type_artist, body: queryArtist}).then(function (respArtists) {
+        // req.elasticsearchClient.suggest({index: 'idx_artists', type: 'artist', body: queryAutocomplete}).then(function (respArtists) {
             var artist = [];
+            //     console.log(respArtists.artist[0].options[0].text);
+            // for(var i = 0 ; i<respArtists.artist[0].options.length;i++){ artist.push({"name":respArtists.artist[0].options[i].text}); }
             for(var i = 0 ; i<respArtists.hits.hits.length;i++){
                 artist.push(respArtists.hits.hits[i]._source);
             }
-            req.elasticsearchClient.search({index: 'idx_songs',type: 'string',body: query}).then(function (respSongs) {
-                    var song = [];
-                    for(var i = 0 ; i<respSongs.hits.hits.length;i++){
-                        song.push(respSongs.hits.hits[i]._source);
-                    }
-                    if(artist.length < maxinfoselected){//Si on a moins d'artiste que de musique on ajoute plus de musique
-                        song = song.slice(0,maxinfoselected+maxinfoselected - artist.length);
-                    }
-                    else{//il y a autant de musique que d'artist
-                        artist = artist.slice(0,maxinfoselected);
-                        song = song.slice(0,maxinfoselected);
-                    }
-                    result = artist.concat(song);
-                    resolve(JSON.stringify(result));
-                }, function (err) {
-                    reject("Error: Song "+err);
+            req.elasticsearchClient.search({index: config.database.index_song,type: config.database.index_type_song,body: querySong}).then(function (respSongs) {
+                var song = [];
+                for(var i = 0 ; i<respSongs.hits.hits.length;i++){ song.push(respSongs.hits.hits[i]._source); }
+                if(artist.length < maxinfoselected){//Si on a moins d'artiste que de musique on ajoute plus de musique
+                    song = song.slice(0,maxinfoselected+maxinfoselected - artist.length);
+                }
+                else{//il y a autant de musique que d'artist
+                    artist = artist.slice(0,maxinfoselected);
+                    song = song.slice(0,maxinfoselected);
+                }
+                result = artist.concat(song);
+                resolve(JSON.stringify(result));
+            },function (err) {
+                reject("Error: Song "+err);
             });
         }, function (err) {
             reject("Error: Artist "+err);
