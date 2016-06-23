@@ -4,12 +4,12 @@
 1. Récupérer l'application sur le GIT
 2. Installer node js : *https://nodejs.org/en/*
 3. Installer mongodb : version >= 3.2 : *https://www.mongodb.com/*  
-3.1. (facultatif mais conseillé) Installer robomongo : *https://robomongo.org/*
+*3.1.* (facultatif mais conseillé) Installer robomongo : *https://robomongo.org/*
 4. Lancer le serveur  
-4.1. en ligne de commande : `cd C:/Users/user/Documents/wasabi_project`  
-4.2. taper la commande : `node bin/www`  
-4.2.1. Si ça ne fonctionne pas : taper `npm install` en ligne commande dans le projet wasabi (voir 4.1.)  
-4.3. le serveur est maintenant lancé sur *http://localhost/* (dans le navigateur)
+*4.1.* en ligne de commande : `cd C:/Users/user/Documents/wasabi_project`  
+*4.2.* taper la commande : `node bin/www`  
+*4.2.1.* Si ça ne fonctionne pas : taper `npm install` en ligne commande dans le projet wasabi (voir 4.1.)  
+*4.3.* le serveur est maintenant lancé sur *http://localhost/* (dans le navigateur)
 
 **Comment lancer les bases de données**
 =======
@@ -65,18 +65,18 @@ Si la base de données est recréée de zéro via le web-service `/createdb` ell
 Une collection artist contenant des documents représentant un artiste avec ses albums et ses musiques, il faudra donc lancer :  
 
  1. Les fichiers ci-dessous via la commande mongodb `load("FichierMongoDB.js");` pour cela:  
- 	1.1. Assurez-vous que mongodb est lancé avec la commande `mongod`  
- 	1.2. Aller dans votre répertoire `mongo/request_mongo` en ligne commande et tapez la commande `mongo wasabi`, vous devriez être connecté à la base de données  
- 	1.3. Lancer la commande `load("MonFichier.js");` exemple `load("FindSameDocument.js");`  
- 	1.4. Vous pouvez aussi lancer ces scripts via une interface graphique tel que robomongo: *https://robomongo.org*  
+ 	*1.1.* Assurez-vous que mongodb est lancé avec la commande `mongod`  
+ 	*1.2.* Aller dans votre répertoire `mongo/request_mongo` en ligne commande et tapez la commande `mongo wasabi`, vous devriez être connecté à la base de données  
+ 	*1.3.* Lancer la commande `load("MonFichier.js");` exemple `load("FindSameDocument.js");`  
+ 	*1.4.* Vous pouvez aussi lancer ces scripts via une interface graphique tel que robomongo: *https://robomongo.org*  
  
  2.  Le fichier `FindSameDocument.js` dans mongo afin de trouver les documents en double (ayant le même nom d'artiste car un nom d'artiste est unique en base de données, cf : comme dans lyrics wikia) dans la base de 	données
 
  3.  Le fichier `ConstructBDAfterCreate.js` dans mongodb afin de créer :  
- 	3.1. Une collection artist contenant uniquement les informations relatives à l'artiste (sans le champ album)  
-	3.2. Une collection album contenant les informations relatives à l'album  
- 	3.3. Une collection song contenant les informations relatives à la musique  
- 	3.4. Les index des collections artist, album et song  
+ 	*3.1.* Une collection artist contenant uniquement les informations relatives à l'artiste (sans le champ album)  
+	*3.2.* Une collection album contenant les informations relatives à l'album  
+ 	*3.3.* Une collection song contenant les informations relatives à la musique  
+ 	*3.4.* Les index des collections artist, album et song  
  
  4.  Le fichier `RefArtistInAlbum.js` permettant d'ajouter une référence d'artiste dans un document album(~2 minutes) et de créer l'index sur ce champ
  
