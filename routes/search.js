@@ -4,6 +4,7 @@ var request         = require('request');
 var searchHandler   = require('./handler/searchHandler.js');
 var ObjectId        = require('mongoskin').ObjectID;
 var config         = require('./conf/conf.json');
+var elasticSearchHandler = require('./handler/elasticSearchHandler.js');
 
 //==========================================================================================================================\\
 //===========================WEBSERVICE REST POUR L'AFFICHAGE DU LISTING DES ARTISTES/ALBUMS/SONGS==========================\\
@@ -267,29 +268,21 @@ router.put('/artist/:artistName/album/:albumName/song/:songsName',function(req,r
 //permet de chercher des artistes via la barre de recherche
 //FUTURE voir la configuration
 router.get('/fulltext/:searchText', function (req, res) {
-    var searchText = req.params.searchText;
-        // req.escapeElastic(req.params.searchText);// escape le html les chars spéciaux:+-= && || ><!(){}[]^"~*?:\/
-    var maxinfo = config.request.limit_search_bar; //12 élements doivent apparaitre dans l'autocomplétion de recherche
-    console.log(req.escapeHTML(req.params.searchText))
-    console.log(searchText);
-    var maxinfoselected = maxinfo/2;
-    // var queryAutocompleteArtist = {"artist": {"text": searchText, "completion": { "size": maxinfo,"field": "name"}}}
-    // var queryArtist = {"query": {"bool": {"should": [ {"query_string": {"default_field": "_all","query": searchText}}]}},"size": maxinfo};
+    var searchText = elasticSearchHandler.escapeElasticSearch(req.params.searchText);
+    var maxinfo = config.request.limit_search_bar;
+    var start = Date.now();
+    var maxinfoselected = maxinfo/2; // nombre d'élements devant apparaitre dans l'autocomplétion de recherche
     var queryArtist =   { "query": { "query_string" : {"default_field": "name","query": searchText}},"size": maxinfo};
     var querySong =     { "query": { "query_string" : {"query": searchText,"fields":["titre^4","name^2","albumTitre"]}},"size": maxinfo};
-    // var querySong = {"query": {"bool": {"should": [ {"query_string": {"default_field": "_all","query": searchText}}]}},"size": maxinfo};
-    // var queryAutocompleteSong = {"query": {"bool": {"should": [ {"query_string": {"query": "titre:"+searchText+" name:"+searchText+" albumTitre:"+searchText}}]}},"size": maxinfo};
-    var start = Date.now();
     searchHandler.fullTextQuery(req,maxinfo,queryArtist,querySong,maxinfoselected).then(function(resp) {
-        var end = (Date.now() - start);
-        console.log("                       fullTextQuery time ="+ end);
+        console.log("                       fulltext fullTextQuery time ="+ (Date.now() - start));
         res.send(resp);
     }).catch(function(err) {
         res.send(err);
     });
 });
 router.get('/more/:searchText', function (req, res) {
-    var searchText = req.escapeElastic(req.escapeHTML(req.params.searchText));// escape le html les chars spéciaux:+-= && || ><!(){}[]^"~*?:\/
+    var searchText = elasticSearchHandler.escapeElasticSearch(req.params.searchText);// escape les chars spéciaux:+-= && || ><!(){}[]^"~*?:\/
     var maxinfo = config.request.limit; //200 élements doivent apparaitre dans l'autocomplétion de recherche
     var maxinfoselected = maxinfo/2;
     var queryAutocomplete = {"artist": {"text": searchText, "completion": {"field": "name", "size": maxinfo}}}

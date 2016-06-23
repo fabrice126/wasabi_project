@@ -9,15 +9,15 @@ var bodyParser      = require('body-parser');
 var helmet          = require('helmet');
 var escapeHTML      = require('escape-html');
 var errorHandler    = require('errorhandler');
+var basicAuth       = require('basic-auth-connect');
+var elasticsearch   = require('elasticsearch');
 var db              = require('mongoskin').db(config.database.mongodb_connect);
-var escapeElastic   = require('elasticsearch-sanitize');
+var elasticsearchClient = new elasticsearch.Client({ host: config.database.elasticsearch_connect});
 var search          = require('./routes/search');
 var createdb        = require('./routes/createdb');
 //var updatedb        = require('./routes/updatedb');
 var extractdbpedia  = require('./routes/extractdbpedia');
-var basicAuth       = require('basic-auth-connect');
-var elasticsearch   = require('elasticsearch');
-var elasticsearchClient = new elasticsearch.Client({ host: config.database.elasticsearch_connect});
+
 
 app.disable('x-powered-by');
 // view cache
@@ -35,13 +35,11 @@ app.use(basicAuth('michel', 'michelbuffa'));
 app.use(function(req,res,next){
     req.db = db;
     req.escapeHTML = escapeHTML;
-    req.escapeElastic = escapeElastic;
     req.elasticsearchClient = elasticsearchClient;
     next();
 });
 app.use('/',express.static(path.join(__dirname, 'public')));
 app.use('/search', search);
-
 //Permet d'utiliser les fonctions de créations et updates de la base de données
 app.use('/createdb', createdb);
 //app.use('/updatedb', updatedb);

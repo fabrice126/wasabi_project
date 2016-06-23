@@ -13,10 +13,23 @@ var deleteElasticSearchIndex = function(url){
 //request PUT /{idx_artists||idx_songs} afin de créer l'index de zéro
 var createElasticSearchIndex = function(url,mappingObj){
     var setting = {
-        "settings": {"analysis": {
-                        "analyzer": {
-                            "folding": {
-                                "tokenizer": "standard","filter":  [ "lowercase", "asciifolding" ]}}}},
+        "settings": {
+            "analysis": {
+                "analyzer": {
+                    "folding": {
+                        "tokenizer": "standard",
+                        "filter":  ["lowercase","asciifolding","my_word_delimiter"]
+                    }
+                },
+                "filter" : {
+                    "my_word_delimiter" : {
+                        "type" : "word_delimiter",
+                        "catenate_words" : true,
+                        "preserve_original" : true
+                    }
+                }
+            }
+        },
         "mappings": mappingObj
     }
     return new Promise(function(resolve, reject) {
@@ -66,7 +79,19 @@ var insertBulkData = function(req,collectioName,projectObj,indexName,typeName){
     })(skip)
 };
 
+//Permet de supprimer les chars spéciaux d'elasticsearch +-= && || ><!(){}[]^"~*?:\/
+var escapeElasticSearch = function(query){
+    return query
+        .replace(/[\*\+\-=~><\"\?^\${}\(\)\:\!\/[\]]/g, '\\$&') // replace single character special characters
+        .replace(/\|\|/g, '\\||') // replace ||
+        .replace(/\&\&/g, '\\&&') // replace &&
+        .replace(/AND/g, '\\A\\N\\D') // replace AND
+        .replace(/OR/g, '\\O\\R') // replace OR
+        .replace(/NOT/g, '\\N\\O\\T'); // replace NOT
+};
+
 exports.deleteElasticSearchIndex        = deleteElasticSearchIndex;
 exports.createElasticSearchIndex        = createElasticSearchIndex;
 exports.createMappingElasticSearchIndex = createMappingElasticSearchIndex;
 exports.insertBulkData                  = insertBulkData;
+exports.escapeElasticSearch             = escapeElasticSearch;

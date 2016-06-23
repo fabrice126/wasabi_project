@@ -5,7 +5,6 @@ var lyricsWikia     = require('./handler/lyricsWikia.js');
 var config         = require('./conf/conf.json');
 var elasticSearchHandler = require('./handler/elasticSearchHandler.js');
 
-
 //createdb, permet de créer entierement la base de données
 router.get('/',function(req, res){
     console.log("dedans /createdb");
@@ -62,9 +61,6 @@ router.get('/createdbelasticsearchsong', function(req, res){
     mappingObj[typeName] = {"properties": { "titre": {"type": "string", "analyzer": "folding"},
                                             "name": {"type": "string", "analyzer": "folding"},
                                             "albumTitre": {"type": "string", "analyzer": "folding"}}};
-    // var urlMapping = urlElasticSearch+indexName+"/"+typeName+"/_mapping";
-    // var indexMappingObj = {};
-    // indexMappingObj[typeName] = {"properties": {"name": {"type": "completion","payloads": true},"titre": {"type": "completion","payloads": true},"albumTitre": {"type": "completion","payloads": true}}};
     //Suppression de l'index
     elasticSearchHandler.deleteElasticSearchIndex(urlIndex).then(function(resolve){
         console.log("Index "+typeName+" Supprimée");
@@ -72,10 +68,6 @@ router.get('/createdbelasticsearchsong', function(req, res){
         elasticSearchHandler.createElasticSearchIndex(urlIndex,mappingObj);
     }).then(function(resolve){
         console.log("Index "+typeName+" Crée");
-        //création du mapping
-    //     elasticSearchHandler.createMappingElasticSearchIndex(urlMapping,indexMappingObj);
-    // }).then(function(resolve){
-    //     console.log("Mapping "+typeName+" Crée");
         elasticSearchHandler.insertBulkData(req,collection,projectObj,indexName,typeName);
     })
     res.send("OK");
@@ -89,10 +81,6 @@ router.get('/createdbelasticsearchartist', function(req, res){
     var urlIndex = urlElasticSearch+indexName;
     var mappingObj= {};
     mappingObj[typeName] = {"properties": {"name": { "type": "string", "analyzer": "folding" }}};
-    // var urlMapping = urlElasticSearch+indexName+"/_mapping/"+typeName;
-    // console.log(urlMapping);
-    // var indexMappingObj = {};
-    // indexMappingObj[typeName] = {"properties": {"name": {"type": "completion","payloads": true}}};
     //Suppression de l'index
     elasticSearchHandler.deleteElasticSearchIndex(urlIndex).then(function(resolve){
         console.log("Index "+typeName+" Supprimée");
@@ -100,10 +88,6 @@ router.get('/createdbelasticsearchartist', function(req, res){
         elasticSearchHandler.createElasticSearchIndex(urlIndex,mappingObj);
     }).then(function(resolve){
         console.log("Index "+typeName+" Crée");
-        //création du mapping
-    //     elasticSearchHandler.createMappingElasticSearchIndex(urlMapping,indexMappingObj);
-    // }).then(function(resolve){
-    //     console.log("Mapping "+typeName+" Crée");
         elasticSearchHandler.insertBulkData(req,collection,projectObj,indexName,typeName);
     })
     res.send("OK");
