@@ -135,7 +135,7 @@
 			<th>Description</th><td>Récupère la discographie d'un artiste</td>
 		</tr>
 		<tr>
-			<th>URL</th><td>http://127.0.0.1/search//artist/Metallica
+			<th>URL</th><td>http://127.0.0.1/search/artist/Metallica
 			</td>
 		</tr>
 		<tr>
