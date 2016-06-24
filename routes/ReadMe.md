@@ -1,11 +1,14 @@
 
 
-**API REST**
+**API REST - SEARCH**
 =======
 
 
-## /search/categorie/:nomCategorie/lettre/:lettre/page/:numPage
 
+
+
+
+## /search/categorie/:nomCategorie/lettre/:lettre/page/:numPage
 <table>
 	<tbody>
 		<tr>
@@ -43,8 +46,12 @@
 	</tbody>
 </table>
 
-## search/category/:collection/:categoryName
 
+
+
+
+
+## search/category/:collection/:categoryName
 <table>
 	<tbody>
 		<tr>
@@ -81,8 +88,12 @@
 	</tbody>
 </table>
 
-## search/dbinfo
 
+
+
+
+
+## search/dbinfo
 <table>
 	<tbody>
 		<tr>
@@ -113,8 +124,11 @@
 </table>
 
 
-## search/artist/:artistName
 
+
+
+
+## search/artist/:artistName
 <table>
 	<tbody>
 		<tr>
@@ -162,7 +176,7 @@
 			</td>
 		</tr>
 		<tr>
-			<th>METHOD</th><td>GET</td>
+			<th>METHOD</th><td>GET, PUT</td>
 		</tr>
 		<tr>
 			<th>DATA PARAMS</th>
@@ -188,8 +202,12 @@
 	</tbody>
 </table>
 
-## search/artist/:artistName/album/:albumName/song/:songsName
 
+
+
+
+
+## search/artist/:artistName/album/:albumName/song/:songsName
 <table>
 	<tbody>
 		<tr>
@@ -200,7 +218,7 @@
 			</td>
 		</tr>
 		<tr>
-			<th>METHOD</th><td>GET</td>
+			<th>METHOD</th><td>GET, PUT</td>
 		</tr>
 		<tr>
 			<th>DATA PARAMS</th>
@@ -247,8 +265,73 @@
 </table>
 
 
-## search/fulltext/:searchText
 
+
+
+
+## search/artist_id/:artistId/album_id/:albumId/song_id/:songsId
+<table>
+	<tbody>
+		<tr>
+			<th>Description</th><td>Récupère les informations d'une musique</td>
+		</tr>
+		<tr>
+			<th>URL</th><td>http://127.0.0.1/search/artist_id/56d93d84ce06f50c0fed8747/album_id/5714debe25ac0d8aee36b665/song_id/5714dedb25ac0d8aee4ad81f
+			</td>
+		</tr>
+		<tr>
+			<th>METHOD</th><td>GET</td>
+		</tr>
+		<tr>
+			<th>DATA PARAMS</th>
+			<td> 
+				: artistId = id d'un artiste <br>
+				: albumId = id d'un album de l'artiste<br>
+                : songId = id d'une musique de l'album<br>
+			</td>
+		</tr>
+		<tr>
+			<th>SUCCESS RESPONSE</th>
+			<td> 
+				Code : 200 <br>
+				Content GET : {
+                "_id": "56d93d84ce06f50c0fed8747",
+                "name": "Metallica",
+                "albums": {
+                "_id": "5714debe25ac0d8aee36b665",
+                "titre": "...And Justice For All",
+                "songs": {
+                "_id": "5714dedb25ac0d8aee4ad81f",
+                "name": "Metallica",
+                "position": 1,
+                "albumTitre": "...And Justice For All",
+                "lengthAlbum": "65:33",
+                "dateSortieAlbum": "1988",
+                "titre": "...And Justice For All",
+                "lyrics": "Halls of justice painted green, money talking...",
+                "urlWikipedia ": "http : //en.wikipedia.org/wiki/...And_Justice_for_All_(song)",
+                "id_album": "5714debe25ac0d8aee36b665"
+                }
+                }
+                }}}}<br>
+			</td>
+		</tr>
+		<tr>
+			<th>ERROR RESPONSE</th>
+			<td> 
+				Code : 404<br>
+				Content GET: [{"error":"Page not found"}]<br>
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+
+
+
+
+
+## search/fulltext/:searchText
 <table>
 	<tbody>
 		<tr>
@@ -284,8 +367,12 @@
 	</tbody>
 </table>
 
-## search/more/:searchText 
 
+
+
+
+
+## search/more/:searchText 
 <table>
 	<tbody>
 		<tr>
@@ -325,4 +412,338 @@
 
 
 
-	
+
+
+
+
+
+
+
+**API REST - CREATEDB (INACTIF EN PRODUCTION)**
+=======
+
+
+
+
+
+
+## createdb/
+<table>
+	<tbody>
+		<tr>
+			<th>Description</th><td>Permet de créer entierement la base de données en allant récupérer les discographies des artistes sur lyrics wikia</td>
+		</tr>
+		<tr>
+			<th>URL</th><td>http://127.0.0.1/createdb
+			</td>
+		</tr>
+		<tr>
+			<th>METHOD</th><td>GET</td>
+		</tr>
+		<tr>
+			<th>SUCCESS RESPONSE</th>
+			<td> 
+				Code : 200 <br>
+				Content GET : { status: "OK" }
+			</td>
+		</tr>
+	</tbody>
+</table>  
+
+
+
+
+
+
+## createdb/add/:urlArtist
+<table>
+	<tbody>
+		<tr>
+			<th>Description</th><td>Permet d'ajouter la discographie d'un artiste dans notre base de données</td>
+		</tr>
+		<tr>
+			<th>URL</th><td>http://127.0.0.1/createdb/add/:urlArtist
+			</td>
+		</tr>
+		<tr>
+			<th>METHOD</th><td>GET</td>
+		</tr>
+        <tr>
+			<th>DATA PARAMS</th>
+			<td> 
+				: urlArtist = urlLyricsWikia de l'artiste à ajouter exemple: pour ce lien http://lyrics.wikia.com/wiki/Linkin_Park , : urlArtist = Linkin_Park ce qui nous donnera le lien suivant : http://127.0.0.1/createdb/add/Linkin_Park<br>
+			</td>
+		</tr>
+		<tr>
+			<th>SUCCESS RESPONSE</th>
+			<td> 
+				Code : 200 <br>
+				Content GET : { status: "OK" }
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+
+
+
+
+
+## createdb/createdbelasticsearchartist
+<table>
+	<tbody>
+		<tr>
+			<th>Description</th><td>Une fois la base de données créees : permet d'insérer les documents de la collection 'artist' demandant une recherche avec autocomplétion dans la base de données elasticsearch</td>
+		</tr>
+		<tr>
+			<th>URL</th><td>http://127.0.0.1/createdb/createdbelasticsearchartist
+			</td>
+		</tr>
+		<tr>
+			<th>METHOD</th><td>GET</td>
+		</tr>
+		<tr>
+			<th>SUCCESS RESPONSE</th>
+			<td> 
+				Code : 200 <br>
+				Content GET : "OK"
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+
+
+
+
+
+## createdb/createdbelasticsearchsong
+<table>
+	<tbody>
+		<tr>
+			<th>Description</th><td>Une fois la base de données créees : permet d'insérer les documents de la collection 'song' demandant une recherche avec autocomplétion dans la base de données elasticsearch</td>
+		</tr>
+		<tr>
+			<th>URL</th><td>http://127.0.0.1/createdb/createdbelasticsearchsong
+			</td>
+		</tr>
+		<tr>
+			<th>METHOD</th><td>GET</td>
+		</tr>
+		<tr>
+			<th>SUCCESS RESPONSE</th>
+			<td> 
+				Code : 200 <br>
+				Content GET : "OK"
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+**API REST - UPDATEDB (INACTIF EN PRODUCTION)**
+=======
+
+
+
+
+
+
+## updatedb/artist
+<table>
+	<tbody>
+		<tr>
+			<th>Description</th><td>Permet de mettre à jour les informations existantes dans la collection 'artist'</td>
+		</tr>
+		<tr>
+			<th>URL</th><td>http://127.0.0.1/updatedb/artist
+			</td>
+		</tr>
+		<tr>
+			<th>METHOD</th><td>GET</td>
+		</tr>
+		<tr>
+			<th>SUCCESS RESPONSE</th>
+			<td> 
+				Code : 200 <br>
+				Content GET : "OK"
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+
+
+
+
+
+## updatedb/update/:artistName
+<table>
+	<tbody>
+		<tr>
+			<th>Description</th><td>Permet de mettre à jour les informations existantes dans la collection 'artist'</td>
+		</tr>
+		<tr>
+			<th>URL</th><td>http://127.0.0.1/updatedb/update/:artistName
+			</td>
+		</tr>
+		<tr>
+			<th>METHOD</th><td>GET</td>
+		</tr>
+        <tr>
+			<th>DATA PARAMS</th>
+			<td> 
+				: artistName = nom de l'artiste dans la base de données<br>
+			</td>
+		</tr>
+		<tr>
+			<th>SUCCESS RESPONSE</th>
+			<td> 
+				Code : 200 <br>
+				Content GET : "OK"
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+**API REST - EXTRACTDBPEDIA (INACTIF EN PRODUCTION)**
+=======
+
+
+
+
+
+
+## extractdbpedia/:collection
+<table>
+	<tbody>
+		<tr>
+			<th>Description</th><td>Une fois la base de données créees : permet de récupérer sur DBpédia les 'artist','album','song' dont le document contient une URL vers Wikipèdia</td>
+		</tr>
+		<tr>
+			<th>URL</th><td>http://127.0.0.1/extractdbpedia/:collection
+			</td>
+		</tr>
+		<tr>
+			<th>METHOD</th><td>GET</td>
+		</tr>
+        <tr>
+			<th>DATA PARAMS</th>
+			<td> 
+				: collection = {artist,album,song}<br>
+			</td>
+		</tr>
+		<tr>
+			<th>SUCCESS RESPONSE</th>
+			<td> 
+				Code : 200 <br>
+				Content GET : "OK"
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+
+
+
+
+
+## extractdbpedia/artist/createfields
+<table>
+	<tbody>
+		<tr>
+			<th>Description</th><td>Après avoir effectué extractdbpedia/artist : permet d'inserer dans notre base de données les informations contenues dans le RDF de chaque artiste</td>
+		</tr>
+		<tr>
+			<th>URL</th><td>http://127.0.0.1/extractdbpedia/artist/createfields
+			</td>
+		</tr>
+		<tr>
+			<th>METHOD</th><td>GET</td>
+		</tr>
+		<tr>
+			<th>SUCCESS RESPONSE</th>
+			<td> 
+				Code : 200 <br>
+				Content GET : "OK"
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+
+
+
+
+
+## extractdbpedia/album/createfields
+<table>
+	<tbody>
+		<tr>
+			<th>Description</th><td>Après avoir effectué extractdbpedia/album : permet d'inserer dans notre base de données les informations contenues dans le RDF de chaque album</td>
+		</tr>
+		<tr>
+			<th>URL</th><td>http://127.0.0.1/extractdbpedia/album/createfields
+			</td>
+		</tr>
+		<tr>
+			<th>METHOD</th><td>GET</td>
+		</tr>
+		<tr>
+			<th>SUCCESS RESPONSE</th>
+			<td> 
+				Code : 200 <br>
+				Content GET : "OK"
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+
+
+
+
+
+## extractdbpedia/song/createfields
+<table>
+	<tbody>
+		<tr>
+			<th>Description</th><td>Après avoir effectué extractdbpedia/song : permet d'inserer dans notre base de données les informations contenues dans le RDF de chaque musiques</td>
+		</tr>
+		<tr>
+			<th>URL</th><td>http://127.0.0.1/extractdbpedia/song/createfields
+			</td>
+		</tr>
+		<tr>
+			<th>METHOD</th><td>GET</td>
+		</tr>
+		<tr>
+			<th>SUCCESS RESPONSE</th>
+			<td> 
+				Code : 200 <br>
+				Content GET : "OK"
+			</td>
+		</tr>
+	</tbody>
+</table>
