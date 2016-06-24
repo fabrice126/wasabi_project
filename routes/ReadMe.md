@@ -8,7 +8,7 @@
 
 
 
-## /search/categorie/:nomCategorie/lettre/:lettre/page/:numPage
+## search/categorie/:nomCategorie/lettre/:lettre/page/:numPage
 <table>
 	<tbody>
 		<tr>
