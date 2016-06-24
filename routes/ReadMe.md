@@ -24,9 +24,9 @@
 		<tr>
 			<th>DATA PARAMS</th>
 			<td> 
-				: nomCategorie = [artists,albums,songs] <br>
-				: lettre = [a-z] [aa-zz] <br>
-				: numPage= [0 - x] <br>
+				: nomCategorie = {artists,albums,songs} <br>
+				: lettre = {a-z} [aa-zz} <br>
+				: numPage= {0 - x} <br>
 			</td>
 		</tr>
 		<tr>
@@ -67,7 +67,7 @@
 		<tr>
 			<th>DATA PARAMS</th>
 			<td> 
-				: collection = [artist,album,song] <br>
+				: collection = {artist,album,song} <br>
 				: categoryName = {Categories présentes sur Wikipèdia}<br>
 			</td>
 		</tr>
@@ -459,10 +459,10 @@
 <table>
 	<tbody>
 		<tr>
-			<th>Description</th><td>Permet d'ajouter la discographie d'un artiste dans notre base de données</td>
+			<th>Description</th><td>Permet d'ajouter la discographie d'un artiste dans notre base de données en allant l'extraire de lyrics wikia</td>
 		</tr>
 		<tr>
-			<th>URL</th><td>http://127.0.0.1/createdb/add/:urlArtist
+			<th>URL</th><td>http://127.0.0.1/createdb/add/Linkin_Park
 			</td>
 		</tr>
 		<tr>
@@ -563,7 +563,7 @@
 <table>
 	<tbody>
 		<tr>
-			<th>Description</th><td>Permet de mettre à jour les informations existantes dans la collection 'artist'</td>
+			<th>Description</th><td>Permet de mettre à jour les informations existantes dans la collection 'artist' en allant faire l'extraction sur lyrics wikia</td>
 		</tr>
 		<tr>
 			<th>URL</th><td>http://127.0.0.1/updatedb/artist
@@ -591,10 +591,10 @@
 <table>
 	<tbody>
 		<tr>
-			<th>Description</th><td>Permet de mettre à jour les informations existantes dans la collection 'artist'</td>
+			<th>Description</th><td>Permet de mettre à jour les informations existantes dans la collection 'artist' en allant faire l'extraction sur lyrics wikia</td>
 		</tr>
 		<tr>
-			<th>URL</th><td>http://127.0.0.1/updatedb/update/:artistName
+			<th>URL</th><td>http://127.0.0.1/updatedb/update/Metallica
 			</td>
 		</tr>
 		<tr>
@@ -642,7 +642,7 @@
 			<th>Description</th><td>Une fois la base de données créees : permet de récupérer sur DBpédia les 'artist','album','song' dont le document contient une URL vers Wikipèdia</td>
 		</tr>
 		<tr>
-			<th>URL</th><td>http://127.0.0.1/extractdbpedia/:collection
+			<th>URL</th><td>http://127.0.0.1/extractdbpedia/artist
 			</td>
 		</tr>
 		<tr>
