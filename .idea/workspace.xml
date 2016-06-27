@@ -4,9 +4,13 @@
     <list default="true" id="33e3a497-95bf-4dc8-a96a-e2948ec227f8" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app.js" afterPath="$PROJECT_DIR$/app.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mongo/request_mongo/constructBDAfterCreate.js" afterPath="$PROJECT_DIR$/mongo/request_mongo/constructBDAfterCreate.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/node_modules/process-nextick-args/index.js" afterPath="$PROJECT_DIR$/node_modules/process-nextick-args/index.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/node_modules/process-nextick-args/package.json" afterPath="$PROJECT_DIR$/node_modules/process-nextick-args/package.json" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/package.json" afterPath="$PROJECT_DIR$/package.json" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/routes/createdb.js" afterPath="$PROJECT_DIR$/routes/createdb.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/routes/handler/elasticSearchHandler.js" afterPath="$PROJECT_DIR$/routes/handler/elasticSearchHandler.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/my_components/page-song.html" afterPath="$PROJECT_DIR$/public/my_components/page-song.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/routes/extractdbpedia.js" afterPath="$PROJECT_DIR$/routes/extractdbpedia.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/routes/handler/dbpediaHandler.js" afterPath="$PROJECT_DIR$/routes/handler/dbpediaHandler.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/routes/handler/searchHandler.js" afterPath="$PROJECT_DIR$/routes/handler/searchHandler.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/routes/search.js" afterPath="$PROJECT_DIR$/routes/search.js" />
     </list>
@@ -29,41 +33,31 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="search.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/routes/search.js">
+      <file leaf-file-name="extractdbpedia.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/routes/extractdbpedia.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="384">
-              <caret line="277" column="52" selection-start-line="277" selection-start-column="52" selection-end-line="277" selection-end-column="52" />
+            <state relative-caret-position="224">
+              <caret line="233" column="54" selection-start-line="233" selection-start-column="54" selection-end-line="233" selection-end-column="54" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="createdb.js" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/routes/createdb.js">
+      <file leaf-file-name="infos_song.js" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/routes/sparql_request/infos_song.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="600">
-              <caret line="67" column="18" selection-start-line="67" selection-start-column="18" selection-end-line="67" selection-end-column="18" />
+            <state relative-caret-position="204">
+              <caret line="12" column="30" selection-start-line="12" selection-start-column="22" selection-end-line="12" selection-end-column="30" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="elasticSearchHandler.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/routes/handler/elasticSearchHandler.js">
+      <file leaf-file-name="dbpediaHandler.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/routes/handler/dbpediaHandler.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="374">
-              <caret line="22" column="17" selection-start-line="22" selection-start-column="17" selection-end-line="29" selection-end-column="17" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="conf.json" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/routes/conf/conf.json">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="476">
-              <caret line="28" column="19" selection-start-line="28" selection-start-column="9" selection-end-line="28" selection-end-column="19" />
+            <state relative-caret-position="292">
+              <caret line="182" column="27" selection-start-line="182" selection-start-column="4" selection-end-line="182" selection-end-column="27" />
               <folding />
             </state>
           </provider>
@@ -80,17 +74,20 @@
         <option value="$PROJECT_DIR$/routes/sparql_request/sameAs_request.js" />
         <option value="$PROJECT_DIR$/routes/sparql_request/redirect_request.js" />
         <option value="$PROJECT_DIR$/routes/sparql_request/sameas_request.js" />
-        <option value="$PROJECT_DIR$/routes/extractdbpedia.js" />
-        <option value="$PROJECT_DIR$/routes/handler/dbpediaHandler.js" />
         <option value="$PROJECT_DIR$/routes/handler/lyricsWikia.js" />
         <option value="$PROJECT_DIR$/routes/conf/conf.json" />
         <option value="$PROJECT_DIR$/public/my_components/carbon-search-input.html" />
-        <option value="$PROJECT_DIR$/package.json" />
-        <option value="$PROJECT_DIR$/app.js" />
         <option value="$PROJECT_DIR$/routes/createdb.js" />
-        <option value="$PROJECT_DIR$/routes/handler/searchHandler.js" />
-        <option value="$PROJECT_DIR$/routes/search.js" />
         <option value="$PROJECT_DIR$/routes/handler/elasticSearchHandler.js" />
+        <option value="$PROJECT_DIR$/public/my_components/page-song.html" />
+        <option value="$PROJECT_DIR$/mongo/request_mongo/ConstructBDAfterCreate.js" />
+        <option value="$PROJECT_DIR$/routes/updatedb.js" />
+        <option value="$PROJECT_DIR$/package.json" />
+        <option value="$PROJECT_DIR$/routes/search.js" />
+        <option value="$PROJECT_DIR$/app.js" />
+        <option value="$PROJECT_DIR$/routes/handler/dbpediaHandler.js" />
+        <option value="$PROJECT_DIR$/routes/handler/searchHandler.js" />
+        <option value="$PROJECT_DIR$/routes/extractdbpedia.js" />
       </list>
     </option>
   </component>
@@ -103,10 +100,10 @@
     <sorting>DEFINITION_ORDER</sorting>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="-8" />
+    <option name="x" value="1912" />
     <option name="y" value="-8" />
-    <option name="width" value="1936" />
-    <option name="height" value="1176" />
+    <option name="width" value="1296" />
+    <option name="height" value="776" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -133,7 +130,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -244,17 +240,14 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="public" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="my_components" />
+              <option name="myItemId" value="mongo" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
         </subPane>
       </pane>
       <pane id="Scratches" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -344,11 +337,14 @@
       <workItem from="1466580582873" duration="11165000" />
       <workItem from="1466605837085" duration="448000" />
       <workItem from="1466666450169" duration="8260000" />
+      <workItem from="1466751395888" duration="10154000" />
+      <workItem from="1467010471693" duration="808000" />
+      <workItem from="1467015505101" duration="16404000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="146449000" />
+    <option name="totallyTimeSpent" value="173815000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -360,14 +356,14 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1176" extended-state="6" />
+    <frame x="1912" y="-8" width="1296" height="776" extended-state="6" />
     <editor active="false" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.13066386" sideWeight="0.4944" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.19713831" sideWeight="0.4944" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32981783" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.10450623" sideWeight="0.50842994" order="0" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.16951789" sideWeight="0.5158982" order="0" side_tool="true" content_ui="tabs" />
       <window_info id="npm" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.1938883" sideWeight="0.5052356" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.10450623" sideWeight="0.4915701" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.16951789" sideWeight="0.48410174" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24973656" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.11888783" sideWeight="0.49578503" order="1" side_tool="false" content_ui="tabs" />
@@ -401,19 +397,10 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/routes/search.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/routes/handler/searchHandler.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="748">
           <caret line="44" column="0" selection-start-line="44" selection-start-column="0" selection-end-line="44" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -429,47 +416,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="731">
           <caret line="43" column="28" selection-start-line="43" selection-start-column="28" selection-end-line="43" selection-end-column="28" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/routes/conf/conf.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="476">
-          <caret line="28" column="19" selection-start-line="28" selection-start-column="9" selection-end-line="28" selection-end-column="19" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/routes/search.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/routes/handler/searchHandler.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="748">
-          <caret line="44" column="0" selection-start-line="44" selection-start-column="0" selection-end-line="44" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/routes/createdb.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1462">
-          <caret line="86" column="75" selection-start-line="86" selection-start-column="75" selection-end-line="86" selection-end-column="75" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/routes/handler/elasticSearchHandler.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="731">
-          <caret line="43" column="28" selection-start-line="43" selection-start-column="28" selection-end-line="43" selection-end-column="28" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -493,7 +439,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="816">
           <caret line="48" column="47" selection-start-line="48" selection-start-column="47" selection-end-line="48" selection-end-column="47" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -509,7 +454,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -533,7 +477,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -693,20 +636,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/routes/extractdbpedia.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4369">
-          <caret line="257" column="36" selection-start-line="257" selection-start-column="36" selection-end-line="257" selection-end-column="36" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/routes/handler/dbpediaHandler.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1785">
-          <caret line="15" column="47" selection-start-line="15" selection-start-column="47" selection-end-line="15" selection-end-column="47" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/routes/handler/lyricsWikia.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="7803">
@@ -721,6 +650,13 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/routes/handler/elasticSearchHandler.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="374">
+          <caret line="22" column="17" selection-start-line="22" selection-start-column="17" selection-end-line="29" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/routes/conf/conf.json">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="476">
@@ -729,50 +665,112 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/mongo/request_mongo/ConstructBDAfterCreate.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="425">
+          <caret line="25" column="39" selection-start-line="25" selection-start-column="39" selection-end-line="25" selection-end-column="39" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/routes/updatedb.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1377">
+          <caret line="81" column="42" selection-start-line="81" selection-start-column="42" selection-end-line="81" selection-end-column="42" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/package.json">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="493">
-          <caret line="29" column="2" selection-start-line="29" selection-start-column="2" selection-end-line="29" selection-end-column="2" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
-          <caret line="14" column="99" selection-start-line="14" selection-start-column="99" selection-end-line="14" selection-end-column="99" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/routes/handler/searchHandler.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="741">
-          <caret line="56" column="12" selection-start-line="56" selection-start-column="8" selection-end-line="56" selection-end-column="12" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/routes/search.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="384">
-          <caret line="277" column="52" selection-start-line="277" selection-start-column="52" selection-end-line="277" selection-end-column="52" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/routes/handler/elasticSearchHandler.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="374">
-          <caret line="22" column="17" selection-start-line="22" selection-start-column="17" selection-end-line="29" selection-end-column="17" />
+        <state relative-caret-position="544">
+          <caret line="32" column="0" selection-start-line="32" selection-start-column="0" selection-end-line="32" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/routes/createdb.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="600">
-          <caret line="67" column="18" selection-start-line="67" selection-start-column="18" selection-end-line="67" selection-end-column="18" />
+        <state relative-caret-position="-102">
+          <caret line="19" column="27" selection-start-line="19" selection-start-column="18" selection-end-line="19" selection-end-column="27" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/my_components/page-song.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="460">
+          <caret line="208" column="48" selection-start-line="208" selection-start-column="48" selection-end-line="208" selection-end-column="48" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="673">
+          <caret line="48" column="0" selection-start-line="48" selection-start-column="0" selection-end-line="48" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/routes/handler/searchHandler.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="787">
+          <caret line="58" column="0" selection-start-line="58" selection-start-column="0" selection-end-line="58" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/routes/handler/dbpediaHandler.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="292">
+          <caret line="182" column="27" selection-start-line="182" selection-start-column="4" selection-end-line="182" selection-end-column="27" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/routes/search.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="292">
+          <caret line="185" column="37" selection-start-line="185" selection-start-column="35" selection-end-line="185" selection-end-column="37" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/mongo/sparql/sparql_album_data.rq">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="306">
+          <caret line="18" column="39" selection-start-line="18" selection-start-column="39" selection-end-line="18" selection-end-column="39" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/routes/sparql_request/infos_artist.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="295">
+          <caret line="23" column="27" selection-start-line="23" selection-start-column="7" selection-end-line="23" selection-end-column="27" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/routes/sparql_request/infos_album.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="380">
+          <caret line="30" column="13" selection-start-line="30" selection-start-column="13" selection-end-line="30" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/routes/extractdbpedia.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="224">
+          <caret line="233" column="54" selection-start-line="233" selection-start-column="54" selection-end-line="233" selection-end-column="54" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/routes/sparql_request/infos_song.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="204">
+          <caret line="12" column="30" selection-start-line="12" selection-start-column="22" selection-end-line="12" selection-end-column="30" />
           <folding />
         </state>
       </provider>

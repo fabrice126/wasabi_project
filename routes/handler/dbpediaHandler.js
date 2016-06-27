@@ -196,7 +196,6 @@ var mergeRDFAndDBProperties = function(objArtist){
     else{
 
     }
-    console.log(objArtist.activeYears+" = "+objArtist.activeYears.length);
     //On supprime les propriétés qui ont été merges
     delete objArtist.activeYearsStartYear;    
     return objArtist;
@@ -218,7 +217,6 @@ var extractInfosFromRDF = function(description,property){
         //On va itérer sur les champs de la variable property
         for(var j = 0;j<description[property].length;j++){
             //Traitement des champs RDF de type tableau d'objets
-
             if(typeof description[property][j]['_'] === "undefined"){
                 var resourceDbpedia = description[property][j]['$']['rdf:resource'];
                 var subStr = "dbpedia.org/resource/";
@@ -227,10 +225,9 @@ var extractInfosFromRDF = function(description,property){
                 //exemple : splitInfo = The_Rolling_Stones
                 if(property.endsWith('subject')){// property == 'dct:subject'
                     //Les subjects ont cette forme : Category:Songs_written_by_James_Hetfield, on supprime dont "Category:"
-                    
                     tInfos.push(splitInfo.substring(splitInfo.indexOf(':')+1).replace(/_/g," "));
                 }
-                else if (property.endsWith('associatedMusicalArtist')){//property == 'dbo:associatedMusicalArtist'
+                else if (property.endsWith('associatedMusicalArtist')){
                     tInfos.push(splitInfo);
                 }
                 else{
@@ -241,7 +238,6 @@ var extractInfosFromRDF = function(description,property){
             else{
                 //Le champs abstract ne doit pas être un tableau
                 if(property.endsWith('abstract') || property.endsWith('birthDate') || property.endsWith('birthName') || property.endsWith('label')){
-                    //property == 'dbo:abstract' || property == 'dbo:birthDate' || property == 'dbp:birthName' || property == 'rdfs:label'
                     tInfos = '';
 //                    console.log(property+": "+description[property][j]['_']);
                     tInfos = description[property][j]['_'];

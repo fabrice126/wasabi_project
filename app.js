@@ -11,11 +11,12 @@ var escapeHTML      = require('escape-html');
 var errorHandler    = require('errorhandler');
 var basicAuth       = require('basic-auth-connect');
 var elasticsearch   = require('elasticsearch');
+var sanitizeHtml    = require('sanitize-html');
 var db              = require('mongoskin').db(config.database.mongodb_connect);
 var elasticsearchClient = new elasticsearch.Client({ host: config.database.elasticsearch_connect});
 var search          = require('./routes/search');
-var createdb        = require('./routes/createdb');
-//var updatedb        = require('./routes/updatedb');
+// var createdb        = require('./routes/createdb');
+// var updatedb        = require('./routes/updatedb');
 var extractdbpedia  = require('./routes/extractdbpedia');
 
 
@@ -34,6 +35,7 @@ app.use(cookieParser());
 app.use(basicAuth('michel', 'michelbuffa'));
 app.use(function(req,res,next){
     req.db = db;
+    req.sanitize = sanitizeHtml;
     req.escapeHTML = escapeHTML;
     req.elasticsearchClient = elasticsearchClient;
     next();
@@ -41,8 +43,8 @@ app.use(function(req,res,next){
 app.use('/',express.static(path.join(__dirname, 'public')));
 app.use('/search', search);
 //Permet d'utiliser les fonctions de créations et updates de la base de données
-app.use('/createdb', createdb);
-//app.use('/updatedb', updatedb);
+// app.use('/createdb', createdb);
+// app.use('/updatedb', updatedb);
 app.use('/extractdbpedia', extractdbpedia);
 
 // catch 404 and forward to error handler

@@ -137,7 +137,7 @@ router.get('/artist/:artistName', function (req, res) {
                 (function(album){
                     db.collection(config.database.collection_song).find({"id_album":album._id},{"position":1,"titre":1}).sort( { "position": 1} ).toArray(function(err,songs){
                         if (err) throw err;
-                        
+
                         //On construit le tableau songs afin d'y ajouter les infos des musiques
                         album.songs = songs;
                         cnt++;
@@ -145,7 +145,7 @@ router.get('/artist/:artistName', function (req, res) {
                     });
                 })(artist.albums[i]);
             }
-        })                             
+        })
     });
 });
 //==========================================================================================================================\\
@@ -178,26 +178,26 @@ router.get('/artist/:artistName/album/:albumName', function (req, res) {
 //PUT ALBUM PAR ID D'ABUM ET DE MUSIQUE
 router.put('/artist/:artistName/album/:albumName', function (req, res) {
     var db = req.db;
-    var albumName= req.params.albumName;
-    var artistName = req.params.artistName;
     var albumBody = req.body;
+    var albumTitre = albumBody.titre.trim();
     //FUTURE Si un album n'a pas encore d'attribut songs. Peut se produire lors de l'ajout d'un album
     for(var j=0;j<albumBody.songs.length;j++){
         //On change le titre de l'album contenu dans les documents musiques
-        //l'attribut albumTitre est utile pour générer la recherche d'une musique
-        albumBody.songs[j].albumTitre = albumBody.titre; 
+        albumBody.songs[j].albumTitre = albumTitre;
+        albumBody.songs[j].titre = albumBody.songs[j].titre.trim();
         var idSong = albumBody.songs[j]._id;
         // On supprime l'id car mongodb lance un avertissement si ce champ n'est pas supprimé (_id est immutable pas d'update possible)
-        delete albumBody.songs[j]._id;         
+        delete albumBody.songs[j]._id;
         delete albumBody.songs[j].id_album;
         db.collection(config.database.collection_song).update( { _id: new ObjectId(idSong) },{ $set: albumBody.songs[j] } );
     }
+    console.log(albumBody.songs);
     //On supprime le champ songs car il n'éxiste pas dans la collection album
     delete albumBody.songs;     //FUTURE Si un album n'a pas encore d'attribut songs. Peut se produire lors de l'ajout d'un album
     var idAlbum = albumBody._id;
     // On supprime l'id car mongodb lance un avertissement si ce champ n'est pas supprimé (_id est immutable pas d'update possible)
-    delete albumBody._id; 
-    delete albumBody.id_artist; 
+    delete albumBody._id;
+    delete albumBody.id_artist;
     db.collection(config.database.collection_album).update( { _id: new ObjectId(idAlbum) },{ $set: albumBody } );
     res.send("OK");
 });
@@ -246,13 +246,14 @@ router.get('/artist_id/:artistId/album_id/:albumId/song_id/:songsId', function (
                 res.send(JSON.stringify(artist));
             });
         });
-        
     });
 });
 //PUT SONG OBJECT
 router.put('/artist/:artistName/album/:albumName/song/:songsName',function(req,res){
     var db = req.db;
     var songBody = req.body;
+    // req.params.artistName.replace(/\\n|\\r|\\r\\n|(<((?!br)[^>]+)>)/ig,"").trim();
+
     //On récupére l'id de la musique afin de modifier l'objet en base de données
     var idSong = songBody._id;
     //!\ Il faut supprimer les attributs qui sont de type objectId dans notre base car songBody les récupéres en string
@@ -282,17 +283,17 @@ router.get('/fulltext/:searchText', function (req, res) {
     });
 });
 router.get('/more/:searchText', function (req, res) {
-    var searchText = elasticSearchHandler.escapeElasticSearch(req.params.searchText);// escape les chars spéciaux:+-= && || ><!(){}[]^"~*?:\/
+    var searchText = elasticSearchHandler.escapeElasticSearch(req.params.searchText);
     var maxinfo = config.request.limit; //200 élements doivent apparaitre dans l'autocomplétion de recherche
     var maxinfoselected = maxinfo/2;
-    var queryAutocomplete = {"artist": {"text": searchText, "completion": {"field": "name", "size": maxinfo}}}
-    var query = {"query": {"bool": {"should": [ {"query_string": {"default_field": "_all","query": searchText}}]}},"size": maxinfo};
+    var queryArtist =   { "query": { "query_string" : {"default_field": "name","query": searchText}},"size": maxinfo};
+    var querySong =     { "query": { "query_string" : {"query": searchText,"fields":["titre^4","name^2","albumTitre"]}},"size": maxinfo};
     var start = Date.now();
-    searchHandler.fullTextQuery(req,maxinfo,query,queryAutocomplete,maxinfoselected).then(function(resp) {
-        console.log("                       more fullTextQuery time ="+ (Date.now() - start));
+    searchHandler.fullTextQuery(req,maxinfo,queryArtist,querySong,maxinfoselected).then(function(resp) {
+        console.log("                       fulltext fullTextQuery time ="+ (Date.now() - start));
         res.send(resp);
-    }).catch(function() { 
-        res.send(resp);
+    }).catch(function(err) {
+        res.send(err);
     });
 });
 

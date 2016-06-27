@@ -159,7 +159,7 @@
 	    	value: false	
     	}
     },
-    ready: function(){   
+    ready: function(){
         //Fonction permettant de réagir a un coller dans la zone prévu pour les lyrics
         this.$.songLyricsEditable.addEventListener("paste", function(e) {
             e.preventDefault();
@@ -207,6 +207,7 @@
             //On supprime ensuite les retours chariots et les autres tags HTML de l'utilisateur
             this.$.songLyricsNonEditable.innerHTML = this.$.songLyricsEditable.innerHTML.replace(/<div>|<p>/ig,"<br>").replace(/\\n|\\r|\\r\\n|(<((?!br)[^>]+)>)/ig,"");
             //Construction du body pour l'envoie
+            this.artist.albums.songs.lyrics = this.$.songLyricsNonEditable.innerHTML;
             this.$.put_content.body = JSON.stringify(this.artist.albums.songs);
             //Construction de la requête
             this.$.put_content.url = "/search/artist/"+this._encodeUri(this.artist.name)+"/album/"+this._encodeUri(this.artist.albums.titre)+"/song/"+this._encodeUri(this.artist.albums.songs.titre);

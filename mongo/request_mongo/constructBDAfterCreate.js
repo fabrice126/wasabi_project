@@ -48,12 +48,10 @@ db.getCollection('song').createIndex({ name: 1});
 db.getCollection('song').createIndex({ albumTitre: 1}); 
 db.getCollection('song').createIndex({ titre: 1}); 
 db.getCollection('song').createIndex({ position: 1}); 
-db.getCollection('song').createIndex({ titre: "text",name: "text", albumTitre: "text"},{weights: {titre: 15, name: 5 ,albumTitre:2}});
 
          
 //suppression du champ albums dans la collection artist      
 db.getCollection('artist').update({},{$unset: {albums:1}},false,true);
 //create index pour la collection artist
-db.getCollection('artist').createIndex({ name: 1});  
-db.getCollection('artist').createIndex({ name: "text"});
+db.getCollection('artist').createIndex({ name: 1}, { unique: true });
 db.getCollection('artist').createIndex({ urlWikipedia:1});

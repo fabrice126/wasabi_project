@@ -11,6 +11,7 @@ var constructData = function (field, tParamToFind) {
     return tObjectRequest;
 };
 
+
 //Fonction permettant d'optimiser le find de mongodb. En utilisant: /^AB/ /^Ab/ /^aB/ /^ab/ cela utilise l'index contrairement à lieu /^AB/i qui n'utilise pas l'index
 var optimizeFind = function(lettre){
     var tParamToFind = [];

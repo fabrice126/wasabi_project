@@ -23,12 +23,9 @@ router.get('/:collection',function(req, res){
     (function getRequestLoop(loop){
         if(loop){
 //            var objRequest = {$and:[{urlWikipedia:{$ne:""}},{$where: "this.rdf.length <200"}]};//Permet d'avoir les documents n'ayant pas d'informations dans le RDF
-//             var objRequest = {$and:[{ urlWikipedia:{$ne:""} },{$where:'this.locationInfo[0] == "France"'}]};
-           var objRequest = {urlWikipedia:{$ne:""}}; // permet de mettre a jour le RDF de la base de données
-//            var objRequest = {name:"Akhenaton"}; // permet d'avoir un document
+           var objRequest = {$and:[{urlWikipedia:{$ne:""}},{rdf:{$exists:false}}]}; // permet de créer le RDF
             var objProjection = {_id:1,urlWikipedia:1,name:1,locationInfo:1};
             var limit = 10000;
-
             //find sur les artistes / albums / musiques
             db.collection(collection).find(objRequest,objProjection).limit(limit).toArray(function(err,tObjCollection){
                 //il y a moins d'objet dans la collection recherché que la limit donc on arrive à la fin
@@ -87,9 +84,9 @@ router.get('/:collection',function(req, res){
                                             if(i < tObjCollection.length-1){
                                                 i++;
                                                 //On attend avant l'envoie de la prochaine requête -> évite de se faire bannir
-                                                // setTimeout(function(){
+                                                setTimeout(function(){
                                                     tObjCollectionLoop(i);
-                                                // }, Math.floor((Math.random() * 100)+100));
+                                                }, Math.floor((Math.random() * 100)+100));
                                             }
                                             else{
                                                 console.log("===========================NEXT LIMIT : getRequestLoop = "+loop+"===========================");
@@ -232,7 +229,45 @@ router.get('/artist/createfields',function(req, res){
 
 //TODO
 router.get('/album/createfields',function(req, res){
-        var db = req.db;
+    var db = req.db;
+    //Propriété présent dans le RDF et dont nous avons besoin pour accèder a l'objet musique crée par parseString
+    var rdfProperties = [   'abstract','artist','genre','producer','recordDate','recordLabel','releaseDate','runtime','subject','award','studio',
+                            'abstract','associatedMusicalArtist','recordLabel','subject','artist','occupation'];
+    // db.collection('album').find({$and:[{titre:"Help!"},{name:"The Beatles"}]},{wordCount:0}).toArray(function(err,tObjAlbum){
+    db.collection('album').find({$and:[{rdf:{$ne:""}},{rdf:{$exists:true}}]},{wordCount:0, lyrics:0}).toArray(function(err,tObjAlbum){
+        console.log('En cours de traitement ...');
+        for(var i = 0; i<tObjAlbum.length;i++){
+            //Pour chaque musique contenant du RDF valide
+            if(tObjAlbum[i].rdf.length>200){
+                //Transformation du RDF en un objet JSON
+                parseString(tObjAlbum[i].rdf, function (err, result) {
+                    //Si le document est bien parsé il contiendra 'rdf:Description', correspondant à la ou les pages DBpédia ayant servi pour l'extraction des données
+                    //Par exemple lors de l'extraction d'un album l'extraction se fera sur la page contenant des informations sur l'albums mais aussi sur la/les page(s) correspondant au(x) producteur(s) de l'album
+                    if(result != null && typeof result['rdf:RDF']['rdf:Description'] !== "undefined"){
+                        console.log(result['rdf:RDF']['rdf:Description'].length);
+                        for(var k = 0;k<result['rdf:RDF']['rdf:Description'].length;k++){
+                            var description = result['rdf:RDF']['rdf:Description'][k];
+                            //Pour chaque propriété on récupére les données de l'objet musique représentant le RDF
+                            for(var j = 0;j<rdfProperties.length;j++){
+                                var currProperty = rdfProperties[j];
+                                //On va extraire le contenu de chaque propriété afin d'ajouter à l'objet tObjAlbum[i] les nouvelles propriétés
+                                tObjAlbum[i][currProperty] = dbpediaHandler.extractInfosFromRDF(description,currProperty);
+                                console.log(currProperty);
+                                console.log(tObjAlbum[i][currProperty])
+                            }
+                            console.log('\n\n\n')
+                        }
+                        console.log('\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')
+                        // db.collection('song').update({_id : new ObjectId(tObjAlbum[i]._id)}, { $set: tObjAlbum[i] },function(err,result) {
+                        //     if (err) throw err;
+                        // });
+                    }
+                });
+            }
+        }
+        console.log('Fin du traitement');
+    });
+    res.send("OK");
 });
 
 router.get('/song/createfields',function(req, res){
