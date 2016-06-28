@@ -10,7 +10,7 @@ html{
     width: 50%;
     margin: auto;
     margin-top: 5%;
-    min-width: 488px;
+    min-width: 345px;
 }
 paper-material{
     background-color: white;
