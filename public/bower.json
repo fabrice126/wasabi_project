@@ -63,7 +63,8 @@
     "paper-shadow": "Polymer/paper-shadow#^0.3.0",
     "paper-tabs": "PolymerElements/paper-tabs#~1.2.4",
     "paper-toolbar": "PolymerElements/paper-toolbar#~1.1.2",
-    "pushstate-anchor": "~0.3.2"
+    "pushstate-anchor": "~0.3.2",
+    "google-youtube": "GoogleWebComponents/google-youtube#^1.2.1"
   },
   "resolutions": {
     "polymer": "^1.2.4"

@@ -12,7 +12,7 @@ var lngDetector = new LanguageDetect();
 var getInfosDbpedia = function(obj,sparqlRequest,urlEndpoint){
     var failRequest = 0;
     var failEncode = false;
-    var promise = new Promise(function(resolve, reject) { 
+    var promise = new Promise(function(resolve, reject) {
         (function getInfos(obj,sparqlRequest,urlEndpoint ,failRequest,failEncode){
             var requestdbpedia = checkURLEncode(failEncode,urlEndpoint,sparqlRequest,"&format=application%2Frdf%2Bxml&timeout=60000");
 //            console.log(requestdbpedia);
@@ -55,6 +55,7 @@ chose non réalisée avec une requête ajax. Cette fonction permet donc de retro
 var getRedirectionOfDbpedia = function(obj,sparqlRedirect,urlEndpoint,objUrl){
     var failRequest = 0;
     var failEncode = false;
+
     var promise = new Promise(function(resolve, reject) { 
         //Pour passer les parametres à la promise suivante
         var objRedirect = {obj:obj, redirectTo:"",urlEndpoint : urlEndpoint,objUrl:objUrl};
@@ -65,6 +66,7 @@ var getRedirectionOfDbpedia = function(obj,sparqlRedirect,urlEndpoint,objUrl){
                 if (!err && resp.statusCode == 200) {
                     try{
                         var jsonBody = JSON.parse(body);
+                        //Si le resultat est undefined c'est : soit qu'il n'y a pas de redirection, soit que l'encodage a fait échouer la requete
                         if(typeof jsonBody.results.bindings[0] !== "undefined"){
                             objRedirect.redirectTo = jsonBody.results.bindings[0].redirect.value;
                             console.log("\nREDIRECT TO = "+objRedirect.redirectTo);
@@ -72,6 +74,8 @@ var getRedirectionOfDbpedia = function(obj,sparqlRedirect,urlEndpoint,objUrl){
                             objRedirect.objUrl.urlDbpedia = objRedirect.redirectTo.split(urlDbpediaToSplit)[1];
                             failEncode = true;
                         }
+                        //Si la condition au dessus n'est pas undefined on ne relance pas la requête avec un autre encodage
+                        //Sinon on relance la requête afin d'être certain que le résultat est undefined car il n'y a pas de redirection. On vérifira donc que l'encodage est le bon
                         if(!failEncode){
                             failEncode = true;
                             getInfos(objRedirect,sparqlRedirect ,failRequest,failEncode);
@@ -79,7 +83,11 @@ var getRedirectionOfDbpedia = function(obj,sparqlRedirect,urlEndpoint,objUrl){
                         else{
                             resolve(objRedirect);
                         }
-                    }catch(e){console.log(e); }//Ne pas traiter le resolve dans un finally
+                    }catch(e){
+                        console.log("err parse getRedirectionOfDbpedia");
+                        console.log(e);
+                        resolve(objRedirect);
+                    }//Ne pas traiter le resolve dans un finally
                 }
                 else{
                     if(failRequest <2){
@@ -147,7 +155,6 @@ var checkURLEncode = function(failEncode,urlEndpoint,sparqlRequest,paramRequest)
     if(!failEncode){
         requestdbpedia = urlEndpoint+encodeURIComponent(sparqlRequest)+paramRequest;
     }else{
-        console.log("===== FAILENCODE REDO REQUEST=====")
         requestdbpedia = urlEndpoint+fixedEncodeURIComponent(sparqlRequest)+paramRequest;
     }
     return requestdbpedia;
@@ -169,7 +176,7 @@ var constructExtractionRequest = function(collection,objRedirect){
 var getCountryOfEndpoint = function(country){
     var objCountry = {country:'',countryLang:''};
     //Si les sparql endpoint des pays n'existe pas on envoie la requete sur le endpoint anglais c'est a dire un endpoint sans préfix
-    if(country=='' || country =='en.' || country =='fi.' || country =='no.' || country =='ja.' || country =='sv.' || country =='tr.' || country =='pt.' || country =='af.' || country =='al.' || country =='da.' || country =='cz.' || country =='ms.' || country =='lt.' || country =='hu.' ){
+    if(country=='' || country =='en.' || country =='fi.' || country =='no.' || country =='ja.' || country =='sv.' || country =='tr.' || country =='bg.' || country =='pt.' || country =='af.' || country =='al.' || country =='da.' || country =='cz.' || country =='ms.' || country =='lt.' || country =='hu.' ){
         objCountry.countryLang = "en";
         objCountry.country = '';
     }
@@ -252,7 +259,19 @@ var extractInfosFromRDF = function(description,property){
     return tInfos;
 };
 /*
- *  Retourne un objet .Exemple d'un objet pouvant être crée {country: "it.", urlDbpedia: "Adriano_Celentano",fillIfFr:"fr.", sameAs:""}
+ * Cette fonction est utilisé en cas de redirection, elle permet de mettre a jour l'url Wikipédia obsolète de notre bdd
+ * Retourne la nouvelle URL vers wikipédia
+ * exemple : http://pl.dbpedia.org/resource/Varran_Strikes_Back_-_Alive deviendra http://en.wikipedia.org/wiki/pl:Varran_Strikes_Back_-_Alive!!!
+ */
+var constructNewURLWikipedia = function (urlWikipedia,urlWikipediaToSplit) {
+    var str = urlWikipedia.replace("http://",'');
+    var res = str.split("dbpedia.org/resource/");
+    var newUrlWikipedia = urlWikipediaToSplit+res[0].replace('.',':')+res[1];
+    return newUrlWikipedia;
+};
+/*
+ *  Retourne un objet. Exemple d'un objet pouvant être retourné {country: "it.", urlDbpedia: "Adriano_Celentano",fillIfFr:"fr.", sameAs:""}
+ *  Un traitement spécial est appliqué si artistLocation est un objet appartenant a un artiste francais
  *  PARAM 1 : string, urlWikipédia de l'objet
  *  PARAM 2 : object, objet artiste contenant la localisation de l'artiste et son urlWikipédia
  *  PARAM 3 : string, chaine a couper afin d'avoir le prefix  permettant"http://en.wikipedia.org/wiki/"
@@ -280,7 +299,7 @@ var extractInfosFromURL = function(url,artistLocation,urlToSplit){
             objUrl.urlDbpedia = tUrl[1];
         }
         //Demande spécifique afin d'aller chercher les artistes français dans le DBpédia français
-        //On recherche les artistes/albums/musiques francais n'ayant pas de liens vers DBpédia fr mais vers un autre dbpédia (anglais par exemple)
+        //On recherche les artistes/albums/musiques francais n'ayant pas de liens vers DBpédia fr afin de réparer cette anomalie et de rediriger vers le dbpédia fr le lien
         if(artistLocation != "" && typeof artistLocation.locationInfo[0] != "undefined" && artistLocation.locationInfo[0] == "France" && !url.startsWith(urlToSplit+"fr:")){
             //Si indique qu'on veut chercher dans le dbpédia fr
             objUrl.fillIfFr = "fr.";
@@ -336,3 +355,4 @@ exports.getCountryOfEndpoint        = getCountryOfEndpoint;
 exports.fixedEncodeURIComponent     = fixedEncodeURIComponent;
 exports.constructExtractionRequest  = constructExtractionRequest;
 exports.getSameAsOfDbpedia          = getSameAsOfDbpedia;
+exports.constructNewURLWikipedia    = constructNewURLWikipedia;
