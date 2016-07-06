@@ -248,48 +248,49 @@
             type: Number,
         }
     },
-    ready: function(){    
-            for(var i = 0;i<this.categories.length;i++){
-                if(document.location.href.search(this.categories[i])!=-1){
-                    this.idxCurrentTab = i; 
-                }
-            }
-            //Lorsqu'on clique sur paperTabsCategorie l'event iron-select est envoyé
-            this.$.paperTabsCategorie.addEventListener('iron-select', function(e) { 
-                var tabs = this.$.paperTabsCategorie;
-                var pages = this.$.iron_alphabet;
-                pages.selected = tabs.selected;
-            }.bind(this));  
+    ready: function(){
+        this.checkUrlCategorie();
+        //Lorsqu'on clique sur paperTabsCategorie l'event iron-select est envoyé
+        this.$.paperTabsCategorie.addEventListener('iron-select', function(e) {
+            var tabs = this.$.paperTabsCategorie;
+            var pages = this.$.iron_alphabet;
+            pages.selected = tabs.selected;
+        }.bind(this));
     },
-
-      doLoadCategorie:function(e){
-          window.location.href = e.target.id;
-      },
-      currentLetter:function(letter){
-          var currLetter;
-          if(letter.length>1){
-              currLetter = letter[0];
-          }else{
-              currLetter = letter;
-          }
-          return currLetter;
-      },
-        //fonction vérifiant si le numéro de la page est bien un nombre
-      _checkUrlParams:function(lettre,numPage){
-            var urlParamValid = false;
-            var numPage = parseInt(numPage);
-            if(Number.isInteger(numPage) && numPage>=0){
-                urlParamValid = true;
-            }
-            return urlParamValid;
-      },
-        //fonction comptant le nombre d'occurences commençant par une certaine lettre
-      _getNbCount:function(infosData){
-            if(this._isData(infosData)){
-                return infosData.nbcount;
-            }
-            return 0;
-      },
+    //fonction vérifiant l'url afin de mettre en highlight le bon onglet de la tab lors du chargement de la page
+    checkUrlCategorie:function(){
+        for(var i = 0;i<this.categories.length;i++){
+            if(document.location.href.search(this.categories[i])!=-1){ this.idxCurrentTab = i;}
+        }
+    },
+    doLoadCategorie:function(e){
+        window.location.href = e.target.id;
+    },
+    currentLetter:function(letter){
+        var currLetter;
+        if(letter.length>1){
+            currLetter = letter[0];
+        }else{
+            currLetter = letter;
+        }
+        return currLetter;
+    },
+    //fonction vérifiant si le numéro de la page est bien un nombre
+    _checkUrlParams:function(lettre,numPage){
+        var urlParamValid = false;
+        var numPage = parseInt(numPage);
+        if(Number.isInteger(numPage) && numPage>=0){
+            urlParamValid = true;
+        }
+        return urlParamValid;
+    },
+    //fonction comptant le nombre d'occurences commençant par une certaine lettre
+    _getNbCount:function(infosData){
+        if(this._isData(infosData)){
+            return infosData.nbcount;
+        }
+        return 0;
+    },
       //fonction vérifiant si oui ou non il y a des données
     _isData:function(infosData){
         return Boolean(infosData);

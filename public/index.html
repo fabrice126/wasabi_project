@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html>
 	<head>
 	<meta charset="utf-8">
@@ -10,7 +9,6 @@
         <link href="stylesheets/style.css" rel="stylesheet" type="text/css"  media="screen" >
         <!--Regroupe le code permettant la creation de webcomponent -->
         <script src="bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
-        <!--<link rel="import" href="/bower_components/iron-flex-layout/iron-flex-layout-classes.html" >--> <!--2 requests-->
         <link href="bower_components/app-router/app-router.html" rel="import">
         <link href="my_components/nav-bar.html" rel="import" >
         <style is="custom-style" include="iron-flex" ></style>
@@ -30,7 +28,6 @@
                 <div> 
                     Slider/Drawer content... 
                 </div>
-            </paper-header-panel>
 -->
 <!--            <paper-header-panel main class="flex">-->
                 <nav-bar></nav-bar>
@@ -52,6 +49,8 @@
                         <app-route path="/search/category/:collection/:categoryName"  onUrlChange="updateModel" import="my_components/page-category.html"></app-route>
                         <!--Page more contenant plus de résultats de recherche-->
                         <app-route path="/search/more/:searchText"  onUrlChange="updateModel" import="my_components/page-search.html"></app-route>
+                        <!--<app-route path="public/my_components/MT5"  onUrlChange="updateModel" import="my_components/MT5/index.html"></app-route>-->
+
                         <!--Lorsqu'une mauvaise URL est saisie-->
                         <app-route path="*" onUrlChange="updateModel" import="my_components/page-404.html"></app-route>
                     </app-router>
@@ -60,5 +59,4 @@
 <!--        </paper-drawer-panel>-->
 <!--	<todo-app></todo-app>-->
 	</body>
-
 </html>

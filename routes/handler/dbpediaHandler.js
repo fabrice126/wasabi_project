@@ -277,33 +277,33 @@ var constructNewURLWikipedia = function (urlWikipedia,urlWikipediaToSplit) {
  *  PARAM 3 : string, chaine a couper afin d'avoir le prefix  permettant"http://en.wikipedia.org/wiki/"
  */
 var extractInfosFromURL = function(url,artistLocation,urlToSplit){
-        var tUrl = url.split(urlToSplit);
-        //certaine url sont de type : de:Adoro avec "de:" désignant le wikipedia allemand, il faut donc faire la redirection sur le endpoint allemand de dbpedia
-        var objUrl = {};
-        objUrl.country = '';
-        objUrl.urlDbpedia = '';
-        objUrl.fillIfFr = '';
-        objUrl.sameAs = '';
-        //Si tUrl[1] de forme: "it:Adriano_Celentano"
-        if(/^[a-z]{2}:/.test(tUrl[1])){
-            //On obtient le tableau suivant :urlDetail = ["it","Adriano_Celentano"]
-            var urlDetail  = tUrl[1].split(":");
-            objUrl.urlDbpedia = urlDetail[1];
-            //certain nom d'artiste commence par '_' -> _Un_Artist on supprime donc ce char
-            if(objUrl.urlDbpedia[0] =='_'){
-                objUrl.urlDbpedia = objUrl.urlDbpedia.substr(1);
-            }
-            objUrl.country = urlDetail[0]+".";
+    var tUrl = url.split(urlToSplit);
+    //certaine url sont de type : de:Adoro avec "de:" désignant le wikipedia allemand, il faut donc faire la redirection sur le endpoint allemand de dbpedia
+    var objUrl = {};
+    objUrl.country = '';
+    objUrl.urlDbpedia = '';
+    objUrl.fillIfFr = '';
+    objUrl.sameAs = '';
+    //Si tUrl[1] de forme: "it:Adriano_Celentano"
+    if(/^[a-z]{2}:/.test(tUrl[1]) && tUrl[1].length>3){
+        //On obtient le tableau suivant :urlDetail = ["it","Adriano_Celentano"]
+        var urlDetail  = tUrl[1].split(/:(.+)?/);// on split au premier ':'
+        objUrl.urlDbpedia = urlDetail[1];
+        //certain nom d'artiste commence par '_' -> _Un_Artist on supprime donc ce char
+        if(objUrl.urlDbpedia[0] =='_'){
+            objUrl.urlDbpedia = objUrl.urlDbpedia.substr(1);
         }
-        else{
-            objUrl.urlDbpedia = tUrl[1];
-        }
-        //Demande spécifique afin d'aller chercher les artistes français dans le DBpédia français
-        //On recherche les artistes/albums/musiques francais n'ayant pas de liens vers DBpédia fr afin de réparer cette anomalie et de rediriger vers le dbpédia fr le lien
-        if(artistLocation != "" && typeof artistLocation.locationInfo[0] != "undefined" && artistLocation.locationInfo[0] == "France" && !url.startsWith(urlToSplit+"fr:")){
-            //Si indique qu'on veut chercher dans le dbpédia fr
-            objUrl.fillIfFr = "fr.";
-        }
+        objUrl.country = urlDetail[0]+".";
+    }
+    else{
+        objUrl.urlDbpedia = tUrl[1];
+    }
+    //Demande spécifique afin d'aller chercher les artistes français dans le DBpédia français
+    //On recherche les artistes/albums/musiques francais n'ayant pas de liens vers DBpédia fr afin de réparer cette anomalie et de rediriger vers le dbpédia fr le lien
+    if(artistLocation != "" && typeof artistLocation.locationInfo[0] != "undefined" && artistLocation.locationInfo[0] == "France" && !url.startsWith(urlToSplit+"fr:")){
+        //Si indique qu'on veut chercher dans le dbpédia fr
+        objUrl.fillIfFr = "fr.";
+    }
     return objUrl;
 };
 

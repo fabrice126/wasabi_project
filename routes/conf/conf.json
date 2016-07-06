@@ -30,6 +30,10 @@
         "index_type_artist"     : "artist",
         "index_type_song"       : "song"
     },
+    "MT5" : {
+        "TRACKS_PATH" : "public/my_components/MT5/multitrack/",
+        "TRACKS_URL" : "multitrack/"
+    },
     "request" : {
         "limit" : 200,
         "limit_search_bar":12

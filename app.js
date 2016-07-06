@@ -15,6 +15,8 @@ var sanitizeHtml    = require('sanitize-html');
 var db              = require('mongoskin').db(config.database.mongodb_connect);
 var elasticsearchClient = new elasticsearch.Client({ host: config.database.elasticsearch_connect});
 var search          = require('./routes/search');
+var MT5             = require('./routes/MT5');
+
 // var createdb        = require('./routes/createdb');
 // var updatedb        = require('./routes/updatedb');
 var extractdbpedia  = require('./routes/extractdbpedia');
@@ -33,6 +35,24 @@ app.use(bodyParser.urlencoded({ extended: true }));//false
 app.use(cookieParser());
 //permet de s'authentifier, personne ne doit pouvoir accèder au site
 app.use(basicAuth('michel', 'michelbuffa'));
+//<start> MT5
+String.prototype.endsWith = function(suffix) {
+    return this.indexOf(suffix, this.length - suffix.length) !== -1;
+};
+
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+
+    // For Microsoft browsers
+    var url = req.originalUrl;
+    if(url.endsWith("vtt")) {
+        res.header("Content-Type", "text/vtt");
+    }
+    next();
+});
+//<end> MT5
+
 app.use(function(req,res,next){
     req.db = db;
     req.sanitize = sanitizeHtml;
@@ -42,6 +62,7 @@ app.use(function(req,res,next){
 });
 app.use('/',express.static(path.join(__dirname, 'public')));
 app.use('/search', search);
+app.use('/MT5', MT5);
 //Permet d'utiliser les fonctions de créations et updates de la base de données
 // app.use('/createdb', createdb);
 // app.use('/updatedb', updatedb);

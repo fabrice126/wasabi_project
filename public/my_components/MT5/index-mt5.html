@@ -1,0 +1,182 @@
+
+<head>
+    <script src="../../bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
+    <link rel="import" href="../../bower_components/polymer/polymer.html">
+    <script src="js/jquery.min.js"></script>
+    <!-- Including alphaTab -->
+    <!-- Styling of alphaTab -->
+    <style type="text/css">
+    .alphaTabSurface { box-shadow: 0 0 10px rgba(0,0,0,0.3); background:#FFF; border-radius:3px; }
+    </style>
+    <link rel="stylesheet" href="alphatab/support/live.css" />
+    <script type="text/javascript" src="alphatab/lib/alphatab/alphaTab.core.js"></script>
+
+    <!-- jQuery Plugin -->
+    <script type="text/javascript" src="alphatab/lib/alphatab/jquery.alphaTab.js"></script>
+
+    <!-- Demo Styles and Scripts -->
+    <script type="text/javascript" src="alphatab/support/liveTestMichel2.js"></script>
+
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/view.js"></script>
+    <script src="js/waveformDrawer.js"></script>
+    <script src="js/track.js"></script>
+    <script src="js/songSection.js"></script>
+    <script src="js/songMetadata.js"></script>
+    <script src="js/song.js"></script>
+
+    <script src="js/buffer-loader.js"></script>
+    <script src="js/sound.js"></script>
+    <script src="js/jquery.knob.js"></script>
+    <script src="js/knob.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/canvasArrows.js"></script>
+    <script src="js/range-touch.js"></script>
+    <script src="js/zepto.min.js"></script>
+    <script src="js/recorderjs/recorder.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+    <link href="css/bootstrap-glyphicons.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+</head>
+
+<dom-module id="index-mt5">
+    <template>
+        <body onload="init();">
+            <div id="app">
+                <div id="console">
+                    <ul class="nav nav-tabs">
+                        <li ><a id="consoleTab" href="#home" data-toggle="tab">Console</a></li>
+                        <li><a id="waveTab" href="#profile" data-toggle="tab">Wave</a></li>
+                        <li><a class="active" href="#help" data-toggle="tab">Help</a></li>
+                    </ul>
+
+                    <!-- Tab panes -->
+                    <div class="tab-content">
+                        <div class="tab-pane fade in " id="home">
+                            <div id="messages">Please choose a song !</div>
+                        </div>
+                        <div class="tab-pane fade" id="profile">
+                            <canvas id="waveCanvas"></canvas>
+                        </div>
+                        <div class="tab-pane fade in active" id="help">
+                            <p>Version 1.0, <a href="http://miageprojet2.unice.fr/index.php?title=Intranet_de_Michel_Buffa/MT5%2C_multitrack_player_for_musicians" target="_blank">Documentation / Manual</a></p>
+                            <p><a href="https://github.com/squallooo/MT5" target="_blank">https://github.com/squallooo/MT5</a></p>
+                            <p>Michel Buffa, main designer</p><p>and implementer (@micbuffa)</p>
+                            <p>Amine Hallili, HTML/CSS layout</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="masterTools">
+                    <div style="position : absolute;width : 602px;">
+                        <h2 style="text-align : center;">MT5 : an HTML5 Multitrack player !</h2>
+
+                        <span id="volume">
+                            <button id="bsound" onclick="masterMuteUnmute(this);" type="button" class="btn btn-default btn-lg master" style="margin-right: 28px;position: absolute;right: 0;margin-top: 28px;">
+                              <span class="glyphicon glyphicon-volume-up"></span>
+                            </button>
+                            <input id ="masterVolume" class="knob masterVolume" data-width="100" data-height="100" data-displayInput=false value="100">
+                        </span>
+                        <table style="margin-left: auto; margin-right: auto;">
+                            <tr>
+                                <td>
+                                    <button id="bplay" type="button" class="btn btn-default btn-lg" onclick="playAllTracks(0);" disabled>
+                                      <span class="glyphicon glyphicon-play"></span>
+                                    </button>
+
+                                    <button id="bpause" onclick="pauseAllTracks();" disabled type="button" class="btn btn-default btn-lg">
+                                      <span class="glyphicon glyphicon-pause"></span>
+                                    </button>
+
+                                    <button id="bstop" onclick="stopAllTracks();"  type="button" class="btn btn-default btn-lg" disabled>
+                                      <span class="glyphicon glyphicon-stop"></span>
+                                    </button>
+                                    <button id="brecordMix" onclick="toggleRecordMix();" type="button" class="btn btn-default btn-lg" style="font-size: 10px; padding: 0;" disabled>Record mix</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td id="loopBox">
+                                    <button id="loopStart" onclick="setLoopStart();" type="button" class="btn btn-default btn-lg" style="font-size: 10px;
+                padding: 0;" disabled>
+                                      Start Loop
+                                    </button>
+
+                                    <button id="loopEnd"  onclick="setLoopEnd();" type="button" class="btn btn-default btn-lg" style="font-size: 10px;
+                padding: 0;" disabled>
+                                      End loop
+                                    </button>
+
+                                    <button id="loopReset"  onclick="resetSelection();" type="button" class="btn btn-default btn-lg" style="font-size: 10px;
+                padding: 0;" disabled>
+                                      Reset loop
+                                    </button>
+
+                                    <button onclick="loopOnOff();" id="loopOnOff" type="button" class="btn btn-default btn-lg" disabled>
+                                      <span class="glyphicon glyphicon-repeat"></span>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div id="songs" class="styled-select"></div>
+                                    <br/>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="scroll">
+                    <div id="trackControl">
+                        <table id="tracks"></table>
+                    </div>
+                    <div id="canvass">
+                        <div style="position: relative;">
+                            <canvas id="myCanvas" width="602" height="400" style="position: absolute; left: 0; top: 0; z-index: 0;"></canvas>
+                            <canvas id="frontCanvas"                       style="position: absolute; left: 0; top: 0; z-index: 1;"></canvas>
+                        </div>
+                    </div>
+
+                    <div id="wrapper" class="cf">
+                        <div id="content">
+                            <div id="trackChooser">
+                                <div class="shadow"></div>
+                                <div class="content">
+                                    <ul id="trackList"></ul>
+                                </div>
+                            </div>
+                            <div id="alphaTab2" ></div>
+                        </div>
+                    </div>
+
+                    <div id="settings" style="visibility:hidden">
+                        <img id="testImg" width=400 height=400>
+                        <div id="actions">
+                            <a class="button" id="alphatabTracks">Tracks</a>
+                            <div class="button" id="openFile">
+                                Open File <input type="file" id="openFileData" />
+                            </div>
+                            <button onclick="showNextBars();">Next Bars</button>
+                            <button onclick="showPreviousBars();">Previous Bars</button>
+                            <button onclick="showBars(15, 5, 600);">Bars 15-20</button>
+                            <button onclick="showBars(20, 5, 600);">Bars 20-25</button>
+                            <button onclick="showBars(-1, -1, 600);">All Bars</button>
+                            <button onclick="loadFileAndDisplayScore('alphatab/files/SameOldSongAndDance.gpx',1, 4,  600);">Aerosmith same old song</button>
+                            <button onclick="loadFileAndDisplayScore('alphatab/files/back_in_black.gp5', 1, 4, 600);">Back in Black</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </body>
+    </template>
+    <script>
+        // element registration
+        Polymer({
+            is: "index-mt5",
+            // add properties and methods on the element's prototype
+            properties: {
+            }
+        });
+    </script>
+</dom-module>
+
