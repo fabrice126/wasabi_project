@@ -206,17 +206,17 @@ router.put('/artist/:artistName/album/:albumName', function (req, res) {
 //=======================================WEBSERVICE REST POUR LA GESTION DES MUSIQUES=======================================\\
 //==========================================================================================================================\\
 //GET SONG PAR NOM D'ARTISTE TITRE D'ALBUM ET TITRE DE MUSIQUE
-router.get('/artist/:artistName/album/:albumName/song/:songsName', function (req, res) {
+router.get('/artist/:artistName/album/:albumName/song/:songName', function (req, res) {
     var db = req.db;
     var artistName = req.params.artistName;
     var albumName = req.params.albumName;
-    var songsName = req.params.songsName;
+    var songName = req.params.songName;
     var start = Date.now();
     db.collection(config.database.collection_artist).findOne({name:artistName},{"_id":1,"name":1}, function(err, artist) {
         if (artist == null) { return res.status(404).sendFile([{error:config.http.error.artist_404}]);}
         db.collection(config.database.collection_album).findOne({$and:[{"id_artist":artist._id},{"titre":albumName}]},{"_id":1,"titre":1}, function(err, album) {
             if (album == null) {  return res.status(404).sendFile([{error:config.http.error.album_404}]); }
-            db.collection(config.database.collection_song).findOne({$and:[{"id_album":album._id},{"titre":songsName}]},{"urlSong":0,"wordCount":0},function(err, song) {
+            db.collection(config.database.collection_song).findOne({$and:[{"id_album":album._id},{"titre":songName}]},{"urlSong":0,"wordCount":0},function(err, song) {
                 if (song == null) { return res.status(404).send([{error:config.http.error.song_404}]);}
                 album.songs = song;
                 artist.albums = album;
@@ -228,17 +228,17 @@ router.get('/artist/:artistName/album/:albumName/song/:songsName', function (req
     });
 });
 //GET SONG PAR ID D'ARTISTE,ALBUM,MUSIQUE
-router.get('/artist_id/:artistId/album_id/:albumId/song_id/:songsId', function (req, res) {
+router.get('/artist_id/:artistId/album_id/:albumId/song_id/:songId', function (req, res) {
     var db = req.db;
     var artistId = req.params.artistId;
     var albumId = req.params.albumId;
-    var songsId = req.params.songsId;
+    var songId = req.params.songId;
     var start = Date.now();
     db.collection(config.database.collection_artist).findOne({_id:ObjectId(artistId)},{"_id":1,"name":1}, function(err, artist) {
         if (artist == null) { return res.status(404).sendFile([{error:config.http.error.artist_404}]);}
         db.collection(config.database.collection_album).findOne({"_id":ObjectId(albumId)},{"_id":1,"titre":1}, function(err, album) {
             if (album == null) {  return res.status(404).sendFile([{error:config.http.error.album_404}]); }
-            db.collection(config.database.collection_song).findOne({"_id":ObjectId(songsId)},{"urlSong":0,"wordCount":0},function(err, song) {
+            db.collection(config.database.collection_song).findOne({"_id":ObjectId(songId)},{"urlSong":0,"wordCount":0},function(err, song) {
                 if (song == null) { return res.status(404).send([{error:config.http.error.song_404}]);}
                 album.songs = song;
                 artist.albums = album;
@@ -249,7 +249,7 @@ router.get('/artist_id/:artistId/album_id/:albumId/song_id/:songsId', function (
     });
 });
 //PUT SONG OBJECT
-router.put('/artist/:artistName/album/:albumName/song/:songsName',function(req,res){
+router.put('/artist/:artistName/album/:albumName/song/:songName',function(req,res){
     var db = req.db;
     var songBody = req.body;
     // req.params.artistName.replace(/\\n|\\r|\\r\\n|(<((?!br)[^>]+)>)/ig,"").trim();

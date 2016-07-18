@@ -9,6 +9,7 @@
 <link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="../bower_components/paper-tabs/paper-tab.html">
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../bower_components/google-youtube/google-youtube.html">
 <!--<link rel="import" href="MT5/index-mt5.html">-->
 
 
@@ -111,6 +112,10 @@
                     <paper-fab hidden={{editing}}  icon="icons:create" on-tap="doEdit" class="edit" mini></paper-fab>
                     <paper-fab hidden={{!editing}} icon="icons:done"   on-tap="doEdit" class="done" mini></paper-fab>
                     <!--                Faire un boucle + changer <article> et <p>-->
+                    <template is="dom-if" if="{{artist.albums.songs.urlYoutube.length}}">
+                        <google-youtube video-id="{{artist.albums.songs.urlYoutube}}" height="270px" width="480px"></google-youtube>
+                    </template>
+
                     <section id="songInfos">
                         <template is="dom-if" if="{{artist.albums.songs.runtime.length}}">
                             <article>Runtime: {{artist.albums.songs.runtime}}</article>

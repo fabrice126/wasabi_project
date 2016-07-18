@@ -1,4 +1,5 @@
 var config          = require('./routes/conf/conf.json');
+var login           = require('./routes/conf/login.json');
 var express         = require('express');
 var app             = express();
 var path            = require('path');
@@ -16,30 +17,30 @@ var db              = require('mongoskin').db(config.database.mongodb_connect);
 var elasticsearchClient = new elasticsearch.Client({ host: config.database.elasticsearch_connect});
 var search          = require('./routes/search');
 var MT5             = require('./routes/MT5');
-
+var updatedb        = require('./routes/updatedb');
+var mergedb         = require('./routes/mergedb');
 // var createdb        = require('./routes/createdb');
-// var updatedb        = require('./routes/updatedb');
-var extractdbpedia  = require('./routes/extractdbpedia');
+// var extractdbpedia  = require('./routes/extractdbpedia');
 
 
 app.disable('x-powered-by');
 // view cache
 app.set('view cache', false); // désactivation du cache express
-// uncomment after placing your favicon in /public
-app.set('config', config); 
+app.set('config', config);
 app.use(helmet());
+// uncomment after placing your favicon in /public
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));//false
 app.use(cookieParser());
 //permet de s'authentifier, personne ne doit pouvoir accèder au site
-app.use(basicAuth('michel', 'michelbuffa'));
+app.use(basicAuth(login.login, login.password));
+
 //<start> MT5
 String.prototype.endsWith = function(suffix) {
     return this.indexOf(suffix, this.length - suffix.length) !== -1;
 };
-
 app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
@@ -63,10 +64,10 @@ app.use(function(req,res,next){
 app.use('/',express.static(path.join(__dirname, 'public')));
 app.use('/search', search);
 app.use('/MT5', MT5);
-//Permet d'utiliser les fonctions de créations et updates de la base de données
+app.use('/updatedb', updatedb);
+app.use('/mergedb',mergedb);
 // app.use('/createdb', createdb);
-// app.use('/updatedb', updatedb);
-app.use('/extractdbpedia', extractdbpedia);
+// app.use('/extractdbpedia', extractdbpedia);
 
 // catch 404 and forward to error handler
 //Return la page-404.html via <app-router> dans index.html 

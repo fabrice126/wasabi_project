@@ -290,14 +290,22 @@ router.get('/album/createfields',function(req, res){
                         // //On traite le / les producteurs
                         else{
                             totalProd++;
-                        //     for(var j = 0;j<rdfPropertiesProducer.length;j++){
-                        //         var currProperty = rdfPropertiesProducer[j];
-                        //         //On va extraire le contenu de chaque propriété afin d'ajouter à l'objet tObjAlbum[i] les nouvelles propriétés
-                        //         tObjAlbum[i][currProperty] = dbpediaHandler.extractInfosFromRDF(description,currProperty);
-                        //         // console.log(currProperty);
-                        //         // console.log(tObjAlbum[i][currProperty])
-                        //     }
-                        //     console.log('\n\n\n')
+                            console.log("________________________________________________________________________________________________________________________________________________________________");
+                            console.log("________________________________________________________________________START Producteur________________________________________________________________________");
+                            console.log("________________________________________________________________________________________________________________________________________________________________");
+                            for(var j = 0;j<rdfPropertiesProducer.length;j++){
+                                var currProperty = rdfPropertiesProducer[j];
+                                //On va extraire le contenu de chaque propriété afin d'ajouter à l'objet tObjAlbum[i] les nouvelles propriétés
+                                tObjAlbum[i][currProperty] = dbpediaHandler.extractInfosFromRDF(description,currProperty);
+                                console.log("________________________________________________________________________"+currProperty+"________________________________________________________________________");
+                                console.log(tObjAlbum[i][currProperty])
+                                // console.log(currProperty);
+                                // console.log(tObjAlbum[i][currProperty])
+                            }
+                            console.log("________________________________________________________________________________________________________________________________________________________________");
+                            console.log("_________________________________________________________________________END Producteur_________________________________________________________________________");
+                            console.log("________________________________________________________________________________________________________________________________________________________________");
+                            console.log('\n\n\n')
                         }
                     }
                     if(!found){

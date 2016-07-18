@@ -348,7 +348,7 @@ function finishedLoading(bufferList) {
 // ######### SONGS
 function loadSongList() {
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', "http://127.0.0.1/MT5/track", true);
+    xhr.open('GET', "http://wasabi.i3s.unice.fr/MT5/track", true);
 
     // Menu for song selection
     var s = $("<select id='songSelect'/>");
@@ -395,7 +395,7 @@ function loadSong(songName) {
     // volumes set to 1, start at 0 second, etc.)
     currentSong = new Song(songName, context);
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', "http://127.0.0.1/"+currentSong.url, true);
+    xhr.open('GET', "http://wasabi.i3s.unice.fr/"+currentSong.url, true);
     
     xhr.onload = function(e) {
         // get a JSON description of the song
@@ -418,7 +418,7 @@ function loadSong(songName) {
                                     "<progress class='pisteProgress' id='progress" + trackNumber + "' value='0' max='100' style='width : "+SAMPLE_HEIGHT+"px' ></progress>" +
                                     instrument.name + '<div style="float : right;">' + 
                                     "<button class='mute' id='mute" + trackNumber + "' onclick='muteUnmuteTrack(" + trackNumber + ");'><span class='glyphicon glyphicon-volume-up'></span></button> "+ 
-                                    "<button class='solo' id='solo" + trackNumber + "' onclick='soloNosoloTrack(" + trackNumber + ");'><img src='../img/earphones.png' /></button></div>" + 
+                                    "<button class='solo' id='solo" + trackNumber + "' onclick='soloNosoloTrack(" + trackNumber + ");'><img src='/my_components/MT5/img/earphones.png' /></button></div>" +
                                     "<span id='volspan'><input type='range' class = 'volumeSlider custom' id='volume" + trackNumber + "' min='0' max = '100' value='100' oninput='setVolumeOfTrackDependingOnSliderValue("+trackNumber+");'/></span><td>";
                    
             divTrack.appendChild(span);
