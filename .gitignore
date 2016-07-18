@@ -1,3 +1,4 @@
 /artist/*
 /node_modules/*
 /mongo/backup_mongo/*
+/routes/conf/login.json
