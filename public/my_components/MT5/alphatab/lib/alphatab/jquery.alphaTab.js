@@ -138,8 +138,6 @@
                 }
                 else if($this.data('file') != '' && $this.data('file') != null) 
                 {
-                    console.log("8888888888888888888888888888888888888888888888888888");
-                    console.log($this.data('file'));
                     alphatab.importer.ScoreLoader.loadScoreAsync($this.data('file'),
                     function(score)
                     {
@@ -163,8 +161,6 @@
      */
     function load( url, track, success, error ) 
     {
-        console.log("============================================alphatab.js load ============================================");
-        console.log(url);
         var context = $(this).data('alphaTab');
         if(!context) { $.error('alphaTab not initialized!'); }
         alphatab.importer.ScoreLoader.loadScoreAsync(url, 

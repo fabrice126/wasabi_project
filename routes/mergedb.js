@@ -13,19 +13,17 @@ var router      = express.Router();
 var db_server   = require('mongoskin').db("mongodb://localhost:27017/wasabi_server");
 var ObjectId    = require('mongoskin').ObjectID;
 var config      = require('./conf/conf.json');
-/**
- * Permet de merge les lyrics de la BDD local avec les lyrics de la BDD du serveur
- */
 
-router.get('/song/lyrics',function(req, res) {
+/**
+ * Permet de merge les lyrics ayant un probléme de droit d'auteur en local mais avec des paroles sur le serveur
+ */
+router.get('/song/lyricsnotlicensed',function(req, res) {
     var db = req.db;
     this.console.log("dedans /mergedb/song/lyrics");
     var request = {lyrics:/Unfortunately, we are not licensed to display/};
-    // var projection = {_id:1,name:1,lyrics:1,titre:1,albumTitre:1};
-    var projection = {};
     var collection = config.database.collection_song;
     var isNotEq = 0 ;
-    db.collection(collection).find(request,projection).toArray(function(err, tSongs) {
+    db.collection(collection).find(request).toArray(function(err, tSongs) {
         var i = 0;
         var songLength = tSongs.length;
         //Recursivement avec un timeout afin d'éviter l'erreur : possible EventEmitter memory leak detected. 51 open listeners added. Use emitter.setMaxListeners() to increase limit
@@ -33,27 +31,74 @@ router.get('/song/lyrics',function(req, res) {
             //On va chercher dans la BDD du serveur qu'on a importé en local
             (function(song){
                 var next = ++i;
-                db_server.collection(collection).findOne({_id: new ObjectId(song._id) }, projection, function (err, songServer) {
+                db_server.collection(collection).findOne({_id: new ObjectId(song._id) }, function (err, songServer) {
                     //Alors la chanson a été modifié sur le serveur
-                    // if(!songServer.lyrics.match(/Unfortunately, we are not licensed to display/)){
                     if(songServer.lyrics.length != song.lyrics.length){
-                        //donc on modifie en local
                         isNotEq = isNotEq+1;
-                        console.log(songServer.name+" - "+songServer.titre+" - "+songServer._id+" - "+songServer.lyrics.length+" <-> "+song.lyrics.length);
+                        //On met a jour la db local
+                        db.collection(collection).update({_id : new ObjectId(song._id)}, { $set: {"lyrics":songServer.lyrics} });
+                        console.log("Song updated = "+songServer.name+" - "+songServer.titre+" - "+songServer._id+" - "+songServer.lyrics.length+" <-> "+song.lyrics.length);
                     }
                 });
                 if(i<songLength){
-                    setTimeout(function(){
-                        loopSong(next);
-                    },1)
+                    setTimeout(function(){loopSong(next);},1)
                 }else{
-                    console.log("Traitement terminé");
-                    console.log("isNotEq = "+isNotEq);
+                    console.log("Traitement terminé. Document updated = "+isNotEq);
                 }
             })(tSongs[i]);
         })(i);
     });
     res.send("OK");
 });
-
+/**
+ * Permet de merge les lyrics de la BDD local avec les lyrics de la BDD du serveur
+ */
+router.get('/song/lyrics',function(req, res) {
+    var db = req.db;
+    this.console.log("dedans /mergedb/song/lyrics");
+    var request = {};
+    var limit = 100000;
+    var skip = 1000000;
+    var hasNext = true;
+    var collection = config.database.collection_song;
+    var isNotEq = 0 ;
+    (function loopSkipSong(skip){
+        db.collection(collection).find(request).skip(skip).limit(limit).toArray(function(err, tSongs) {
+            if(tSongs.length<limit){
+                hasNext = false;
+            }
+            var i = 0;
+            var songLength = tSongs.length;
+            //Recursivement avec un timeout afin d'éviter l'erreur : possible EventEmitter memory leak detected. 51 open listeners added. Use emitter.setMaxListeners() to increase limit
+            (function loopSong(i){
+                //On va chercher dans la BDD du serveur qu'on a importé en local
+                (function(song){
+                    var next = ++i;
+                    db_server.collection(collection).findOne({_id: new ObjectId(song._id) }, function (err, songServer) {
+                        //Alors la chanson a été modifié sur le serveur
+                        if(songServer.lyrics.length != song.lyrics.length){
+                            isNotEq = isNotEq+1;
+                            //On met a jour la db local
+                            db.collection(collection).update({_id : new ObjectId(song._id)}, { $set: {"lyrics":songServer.lyrics} });
+                            console.log("Song updated = "+songServer.name+" - "+songServer.titre+" - "+songServer._id+" - "+songServer.lyrics.length+" <-> "+song.lyrics.length);
+                        }
+                    });
+                    if(i<songLength){
+                        //Ce timeout évite l'erreur: RangeError: Maximum call stack size exceeded
+                        setTimeout(function(){
+                            loopSong(next);
+                        },1)
+                    }else if(!hasNext){
+                        console.log("Traitement terminé. Document upadated = "+isNotEq);
+                    }else{
+                        skip += limit;
+                        console.log("SKIP = "+skip);
+                        loopSkipSong(skip);
+                    }
+                })(tSongs[i]);
+            })(i);
+        });
+    })(skip);
+    res.send("OK");
+});
 module.exports = router;

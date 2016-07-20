@@ -1,4 +1,3 @@
-<link rel="import" href="../bower_components/paper-fab/paper-fab.html">
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/paper-card/paper-card.html">
 <link rel="import" href="../bower_components/paper-ripple/paper-ripple.html">
@@ -18,7 +17,7 @@
                 padding-left: 7%;
                 display: block;
             }
-            paper-input{
+            paper-input, input{
                 margin-left: 9%;
                 margin-right: 9%;
             }
@@ -35,8 +34,8 @@
                 </li>
                 <paper-ripple></paper-ripple>
             </paper-card>
-
-            <paper-input label="titre: {{song.titre}}" id="edit" hidden="{{!editing}}" value="{{song.titre}}"></paper-input>        
+            <!--<input type="text" label="titre: {{song.titre}}" id="edit" hidden="{{!editing}}" value="{{song.titre}}">-->
+            <paper-input label="titre: {{song.titre}}" id="edit" hidden="{{!editing}}" value="{{song.titre}}"></paper-input>
     </template>     
 <script>
   // element registration
@@ -44,10 +43,6 @@
     is: "x-song",
     // add properties and methods on the element's prototype
     properties: {
-//        artist:{
-//            type: Object,
-//            value: {}
-//        },
         song:{
             type: Object,
             value: {}
@@ -58,19 +53,19 @@
         },
     	editing: {
 	    	type: Boolean,
-	    	value: false	
+	    	value: false
     	}
     },
-    ready: function(e){    
+    ready: function(e){
     },
     doLoadSong:function(e){
         console.log("e.target.link == "+e.target.link)
           window.location.href = e.target.link;
     },
-      
+
     _encodeUri : function(titre){
         return encodeURIComponent(titre);
-    }  
+    }
   });  
 
 </script>   

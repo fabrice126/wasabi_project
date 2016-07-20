@@ -252,6 +252,7 @@ router.get('/artist_id/:artistId/album_id/:albumId/song_id/:songId', function (r
 router.put('/artist/:artistName/album/:albumName/song/:songName',function(req,res){
     var db = req.db;
     var songBody = req.body;
+    console.log(songBody);
     // req.params.artistName.replace(/\\n|\\r|\\r\\n|(<((?!br)[^>]+)>)/ig,"").trim();
 
     //On récupére l'id de la musique afin de modifier l'objet en base de données

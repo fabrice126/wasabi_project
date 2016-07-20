@@ -99,7 +99,7 @@ router.get('/song',function(req, res){
     var db = req.db;
     this.console.log("dedans /updatedb/song");
     var skip = 0;
-    var limit = 500;
+    var limit = 1000;
     //Permet de nommer la collection
     var req = {};
     var collection = config.database.collection_song;
@@ -107,8 +107,8 @@ router.get('/song',function(req, res){
         console.log('There are ' + nbSong + ' song in the database');
         (function fetchSong(skip,nbSong){
             if(skip<nbSong){
-                //on récupére les musiques 500 par 500, result est donc un tableau de 500 musiques
-                db.collection(collection).find(req).skip(skip).limit(limit).toArray(function(err,result){// {_id:ObjectId("5714dec325ac0d8aee381d5b")}
+                //on récupére les musiques
+                db.collection(collection).find(req).skip(skip).limit(limit).toArray(function(err,result){
                     var i = 0;
                     //on itére sur les artistes récupérés avec une fonction récursive
                     (function loop(i,result){
@@ -133,11 +133,11 @@ router.get('/song',function(req, res){
                             setTimeout(function() {
                                 i++;
                                 loop(i,result);
-                            },50);
+                            },5);
                         }
                         else{
                             skip += limit;
-                            console.log("\n\n SKIP = "+skip);
+                            console.log("\n\n\n\n !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! SKIP = "+skip+"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n\n\n\n");
                             setTimeout(function(){
                                 fetchSong(skip,nbSong);
                             },6000);

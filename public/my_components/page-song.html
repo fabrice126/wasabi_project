@@ -8,6 +8,7 @@
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="../bower_components/paper-tabs/paper-tab.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../bower_components/google-youtube/google-youtube.html">
 <!--<link rel="import" href="MT5/index-mt5.html">-->
@@ -23,8 +24,17 @@
             paper-tab{
                 --paper-tab-ink :#E0E0E0;
             }
-            paper-tab:hover{
+            paper-tab:hover {
                 background-color: #f2f2f2;
+            }
+            .isClassic{
+                color:#ffe52f;
+                width:50px;
+                height:50px;
+                float: right;
+            }
+            .inline{
+                display: inline-block;
             }
             paper-tabs {
                 --paper-tabs-selection-bar-color:#3f51b5;
@@ -42,8 +52,7 @@
             }
             .song{
                 font-size: 2em;
-                font-weight: 400;
-                line-height: 28px;
+                width: 100%;
             }
             nav{
                 padding: 3%;
@@ -71,6 +80,7 @@
             .inherit {
                 color: inherit;
                 background-color: inherit;
+                text-decoration:none;
             }
         </style>
         <paper-material elevation="1">
@@ -92,11 +102,12 @@
                         <show-dialog labeldialog="RDF {{artist.albums.songs.titre}} :" labelbutton="Show RDF" content="{{artist.albums.songs.rdf}}" labelexitdialog="Close"></show-dialog>
                     </template>
                     <section id="songName">
-                        <div class="song">
-                            <a href="#/search/more/{{_concat(artist.name,artist.albums.songs.titre)}}"  tabindex="-1" class="inherit" > <!--hidden="{{editing}}"-->
-                                <paper-button tabindex="0" role="button" elevation="0">{{artist.albums.songs.titre}}</paper-button>
-                            </a>
-                            <!--                        <paper-input label="titre: {{song.titre}}" id="edit_song" hidden="{{!editing}}" value="{{artist.albums.songs.titre}}"></paper-input>-->
+                        <div class="song inline">
+                                <a href="#/search/more/{{_concat(artist.name,artist.albums.songs.titre)}}"  tabindex="-1" class="inherit" > <!--hidden="{{editing}}"-->
+                                    <paper-button tabindex="0" role="button" elevation="0">{{artist.albums.songs.titre}}</paper-button>
+                                </a>
+                                <paper-icon-button on-tap="doIsClassic" class="isClassic" icon="star-border" hidden="{{artist.albums.songs.isClassic}}" ></paper-icon-button>
+                                <paper-icon-button on-tap="doIsClassic" class="isClassic" icon="star" hidden="{{!artist.albums.songs.isClassic}}"></paper-icon-button>
                         </div>
                         <div>
                             <a href="#/search/artist/{{_encodeUri(artist.name)}}" tabindex="-1" class="inherit" >
@@ -109,14 +120,12 @@
                             </a>
                         </div>
                     </section>
-                    <paper-fab hidden={{editing}}  icon="icons:create" on-tap="doEdit" class="edit" mini></paper-fab>
-                    <paper-fab hidden={{!editing}} icon="icons:done"   on-tap="doEdit" class="done" mini></paper-fab>
                     <!--                Faire un boucle + changer <article> et <p>-->
-                    <template is="dom-if" if="{{artist.albums.songs.urlYoutube.length}}">
-                        <google-youtube video-id="{{artist.albums.songs.urlYoutube}}" height="270px" width="480px"></google-youtube>
-                    </template>
 
                     <section id="songInfos">
+                        <template is="dom-if" if="{{artist.albums.songs.urlYoutube.length}}">
+                            <google-youtube video-id="{{artist.albums.songs.urlYoutube}}" height="270px" width="480px"></google-youtube>
+                        </template>
                         <template is="dom-if" if="{{artist.albums.songs.runtime.length}}">
                             <article>Runtime: {{artist.albums.songs.runtime}}</article>
                         </template>
@@ -148,6 +157,10 @@
                             <p>Abstract: {{artist.albums.songs.abstract}}</p>
                         </template>
                     </section>
+                    <section id="updateData">
+                        <paper-fab hidden={{editing}}  icon="icons:create" on-tap="doEdit" class="edit" mini></paper-fab>
+                        <paper-fab hidden={{!editing}} icon="icons:done"   on-tap="doEdit" class="done" mini></paper-fab>
+                    </section>
 
                     <section id="songLyricsSection">
                         <article id="songLyricsNonEditable" hidden={{editing}} contenteditable=false> </article>
@@ -175,8 +188,7 @@
     // add properties and methods on the element's prototype
     properties: {
         artist:{
-            type: Object,
-            value: {}
+            type: Object
         },
         idxCurrentTab:{
             type:Number,
@@ -184,14 +196,14 @@
         },
         editing: {
 	    	type: Boolean,
-	    	value: false	
+	    	value: false
     	}
     },
     ready: function(){
         //Fonction permettant de réagir a un coller dans la zone prévu pour les lyrics
         this.$.songLyricsEditable.addEventListener("paste", function(e) {
             e.preventDefault();
-            var text = e.clipboardData.getData("text/plain"); 
+            var text = e.clipboardData.getData("text/plain");
             text = text.replace(/\n|\r\n|\r/g, "<br>");
             var cleanText = text.replace(/(<([^>]+)>)/ig, "<br>");//pour échapper éventuellement du html ou script
             this.innerHTML = cleanText;
@@ -201,7 +213,7 @@
         return encodeURIComponent(titre);
     },
     //Cette fonction est utilisé lorsque l'utilisateur charge la page et lorsqu'il clique sur le bouton de modification des lyrics
-    handleResponse: function(request) { 
+    handleResponse: function(request) {
         console.log("DANS handleResponse");
         //Si l'utilisateur clique sur le bouton de modification des lyrics
         if(this.editing){
@@ -223,7 +235,7 @@
     doEdit: function(e){
     	this.editing=!this.editing;
         //lorsque l'utilisateur clique sur l'icone de modification
-        if(this.editing){  
+        if(this.editing){
             //this.$.get_content.url ="/search/artist/"+this._encodeUri(this.artist.name)+"/album/"+this._encodeUri(this.artist.albums.titre)+"/song/"+this._encodeUri(this.artist.albums.songs.titre);
             //on récupére les infos en fonction de l'id de l'artiste/album/musique
             this.$.get_content.url ="/search/artist_id/"+this.artist._id+"/album_id/"+this.artist.albums._id+"/song_id/"+this.artist.albums.songs._id;
@@ -246,9 +258,17 @@
 //                console.log("Des modifications"); } else{console.log("Pas de modifications");}
         }
 	},
- 
-      
-  });  
+    doIsClassic: function(){
+        this.set('artist.albums.songs.isClassic', !this.artist.albums.songs.isClassic);
+        this.$.put_content.body = {
+            "_id":      this.artist.albums.songs._id,
+            "isClassic":this.artist.albums.songs.isClassic
+        };
+        console.log(this.$.put_content.body);
+        this.$.put_content.url = "/search/artist/"+this._encodeUri(this.artist.name)+"/album/"+this._encodeUri(this.artist.albums.titre)+"/song/"+this._encodeUri(this.artist.albums.songs.titre);
+        this.$.put_content.generateRequest();
+    },
+  });
 
-</script>   
+</script>
 </dom-module>

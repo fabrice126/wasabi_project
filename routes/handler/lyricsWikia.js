@@ -233,6 +233,7 @@ var getInfosFromPageSong = function(objSong){
                 resolve(objSong);
             }
             else{
+                console.log(" => REJECTED => "+objSong.name+" : "+objSong.titre+"       "+objSong.urlSong);
                 reject(objSong);
             }
         });
@@ -246,11 +247,9 @@ var extractInfosSong = function(objSong, body){
     $(lyrics).find("script").remove();
     $(lyrics).find(".lyricsbreak").remove();
     $(lyrics).contents().filter(function() { return this.nodeType == 8; }).remove();
-    objSong.lyrics = $(lyrics).html();
-    // console.trace(body);
+    objSong.lyrics = $(lyrics).html() != null ? $(lyrics).html() : "";
     var srcYoutube = $("#mw-content-text .youtube").text();
     objSong.urlYoutube = srcYoutube != null ? srcYoutube.split('|')[0] : ""; // srcYoutube sera de ce style : wG5ilt3Hrt4|209|252
-    console.log(objSong.urlYoutube);
     objSong.urlWikipedia = $("#mw-content-text div:contains('Wikipedia') div>i>b>a.extiw").attr('href') != null ? $("#mw-content-text div:contains('Wikipedia') div>i>b>a.extiw").attr('href') : "";
     return objSong;
 };

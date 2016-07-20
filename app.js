@@ -17,15 +17,15 @@ var db              = require('mongoskin').db(config.database.mongodb_connect);
 var elasticsearchClient = new elasticsearch.Client({ host: config.database.elasticsearch_connect});
 var search          = require('./routes/search');
 var MT5             = require('./routes/MT5');
-var updatedb        = require('./routes/updatedb');
-var mergedb         = require('./routes/mergedb');
+// var updatedb        = require('./routes/updatedb');
+// var mergedb         = require('./routes/mergedb');
 // var createdb        = require('./routes/createdb');
 // var extractdbpedia  = require('./routes/extractdbpedia');
 
 
 app.disable('x-powered-by');
 // view cache
-app.set('view cache', false); // désactivation du cache express
+app.set('view cache', true); // désactivation du cache express
 app.set('config', config);
 app.use(helmet());
 // uncomment after placing your favicon in /public
@@ -64,8 +64,8 @@ app.use(function(req,res,next){
 app.use('/',express.static(path.join(__dirname, 'public')));
 app.use('/search', search);
 app.use('/MT5', MT5);
-app.use('/updatedb', updatedb);
-app.use('/mergedb',mergedb);
+// app.use('/updatedb', updatedb);
+// app.use('/mergedb',mergedb);
 // app.use('/createdb', createdb);
 // app.use('/extractdbpedia', extractdbpedia);
 
