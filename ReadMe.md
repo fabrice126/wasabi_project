@@ -101,6 +101,9 @@ Une collection artist contenant des documents représentant un artiste avec ses 
  14.  le web service `extractdbpedia/song/createfields` transforme les propriétés de notre champ RDF en propriétés dans notre base de données
  
  15.  le fichier `CreateIndexAfterDBpediaExtraction` ce fichier permet de créer les index des nouveaux champs insérés dans la base de données
+ 
+ 16.  le fichier `Create_IsClassic_Field` permettant grâce aux subjects des musiques récupérées sur DBpédia de savoir si la musique est un classique
+ 
 
 #### mongo/sparql/
 **Contient les requêtes sparql utilisées par l'application pour l'extraction du RDF pour les :**  
