@@ -1,42 +1,34 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="../bower_components/paper-card/paper-card.html">
-<link rel="import" href="../bower_components/paper-ripple/paper-ripple.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
+
 
 
 <dom-module id="x-song">
    <template>
         <style>
-            .flex-wrap {
-                @apply(--layout-horizontal);
-                @apply(--layout-wrap);
-            }
-            .song{
+            #song{
                 border-bottom: 1px solid rgba(229, 229, 229, 0.51);
-                padding: 20px;
+                padding: 15px;
                 padding-left: 7%;
-                display: block;
             }
-            paper-input, input{
+            paper-input{
                 margin-left: 9%;
                 margin-right: 9%;
             }
-            paper-card{
-                cursor:pointer;
+            .li-link {
+                color: inherit;
+                text-decoration: none;
             }
-            paper-card:hover{
+            li:hover{
                 background-color: #F2F2F2;
             }
         </style>
-            <paper-card hidden="{{editing}}" on-tap="doLoadSong" link="#/search/artist/{{_encodeUri(album.name)}}/album/{{_encodeUri(album.titre)}}/song/{{_encodeUri(song.titre)}}" class="song" elevation="0" >
-                <li link="#/search/artist/{{_encodeUri(album.name)}}/album/{{_encodeUri(album.titre)}}/song/{{_encodeUri(song.titre)}}">
-                    {{song.titre}}
-                </li>
-                <paper-ripple></paper-ripple>
-            </paper-card>
-            <!--<input type="text" label="titre: {{song.titre}}" id="edit" hidden="{{!editing}}" value="{{song.titre}}">-->
-            <paper-input label="titre: {{song.titre}}" id="edit" hidden="{{!editing}}" value="{{song.titre}}"></paper-input>
-    </template>     
+            <a class="li-link" href="#/search/artist/{{_encodeUri(album.name)}}/album/{{_encodeUri(album.titre)}}/song/{{_encodeUri(song.titre)}}" tabindex="-1">
+                <li hidden="{{editing}}" id="song">{{song.titre}}</li>
+            </a>
+            <!--Créer un paper-input pour chaque composant x-song réduit grandement les performances, on crée donc ce champ de modification uniquement lorsque l'utilisateur veut modifier les titres des musiques-->
+            <!--<paper-input id="edit" label="titre: {{song.titre}}" hidden="{{!editing}}" value="{{song.titre}}"></paper-input>-->
+    </template>
 <script>
   // element registration
   Polymer({
@@ -53,21 +45,50 @@
         },
     	editing: {
 	    	type: Boolean,
-	    	value: false
-    	}
+	    	value: false,
+            observer: 'editingChanged'
+    	},
     },
-    ready: function(e){
+    //Fonction permettant de gérer la création des elements paper-input : lorsqu'on clique sur le bouton de modification les paper-input de l'album correspondant sont créees
+    //Le fait de ne pas créer les paper-input dans le template permet de reduire par deux le temps de chargement de la page
+    editingChanged: function(){
+        //on veut éditer
+        if(this.editing){
+            var paperInput;
+            //si le paper input n'existe pas on le crée
+            if(!this.$.edit){
+                paperInput = document.createElement("paper-input");
+                //On crée un paper input équivalent a celui ci-dessous
+                //<paper-input id="edit" label="titre: {{song.titre}}" hidden="{{!editing}}" value="{{song.titre}}"></paper-input>
+                paperInput.id = "edit";
+                paperInput.label = this.song.titre;
+                paperInput.hidden= false;
+                paperInput.value=this.song.titre;
+                this.$.edit = paperInput;
+                Polymer.dom(this.root).appendChild(paperInput);
+            }
+            // le paper input existe déja
+            else{
+                paperInput = this.$.edit;
+                paperInput.label = this.song.titre;
+                paperInput.hidden= false;
+                paperInput.value=this.song.titre;
+            }
+        }
+        //on veut sauvegarder
+        else{
+            if(this.$.edit){
+                var paperInput =  this.$.edit;
+                paperInput.hidden = true;
+                this.set("song.titre",paperInput.value);
+            }
+        }
     },
-    doLoadSong:function(e){
-        console.log("e.target.link == "+e.target.link)
-          window.location.href = e.target.link;
-    },
-
     _encodeUri : function(titre){
         return encodeURIComponent(titre);
     }
-  });  
+  });
 
-</script>   
+</script>
 </dom-module>
 

@@ -15,4 +15,16 @@ var sanitizeProperties = function(obj){
     return obj;
 };
 
-exports.sanitizeProperties  = sanitizeProperties; 
+
+//encode uniquement les caractères présents dans le replace
+//Cette fonction est utilisé pour encoder les caractères spéciaux ne pouvant être présent dans le nom d'un dossier sous windows
+var encodePathWindows = function (str) {
+    //Sous windows les caractères interdit dans le nom d'un fichier/dossier sont /\:*?"<>|
+    return str.replace(/["?<>|\\:*\/\.]/g, function(c) {
+        c =='.' ? c = "%2E" : c = encodeURIComponent(c);
+        return c;
+    });
+};
+
+exports.sanitizeProperties  = sanitizeProperties;
+exports.encodePathWindows = encodePathWindows;

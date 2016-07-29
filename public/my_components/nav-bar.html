@@ -2,7 +2,8 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../bower_components/paper-toolbar/paper-toolbar.html">
-<link rel="import" href="../bower_components/paper-button/paper-button.html">  
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
 <!--my_components-->
 <link rel="import" href="carbon-search-input.html">  
 
@@ -11,6 +12,9 @@
             <style>
                 paper-toolbar{
                     box-shadow : 0 4px 5px 0 rgba(0,0,0,0.14),0 1px 10px 0 rgba(0,0,0,0.12),0 2px 4px -1px rgba(0,0,0,0.2);
+                }
+                app-drawer{
+                    z-index: 1;
                 }
                 a paper-icon-button, a:active paper-icon-button, a:visited paper-icon-button {
                     color: #FFFFFF;
@@ -24,10 +28,10 @@
             <!--permet d'envoyer une requête ajax-->
             <iron-request id="createdb"></iron-request>
             <paper-toolbar justify="justified" middleJustify="justified" >
+                <app-drawer swipe-open opened="{{isOpen}}"></app-drawer>
                 <div>
                     <paper-icon-button icon="menu" on-tap="menuAction"></paper-icon-button>
                 </div>
-
                     <carbon-search-input placeholder="Search" voice-enabled></carbon-search-input>
                 <div>
                     <a href="/stats" tabindex="-1">
@@ -46,11 +50,20 @@
   // element registration
   Polymer({
     is: "nav-bar",
+    properties: {
+        isOpen: {
+            type: Boolean,
+            value: false
+        }
+    },
 	ready: function(e){
     },
     createdb: function () {
         console.log("On tap Create Database : dans create db avant envoie ajax : nav-bar component");
         this.$.createdb.send({url: "/createdb"});
+    },
+    menuAction: function(){
+        this.isOpen = !this.isOpen;
     }
   });
 </script>

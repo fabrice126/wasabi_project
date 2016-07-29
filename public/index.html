@@ -8,17 +8,16 @@
         <link href='https://fonts.googleapis.com/css?family=Roboto:400,100,300' rel='stylesheet' type='text/css'>
         <link href="stylesheets/style.css" rel="stylesheet" type="text/css"  media="screen" >
         <!--Regroupe le code permettant la creation de webcomponent -->
-        <script src="bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
-        <link href="bower_components/app-router/app-router.html" rel="import">
-        <link href="my_components/nav-bar.html" rel="import" >
+        <script src="bower_components/webcomponentsjs/webcomponents-lite.min.js" async></script>
+        <link href="bower_components/app-router/app-router.html" rel="import" async>
+        <link href="my_components/nav-bar.html" rel="import"  >
         <style is="custom-style" include="iron-flex" ></style>
 
 
 <!-- Use element -->
 	</head>
-	<body unresolved class="layout vertical">
-    <!---->
-    <!--is="body-bind" -->
+	<body   class="layout vertical">
+    <!--is="polymer-body"-->
 <!--
         <paper-drawer-panel>
             <paper-header-panel drawer>
@@ -27,10 +26,12 @@
                         Application
                     </div>
                 </paper-toolbar>
-                <div> 
-                    Slider/Drawer content... 
+                <div>
+                    Slider/Drawer content...
                 </div>
 -->
+
+
 <!--            <paper-header-panel main class="flex">-->
                 <nav-bar></nav-bar>
                 <div id=mainContent>
@@ -40,9 +41,9 @@
                         <!--Page contenant des statistiques de l'application-->
                         <app-route path="/stats"  onUrlChange="updateModel" import="my_components/page-stats.html"></app-route>
                         <!--Page d'accueil + recherche d'artistes/albums/musiques par lettre-->
-                        <app-route path="/search/categorie/:categorie/lettre/:lettre/page/:numPage"  onUrlChange="updateModel" import="my_components/paper-tabs-content.html"></app-route>  
+                        <app-route path="/search/categorie/:categorie/lettre/:lettre/page/:numPage"  onUrlChange="updateModel" import="my_components/paper-tabs-content.html"></app-route>
                         <!--Page d'un artiste contenant des infos + sa discographie-->
-                        <app-route path="/search/artist/:nameArtist"  onUrlChange="updateModel" import="my_components/page-artist.html"></app-route>    
+                        <app-route path="/search/artist/:nameArtist"  onUrlChange="updateModel" import="my_components/page-artist.html"></app-route>
                         <!--Page d'un album contenant des infos + les titres de l'album-->
                         <app-route path="/search/artist/:nameArtist/album/:nameAlbum"  onUrlChange="updateModel" import="my_components/page-album.html"></app-route>
                         <!--Page d'une musiques contenant des infos + les lyrics de la musique-->

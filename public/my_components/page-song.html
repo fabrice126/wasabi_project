@@ -8,6 +8,7 @@
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="../bower_components/paper-tabs/paper-tab.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../bower_components/google-youtube/google-youtube.html">
@@ -19,7 +20,7 @@
 <link rel="import" href="show-dialog.html">
 
 <dom-module id="page-song">
-   <template>
+    <template>
         <style>
             paper-tab{
                 --paper-tab-ink :#E0E0E0;
@@ -103,11 +104,14 @@
                     </template>
                     <section id="songName">
                         <div class="song inline">
-                                <a href="#/search/more/{{_concat(artist.name,artist.albums.songs.titre)}}"  tabindex="-1" class="inherit" > <!--hidden="{{editing}}"-->
-                                    <paper-button tabindex="0" role="button" elevation="0">{{artist.albums.songs.titre}}</paper-button>
-                                </a>
-                                <paper-icon-button on-tap="doIsClassic" class="isClassic" icon="star-border" hidden="{{artist.albums.songs.isClassic}}" ></paper-icon-button>
-                                <paper-icon-button on-tap="doIsClassic" class="isClassic" icon="star" hidden="{{!artist.albums.songs.isClassic}}"></paper-icon-button>
+                            <a href="#/search/more/{{_concat(artist.name,artist.albums.songs.titre)}}"  tabindex="-1" class="inherit" > <!--hidden="{{editing}}"-->
+                                <paper-button tabindex="0" role="button" elevation="0">{{artist.albums.songs.titre}}</paper-button>
+                            </a>
+                            <template is="dom-if" if="{{artist}}">
+                                <paper-icon-button on-tap="doIsClassic" class="isClassic" icon="star-border" hidden$="{{artist.albums.songs.isClassic}}" ></paper-icon-button>
+                                <paper-icon-button on-tap="doIsClassic" class="isClassic" icon="star" hidden$="{{!artist.albums.songs.isClassic}}"></paper-icon-button>
+                            </template>
+
                         </div>
                         <div>
                             <a href="#/search/artist/{{_encodeUri(artist.name)}}" tabindex="-1" class="inherit" >
@@ -181,94 +185,98 @@
             </iron-pages>
         </paper-material>
     </template>
-<script>
-  // element registration
-  Polymer({
-    is: "page-song",
-    // add properties and methods on the element's prototype
-    properties: {
-        artist:{
-            type: Object
-        },
-        idxCurrentTab:{
-            type:Number,
-            value:0,
-        },
-        editing: {
-	    	type: Boolean,
-	    	value: false
-    	}
-    },
-    ready: function(){
-        //Fonction permettant de réagir a un coller dans la zone prévu pour les lyrics
-        this.$.songLyricsEditable.addEventListener("paste", function(e) {
-            e.preventDefault();
-            var text = e.clipboardData.getData("text/plain");
-            text = text.replace(/\n|\r\n|\r/g, "<br>");
-            var cleanText = text.replace(/(<([^>]+)>)/ig, "<br>");//pour échapper éventuellement du html ou script
-            this.innerHTML = cleanText;
-        });
-    },
-    _encodeUri : function(titre){
-        return encodeURIComponent(titre);
-    },
-    //Cette fonction est utilisé lorsque l'utilisateur charge la page et lorsqu'il clique sur le bouton de modification des lyrics
-    handleResponse: function(request) {
-        console.log("DANS handleResponse");
-        //Si l'utilisateur clique sur le bouton de modification des lyrics
-        if(this.editing){
-            //On ajoute via innerHTML els lyrics car nous récupérons du HTML en base de données (des balises <br>) cela nous permet de garder la mise en page
-            //Nous ne pouvons donc pas bind les lyrics directement dans le html
-            this.$.songLyricsEditable.innerHTML = this.artist.albums.songs.lyrics;
-        }
-        //Si l'utilisateur l'utilisateur charge
-        else{
-            this.$.songLyricsNonEditable.innerHTML = this.artist.albums.songs.lyrics;
-            /*On rempli le contenu éditable cela permet de ne pas avoir des lyrics vide lors de l'attente de la reponse ajax*/
-            this.$.songLyricsEditable.innerHTML = this.artist.albums.songs.lyrics;
-        }
-    },
-    _concat: function(str1,str2){
-        return this._encodeUri(str1+' '+str2);
-    },
-    //Lorsque l'utilisateur clique sur le bouton de modification ou de sauvegarde
-    doEdit: function(e){
-    	this.editing=!this.editing;
-        //lorsque l'utilisateur clique sur l'icone de modification
-        if(this.editing){
-            //this.$.get_content.url ="/search/artist/"+this._encodeUri(this.artist.name)+"/album/"+this._encodeUri(this.artist.albums.titre)+"/song/"+this._encodeUri(this.artist.albums.songs.titre);
-            //on récupére les infos en fonction de l'id de l'artiste/album/musique
-            this.$.get_content.url ="/search/artist_id/"+this.artist._id+"/album_id/"+this.artist.albums._id+"/song_id/"+this.artist.albums.songs._id;
-            this.$.get_content.generateRequest();
-        }
-        //Si l'utilisateur veut enregistrer ses modifications
-    	else{
-            //On replace dans un premier temps les <div> et <p> par des br car ces élements (<div> et <p>) sont utilisés par les navigateurs pour les sauts de ligne dans un contenteditable
-            //On supprime ensuite les retours chariots et les autres tags HTML de l'utilisateur
-            this.$.songLyricsNonEditable.innerHTML = this.$.songLyricsEditable.innerHTML.replace(/<div>|<p>/ig,"<br>").replace(/\\n|\\r|\\r\\n|(<((?!br)[^>]+)>)/ig,"");
-            //Construction du body pour l'envoie
-            this.artist.albums.songs.lyrics = this.$.songLyricsNonEditable.innerHTML;
-            this.$.put_content.body = JSON.stringify(this.artist.albums.songs);
-            //Construction de la requête
-            this.$.put_content.url = "/search/artist/"+this._encodeUri(this.artist.name)+"/album/"+this._encodeUri(this.artist.albums.titre)+"/song/"+this._encodeUri(this.artist.albums.songs.titre);
-            //On lance la requête
-            this.$.put_content.generateRequest();
-              //Si des modifications on eu lieu alors il faudra envoyé la requête ajax
-//            if(this.artist.albums.songs.lyrics != this.$.songLyricsNonEditable.innerHTML){
-//                console.log("Des modifications"); } else{console.log("Pas de modifications");}
-        }
-	},
-    doIsClassic: function(){
-        this.set('artist.albums.songs.isClassic', !this.artist.albums.songs.isClassic);
-        this.$.put_content.body = {
-            "_id":      this.artist.albums.songs._id,
-            "isClassic":this.artist.albums.songs.isClassic
-        };
-        console.log(this.$.put_content.body);
-        this.$.put_content.url = "/search/artist/"+this._encodeUri(this.artist.name)+"/album/"+this._encodeUri(this.artist.albums.titre)+"/song/"+this._encodeUri(this.artist.albums.songs.titre);
-        this.$.put_content.generateRequest();
-    },
-  });
+    <script>
+        // element registration
+        Polymer({
+            is: "page-song",
+            // add properties and methods on the element's prototype
+            properties: {
+                artist:{
+                    type: Object,
+                },
+                idxCurrentTab:{
+                    type:Number,
+                    value:0,
+                },
+                editing: {
+                    type: Boolean,
+                    value: false
+                },
 
-</script>
+            },
+            getURLSongId : function(){
+                return "/search/artist_id/"+this.artist._id+"/album_id/"+this.artist.albums._id+"/song_id/"+this.artist.albums.songs._id;
+            },
+            getURLSong: function(){
+                return "/search/artist/"+this._encodeUri(this.artist.name)+"/album/"+this._encodeUri(this.artist.albums.titre)+"/song/"+this._encodeUri(this.artist.albums.songs.titre);
+            },
+            ready: function(){
+                //Fonction permettant de réagir a un coller dans la zone prévu pour les lyrics
+                this.$.songLyricsEditable.addEventListener("paste", function(e) {
+                    e.preventDefault();
+                    var text = e.clipboardData.getData("text/plain");
+                    text = text.replace(/\n|\r\n|\r/g, "<br>");
+                    var cleanText = text.replace(/(<([^>]+)>)/ig, "<br>");//pour échapper éventuellement du html ou script
+                    this.innerHTML = cleanText;
+                });
+            },
+            _encodeUri : function(titre){
+                return encodeURIComponent(titre);
+            },
+            //Cette fonction est utilisé lorsque l'utilisateur charge la page et lorsqu'il clique sur le bouton de modification des lyrics
+            handleResponse: function(request) {
+                console.log("Requête reçue dans handleResponse");
+                //Si l'utilisateur clique sur le bouton de modification des lyrics
+                if(this.editing){
+                    //On ajoute via innerHTML les lyrics car nous récupérons du HTML en base de données (des balises <br>) cela nous permet de garder la mise en page
+                    //Nous ne pouvons donc pas bind les lyrics directement dans le html du template
+                    this.$.songLyricsEditable.innerHTML = this.artist.albums.songs.lyrics;
+                }
+                //Si l'utilisateur l'utilisateur veut sauvegarder ses modifications
+                else{
+                    this.$.songLyricsNonEditable.innerHTML = this.artist.albums.songs.lyrics;
+                    /*On rempli aussi le contenu éditable (#songLyricsEditable) cela permet de ne pas avoir des lyrics vide lors de l'attente de la reponse ajax*/
+                    this.$.songLyricsEditable.innerHTML = this.artist.albums.songs.lyrics;
+                }
+            },
+            _concat: function(str1,str2){
+                return this._encodeUri(str1+' '+str2);
+            },
+            //Lorsque l'utilisateur clique sur le bouton de modification ou de sauvegarde
+            doEdit: function(e){
+                this.editing=!this.editing;
+                //lorsque l'utilisateur clique sur l'icone de modification
+                if(this.editing){
+                    //on récupére les infos en fonction de l'id de l'artiste/album/musique
+                    this.$.get_content.url = this.getURLSongId();
+                    this.$.get_content.generateRequest();
+                }
+                //Si l'utilisateur veut enregistrer ses modifications
+                else{
+                    //1er replace : On replace dans un premier temps les <div> (chrome) et <p> (firefox) du contenteditable correspondant au saut de ligne par des <br>
+                    //2eme replace :On supprime ensuite les retours chariots et les autres tags HTML de l'utilisateur
+                    this.$.songLyricsNonEditable.innerHTML = this.$.songLyricsEditable.innerHTML.replace(/<div>|<p>/ig,"<br>").replace(/\\n|\\r|\\r\\n|(<((?!br)[^>]+)>)/ig,"");
+                    //Construction du body pour l'envoie des lyrics, on doit envoyer le html afin de garder la bonne mise en page
+                    this.artist.albums.songs.lyrics = this.$.songLyricsNonEditable.innerHTML;
+                    this.$.put_content.body = JSON.stringify(this.artist.albums.songs);
+                    //Construction de la requête
+                    this.$.put_content.url = this.getURLSong();
+                    //On lance la requête
+                    this.$.put_content.generateRequest();
+                    //Si des modifications on eu lieu alors il faudra envoyé la requête ajax
+//                    if(this.artist.albums.songs.lyrics != this.$.songLyricsNonEditable.innerHTML){ console.log("Des modifications"); } else{console.log("Pas de modifications"); }
+                }
+            },
+            doIsClassic: function(){
+                //Permet garder le binding lors de la modification d'un attribut profond
+                this.set('artist.albums.songs.isClassic', !this.artist.albums.songs.isClassic);
+                this.$.put_content.body = {
+                    "_id":      this.artist.albums.songs._id,
+                    "isClassic":this.artist.albums.songs.isClassic
+                };
+                this.$.put_content.url = this.getURLSong();
+                this.$.put_content.generateRequest();
+            },
+        });
+    </script>
 </dom-module>

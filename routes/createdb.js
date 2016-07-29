@@ -2,8 +2,13 @@ var express         = require('express');
 var router          = express.Router();
 var request         = require('request');
 var lyricsWikia     = require('./handler/lyricsWikia.js');
-var config         = require('./conf/conf.json');
+var utilHandler     = require('./handler/utilHandler.js');
+var config          = require('./conf/conf.json');
 var elasticSearchHandler = require('./handler/elasticSearchHandler.js');
+const fs            = require('fs');
+const collectionArtist  = config.database.collection_artist;
+const collectionAlbum   = config.database.collection_album;
+const collectionSong    = config.database.collection_song;
 
 //createdb, permet de créer entierement la base de données
 router.get('/',function(req, res){
@@ -92,6 +97,38 @@ router.get('/createdbelasticsearchartist', function(req, res){
     })
     res.send("OK");
 });
+
+//Cette fonction créee l'arborescence de dossier représentant la base de données
+router.get('/createdirectories',function(req, res){
+    var db = req.db;
+    var skip = 0;
+    var limit = 30000;
+    this.console.log("dedans /updatedb/multitrackspath");
+    const pathMultitracks = "E:/Multitracks downloadees/";
+    (function nextSkipStep(skip){
+        db.collection(collectionArtist).find({}).skip(skip).limit(limit).toArray(function(err,tObj){
+            var i = 0, l = tObj.length;
+            var encoded = "";
+            for(i ; i < l; i++){
+                encoded = utilHandler.encodePathWindows(tObj[i].name);
+                fs.mkdir("public/multitracks/"+encoded,()=>{
+                });
+                if(encoded.length > 224){
+                    console.log("Taille encoded: "+encoded.length+" Original Taille: "+tObj[i].name.length);
+                }
+                if(i==limit-1){
+                    skip += limit;
+                    console.log("nextSkipStep = "+skip);
+                    nextSkipStep(skip);
+                }
+            }
+        });
+    })(skip)
+
+    //On cherche dans le dossier contenant les musiques multitracks
+    res.send("OK");
+});
+
 router.get('*', function(req, res){
     //On renvoie index.html qui ira match l'url via <app-router> de index.html ce qui renverra la page 404 si la page n'existe pas
     res.sendFile(path.join(__dirname ,'public',  'index.html'));

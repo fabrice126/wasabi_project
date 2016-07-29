@@ -2,102 +2,138 @@
 <link rel="import" href="../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+
 <!--my_components-->
 <link rel="import" href="show-dialog.html">
-<link rel="import" href="x-album.html">  
-   
-    <dom-module id="page-artist">
-       <template>
-            <style>
-                .flex-wrap {
-                    @apply(--layout-horizontal);
-                    @apply(--layout-wrap);
-                }
-                .artistname{
-                    font-size: 34px;
-                    line-height: 34px;
-                    padding-top: 3%;
-                    padding-right: 24px;
-                    padding-bottom: 14px;
-                    padding-left: 24px;
-                }
-                paper-material{
-                    margin-bottom: 5%;
-                }   
-                #externalLink{
-                    padding-right: 24px;
-                    padding-bottom: 14px;
-                    padding-left: 24px;
-                }
-                a{
-                    text-decoration: blink;
-                }
-                paper-icon-button {
-                    /*permet de ne pas déformer les icones*/
-                    font-size: 0;
-                    padding: 6px;
-                }
-            </style>
-            <paper-material elevation="1">
-                <iron-ajax id="get_content" auto url="/search/artist/{{_encodeUri(nameArtist)}}" last-response="{{artist}}" handleAs="json"> </iron-ajax>
-                <template is="dom-if" if="{{artist.rdf.length}}">
-                    <show-dialog labeldialog="RDF {{artist.name}} :" labelbutton="Show RDF" content="{{artist.rdf}}" labelexitdialog="Close"></show-dialog>
-                </template>
-                <div class="artistname">{{artist.name}}</div>
-                <div id="externalLink">
-                    <a href="{{artist.urlWikipedia}}" target="_blank" tabindex="-1"><paper-icon-button src="../img/wikipedia_icon.svg" ></paper-icon-button></a>
-                    <a href="{{artist.urlFacebook}}" target="_blank" tabindex="-1"><paper-icon-button  src="../img/facebook_icon.svg"></paper-icon-button></a>
-                    <a href="{{artist.urlTwitter}}"  target="_blank"tabindex="-1"><paper-icon-button  src="../img/twitter_icon.svg"></paper-icon-button></a>
-                    <a href="{{artist.urlMySpace}}" target="_blank" tabindex="-1"><paper-icon-button  src="../img/myspace_icon.svg"></paper-icon-button></a>
-                    <a href="{{artist.urlOfficialWebsite}}" target="_blank" tabindex="-1"><paper-icon-button  src="../img/website_icon.svg"></paper-icon-button></a>
-                </div>
-                
+<link rel="import" href="x-album.html">
 
 
-                
-                {{artist.locationInfo}}
-                {{artist.activeYears}}
-                {{artist.genres}}
-                {{artist.labels}}
-                {{artist.members}}
-                {{artist.formerMembers}}
+<dom-module id="page-artist">
+    <template>
+        <style>
+            .flex-wrap {
+                @apply(--layout-horizontal);
+                @apply(--layout-wrap);
+            }
+            .artistname{
+                font-size: 34px;
+                line-height: 34px;
+                padding-top: 3%;
+                padding-right: 24px;
+                padding-bottom: 14px;
+                padding-left: 24px;
+            }
+            paper-material{
+                margin-bottom: 5%;
+            }
+            #externalLink{
+                padding-right: 24px;
+                padding-bottom: 14px;
+                padding-left: 24px;
+            }
+            a{
+                text-decoration: blink;
+            }
+            paper-icon-button {
+                /*permet de ne pas déformer les icones*/
+                font-size: 0;
+                padding: 6px;
+            }
+        </style>
+        <paper-material elevation="1">
 
-                <template class="flex-wrap" is="dom-repeat" items="{{artist.albums}}" as="album" initial-count="1"><!---->
-                    <x-album album={{album}}></x-album><!--artist={{artist}}-->
-                </template>
-            </paper-material>
-        </template>
-   "members":[
-       {"name":"Bruce Dickinson","instruments":["lead vocals "],"activeYears":["1982-1993"," 1999-present\n"]},
-       {"name":"Dave Murray","instruments":["guitar "],"activeYears":["1976-present\n"]},
-       {"name":"Adrian Smith","instruments":["guitar"," backing vocals "],"activeYears":["1980-1990"," 1999-present\n"]},
-       {"name":"Janick Gers","instruments":["guitar "],"activeYears":["1990-present\n"]},
-       {"name":"Steve Harris","instruments":["bass"," keyboards"," backing vocals "],"activeYears":["1975-present\n"]},
-       {"name":"Nicko McBrain","instruments":["drums"," percussion "],"activeYears":["1983-present\n"]}
-   ],
-   "formerMembers":[
-   {"name":"Paul Day","instruments":["lead vocals "],"activeYears":["1975-1976\n"]},{"name":"Denis Wilcock","instruments":["lead vocals "],"activeYears":["1976-1977\n"]},{"name":"Paul Di'Anno","instruments":["lead vocals "],"activeYears":["1978-1981\n"]},{"name":"Blaze Bayley","instruments":["lead vocals "],"activeYears":["1994-1999\n"]},{"name":"Dave Sullivan","instruments":["guitar "],"activeYears":["1975-1976\n"]},{"name":"Terry Rance","instruments":["guitar "],"activeYears":["1975-1976\n"]},{"name":"Bob Sawyer","instruments":["guitar "],"activeYears":["1976-1977\n"]},{"name":"Terry Wapram","instruments":["guitar "],"activeYears":["1977\n"]},{"name":"Kent Ewinz","instruments":["guitar "],"activeYears":["1979\n"]},{"name":"Paul Cairns","instruments":["guitar "],"activeYears":["1979\n"]},{"name":"Paul Todd","instruments":["guitar "],"activeYears":["1979\n"]},{"name":"Dave Mac","instruments":[" guitar "],"activeYears":["1979\n"]},{"name":"Tony Parsons","instruments":["guitar "],"activeYears":["1979\n"]},{"name":"Dennis Stratton","instruments":["guitar"," backing vocals "],"activeYears":["1979-1980\n"]},{"name":"Ron Matthews","instruments":["drums "],"activeYears":["1975-1977\n"]},{"name":"Thunderstick","instruments":["drums "],"activeYears":["1977\n"]},{"name":"Doug Sampson","instruments":["drums "],"activeYears":["1977-1979\n"]},{"name":"Clive Burr","instruments":["drums "],"activeYears":["1979-1982\n"]},{"name":"Tony Moore","instruments":["keyboards "],"activeYears":["1977\n"]}],
-    
-<script>
-  // element registration
-  Polymer({
-    is: "page-artist",
-    // add properties and methods on the element's prototype
-    properties: {
-        artist:{
-            type: Object,
-            value: {}
-        },
-    },
-    ready: function(e){    
-    },
-    _stringify: function(obj){
-        return JSON.stringify(obj);
-    },
-    _encodeUri : function(nameArtist){
-        return encodeURIComponent(nameArtist);
-    },    
-  });  
+            <iron-ajax id="get_content" auto url="/search/artist/{{_encodeUri(nameArtist)}}" last-response="{{artist}}" handleAs="json"> </iron-ajax>
+            <template is="dom-if" if="{{artist.rdf.length}}">
+                <show-dialog labeldialog="RDF {{artist.name}} :" labelbutton="Show RDF" content="{{artist.rdf}}" labelexitdialog="Close"></show-dialog>
+            </template>
+            <div class="artistname">{{artist.name}}</div>
+            <div id="externalLink">
+                <a href="{{artist.urlWikipedia}}" target="_blank" tabindex="-1"><paper-icon-button src="../img/wikipedia_icon.svg" ></paper-icon-button></a>
+                <a href="{{artist.urlFacebook}}" target="_blank" tabindex="-1"><paper-icon-button  src="../img/facebook_icon.svg"></paper-icon-button></a>
+                <a href="{{artist.urlTwitter}}"  target="_blank"tabindex="-1"><paper-icon-button  src="../img/twitter_icon.svg"></paper-icon-button></a>
+                <a href="{{artist.urlMySpace}}" target="_blank" tabindex="-1"><paper-icon-button  src="../img/myspace_icon.svg"></paper-icon-button></a>
+                <a href="{{artist.urlOfficialWebsite}}" target="_blank" tabindex="-1"><paper-icon-button  src="../img/website_icon.svg"></paper-icon-button></a>
+            </div>
 
-</script>       
+
+
+            {{artist.locationInfo}}
+            {{artist.activeYears}}
+            {{artist.genres}}
+            {{artist.labels}}
+            {{artist.members}}
+            {{artist.formerMembers}}
+            <!--<div id="testBenchmark"></div>-->
+            <template class="flex-wrap" is="dom-repeat" items="{{artist.albums}}" initial-count="1" as="album" ><!--initial-count="1"-->
+                <x-album album={{album}}></x-album>
+            </template>
+
+        </paper-material>
+    </template>
+
+    <script>
+        // element registration
+        Polymer({
+            is: "page-artist",
+            // add properties and methods on the element's prototype
+            properties: {
+                artist:{
+                    type: Object,
+                    value: {}
+                },
+                route:{
+                    type:String
+                }
+            },
+            ready: function(e){
+            },
+//    handleResponse: function(){
+//        console.log("JSStart");
+//        var i = 0;
+//        var element = document.getElementById("testBenchmark");
+//        var artistLength = this.artist.albums.length
+//        var start = Date.now();
+//        for(i;i<artistLength;i++){
+//            var xalbum = document.createElement("x-album");
+//            xalbum.album = this.artist.albums[i];
+//            element.appendChild(xalbum);
+//            var j = 0;
+//            var albumLength = this.artist.albums[i].songs.length;
+//            for(j;j<albumLength;j++){
+//                var xsong = document.createElement("x-song");
+//
+////                var node = document.createTextNode(this.artist.albums[i].songs[j].titre);
+////                xsong.appendChild(node);
+//
+//                xsong.album = this.artist.albums[i];
+//                xsong.editing = false;
+//                xsong.song=this.artist.albums[i].songs[j];
+//
+//                element.appendChild(xsong);
+//            }
+//        }
+//        for(i;i<54000;i++){
+//            var xsong = document.createElement("p");
+//
+//            var node = document.createTextNode("teste fzehuif hzeuif hzeuifh");
+//            xsong.appendChild(node);
+//
+////                xsong.album = this.artist.albums[i];
+////                xsong.editing = false;
+////                xsong.song=this.artist.albums[i].songs[j];
+//
+//            element.appendChild(xsong);
+//        }
+//        console.log(Date.now() - start);
+//        console.log("JSFini");
+//    },
+            _stringify: function(obj){
+                return JSON.stringify(obj);
+            },
+            _encodeUri : function(nameArtist){
+                return encodeURIComponent(nameArtist);
+            },
+        });
+
+    </script>
 </dom-module>

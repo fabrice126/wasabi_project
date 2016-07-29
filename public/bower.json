@@ -64,9 +64,11 @@
     "paper-tabs": "PolymerElements/paper-tabs#~1.2.4",
     "paper-toolbar": "PolymerElements/paper-toolbar#~1.1.2",
     "pushstate-anchor": "~0.3.2",
-    "google-youtube": "GoogleWebComponents/google-youtube#^1.2.1"
+    "google-youtube": "GoogleWebComponents/google-youtube#^1.2.1",
+    "app-layout": "PolymerElements/app-layout#^0.10.1",
+    "app-route": "PolymerElements/app-route#^0.9.2"
   },
   "resolutions": {
-    "polymer": "^1.2.4"
+    "polymer": "^1.2.3"
   }
 }
