@@ -1,0 +1,83 @@
+<link href="../../bower_components/polymer/polymer.html" rel="import">
+<link href="../../bower_components/iron-ajax/iron-ajax.html" rel="import">
+<link href="../../bower_components/paper-material/paper-material.html" rel="import">
+<link href="../../bower_components/paper-button/paper-button.html" rel="import">
+
+
+
+
+<dom-module id="page-genre">
+    <template>
+        <style>
+            .flex-wrap {
+                @apply(--layout-horizontal);
+                @apply(--layout-wrap);
+            }
+            paper-material{
+                margin-bottom: 5%;
+            }
+            .inherit {
+                color: inherit;
+                background-color: inherit;
+            }
+            paper-card{
+                width: 100%;
+                padding-left: 5%;
+                padding-top: 1%;
+                padding-bottom: 1%;
+                cursor: pointer;
+                color: black;
+            }
+            .song_search_bar{
+                background-color: #C0A805;
+            }
+            .search_title{
+                position: absolute;
+                margin-top: 10px;
+                margin-left: 10px;
+            }
+            .song_search_bar{
+                border-radius: 4px;
+                padding: 7px;
+            }
+            .center{
+                text-align: center;
+            }
+            .searchText-info{
+                font-size: 1.5em;
+                padding: 25px;
+                color: #333333;
+            }
+        </style>
+        <paper-material elevation="1">
+            <iron-ajax id="get_content" auto url="/search/genre/{{_encodeUri(genreName)}}" last-response="{{genres}}" handleAs="json"> </iron-ajax>
+            <iron-ajax id="get_count"   auto url="/search/count/song/genre/{{_encodeUri(genreName)}}" last-response="{{countField}}" handleAs="json"> </iron-ajax>
+            <p class="center searchText-info">Nous avons actuellement : {{countField.count}} de {{genreName}}</p>
+            <template class="flex-wrap" is="dom-repeat" items="{{genres}}" as="genre" initial-count="1" >
+                <a href="#/search/artist/{{_encodeUri(genre.name)}}/album/{{_encodeUri(genre.albumTitre)}}/song/{{_encodeUri(genre.titre)}}" class="inherit">
+                    <paper-card elevation="0" >
+                        <img class="song_search_bar" src="../../img/song_search_bar.svg" alt="Band">
+                        <span class="search_title">{{genre.titre}} - {{genre.name}} - {{genre.albumTitre}}</span>
+                        <paper-ripple></paper-ripple>
+                    </paper-card>
+                </a>
+            </template>
+        </paper-material>
+    </template>
+
+    <script>
+        // element registration
+        Polymer({
+            is: "page-genre",
+            // add properties and methods on the element's prototype
+            properties: {
+            },
+            ready: function(e){
+            },
+            _encodeUri : function(nameArtist){
+                return encodeURIComponent(nameArtist);
+            },
+        });
+
+    </script>
+</dom-module>

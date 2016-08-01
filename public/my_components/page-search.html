@@ -2,6 +2,8 @@
 
 <!-- Iron Elements -->
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link href="../bower_components/iron-ajax/iron-ajax.html" rel="import">
+<link href="../bower_components/paper-icon-button/paper-icon-button.html" rel="import">
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
 
 <!-- Paper Elements -->
@@ -102,7 +104,8 @@
                    <a href="#/search/artist/{{_encodeUri(result.name)}}/album/{{_encodeUri(result.albumTitre)}}/song/{{_encodeUri(result.titre)}}" class="inherit">
                         <paper-card elevation="0" >
                             <img class="song_search_bar" src="../img/song_search_bar.svg" alt="Song"> 
-                            <span class="search_title">{{result.titre}} - {{result.name}} <span class="search_album">(album: {{result.albumTitre}})</span></span>
+                            <span class="search_title">{{result.titre}} - {{result.name}}<span class="search_album">(album: {{result.albumTitre}})</span>
+                            </span>
                             <paper-ripple></paper-ripple>
                         </paper-card> 
                     </a>

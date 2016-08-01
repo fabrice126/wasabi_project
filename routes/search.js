@@ -88,7 +88,7 @@ router.get('/categorie/:nomCategorie/lettre/:lettre/page/:numPage', function (re
 });
 
 //==========================================================================================================================\\
-//===================================WEBSERVICE REST POUR LA NAVIGATION ENTRE CATEGORIES====================================\\
+//==============================WEBSERVICE REST POUR LA NAVIGATION ENTRE CATEGORIES (SUBJCET)===============================\\
 //==========================================================================================================================\\
 //GET CATEGORY PAR NOM DE CATEGORY ET PAR COLLECTION
 router.get('/category/:collection/:categoryName',function(req,res){
@@ -102,6 +102,120 @@ router.get('/category/:collection/:categoryName',function(req,res){
     db.collection(collection).find({subject:categoryName},{name:1,titre:1,albumTitre:1}).sort({titre:1}).limit(limit).toArray(function(err,objs){
         res.send(JSON.stringify(objs));
     })
+});
+
+//==========================================================================================================================\\
+//====================================WEBSERVICE REST POUR LA NAVIGATION ENTRE PRODUCER=====================================\\
+//==========================================================================================================================\\
+//GET PRODUCER PAR NOM DE PRODUCER
+//Peut évoluer en /producer/:collection/:producerName avec :collection = artist/album/song si un artist ou un album a des producer
+router.get('/producer/:producerName',function(req,res){
+    var db = req.db;
+    // var collection= req.params.collection;
+    // if(collection !== collectionArtist && collection !==collectionAlbum && collection !==collectionSong){
+    //     return res.status(404).send([{error:config.http.error.global_404}]);
+    // }
+    var limit = config.request.limit, producerName= req.params.producerName;
+    db.collection(collectionSong).find({producer:producerName},{name:1,titre:1,albumTitre:1}).sort({titre:1}).limit(limit).toArray(function(err,objs){
+        console.log(objs);
+        res.send(JSON.stringify(objs));
+    })
+});
+
+//==========================================================================================================================\\
+//===================================WEBSERVICE REST POUR LA NAVIGATION ENTRE RECORDLABEL===================================\\
+//==========================================================================================================================\\
+//GET RECORDLABEL PAR NOM DE RECORDLABEL
+//Peut évoluer en /recordlabel/:collection/:recordLabelName avec :collection = artist/album/song si un artiste ou un album a des recordLabel
+router.get('/recordlabel/:recordLabelName',function(req,res){
+    var db = req.db;
+    // var collection= req.params.collection;
+    // if(collection !== collectionArtist && collection !==collectionAlbum && collection !==collectionSong){
+    //     return res.status(404).send([{error:config.http.error.global_404}]);
+    // }
+    var limit = config.request.limit, recordLabelName= req.params.recordLabelName;
+    db.collection(collectionSong).find({recordLabel:recordLabelName},{name:1,titre:1,albumTitre:1}).sort({titre:1}).limit(limit).toArray(function(err,objs){
+        console.log(objs);
+        res.send(JSON.stringify(objs));
+    })
+});
+//==========================================================================================================================\\
+//=====================================WEBSERVICE REST POUR LA NAVIGATION ENTRE GENRE=======================================\\
+//==========================================================================================================================\\
+//GET RECORDLABEL PAR NOM DE RECORDLABEL
+//Peut évoluer en /recordlabel/:collection/:genreName avec :collection = album/song si un album a des Genre
+router.get('/genre/:genreName',function(req,res){
+    var db = req.db;
+    // var collection= req.params.collection;
+    // if(collection !== collectionArtist && collection !==collectionAlbum && collection !==collectionSong){
+    //     return res.status(404).send([{error:config.http.error.global_404}]);
+    // }
+    var limit = config.request.limit, genreName= req.params.genreName;
+    db.collection(collectionSong).find({genre:genreName},{name:1,titre:1,albumTitre:1}).sort({titre:1}).limit(limit).toArray(function(err,objs){
+        console.log(objs);
+        res.send(JSON.stringify(objs));
+    })
+});
+//==========================================================================================================================\\
+//====================================WEBSERVICE REST POUR LA NAVIGATION ENTRE RECORDED=====================================\\
+//==========================================================================================================================\\
+//GET RECORDED PAR NOM DE RECORDED
+router.get('/recorded/:recordedName',function(req,res){
+    var db = req.db, limit = config.request.limit, recordedName= req.params.recordedName;
+    db.collection(collectionSong).find({recorded:recordedName},{name:1,titre:1,albumTitre:1}).sort({titre:1}).limit(limit).toArray(function(err,objs){
+        console.log(objs);
+        res.send(JSON.stringify(objs));
+    })
+});
+//==========================================================================================================================\\
+//=====================================WEBSERVICE REST POUR LA NAVIGATION ENTRE AWARD=======================================\\
+//==========================================================================================================================\\
+//GET AWARD PAR NOM DE AWARD
+router.get('/award/:awardName',function(req,res){
+    var db = req.db, limit = config.request.limit, awardName= req.params.awardName;
+    db.collection(collectionSong).find({award:awardName},{name:1,titre:1,albumTitre:1}).sort({titre:1}).limit(limit).toArray(function(err,objs){
+        res.send(JSON.stringify(objs));
+    })
+});
+//==========================================================================================================================\\
+//=====================================WEBSERVICE REST POUR LA NAVIGATION ENTRE WRITER======================================\\
+//==========================================================================================================================\\
+//GET WRITER PAR NOM DE WRITER
+router.get('/writer/:writerName',function(req,res){
+    var db = req.db, limit = config.request.limit, writerName= req.params.writerName;
+    db.collection(collectionSong).find({writer:writerName},{name:1,titre:1,albumTitre:1}).sort({titre:1}).limit(limit).toArray(function(err,objs){
+        res.send(JSON.stringify(objs));
+    })
+});
+//==========================================================================================================================\\
+//=====================================WEBSERVICE REST POUR LA NAVIGATION ENTRE FORMAT======================================\\
+//==========================================================================================================================\\
+//GET FORMAT PAR NOM DE FORMAT
+router.get('/format/:formatName',function(req,res){
+    var db = req.db, limit = config.request.limit, formatName= req.params.formatName;
+    db.collection(collectionSong).find({format:formatName},{name:1,titre:1,albumTitre:1}).sort({titre:1}).limit(limit).toArray(function(err,objs){
+        res.send(JSON.stringify(objs));
+    })
+});
+
+//==========================================================================================================================\\
+//================WEBSERVICE REST POUR COMPTER LE NOMBRE D'OCCURENCE D'UN ATTRIBUT DANS UNE COLLECTION DONNEE===============\\
+//==========================================================================================================================\\
+router.get('/count/:collection/:fieldName/:fieldValue', function (req, res) {
+    var db = req.db, collection= req.params.collection, fieldName= req.params.fieldName, fieldValue= req.params.fieldValue;
+    if(collection !== collectionArtist && collection !==collectionAlbum && collection !==collectionSong){
+        return res.status(404).send([{error:config.http.error.global_404}]);
+    }
+    var query = {};
+    query[fieldName] = fieldValue;
+    db.collection(collection).count(query,function(err, countfield) {
+        if(err){
+            console.log(err);
+            return res.status(404).send([{error:config.http.error.global_404}]);
+        }
+        var dbcount = {count:countfield};
+        res.send(JSON.stringify(dbcount));
+    });
 });
 //==========================================================================================================================\\
 //============================WEBSERVICE REST POUR L'AFFICHAGE DU NOMBRE D'ARTISTES/ALBUMS/SONGS============================\\

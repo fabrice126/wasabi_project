@@ -134,28 +134,59 @@
                             <article>Runtime: {{artist.albums.songs.runtime}}</article>
                         </template>
                         <template is="dom-if" if="{{artist.albums.songs.format.length}}">
-                            <article>Format: {{artist.albums.songs.format}}</article>
+                            <article>Format:
+                                <template is="dom-repeat" items="{{artist.albums.songs.format}}" as="format">
+                                    <a href="#/search/format/{{_encodeUri(format)}}">{{format}}</a>
+                                </template>
+                            </article>
                         </template>
                         <template is="dom-if" if="{{artist.albums.songs.genre.length}}">
-                            <article>Genre: {{artist.albums.songs.genre}}</article>
+                            <article>
+                                Genre:
+                                <template is="dom-repeat" items="{{artist.albums.songs.genre}}" as="genre">
+                                    <a href="#/search/genre/{{_encodeUri(genre)}}">{{genre}}</a>
+                                </template>
+                            </article>
                         </template>
                         <template is="dom-if" if="{{artist.albums.songs.producer.length}}">
-                            <article>Producer: {{artist.albums.songs.producer}}</article>
+                            <article>
+                                Producer:
+                                <template is="dom-repeat" items="{{artist.albums.songs.producer}}" as="producer">
+                                    <a href="#/search/producer/{{_encodeUri(producer)}}">{{producer}}</a>
+                                </template>
+                            </article>
                         </template>
                         <template is="dom-if" if="{{artist.albums.songs.recordLabel.length}}">
-                            <article>RecordLabel: {{artist.albums.songs.recordLabel}}</article>
+                            <article>
+                                RecordLabel:
+                                <template is="dom-repeat" items="{{artist.albums.songs.recordLabel}}" as="recordLabel">
+                                    <a href="#/search/recordlabel/{{_encodeUri(recordLabel)}}">{{recordLabel}}</a>
+                                </template>
+                            </article>
                         </template>
                         <template is="dom-if" if="{{artist.albums.songs.writer.length}}">
-                            <article>Writer: {{artist.albums.songs.writer}}</article>
+                            <article>Writer:
+                                <template is="dom-repeat" items="{{artist.albums.songs.writer}}" as="writer">
+                                    <a href="#/search/writer/{{_encodeUri(writer)}}">{{writer}}</a>
+                                </template>
+                            </article>
                         </template>
                         <template is="dom-if" if="{{artist.albums.songs.recorded.length}}">
-                            <article>Recorded: {{artist.albums.songs.recorded}}</article>
+                            <article>Recorded:
+                                <template is="dom-repeat" items="{{artist.albums.songs.recorded}}" as="recorded">
+                                    <a href="#/search/recorded/{{_encodeUri(recorded)}}">{{recorded}}</a>
+                                </template>
+                            </article>
                         </template>
                         <template is="dom-if" if="{{artist.albums.songs.releaseDate.length}}">
                             <article>Release Date: {{artist.albums.songs.releaseDate}}</article>
                         </template>
                         <template is="dom-if" if="{{artist.albums.songs.award.length}}">
-                            <article>Award: {{artist.albums.songs.award}}</article>
+                            <article>Award:
+                                <template is="dom-repeat" items="{{artist.albums.songs.award}}" as="award">
+                                    <a href="#/search/award/{{_encodeUri(award)}}">{{award}}</a>
+                                </template>
+                            </article>
                         </template>
                         <template is="dom-if" if="{{artist.albums.songs.abstract.length}}">
                             <p>Abstract: {{artist.albums.songs.abstract}}</p>
@@ -173,7 +204,7 @@
                     <nav>
                         <template is="dom-if" if="{{artist.albums.songs.subject.length}}">
                             <template is="dom-repeat" items="{{artist.albums.songs.subject}}" as="subject">
-                                <a href="#/search/category/song/{{subject}}"> {{subject}}</a>
+                                <a href="#/search/category/song/{{_encodeUri(subject)}}"> {{subject}}</a>
                             </template>
                         </template>
                     </nav>
