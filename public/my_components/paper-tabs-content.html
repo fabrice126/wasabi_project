@@ -116,7 +116,9 @@
                 <iron-ajax id="get_content" url="/search/categorie/{{categorie}}/lettre/{{lettre}}/page/{{numPage}}" last-response="{{data}}" auto handleAs="json"> </iron-ajax>
             </template>
             <iron-ajax id="get_db_info" url="/search/dbinfo" last-response="{{db_info}}" auto handleAs="json"> </iron-ajax>
-            <!-- Génération des listes de catégories -->
+            <iron-ajax id="get_db_info_count" url="/search/count/{{categorie}}/{{lettre}}" last-response="{{dbcount}}" auto handleAs="json"> </iron-ajax>
+
+           <!-- Génération des listes de catégories -->
             <paper-material elevation="1">
                 <paper-tabs id="paperTabsCategorie" selected={{idxCurrentTab}}>
                     <template is="dom-repeat" items="{{categories}}" as="categorie">
@@ -175,7 +177,7 @@
                     <!-- Affichage des artists -->
                      <template is="dom-if" if="{{_isArtist(data)}}">
                         <paper-material class="listData" elevation="1">
-                            <div>Il y a actuellement {{_getNbCount(data)}} artists commençant par la lettre {{lettre}}</div>
+                            <div>Il y a actuellement {{_getNbCount(dbcount)}} artists commençant par la lettre {{lettre}}</div>
                              <template class="flex-wrap" is="dom-repeat" items="{{data.artists}}" as="artist">
                                  <paper-button on-tap='doLoadCategorie' id="#/search/artist/{{_encodeUri(artist.name)}}" raised>
                                      {{artist.name}}
@@ -186,7 +188,7 @@
                     <!-- Affichage des albums -->
                     <template is="dom-if" if="{{_isAlbum(data)}}">
                         <paper-material class="listData" elevation="1">
-                            <div>Il y a actuellement {{_getNbCount(data)}} albums commençant par la lettre {{lettre}}</div>
+                            <div>Il y a actuellement {{_getNbCount(dbcount)}} albums commençant par la lettre {{lettre}}</div>
                             <template class="flex-wrap" is="dom-repeat" items="{{data.albums}}" as="album">
                                  <paper-button on-tap='doLoadCategorie' id="#/search/artist/{{_encodeUri(album.name)}}/album/{{_encodeUri(album.titleAlbum)}}" raised>
                                      {{album.titleAlbum}}<br>
@@ -199,7 +201,7 @@
 
                     <template is="dom-if" if="{{_isSong(data)}}">
                        <paper-material class="listData" elevation="1">
-                           <div>Il y a actuellement {{_getNbCount(data)}} musiques commençant par la lettre {{lettre}}</div>
+                           <div>Il y a actuellement {{_getNbCount(dbcount)}} musiques commençant par la lettre {{lettre}}</div>
                             <template class="flex-wrap" is="dom-repeat" items="{{data.songs}}" as="song">
                                  <paper-button on-tap='doLoadCategorie' id="#/search/artist/{{_encodeUri(song.name)}}/album/{{_encodeUri(song.albumTitre)}}/song/{{_encodeUri(song.titleSong)}}" raised>
                                     {{song.titleSong}}<br>
@@ -287,7 +289,7 @@
     //fonction comptant le nombre d'occurences commençant par une certaine lettre
     _getNbCount:function(infosData){
         if(this._isData(infosData)){
-            return infosData.nbcount;
+            return infosData.count;
         }
         return 0;
     },

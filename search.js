@@ -5,6 +5,7 @@ var searchHandler   = require('./handler/searchHandler.js');
 var ObjectId        = require('mongoskin').ObjectID;
 var elasticSearchHandler = require('./handler/elasticSearchHandler.js');
 const config        = require('./conf/conf.json');
+const fs            = require('fs');
 const collectionArtist  = config.database.collection_artist;
 const collectionAlbum   = config.database.collection_album;
 const collectionSong    = config.database.collection_song;
@@ -13,10 +14,16 @@ const collectionSong    = config.database.collection_song;
 //==========================================================================================================================\\
 //GET LISTING DES ARTISTES ALBUMS ET MUSIQUES EN FONCTION DE OU DES LETTRES 
 router.get('/categorie/:nomCategorie/lettre/:lettre/page/:numPage', function (req, res, next) {
-    var tObjectRequest,limit,skip,tParamToFind;
-    var nomCategorie =  req.params.nomCategorie.toLowerCase(),lettre = req.params.lettre, numPage = req.params.numPage, db = req.db, numPageTest = parseInt(numPage);
+    var tObjectRequest,limit,skip,tParamToFind,nomCategorie,lettre,numPage,urlParamValid,numPageTest,db;
+    db = req.db;
+    nomCategorie = req.params.nomCategorie.toLowerCase();
+    lettre = req.params.lettre;
+    numPage = req.params.numPage;
+    urlParamValid = false;
+    numPageTest = parseInt(numPage);
     //Si le numéro de page est un entier supérieur a 0 et qu'il y a moins de 3 lettres dans :lettre
-    if(Number.isInteger(numPageTest) && numPageTest>=0 && lettre.length<=2 ){
+    if(Number.isInteger(numPageTest) && numPageTest>=0 && lettre.length<=2){
+        urlParamValid = true;
         limit = config.request.limit;
         skip = numPage*limit;
         tParamToFind = searchHandler.optimizeFind(lettre);
@@ -28,31 +35,20 @@ router.get('/categorie/:nomCategorie/lettre/:lettre/page/:numPage', function (re
         case "artists":
             tObjectRequest = searchHandler.constructData("name", tParamToFind);
             var start = Date.now();
-            //Nombre de requete necessaire a faire avant d'envoyer la réponse
-            var nbRequestDatabase = 2, nbRequestDone=0;
-            var objArtist = {};
             db.collection(collectionArtist).find({$or:tObjectRequest},{"name":1}).skip(skip).limit(limit).toArray(function(err,artists){
                 if (err) throw err;
-                objArtist.artists = artists;
-                objArtist.limit = limit;
-                nbRequestDone+=1;
-                console.log("artist_data= "+nbRequestDone);
-                console.log("Benchmark count artist : "+ (Date.now()-start));
-                if(nbRequestDone == nbRequestDatabase) {
+//                db.collection('artist').find({$or:tObjectRequest}).count(function(err, count) {
+                    if (err) throw err;
+                    var objArtist = {};
+                    objArtist.artists = artists;
+                    objArtist.nbcount = "count";
+                    objArtist.limit = limit;
+                    console.log("Benchmark count artist : "+ (Date.now()-start));
                     res.send(JSON.stringify(objArtist));
-                }
-            });
-            db.collection('artist').find({$or:tObjectRequest}).count(function(err, count) {
-                if (err) throw err;
-                nbRequestDone+=1;
-                console.log("artist_count = "+nbRequestDone);
-                objArtist.nbcount = count;
-                if(nbRequestDone == nbRequestDatabase){
-                    res.send(JSON.stringify(objArtist));
-                }
+//                });
             });
             break;
-        case "albums":
+        case "albums":   
             tObjectRequest = searchHandler.constructData("titre",tParamToFind);
             var start = Date.now();
             db.collection(collectionAlbum).aggregate([{"$match": { $or: tObjectRequest }}, {"$skip" :  skip},{"$limit" : limit},{$project : { "titleAlbum" : "$titre" ,"name":1}}
@@ -71,28 +67,19 @@ router.get('/categorie/:nomCategorie/lettre/:lettre/page/:numPage', function (re
             break;
         case "songs":
             tObjectRequest = searchHandler.constructData("titre",tParamToFind);
-            var start = Date.now();
             db.collection(collectionSong).aggregate([{"$match": { $or: tObjectRequest }},{"$skip" :  skip}, {"$limit" : limit}, {$project : { "albumTitre" : 1 ,"name":1,"titleSong":"$titre"}}
             ],function(err, songs) {
                 if (err) throw err;
                 //Le count sur des millions de data est long ~250ms
-                var objSongs = {};
-                objSongs.songs = songs;
-                objSongs.limit = limit;
-                objSongs.nbcount = "count";
-                console.log("Benchmark count songs : "+(Date.now()-start));
-                res.send(JSON.stringify(objSongs));
+//                    db.collection('song').find({ $or: tObjectRequest }).count(function(err, count) {
+                    if (err) throw err;
+                    var objSongs = {};
+                    objSongs.songs = songs;
+                    objSongs.nbcount = "count";
+                    objSongs.limit = limit;
+                    res.send(JSON.stringify(objSongs));
+//                    });
             });
-            // db.collection('song').find({ $or: tObjectRequest }).count(function(err, count) {
-            //     if (err) throw err;
-            //     nbRequestDone+=1;
-            //     console.log("song_COUNT= "+nbRequestDone);
-            //     objSongs.nbcount = count;
-            //     if(nbRequestDone == nbRequestDatabase){
-            //         console.log("Benchmark count songs : "+(Date.now()-start));
-            //         res.send(JSON.stringify(objSongs));
-            //     }
-            // });
             break;
         default:
                 res.status(404).send([{error:config.http.error.global_404}]);
@@ -130,6 +117,7 @@ router.get('/producer/:producerName',function(req,res){
     // }
     var limit = config.request.limit, producerName= req.params.producerName;
     db.collection(collectionSong).find({producer:producerName},{name:1,titre:1,albumTitre:1}).sort({titre:1}).limit(limit).toArray(function(err,objs){
+        console.log(objs);
         res.send(JSON.stringify(objs));
     })
 });
@@ -147,6 +135,7 @@ router.get('/recordlabel/:recordLabelName',function(req,res){
     // }
     var limit = config.request.limit, recordLabelName= req.params.recordLabelName;
     db.collection(collectionSong).find({recordLabel:recordLabelName},{name:1,titre:1,albumTitre:1}).sort({titre:1}).limit(limit).toArray(function(err,objs){
+        console.log(objs);
         res.send(JSON.stringify(objs));
     })
 });
@@ -163,6 +152,7 @@ router.get('/genre/:genreName',function(req,res){
     // }
     var limit = config.request.limit, genreName= req.params.genreName;
     db.collection(collectionSong).find({genre:genreName},{name:1,titre:1,albumTitre:1}).sort({titre:1}).limit(limit).toArray(function(err,objs){
+        console.log(objs);
         res.send(JSON.stringify(objs));
     })
 });
@@ -173,6 +163,7 @@ router.get('/genre/:genreName',function(req,res){
 router.get('/recorded/:recordedName',function(req,res){
     var db = req.db, limit = config.request.limit, recordedName= req.params.recordedName;
     db.collection(collectionSong).find({recorded:recordedName},{name:1,titre:1,albumTitre:1}).sort({titre:1}).limit(limit).toArray(function(err,objs){
+        console.log(objs);
         res.send(JSON.stringify(objs));
     })
 });
@@ -206,35 +197,7 @@ router.get('/format/:formatName',function(req,res){
         res.send(JSON.stringify(objs));
     })
 });
-//==========================================================================================================================\\
-//====================WEBSERVICE REST POUR COMPTER LE NOMBRE D'OCCURENCE DE DOCUMENT DANS UNE COLLECTION ===================\\
-//==========================================================================================================================\\
-router.get('/count/:collection/:lettre', function (req, res) {
-    var db = req.db, collection= req.params.collection,lettre= req.params.lettre, tParamToFind, fieldCollection, tObjectRequest;
-    if(collection == "Artists"){
-        collection = collectionArtist;
-        fieldCollection = "name";
-    }else if(collection == "Albums"){
-        collection = collectionAlbum;
-        fieldCollection = "titre";
-    }else if(collection == "Songs"){
-        collection = collectionSong;
-        fieldCollection = "titre";
-    }
-    if(collection !== collectionArtist && collection !==collectionAlbum && collection !==collectionSong || lettre.length>2){
-        return res.status(404).send([{error:config.http.error.global_404}]);
-    }
-    tParamToFind = searchHandler.optimizeFind(lettre);
-    tObjectRequest = searchHandler.constructData(fieldCollection, tParamToFind);
-    db.collection(collection).count({$or:tObjectRequest},function(err, countfield) {
-        if(err){
-            console.log(err);
-            return res.status(404).send([{error:config.http.error.global_404}]);
-        }
-        var dbcount = {count:countfield};
-        res.send(JSON.stringify(dbcount));
-    });
-});
+
 //==========================================================================================================================\\
 //================WEBSERVICE REST POUR COMPTER LE NOMBRE D'OCCURENCE D'UN ATTRIBUT DANS UNE COLLECTION DONNEE===============\\
 //==========================================================================================================================\\
@@ -260,8 +223,8 @@ router.get('/count/:collection/:fieldName/:fieldValue', function (req, res) {
 //GET PERMET D'OBTENIR LE NOMBRE D'ARTISTES/ALBUMS/SONGS
 router.get('/dbinfo', function (req, res) {
     var db = req.db;
+    var dbinfo = {};
     db.collection(collectionArtist).count(function(err, count) {
-        var dbinfo = {};
         dbinfo.nbArtist = count;
         db.collection(collectionAlbum).count(function(err, count) {
             dbinfo.nbAlbum = count;
