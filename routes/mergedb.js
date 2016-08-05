@@ -13,30 +13,28 @@ var router      = express.Router();
 var db_server   = require('mongoskin').db("mongodb://localhost:27017/wasabi_server");
 var ObjectId    = require('mongoskin').ObjectID;
 var config      = require('./conf/conf.json');
-
+const COLLECTIONARTIST  = config.database.collection_artist;
+const COLLECTIONALBUM   = config.database.collection_album;
+const COLLECTIONSONG    = config.database.collection_song;
 /**
  * Permet de merge les lyrics ayant un probléme de droit d'auteur en local mais avec des paroles sur le serveur
  */
 router.get('/song/lyricsnotlicensed',function(req, res) {
-    var db = req.db;
+    var db = req.db, request = {lyrics:/Unfortunately, we are not licensed to display/}, isNotEq = 0 ;
     this.console.log("dedans /mergedb/song/lyrics");
-    var request = {lyrics:/Unfortunately, we are not licensed to display/};
-    var collection = config.database.collection_song;
-    var isNotEq = 0 ;
-    db.collection(collection).find(request).toArray(function(err, tSongs) {
-        var i = 0;
-        var songLength = tSongs.length;
+    db.collection(COLLECTIONSONG).find(request).toArray(function(err, tSongs) {
+        var i = 0, songLength = tSongs.length;
         //Recursivement avec un timeout afin d'éviter l'erreur : possible EventEmitter memory leak detected. 51 open listeners added. Use emitter.setMaxListeners() to increase limit
         (function loopSong(i){
             //On va chercher dans la BDD du serveur qu'on a importé en local
             (function(song){
                 var next = ++i;
-                db_server.collection(collection).findOne({_id: new ObjectId(song._id) }, function (err, songServer) {
+                db_server.collection(COLLECTIONSONG).findOne({_id: new ObjectId(song._id) }, function (err, songServer) {
                     //Alors la chanson a été modifié sur le serveur
                     if(songServer.lyrics.length != song.lyrics.length){
                         isNotEq = isNotEq+1;
                         //On met a jour la db local
-                        db.collection(collection).update({_id : new ObjectId(song._id)}, { $set: {"lyrics":songServer.lyrics} });
+                        db.collection(COLLECTIONSONG).update({_id : new ObjectId(song._id)}, { $set: {"lyrics":songServer.lyrics} });
                         console.log("Song updated = "+songServer.name+" - "+songServer.titre+" - "+songServer._id+" - "+songServer.lyrics.length+" <-> "+song.lyrics.length);
                     }
                 });
@@ -54,32 +52,25 @@ router.get('/song/lyricsnotlicensed',function(req, res) {
  * Permet de merge les lyrics de la BDD local avec les lyrics de la BDD du serveur
  */
 router.get('/song/lyrics',function(req, res) {
-    var db = req.db;
+    var db = req.db, request = {}, limit = 100000, skip = 1000000, hasNext = true, isNotEq = 0 ;
     this.console.log("dedans /mergedb/song/lyrics");
-    var request = {};
-    var limit = 100000;
-    var skip = 1000000;
-    var hasNext = true;
-    var collection = config.database.collection_song;
-    var isNotEq = 0 ;
     (function loopSkipSong(skip){
-        db.collection(collection).find(request).skip(skip).limit(limit).toArray(function(err, tSongs) {
+        db.collection(COLLECTIONSONG).find(request).skip(skip).limit(limit).toArray(function(err, tSongs) {
             if(tSongs.length<limit){
                 hasNext = false;
             }
-            var i = 0;
-            var songLength = tSongs.length;
+            var i = 0, songLength = tSongs.length;
             //Recursivement avec un timeout afin d'éviter l'erreur : possible EventEmitter memory leak detected. 51 open listeners added. Use emitter.setMaxListeners() to increase limit
             (function loopSong(i){
                 //On va chercher dans la BDD du serveur qu'on a importé en local
                 (function(song){
                     var next = ++i;
-                    db_server.collection(collection).findOne({_id: new ObjectId(song._id) }, function (err, songServer) {
+                    db_server.collection(COLLECTIONSONG).findOne({_id: new ObjectId(song._id) }, function (err, songServer) {
                         //Alors la chanson a été modifié sur le serveur
                         if(songServer.lyrics.length != song.lyrics.length){
                             isNotEq = isNotEq+1;
                             //On met a jour la db local
-                            db.collection(collection).update({_id : new ObjectId(song._id)}, { $set: {"lyrics":songServer.lyrics} });
+                            db.collection(COLLECTIONSONG).update({_id : new ObjectId(song._id)}, { $set: {"lyrics":songServer.lyrics} });
                             console.log("Song updated = "+songServer.name+" - "+songServer.titre+" - "+songServer._id+" - "+songServer.lyrics.length+" <-> "+song.lyrics.length);
                         }
                     });

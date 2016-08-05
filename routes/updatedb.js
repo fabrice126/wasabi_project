@@ -4,40 +4,37 @@ var config          = require('./conf/conf.json');
 var lyricsWikia     = require('./handler/lyricsWikia.js');
 var ObjectId        = require('mongoskin').ObjectID;
 const fs            = require('fs');
-
+const COLLECTIONARTIST  = config.database.collection_artist;
+const COLLECTIONALBUM   = config.database.collection_album;
+const COLLECTIONSONG    = config.database.collection_song;
 
 //Permet de changer de page pour récupérer tout les noms d'artistes d'une catégorie (exemple catégorie des artistes commencant par la lettre A)        
 //contient les liens des artistes de tout l'alphabet qui sont aussi les noms des répertoires sur le disque
-var urlPageArtist = "http://lyrics.wikia.com/wiki/";//On construira l'url suivant : http://lyrics.wikia.com/wiki/nomArtiste
+const URLPAGEARTIST = "http://lyrics.wikia.com/wiki/";//On construira l'url suivant : http://lyrics.wikia.com/wiki/nomArtiste
 
 
 //Cette fonction met à jour les informations existantes dans la collection artist
 router.get('/artist',function(req, res){
-    var db = req.db;
+    var db = req.db, skip = 0, limit = 500;
     this.console.log("dedans /updatedb/artist");
-    var skip = 0;
-    var limit = 500;
-    var total =0;
-    //Permet de nommer la collection 
-    var collection = config.database.collection_artist;
-    db.collection(collection).count(function(err, nbArtist) {
+    db.collection(COLLECTIONARTIST).count(function(err, nbArtist) {
         console.log('There are ' + nbArtist + ' artist in the database');
         (function fetchArtist(skip,nbArtist){
             if(skip<nbArtist){
                 //on récupére les artistes 500 par 500, result est donc un tableau de 500 artistes
-                db.collection(collection).find({}).skip(skip).limit(limit).toArray(function(err,result){
+                db.collection(COLLECTIONARTIST).find({}).skip(skip).limit(limit).toArray(function(err,result){
                     var i = 0;
                     //on itére sur les artistes récupérés avec une fonction récursive
                     (function loop(i,result){
                         //on appel la fonction permettant d'aller chercher des informations sur l'artiste sur lyrics wikia
                         //on récupère l'objet artist passé en parametre (result[i]) avec les propriétés mis à jour
                         //cette fonction update uniquement les propriétés de result[i] elle ne renvoie pas un nouvel objet
-                        lyricsWikia.getInfosFromPageArtist(urlPageArtist,result[i]).then(function(objArtist){
+                        lyricsWikia.getInfosFromPageArtist(URLPAGEARTIST,result[i]).then(function(objArtist){
                             var idArtist = objArtist._id;
                             //si _id n'est pas supprimé avant l'update, mongo lance un avertissement car un _id ne peut être modifié
                             delete objArtist._id;
                             //On met à jour l'artist avec les nouvelles propriétés
-                            db.collection(collection).update( { _id: new ObjectId(idArtist) },{ $set: objArtist }, function(err) {
+                            db.collection(COLLECTIONARTIST).update( { _id: new ObjectId(idArtist) },{ $set: objArtist }, function(err) {
                                 if (err) throw err;
                                 console.log("Updated => "+objArtist.name);
                                 if(i<result.length){
@@ -71,21 +68,19 @@ router.get('/artist',function(req, res){
 });
 //Permet de mettre à jour les informations de l'artiste passé en parametre
 router.get('/artist/:artistName',function(req, res){
-    var db = req.db;
-    var artistName = req.params.artistName
-    var collection = config.database.collection_artist;
+    var db = req.db, artistName = req.params.artistName
     //on récupére :artistName
-    db.collection(collection).findOne({name:artistName}, function(err, result) {
+    db.collection(COLLECTIONARTIST).findOne({name:artistName}, function(err, result) {
         //on appel la fonction permettant d'aller chercher des informations sur l'artiste sur lyrics wikia
         //on récupère l'objet artist passé en parametre (result) avec les propriétés mis à jour
         //cette fonction update uniquement les propriétés de result elle ne renvoie pas un nouvel objet
-        lyricsWikia.getInfosFromPageArtist(urlPageArtist,result).then(function(objArtist){
+        lyricsWikia.getInfosFromPageArtist(URLPAGEARTIST,result).then(function(objArtist){
             console.log(objArtist);
             var idArtist = objArtist._id;
             //si _id n'est pas supprimé avant l'update, mongo lance un avertissement car un _id ne peut être modifié
             delete objArtist._id;
             //On met à jour l'artist avec les nouvelles propriétés
-            db.collection(collection).update( { _id: new ObjectId(idArtist) },{ $set: objArtist }, function(err) {
+            db.collection(COLLECTIONARTIST).update( { _id: new ObjectId(idArtist) },{ $set: objArtist }, function(err) {
                 if (err) throw err;
                 console.log("Updated => "+objArtist.name);
             });
@@ -97,19 +92,14 @@ router.get('/artist/:artistName',function(req, res){
 
 //Cette fonction met à jour les informations existantes dans la collection song
 router.get('/song',function(req, res){
-    var db = req.db;
+    var db = req.db, skip = 0, limit = 1000, req = {};
     this.console.log("dedans /updatedb/song");
-    var skip = 0;
-    var limit = 1000;
-    //Permet de nommer la collection
-    var req = {};
-    var collection = config.database.collection_song;
-    db.collection(collection).find(req).count(function(err, nbSong) {
+    db.collection(COLLECTIONSONG).find(req).count(function(err, nbSong) {
         console.log('There are ' + nbSong + ' song in the database');
         (function fetchSong(skip,nbSong){
             if(skip<nbSong){
                 //on récupére les musiques
-                db.collection(collection).find(req).skip(skip).limit(limit).toArray(function(err,result){
+                db.collection(COLLECTIONSONG).find(req).skip(skip).limit(limit).toArray(function(err,result){
                     var i = 0;
                     //on itére sur les artistes récupérés avec une fonction récursive
                     (function loop(i,result){
@@ -123,7 +113,7 @@ router.get('/song',function(req, res){
                                 //si _id n'est pas supprimé avant l'update, mongo lance un avertissement car un _id ne peut être modifié
                                 delete objSong._id;
                                 //On met à jour l'artist avec les nouvelles propriétés
-                                db.collection(collection).update( { _id: new ObjectId(idSong) },{ $set: objSong }, function(err) {
+                                db.collection(COLLECTIONSONG).update( { _id: new ObjectId(idSong) },{ $set: objSong }, function(err) {
                                     if (err) throw err;
                                     console.log(i+" => Updated => "+objSong.name+" : "+objSong.titre+"       "+objSong.urlSong);
                                 });
@@ -157,23 +147,21 @@ router.get('/song',function(req, res){
 
 //Permet de mettre à jour les informations de la musique passé en parametre
 // router.get('/song/:songName',function(req, res){
-//     var db = req.db;
-//     var songName = req.params.songName
-//     var collection = config.database.collection_song;
+//     var db = req.db, songName = req.params.songName
 //     //on récupére :songName
-//     db.collection(collection).findOne({titre:songName}, function(err, result) {
+//     db.collection(COLLECTIONSONG).findOne({titre:songName}, function(err, result) {
 //         //on appel la fonction permettant d'aller chercher des informations sur l'artiste sur lyrics wikia
 //         //on récupère l'objet artist passé en parametre (result) avec les propriétés mis à jour
 //         //cette fonction update uniquement les propriétés de result elle ne renvoie pas un nouvel objet
-//         // lyricsWikia.getInfosFromPageArtist(urlPageArtist,result).then(function(objArtist){
-//         lyricsWikia.getInfosFromPageArtist(urlPageArtist,result).then(function(objArtist){
+//         // lyricsWikia.getInfosFromPageArtist(URLPAGEARTIST,result).then(function(objArtist){
+//         lyricsWikia.getInfosFromPageArtist(URLPAGEARTIST,result).then(function(objArtist){
 //
 //             console.log(objArtist);
 //             var idArtist = objArtist._id;
 //             //si _id n'est pas supprimé avant l'update, mongo lance un avertissement car un _id ne peut être modifié
 //             delete objArtist._id;
 //             //On met à jour l'artist avec les nouvelles propriétés
-//             db.collection(collection).update( { _id: new ObjectId(idArtist) },{ $set: objArtist }, function(err) {
+//             db.collection(COLLECTIONSONG).update( { _id: new ObjectId(idArtist) },{ $set: objArtist }, function(err) {
 //                 if (err) throw err;
 //                 console.log("Updated => "+objArtist.name);
 //             });
@@ -185,17 +173,15 @@ router.get('/song',function(req, res){
 
 //Cette fonction ajoute et met à jour les liens des musiques possédant du multipiste(.mogg)
 router.get('/multitrackspath',function(req, res){
-    var db = req.db;
+    const PATHMULTITRACKS = "E:/Multitracks downloadees/";
+    var db = req.db, countTotal = 0, countTotalDir = 0, countRead = 0, countDirRead= 0;
     this.console.log("dedans /updatedb/multitrackspath");
-    const pathMultitracks = "E:/Multitracks downloadees/";
-    var countTotal = 0, countTotalDir = 0, countRead = 0, countDirRead= 0;
-    var collection = config.database.collection_song;
     //On cherche dans le dossier contenant les musiques multitracks
-    fs.readdir(pathMultitracks, (err, files) =>{
+    fs.readdir(PATHMULTITRACKS, (err, files) =>{
         countTotalDir = files.length;
         for (var file of files) {
             (function(file){
-                fs.readdir(pathMultitracks+file, (err, filesDir) =>{
+                fs.readdir(PATHMULTITRACKS+file, (err, filesDir) =>{
                     countDirRead = countDirRead+1;
                     countTotal += filesDir.length;
                     for (var filedir of filesDir) {
@@ -207,18 +193,20 @@ router.get('/multitrackspath',function(req, res){
                                 console.log(countSepArtist_Title+" : "+filedir);
                             }else{
                                 var tfiledirSplitted= filedir.split(/(\s-\s)/g);
+                                console.log(tfiledirSplitted);
                                 var musicTitle =tfiledirSplitted[0],artistName=tfiledirSplitted[1];
                                 musicTitle = musicTitle.trim();
                                 artistName = artistName.trim();
                                 var req = {$and:[{titre: musicTitle},{name:artistName}]};
-                                db.collection(collection).find(req).toArray(function(err,song){
+                                // console.log("{"+musicTitle+"},{"+artistName+"}");
+                                db.collection(COLLECTIONSONG).find(req).toArray(function(err,song){
                                     if(err){ console.error(err); }
                                     else{
                                         var addMultitrackpath = {multitrackpath:file+"/"+filedir} // correspond au chemin de la musique multitracks dans le projet
-                                        console.log(addMultitrackpath);
+                                        // console.log(addMultitrackpath);
                                     }
 
-                                    // db.collection(collection).update(req,{ $set: addMultitrackpath }, function(err) {
+                                    // db.collection(COLLECTIONSONG).update(req,{ $set: addMultitrackpath }, function(err) {
                                     //     if (err) throw err;
                                     //     console.log(i+" => Add multitrackpath => "+song.name+" : "+song.titre+"       "+addMultitrackpath);
                                     // });
@@ -233,7 +221,6 @@ router.get('/multitrackspath',function(req, res){
                 })
             })(file)
         }
-        console.log()
         console.log(files);
         // => [Error: EISDIR: illegal operation on a directory, open <directory>]
     });
@@ -243,10 +230,10 @@ router.get('/multitrackspath',function(req, res){
         //si la musique a son équivalent dans la base de données alors on ajoute le chemin de cette musique a l'attribut multitrackpath
     //Permet de nommer la collection
 
-    // db.collection(collection).find(req).skip(skip).limit(limit).toArray(function(err,song){
+    // db.collection(COLLECTIONSONG).find(req).skip(skip).limit(limit).toArray(function(err,song){
     //     var addMultitrackpath = {multitrackpath:""} // correspond au chemin de la musique multitracks dans le projet
     //     console.log(addMultitrackpath);
-    //     // db.collection(collection).update(req,{ $set: addMultitrackpath }, function(err) {
+    //     // db.collection(COLLECTIONSONG).update(req,{ $set: addMultitrackpath }, function(err) {
     //     //     if (err) throw err;
     //     //     console.log(i+" => Add multitrackpath => "+song.name+" : "+song.titre+"       "+addMultitrackpath);
     //     // });
