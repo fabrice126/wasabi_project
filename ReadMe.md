@@ -157,7 +157,7 @@ Une collection artist contenant des documents représentant un artiste avec ses 
 
 ## public/
 #### public/bower-components/  
-	Composant téléchargé afin de les utiliser dans l'application
+	Composants téléchargés afin de les utiliser dans l'application
 
 #### public/img/  
 	Les images du projet
@@ -173,7 +173,7 @@ Une collection artist contenant des documents représentant un artiste avec ses 
 	 
 
 ## routes/
-	Contient la définition des routes supportées par l'application. C'est ici que se situe la partie REST  
+	Contient la définition des routes supportées par l'application. C'est ici que se situe l'API REST  
 #### routes/conf/  
 	conf.json : Fichier de configuration permettant  de ne pas réécrire les données redondante dans l'application  
 #### routes/handler/  
