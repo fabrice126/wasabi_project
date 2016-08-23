@@ -2,15 +2,16 @@
 **Comment lancer l'application sous windows**
 =======
 1. Récupérer l'application sur le GIT
-2. Installer node js : <a href="https://nodejs.org/en/" target="_blank">ici</a>
+2. Installer node js : *<a href="https://nodejs.org/en/" target="_blank">ici</a>*
 3. Installer mongodb : version >= 3.2 : *<a href="https://www.mongodb.com/" target="_blank">ici</a>*  
-*3.1.* lancer la base de données : *<a href="#mongodb--sous-windows">ici</a>*  
+*3.1.* lancer mongodb, voir : *"<a href="#mongodb--sous-windows">Comment lancer les bases de données>MongoDB sous Windows</a>"*  
 *3.2.* (facultatif mais conseillé) Installer robomongo : *<a href="https://robomongo.org/" target="_blank">ici</a>*  
-4. Installer elasticsearch: version >= 2.3 : *<a href="https://www.elastic.co/fr/products/elasticsearch" target="_blank">ici</a>* 
-5. Lancer le serveur  
+4. Installer elasticsearch: version >= 2.3 : *<a href="https://www.elastic.co/fr/products/elasticsearch" target="_blank">ici</a>*  
+*4.1.* lancer elasticsearch, voir : *"<a href="#elasticsearch-sous-windows">Comment lancer les bases de données>Elasticsearch sous Windows</a>"*
+5. Lancer le serveur node js  
 *5.1.* en ligne de commande : `cd C:/Users/user/Documents/wasabi_project`  
-*5.2.* taper la commande : `node bin/www`  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*5.2.1.* Si ça ne fonctionne pas : taper `npm install` en ligne commande dans le projet wasabi (voir 5.1.)  
+*5.2.* taper la commande : `node bin/www` ou si installé : `nodemon bin/www`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*5.2.1.* Si ça ne fonctionne pas : taper `npm install` en ligne commande dans le projet wasabi (voir 5.1.) cela installera les dépendances du projet  
 *5.3.* le serveur est maintenant lancé sur *http://localhost/* (dans le navigateur)
 
 **Comment lancer l'application sous RedHat/Linux Centos 7 (serveur)**
@@ -88,7 +89,7 @@ Une collection artist contenant des documents représentant un artiste avec ses 
  	*1.1.* Assurez-vous que mongodb est lancé avec la commande `mongod`  
  	*1.2.* Aller dans votre répertoire `mongo/request_mongo` en ligne commande et tapez la commande `mongo wasabi`, vous devriez être connecté à la base de données  
  	*1.3.* Lancer la commande `load("MonFichier.js");` exemple `load("FindSameDocument.js");`  
- 	*1.4.* Vous pouvez aussi lancer ces scripts via une interface graphique tel que robomongo: *<a href="https://robomongo.org">ici</a>*  
+ 	*1.4.* Vous pouvez aussi lancer ces scripts via une interface graphique tel que robomongo: *<a href="https://robomongo.org" target="_blank">ici</a>*  
  
  2.  Le fichier `FindSameDocument.js` dans mongo afin de trouver les documents en double (ayant le même nom d'artiste car un nom d'artiste est unique en base de données, cf : comme dans lyrics wikia) dans la base de 	données
 
