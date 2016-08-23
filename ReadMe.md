@@ -1,33 +1,52 @@
 
-**Comment lancer l'application**
+**Comment lancer l'application sous windows**
 =======
 1. Récupérer l'application sur le GIT
 2. Installer node js : *https://nodejs.org/en/*
 3. Installer mongodb : version >= 3.2 : *https://www.mongodb.com/*  
 *3.1.* (facultatif mais conseillé) Installer robomongo : *https://robomongo.org/*
-4. Lancer le serveur  
-*4.1.* en ligne de commande : `cd C:/Users/user/Documents/wasabi_project`  
-*4.2.* taper la commande : `node bin/www`  
-*4.2.1.* Si ça ne fonctionne pas : taper `npm install` en ligne commande dans le projet wasabi (voir 4.1.)  
-*4.3.* le serveur est maintenant lancé sur *http://localhost/* (dans le navigateur)
+4. Installer elasticsearch: version >= 2.3 : *https://www.elastic.co/fr/products/elasticsearch*
+5. Lancer le serveur  
+*5.1.* en ligne de commande : `cd C:/Users/user/Documents/wasabi_project`  
+*5.2.* taper la commande : `node bin/www`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*5.2.1.* Si ça ne fonctionne pas : taper `npm install` en ligne commande dans le projet wasabi (voir 5.1.)  
+*5.3.* le serveur est maintenant lancé sur *http://localhost/* (dans le navigateur)
+
+**Comment lancer l'application sous RedHat/Linux Centos 7 (serveur)**
+=======
+1. Récupérer l'application sur le GIT  
+*1.1.* taper la commande : `sudo yum install git` et vérifier qu'il s'est bien installé : `git --version`  
+*1.2.* taper la commande : `git clone https://github.com/fabrice126/wasabi_project.git`  
+*1.3.* /!\ les dumps de la base de données ne sont pas sur le git le clone ne les télechargera pas vous devez donc mettre les dumps de la base de données dans le dossier `backup_mongo` créer donc ce dossier dans `wasabi_project/mongo/` pour cela rendez-vous dans le bon dossier `cd wasabi_project/mongo/` puis tapez la commande : `mkdir backup_mongo`. Placer les dumps à cet endroit  
+*1.4.* Dans le dossier `wasabi_project/mongo/` créer le répertoire backup_mongo_tmp `mkdir backup_mongo_tmp`  
+*1.5.* /!\ Par soucis de sécurité le fichier contenant le login / mot de passe n'est pas sur le git vous devez donc ajouter `login.json` dans le répertoire `routes/conf`. Ce fichier contient ce json: `{"login": "ADemander","password": "ADemander"}`
+2. Installer node js : *https://nodejs.org/en/download/package-manager/#enterprise-linux-and-fedora*
+3. Installer mongodb : version >= 3.2 : *https://docs.mongodb.com/manual/tutorial/install-mongodb-on-red-hat/*  
+4. Installer elasticsearch: version >= 2.3 : *https://www.elastic.co/guide/en/elasticsearch/reference/master/rpm.html*
+5. Lancer le serveur  
+*5.1.* en ligne de commande : `cd C:/Users/user/Documents/wasabi_project`  
+*5.2.* taper la commande : `node bin/www`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*5.2.1.* Si ça ne fonctionne pas : taper `npm install` en ligne commande dans le projet wasabi (voir 5.1.)  
+*5.3.* le serveur est maintenant lancé et accessible via l'URL à demander au chef du projet
 
 **Comment lancer les bases de données**
 =======
-## MongoDB  sous Linux RedHat
-- Installer MongoDB sur RedHat : *https://docs.mongodb.com/manual/tutorial/install-mongodb-on-red-hat/*
+## MongoDB sous Linux RedHat/Centos 7
+
 - Lancer MongoDB : `mongod --dbpath /var/lib/mongo`
 
 ## MongoDB  sous Windows
+
 - En console tapez: `mongod` 
 
+## Elasticsearch sous Linux RedHat/Centos 7
 
-
-## Elasticsearch sous Linux RedHat
 - Pour lancer elasticsearch : `service elasticsearch start`
 - Pour arrêter elasticsearch : `service elasticsearch stop` 
 
 ## Elasticsearch sous Windows
-- Lancer le fichier `elasticsearch.bat` dans le dossier `bin` de  votre répertoire elasticsearch
+
+- Lancer le fichier `elasticsearch.bat` dans le dossier `bin` de  votre répertoire elasticsearch ou chercher via la barre de recherche windows `elasticsearch.bat`
 
 **Architecture du code:**
 =======
