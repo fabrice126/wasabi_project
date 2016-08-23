@@ -35,6 +35,18 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*6.2.1.* Si ça ne fonctionne pas : taper `npm install` en ligne commande dans le projet wasabi (voir 6.1.)  
 *6.3.* le serveur est maintenant lancé et accessible via l'URL à demander au chef du projet
 
+**Connexion et gestion du serveur wasabi**
+=======
+
+- Vous pouvez vous connecter sur le serveur via putty :  *<a href="http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html ">ici</a>* 
+- Une fois connecté au serveur entrez votre login / mot de passe à demander à l'admin
+- Une fois connecté sur le compte root taper : `sudo su` et `screen -r` (*<a href="https://doc.ubuntu-fr.org/screen" target="_blank">documentation de screen</a>*) afin de restaurer les diverses sessions de ligne de commande
+- Vous pouvez naviguer entre ces sessions via `ctrl + a + n`
+- Le logiciel `htop` sera lancé (l'équivalent du gestionnaire de tâche windows)
+- Les logs du serveur seront aussi lancé dans une autre session (LOGS obtenus via PM2)
+- Mongodb sera lancé. 
+- D'autres sessions peuvent aussi être lancés mais n'ont pas de réel importance
+
 **Comment lancer les bases de données**
 =======
 ## MongoDB sous Linux RedHat/Centos 7
