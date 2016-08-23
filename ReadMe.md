@@ -36,6 +36,7 @@
 *6.2.* taper la commande : `pm2 start bin/www`  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*6.2.1.* Si ça ne fonctionne pas : taper `npm install` en ligne commande dans le projet wasabi (voir 6.1.)  
 *6.3.* le serveur est maintenant lancé et accessible via l'URL à demander au chef du projet
+7. Remplir la base de données d'elasticsearch pour cela utilisé l'api REST pour indexer le nom des artistes http://urldusite/createdb/createdbelasticsearchartist et http://urldusite/createdb/createdbelasticsearchsong pour indexer le nom des musiques avec le nom de l'artiste et le nom de l'album ainsi nous pourrons chercher une musique par son titre + nom d'album + nom d'artiste.
 
 **Connexion et gestion du serveur wasabi**
 =======
