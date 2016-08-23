@@ -4,7 +4,8 @@
 1. Récupérer l'application sur le GIT
 2. Installer node js : *https://nodejs.org/en/*
 3. Installer mongodb : version >= 3.2 : *https://www.mongodb.com/*  
-*3.1.* (facultatif mais conseillé) Installer robomongo : *https://robomongo.org/*
+*3.1.* lancer la base de données : <a href="#mongodb--sous-windows">ici</a>  
+*3.2.* (facultatif mais conseillé) Installer robomongo : *https://robomongo.org/*
 4. Installer elasticsearch: version >= 2.3 : *https://www.elastic.co/fr/products/elasticsearch*
 5. Lancer le serveur  
 *5.1.* en ligne de commande : `cd C:/Users/user/Documents/wasabi_project`  
