@@ -93,6 +93,376 @@
 
 
 
+## search/producer/:producerName
+<table>
+	<tbody>
+		<tr>
+			<th>Description</th><td>Permet d'avoir la liste des musiques d'un producteur</td>
+		</tr>
+		<tr>
+			<th>URL</th><td>http://127.0.0.1/search/producer/Flemming%20Rasmussen
+			</td>
+		</tr>
+		<tr>
+			<th>METHOD</th><td>GET</td>
+		</tr>
+        <tr>
+			<th>DATA PARAMS</th>
+			<td> 
+				: producerName = nom d'un producteur en base de données <br>
+			</td>
+		</tr>
+		<tr>
+			<th>SUCCESS RESPONSE</th>
+			<td> 
+				Code : 200 <br>
+				Content GET : [{"_id":"5714dedb25ac0d8aee4ad81f","name":"Metallica","albumTitre":"...And Justice For All","titre":"...And Justice For All"},{"_id":"5714dedb25ac0d8aee4ad89d","name":"Metallica","albumTitre":"Singles","titre":"...And Justice For All"}]<br>
+			</td>
+		</tr>
+		<tr>
+			<th>ERROR RESPONSE</th>
+			<td> 
+				Code : 404<br>
+				Content GET: [{"error":"Page not found"}]<br>
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+
+
+
+
+
+## search/recordlabel/:recordLabelName
+<table>
+	<tbody>
+		<tr>
+			<th>Description</th><td>Permet d'avoir la liste des musiques d'un label d'enregistrement</td>
+		</tr>
+		<tr>
+			<th>URL</th><td>http://127.0.0.1/search/recordlabel/Elektra%20Records
+			</td>
+		</tr>
+		<tr>
+			<th>METHOD</th><td>GET</td>
+		</tr>
+        <tr>
+			<th>DATA PARAMS</th>
+			<td> 
+				: recordLabelName = nom d'un label d'enregistrement en base de données <br>
+			</td>
+		</tr>
+		<tr>
+			<th>SUCCESS RESPONSE</th>
+			<td> 
+				Code : 200 <br>
+				Content GET : [{"_id":"5714dee025ac0d8aee4ea2d5","name":"Queen","albumTitre":"A Night At The Opera","titre":"'39"},{"_id":"5714dee025ac0d8aee4ea30a","name":"Queen","albumTitre":"Live Killers","titre":"'39"}]<br>
+			</td>
+		</tr>
+		<tr>
+			<th>ERROR RESPONSE</th>
+			<td> 
+				Code : 404<br>
+				Content GET: [{"error":"Page not found"}]<br>
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+
+
+
+
+
+## search/genre/:genreName
+<table>
+	<tbody>
+		<tr>
+			<th>Description</th><td>Permet d'avoir la liste des musiques appartenant à un genre</td>
+		</tr>
+		<tr>
+			<th>URL</th><td>http://127.0.0.1/search/genre/Thrash%20metal
+			</td>
+		</tr>
+		<tr>
+			<th>METHOD</th><td>GET</td>
+		</tr>
+        <tr>
+			<th>DATA PARAMS</th>
+			<td> 
+				: genreName = genre de musique en base de données <br>
+			</td>
+		</tr>
+		<tr>
+			<th>SUCCESS RESPONSE</th>
+			<td> 
+				Code : 200 <br>
+				Content GET : [{"_id":"5714dec825ac0d8aee3bc6d3","name":"Body Count","albumTitre":"Body Count","titre":"Cop Killer"},{"_id":"5714dece25ac0d8aee403c97","name":"Drowning Pool","albumTitre":"Other Releases","titre":"Creeping Death"}]<br>
+			</td>
+		</tr>
+		<tr>
+			<th>ERROR RESPONSE</th>
+			<td> 
+				Code : 404<br>
+				Content GET: [{"error":"Page not found"}]<br>
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+
+
+
+
+
+## search/recorded/:recordedName
+<table>
+	<tbody>
+		<tr>
+			<th>Description</th><td>Permet d'avoir des musiques ayant les mêmes infos d'enregistrements</td>
+		</tr>
+		<tr>
+			<th>URL</th><td>http://127.0.0.1/search/recorded/--01-28
+			</td>
+		</tr>
+		<tr>
+			<th>METHOD</th><td>GET</td>
+		</tr>
+        <tr>
+			<th>DATA PARAMS</th>
+			<td> 
+				: recordedName = informations concernant l'enregistrement <br>
+			</td>
+		</tr>
+		<tr>
+			<th>SUCCESS RESPONSE</th>
+			<td> 
+				Code : 200 <br>
+				Content GET : [{"_id":"5714dedb25ac0d8aee4ad81f","name":"Metallica","albumTitre":"...And Justice For All","titre":"...And Justice For All"}]<br>
+			</td>
+		</tr>
+		<tr>
+			<th>ERROR RESPONSE</th>
+			<td> 
+				Code : 404<br>
+				Content GET: [{"error":"Page not found"}]<br>
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+
+
+
+
+
+## search/award/:awardName'
+<table>
+	<tbody>
+		<tr>
+			<th>Description</th><td>Permet d'avoir des musiques ayant les mêmes infos d'enregistrements</td>
+		</tr>
+		<tr>
+			<th>URL</th><td>http://127.0.0.1/search/award/Gold
+			</td>
+		</tr>
+		<tr>
+			<th>METHOD</th><td>GET</td>
+		</tr>
+        <tr>
+			<th>DATA PARAMS</th>
+			<td> 
+				: awardName = {   "Diamond",    "Gold",    "Gold+Gold+Platinum",    "Gold+Silver",    "Million",    "Million2× Platinum",    "Multi Platinum",    "N/A",    "Platinum",    "Platinum+Gold",    "Platinum+Platinum",    "Silver",    "platinum"}<br>
+			</td>
+		</tr>
+		<tr>
+			<th>SUCCESS RESPONSE</th>
+			<td> 
+				Code : 200 <br>
+				Content GET : [{"_id":"5714dedb25ac0d8aee4ad81f","name":"Metallica","albumTitre":"...And Justice For All","titre":"...And Justice For All"}]<br>
+			</td>
+		</tr>
+		<tr>
+			<th>ERROR RESPONSE</th>
+			<td> 
+				Code : 404<br>
+				Content GET: [{"error":"Page not found"}]<br>
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+
+
+
+
+
+## search/writer/:writerName'
+<table>
+	<tbody>
+		<tr>
+			<th>Description</th><td>Permet d'avoir des musiques écrites par le même compositeur / écrivain </td>
+		</tr>
+		<tr>
+			<th>URL</th><td>http://127.0.0.1/search/writer/Robin%20Gibb</td>
+		</tr>
+		<tr>
+			<th>METHOD</th><td>GET</td>
+		</tr>
+        <tr>
+			<th>DATA PARAMS</th>
+			<td> 
+				: writerName = nom du compositeur / écrivain de la musique <br>
+			</td>
+		</tr>
+		<tr>
+			<th>SUCCESS RESPONSE</th>
+			<td> 
+				Code : 200 <br>
+				Content GET : [{"_id":"5714dec625ac0d8aee3acc1a","name":"Bee Gees","albumTitre":"Still Waters","titre":"Alone"},{"_id":"5714dec625ac0d8aee3accbb","name":"Bee Gees","albumTitre":"Their Greatest Hits: The Record","titre":"Alone"}]<br>
+			</td>
+		</tr>
+		<tr>
+			<th>ERROR RESPONSE</th>
+			<td> 
+				Code : 404<br>
+				Content GET: [{"error":"Page not found"}]<br>
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+
+
+
+
+
+## search/format/:formatName
+<table>
+	<tbody>
+		<tr>
+			<th>Description</th><td>Permet d'avoir les musiques sortie sur un format identique </td>
+		</tr>
+		<tr>
+			<th>URL</th><td>http://127.0.0.1/search/format/Gramophone%20record</td>
+		</tr>
+		<tr>
+			<th>METHOD</th><td>GET</td>
+		</tr>
+        <tr>
+			<th>DATA PARAMS</th>
+			<td> 
+				: formatName = {
+    "12%22",   "12%22 maxi",    "12-inch single",    "2x7%22 single",    "45 RPM Single",    "45 tours",    "576i",    "7%22",    "7%22 maxi",    "7'' & 12'' single",    "78 tours",    "8%22 square vinyl",    "8-track tape",    "Airplay",    "Album",    "Atmosphere of Earth",    "Black-and-white",    "Box set",    "CD",    "CD Single",    "CD Video",    "CD single",    "CD-R",    "Cardsleeve",    "Cassette audio",    "Cassette single",    "Charity record",    "Christian country music",    "Compact Cassette",    "Compact Disc Digital Audio",    "Compact disc",    "Country music",    "DVD",    "DVD single",    "DataPlay",    "Digipak",    "Digital audio",    "Digital data",    "Digital distribution",    "Digital media",    "Digital recording",    "Disque compact",    "Disque microsillon",    "Disque optique",    "Download",    "DualDisc",    "Easy listening",    "Enhanced CD",    "Extended play",    "Extended play (musique)",    "Flexi disc",    "France",    "Germany",    "Gramophone record",    "Gramophone single",    "ITunes Store",    "Japan",    "K7",    "LP record",    "MP3",    "MPEG-4 Part 14",    "MPEG-4 Part 3",    "Maxi (musique)",    "Maxi 45 tours",    "Maxi single",    "Mini CD",    "Mini CD single",    "Music download",    "Music video",    "Picture disc",    "Promo CD single",    "Promotional recording",    "ROM cartridge",    "Radio",    "Radio Disney",    "Radiodiffusion",    "Reel-to-reel audio tape recording",    "Remix",    "Ringle",    "Ringtone",    "Rock music",    "Sampler album",    "Sencillo CD",    "Sencillo en CD",    "Single (music)",    "Single (musique)",    "Soul music",    "Soundtrack",    "Special edition",    "Streaming media",    "Super 45 tours",    "Téléchargement",    "Téléchargement de musique",    "USB",    "USB flash drive",    "United Kingdom",    "United States",    "Unusual types of gramophone records",    "VHS",    "Video clip",    "Vinyl",    "Vinyle 12%22"
+} <br>
+			</td>
+		</tr>
+		<tr>
+			<th>SUCCESS RESPONSE</th>
+			<td> 
+				Code : 200 <br>
+				Content GET : [{"_id":"5714dee725ac0d8aee54060e","name":"The Gaslight Anthem","albumTitre":"Handwritten","titre":"45"},{"_id":"5714decc25ac0d8aee3ed894","name":"David Bowie","albumTitre":"Heroes","titre":"Heroes"}]<br>
+			</td>
+		</tr>
+		<tr>
+			<th>ERROR RESPONSE</th>
+			<td> 
+				Code : 404<br>
+				Content GET: [{"error":"Page not found"}]<br>
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+
+
+
+
+
+## search/count/:collection/:lettre
+<table>
+	<tbody>
+		<tr>
+			<th>Description</th><td>Permet de compter le nombre d'artiste/album/musique commençant par la lettre en paramétre </td>
+		</tr>
+		<tr>
+			<th>URL</th><td>http://127.0.0.1/search/count/Songs/A</td>
+		</tr>
+		<tr>
+			<th>METHOD</th><td>GET</td>
+		</tr>
+        <tr>
+			<th>DATA PARAMS</th>
+			<td> 
+				: collection = {Artists, Albums, Songs} <br>
+                : lettre = {a-z, A-Z, 0-9} <br> 
+			</td>
+		</tr>
+		<tr>
+			<th>SUCCESS RESPONSE</th>
+			<td> 
+				Code : 200 <br>
+				Content GET : {"count":5257}<br>
+			</td>
+		</tr>
+		<tr>
+			<th>ERROR RESPONSE</th>
+			<td> 
+				Code : 404<br>
+				Content GET: [{"error":"Page not found"}]<br>
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+
+
+
+
+
+## search/count/:collection/:fieldName/:fieldValue
+<table>
+	<tbody>
+		<tr>
+			<th>Description</th><td>Permet de compter le nombre d'occurrence d'un attribut ayant une valeur dans une collection </td>
+		</tr>
+		<tr>
+			<th>URL</th><td>http://127.0.0.1/search/count/song/award/Gold</td>
+		</tr>
+		<tr>
+			<th>METHOD</th><td>GET</td>
+		</tr>
+        <tr>
+			<th>DATA PARAMS</th>
+			<td> 
+            	: collection = {artist, album, song}
+				: fieldName = champ existant dans la collection : collection <br>
+                : fieldValue = valeur de l'attribut : fieldName <br> 
+			</td>
+		</tr>
+		<tr>
+			<th>SUCCESS RESPONSE</th>
+			<td> 
+				Code : 200 <br>
+				Content GET : {"count":5659}<br>
+			</td>
+		</tr>
+		<tr>
+			<th>ERROR RESPONSE</th>
+			<td> 
+				Code : 404<br>
+				Content GET: [{"error":"Page not found"}]<br>
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+
+
+
+
+
 ## search/dbinfo
 <table>
 	<tbody>
@@ -587,14 +957,14 @@
 
 
 
-## updatedb/update/:artistName
+## updatedb/artist/:artistName
 <table>
 	<tbody>
 		<tr>
-			<th>Description</th><td>Permet de mettre à jour les informations existantes dans la collection 'artist' en allant faire l'extraction sur lyrics wikia</td>
+			<th>Description</th><td>Permet de mettre à jour les informations d'un artist existantes dans la collection 'artist' en allant faire l'extraction sur lyrics wikia</td>
 		</tr>
 		<tr>
-			<th>URL</th><td>http://127.0.0.1/updatedb/update/Metallica
+			<th>URL</th><td>http://127.0.0.1/updatedb/artist/Metallica
 			</td>
 		</tr>
 		<tr>
@@ -603,8 +973,36 @@
         <tr>
 			<th>DATA PARAMS</th>
 			<td> 
-				: artistName = nom de l'artiste dans la base de données<br>
+				: artistName = nom de l'artiste dans la base de données qu'on veut mettre à jour<br>
 			</td>
+		</tr>
+		<tr>
+			<th>SUCCESS RESPONSE</th>
+			<td> 
+				Code : 200 <br>
+				Content GET : "OK"
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+
+
+
+
+
+## updatedb/song
+<table>
+	<tbody>
+		<tr>
+			<th>Description</th><td>Permet de mettre à jour chaque document de la collection 'song' en allant faire l'extraction sur lyrics wikia</td>
+		</tr>
+		<tr>
+			<th>URL</th><td>http://127.0.0.1/updatedb/song
+			</td>
+		</tr>
+		<tr>
+			<th>METHOD</th><td>GET</td>
 		</tr>
 		<tr>
 			<th>SUCCESS RESPONSE</th>
