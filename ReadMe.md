@@ -2,7 +2,7 @@
 **Comment lancer l'application sous windows**
 =======
 1. Récupérer l'application sur le GIT
-2. Installer node js : *<a href="https://nodejs.org/en/" target="_blank">ici</a>*
+2. Installer node js : <a href="https://nodejs.org/en/" target="_blank">ici</a>
 3. Installer mongodb : version >= 3.2 : *<a href="https://www.mongodb.com/" target="_blank">ici</a>*  
 *3.1.* lancer la base de données : *<a href="#mongodb--sous-windows">ici</a>*  
 *3.2.* (facultatif mais conseillé) Installer robomongo : *<a href="https://robomongo.org/" target="_blank">ici</a>*  
