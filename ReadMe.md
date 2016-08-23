@@ -2,11 +2,11 @@
 **Comment lancer l'application sous windows**
 =======
 1. Récupérer l'application sur le GIT
-2. Installer node js : *https://nodejs.org/en/*
-3. Installer mongodb : version >= 3.2 : *https://www.mongodb.com/*  
-*3.1.* lancer la base de données : <a href="#mongodb--sous-windows">ici</a>  
-*3.2.* (facultatif mais conseillé) Installer robomongo : *https://robomongo.org/*
-4. Installer elasticsearch: version >= 2.3 : *https://www.elastic.co/fr/products/elasticsearch*
+2. Installer node js : *<a href="https://nodejs.org/en/" target="_blank">ici</a>*
+3. Installer mongodb : version >= 3.2 : *<a href="https://www.mongodb.com/" target="_blank">ici</a>*  
+*3.1.* lancer la base de données : *<a href="#mongodb--sous-windows">ici</a>*  
+*3.2.* (facultatif mais conseillé) Installer robomongo : *<a href="https://robomongo.org/" target="_blank">ici</a>*  
+4. Installer elasticsearch: version >= 2.3 : *<a href="https://www.elastic.co/fr/products/elasticsearch" target="_blank">ici</a>* 
 5. Lancer le serveur  
 *5.1.* en ligne de commande : `cd C:/Users/user/Documents/wasabi_project`  
 *5.2.* taper la commande : `node bin/www`  
@@ -21,9 +21,9 @@
 *1.3.* /!\ les dumps de la base de données ne sont pas sur le git le clone ne les télechargera pas vous devez donc mettre les dumps de la base de données dans le dossier `backup_mongo` créer donc ce dossier dans `wasabi_project/mongo/` pour cela rendez-vous dans le bon dossier `cd wasabi_project/mongo/` puis tapez la commande : `mkdir backup_mongo`. Placer les dumps à cet endroit  
 *1.4.* Dans le dossier `wasabi_project/mongo/` créer le répertoire backup_mongo_tmp `mkdir backup_mongo_tmp`  
 *1.5.* /!\ Par soucis de sécurité le fichier contenant le login / mot de passe n'est pas sur le git vous devez donc ajouter `login.json` dans le répertoire `routes/conf`. Ce fichier contient ce json: `{"login": "ADemander","password": "ADemander"}`
-2. Installer node js : *https://nodejs.org/en/download/package-manager/#enterprise-linux-and-fedora*
-3. Installer mongodb : version >= 3.2 : *https://docs.mongodb.com/manual/tutorial/install-mongodb-on-red-hat/*  
-4. Installer elasticsearch: version >= 2.3 : *https://www.elastic.co/guide/en/elasticsearch/reference/master/rpm.html*
+2. Installer node js : *<a href="https://nodejs.org/en/download/package-manager/#enterprise-linux-and-fedora" target="_blank">ici</a>*
+3. Installer mongodb : version >= 3.2 : *<a href="https://docs.mongodb.com/manual/tutorial/install-mongodb-on-red-hat/" target="_blank">ici</a>*  
+4. Installer elasticsearch: version >= 2.3 : *<a href="https://www.elastic.co/guide/en/elasticsearch/reference/master/rpm.html" target="_blank">ici</a>*
 5. Lancer le serveur  
 *5.1.* en ligne de commande : `cd C:/Users/user/Documents/wasabi_project`  
 *5.2.* taper la commande : `node bin/www`  
@@ -88,7 +88,7 @@ Une collection artist contenant des documents représentant un artiste avec ses 
  	*1.1.* Assurez-vous que mongodb est lancé avec la commande `mongod`  
  	*1.2.* Aller dans votre répertoire `mongo/request_mongo` en ligne commande et tapez la commande `mongo wasabi`, vous devriez être connecté à la base de données  
  	*1.3.* Lancer la commande `load("MonFichier.js");` exemple `load("FindSameDocument.js");`  
- 	*1.4.* Vous pouvez aussi lancer ces scripts via une interface graphique tel que robomongo: *https://robomongo.org*  
+ 	*1.4.* Vous pouvez aussi lancer ces scripts via une interface graphique tel que robomongo: *<a href="https://robomongo.org">ici</a>*  
  
  2.  Le fichier `FindSameDocument.js` dans mongo afin de trouver les documents en double (ayant le même nom d'artiste car un nom d'artiste est unique en base de données, cf : comme dans lyrics wikia) dans la base de 	données
 
