@@ -1,33 +1,73 @@
 
-**Comment lancer l'application**
+**Comment lancer l'application sous windows**
 =======
 1. Récupérer l'application sur le GIT
-2. Installer node js : *https://nodejs.org/en/*
-3. Installer mongodb : version >= 3.2 : *https://www.mongodb.com/*  
-*3.1.* (facultatif mais conseillé) Installer robomongo : *https://robomongo.org/*
-4. Lancer le serveur  
-*4.1.* en ligne de commande : `cd C:/Users/user/Documents/wasabi_project`  
-*4.2.* taper la commande : `node bin/www`  
-*4.2.1.* Si ça ne fonctionne pas : taper `npm install` en ligne commande dans le projet wasabi (voir 4.1.)  
-*4.3.* le serveur est maintenant lancé sur *http://localhost/* (dans le navigateur)
+2. Installer node js : *<a href="https://nodejs.org/en/" target="_blank">ici</a>*
+3. Installer mongodb : version >= 3.2 : *<a href="https://www.mongodb.com/" target="_blank">ici</a>*  
+*3.1.* lancer mongodb, voir : *"<a href="#mongodb--sous-windows">Comment lancer les bases de données>MongoDB sous Windows</a>"*  
+*3.2.*  Importer la base de données wasabi : `cd wasabi_project/mongo/backup_mongo` et taper la commande `mongorestore dump_X` ou X est le nombre le plus grand (chaque dump possède un README)  
+*3.3.* (facultatif mais conseillé) Installer robomongo : *<a href="https://robomongo.org/" target="_blank">ici</a>*  
+4. Installer elasticsearch: version >= 2.3 : *<a href="https://www.elastic.co/fr/products/elasticsearch" target="_blank">ici</a>*  
+*4.1.* lancer elasticsearch, voir : *"<a href="#elasticsearch-sous-windows">Comment lancer les bases de données>Elasticsearch sous Windows</a>"*  
+5. Lancer le serveur node js  
+*5.1.* en ligne de commande : `cd C:/Users/user/Documents/wasabi_project`  
+*5.2.* taper la commande : `node bin/www` ou si installé : `nodemon bin/www`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*5.2.1.* Si ça ne fonctionne pas : taper `npm install` en ligne commande dans le projet wasabi (voir 5.1.) cela installera les dépendances du projet  
+*5.3.* le serveur est maintenant lancé sur *http://localhost/* (dans le navigateur)
+6. Remplir la base de données d'elasticsearch pour cela utilisé l'api REST pour indexer le nom des artistes `http://127.0.0.1/createdb/createdbelasticsearchartist` et `http://127.0.0.1/createdb/createdbelasticsearchsong` pour indexer le nom des musiques avec le nom de l'artiste et le nom de l'album ainsi nous pourrons chercher une musique par son titre + nom d'album + nom d'artiste.
+
+**Comment lancer l'application sous RedHat/Linux Centos 7 (serveur - uniquement en cas de ré-installation)**
+=======
+1. Récupérer l'application sur le GIT  
+*1.1.* taper la commande : `sudo yum install git` et vérifier qu'il s'est bien installé : `git --version`  
+*1.2.* taper la commande : `git clone https://github.com/fabrice126/wasabi_project.git`  
+*1.3.* /!\ les dumps de la base de données ne sont pas sur le git. Mettre les dumps de la base de données dans le dossier `backup_mongo`. Créer le dossier dans `wasabi_project/mongo/` pour cela rendez-vous dans le bon dossier `cd wasabi_project/mongo/` puis tapez la commande : `mkdir backup_mongo`. Placer les dumps à cet endroit (conseil :envoyer les dumps via filezilla)  
+*1.4.* Dans le dossier `wasabi_project/mongo/` créer le répertoire backup_mongo_tmp. Taper la commande : `mkdir backup_mongo_tmp`  
+*1.5.* /!\ Par souci de sécurité le fichier contenant le login / mot de passe n'est pas sur le git vous devez donc ajouter `login.json` dans le répertoire `routes/conf`. Ce fichier contient le json suivant: `{"login": "ADemanderALAdmin","password": "ADemanderALAdmin"}`
+2. Installer node js : *<a href="https://nodejs.org/en/download/package-manager/#enterprise-linux-and-fedora" target="_blank">ici</a>*
+3. Installer mongodb : version >= 3.2 : *<a href="https://docs.mongodb.com/manual/tutorial/install-mongodb-on-red-hat/" target="_blank">ici</a>*  
+*3.1.* lancer mongodb, voir : *"<a href="#mongodb-sous-linux-redhatcentos-7">Comment lancer les bases de données>MongoDB sous Linux RedHat/Centos 7</a>"*
+4. Installer elasticsearch: version >= 2.3 : *<a href="https://www.elastic.co/guide/en/elasticsearch/reference/master/rpm.html" target="_blank">ici</a>*  
+*4.1.* lancer elasticsearch, voir : *"<a href="#elasticsearch-sous-linux-redhatcentos-7">Comment lancer les bases de données>Elasticsearch sous Linux RedHat/Centos 7</a>"*
+5. Installer le module node js PM2 dans le répertoire wasabi_project : `npm install pm2 -g`  
+*5.1.* infos utiles sur PM2: log, start, restart, associer un compte pm2 à un serveur ... : *<a href="http://pm2.keymetrics.io/docs/usage/quick-start/">ici</a>* 
+6. Lancer le serveur  
+*6.1.* en ligne de commande : `cd C:/Users/user/Documents/wasabi_project`  
+*6.2.* taper la commande : `pm2 start bin/www`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*6.2.1.* Si ça ne fonctionne pas : taper `npm install` en ligne commande dans le projet wasabi (voir 6.1.)  
+*6.3.* le serveur est maintenant lancé et accessible via l'URL à demander au chef du projet
+7. Remplir la base de données d'elasticsearch pour cela utilisé l'api REST pour indexer le nom des artistes http://urldusite/createdb/createdbelasticsearchartist et http://urldusite/createdb/createdbelasticsearchsong pour indexer le nom des musiques avec le nom de l'artiste et le nom de l'album ainsi nous pourrons chercher une musique par son titre + nom d'album + nom d'artiste.
+
+**Connexion et gestion du serveur wasabi**
+=======
+
+- Vous pouvez vous connecter sur le serveur via putty :  *<a href="http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html ">ici</a>* 
+- Une fois connecté au serveur entrez votre login / mot de passe à demander à l'admin
+- Une fois connecté sur le compte root taper : `sudo su` et `screen -r` (*<a href="https://doc.ubuntu-fr.org/screen" target="_blank">documentation de screen</a>*) afin de restaurer les diverses sessions de ligne de commande
+- Vous pouvez naviguer entre ces sessions via `ctrl + a + n`
+- Le logiciel `htop` sera lancé (l'équivalent du gestionnaire de tâche windows)
+- Les logs du serveur seront aussi lancé dans une autre session (LOGS obtenus via PM2)
+- Mongodb sera lancé. 
+- D'autres sessions peuvent aussi être lancés mais n'ont pas de réel importance
 
 **Comment lancer les bases de données**
 =======
-## MongoDB  sous Linux RedHat
-- Installer MongoDB sur RedHat : *https://docs.mongodb.com/manual/tutorial/install-mongodb-on-red-hat/*
+## MongoDB sous Linux RedHat/Centos 7
+
 - Lancer MongoDB : `mongod --dbpath /var/lib/mongo`
 
 ## MongoDB  sous Windows
+
 - En console tapez: `mongod` 
 
+## Elasticsearch sous Linux RedHat/Centos 7
 
-
-## Elasticsearch sous Linux RedHat
 - Pour lancer elasticsearch : `service elasticsearch start`
 - Pour arrêter elasticsearch : `service elasticsearch stop` 
 
 ## Elasticsearch sous Windows
-- Lancer le fichier `elasticsearch.bat` dans le dossier `bin` de  votre répertoire elasticsearch
+
+- Lancer le fichier `elasticsearch.bat` dans le dossier `bin` de  votre répertoire elasticsearch ou chercher via la barre de recherche windows `elasticsearch.bat`
 
 **Architecture du code:**
 =======
@@ -68,7 +108,7 @@ Une collection artist contenant des documents représentant un artiste avec ses 
  	*1.1.* Assurez-vous que mongodb est lancé avec la commande `mongod`  
  	*1.2.* Aller dans votre répertoire `mongo/request_mongo` en ligne commande et tapez la commande `mongo wasabi`, vous devriez être connecté à la base de données  
  	*1.3.* Lancer la commande `load("MonFichier.js");` exemple `load("FindSameDocument.js");`  
- 	*1.4.* Vous pouvez aussi lancer ces scripts via une interface graphique tel que robomongo: *https://robomongo.org*  
+ 	*1.4.* Vous pouvez aussi lancer ces scripts via une interface graphique tel que robomongo: *<a href="https://robomongo.org" target="_blank">ici</a>*  
  
  2.  Le fichier `FindSameDocument.js` dans mongo afin de trouver les documents en double (ayant le même nom d'artiste car un nom d'artiste est unique en base de données, cf : comme dans lyrics wikia) dans la base de 	données
 
@@ -120,7 +160,7 @@ Une collection artist contenant des documents représentant un artiste avec ses 
 
 ## public/
 #### public/bower-components/  
-	Composant téléchargé afin de les utiliser dans l'application
+	Composants téléchargés afin de les utiliser dans l'application
 
 #### public/img/  
 	Les images du projet
@@ -136,7 +176,7 @@ Une collection artist contenant des documents représentant un artiste avec ses 
 	 
 
 ## routes/
-	Contient la définition des routes supportées par l'application. C'est ici que se situe la partie REST  
+	Contient la définition des routes supportées par l'application. C'est ici que se situe l'API REST  
 #### routes/conf/  
 	conf.json : Fichier de configuration permettant  de ne pas réécrire les données redondante dans l'application  
 #### routes/handler/  
