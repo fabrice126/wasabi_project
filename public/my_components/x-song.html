@@ -18,16 +18,15 @@
             .li-link {
                 color: inherit;
                 text-decoration: none;
+                outline-style: none;
             }
             li:hover{
                 background-color: #F2F2F2;
             }
         </style>
-            <a class="li-link" href="#/search/artist/{{_encodeUri(album.name)}}/album/{{_encodeUri(album.titre)}}/song/{{_encodeUri(song.titre)}}" tabindex="-1">
-                <li hidden="{{editing}}" id="song">{{song.titre}}</li>
-            </a>
-            <!--Créer un paper-input pour chaque composant x-song réduit grandement les performances, on crée donc ce champ de modification uniquement lorsque l'utilisateur veut modifier les titres des musiques-->
-            <!--<paper-input id="edit" label="titre: {{song.titre}}" hidden="{{!editing}}" value="{{song.titre}}"></paper-input>-->
+        <a class="li-link" href="#/search/artist/{{_encodeUri(album.name)}}/album/{{_encodeUri(album.titre)}}/song/{{_encodeUri(song.titre)}}" tabindex="-1">
+            <li hidden="{{editing}}" id="song">{{song.titre}}</li>
+        </a>
     </template>
 <script>
   // element registration
@@ -37,7 +36,8 @@
     properties: {
         song:{
             type: Object,
-            value: {}
+            value: {},
+            observer: 'onSongChanged'
         },
         album:{
             type: Object,
@@ -46,44 +46,61 @@
     	editing: {
 	    	type: Boolean,
 	    	value: false,
-            observer: 'editingChanged'
+            observer: 'onEditingChanged'
     	},
     },
-    //Fonction permettant de gérer la création des elements paper-input : lorsqu'on clique sur le bouton de modification les paper-input de l'album correspondant sont créees
-    //Le fait de ne pas créer les paper-input dans le template permet de reduire par deux le temps de chargement de la page
-    editingChanged: function(){
-        //on veut éditer
-        if(this.editing){
-            var paperInput;
-            //si le paper input n'existe pas on le crée
-            if(!this.$.edit){
-                paperInput = document.createElement("paper-input");
-                //On crée un paper input équivalent a celui ci-dessous
-                //<paper-input id="edit" label="titre: {{song.titre}}" hidden="{{!editing}}" value="{{song.titre}}"></paper-input>
-                paperInput.id = "edit";
-                paperInput.label = this.song.titre;
-                paperInput.hidden= false;
-                paperInput.value=this.song.titre;
-                this.$.edit = paperInput;
-                Polymer.dom(this.root).appendChild(paperInput);
-            }
-            // le paper input existe déja
-            else{
-                paperInput = this.$.edit;
-                paperInput.label = this.song.titre;
-                paperInput.hidden= false;
-                paperInput.value=this.song.titre;
-            }
-        }
-        //on veut sauvegarder
-        else{
-            if(this.$.edit){
-                var paperInput =  this.$.edit;
-                paperInput.hidden = true;
-                this.set("song.titre",paperInput.value);
-            }
-        }
+      /**
+       * Permet la création des paperInput lorsque l'utilisateur clique sur le bouton pour éditer
+       */
+    onEditingChanged: function(){
+        this.checkIfInputExist();
     },
+      /**
+       * Permet de mettre à jour sur l'IHM les titres des musiques que l'ont veut modifier, l'observer se déclenchera lorsque la requête ajax de x-album sera fini
+       */
+    onSongChanged:function(){
+        this.checkIfInputExist();
+    },
+      /**
+       * Optimissation : Créer un paper-input pour chaque composant x-song réduit grandement les performances (perf/2),
+       * on crée donc ce champ de modification uniquement lorsque l'utilisateur veut modifier les titres des musiques
+       * Cette fonction verifie donc si les paperInput de l'album qui doit être modifier existe ou non
+       */
+      checkIfInputExist:function(){
+          //on veut éditer
+          if(this.editing){
+              var paperInput;
+              //si le paper input n'existe pas on le crée
+              if(!this.$.edit){
+                  paperInput = document.createElement("paper-input");
+                  //On crée un paper input équivalent a celui ci-dessous
+                  //<paper-input id="edit" label="titre: {{song.titre}}" hidden="{{!editing}}" value="{{song.titre}}"></paper-input>
+                  paperInput.id = "edit";
+                  paperInput.label = this.song.titre;
+                  paperInput.hidden= false;
+                  paperInput.value=this.song.titre;
+                  this.$.edit = paperInput;
+                  Polymer.dom(this.root).appendChild(paperInput);
+              }
+              // le paper input existe déja on l'utilise car le recréer peut être long
+              else{
+                  paperInput = this.$.edit;
+                  paperInput.label = this.song.titre;
+                  paperInput.hidden= false;
+                  paperInput.value=this.song.titre;
+              }
+          }
+          //si on veut sauvegarder ou que la page se charge this.editing sera  = à false
+          else{
+              //Si on veut sauvegarder
+              if(this.$.edit){
+                  var paperInput =  this.$.edit;
+                  paperInput.hidden = true;
+                  this.set("song.titre",paperInput.value);
+              }
+              //Sinon on ne fait rien car la page se charge this.editing vaut donc false aucune action ne doit être effectué car l'utilisateur n'a cliqué nul par
+          }
+      },
     _encodeUri : function(titre){
         return encodeURIComponent(titre);
     }

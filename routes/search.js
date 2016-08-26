@@ -80,10 +80,6 @@ router.get('/category/:collection/:categoryName',function(req,res){
 //Peut évoluer en /producer/:collection/:producerName avec :collection = artist/album/song si un artist ou un album a des producer
 router.get('/producer/:producerName',function(req,res){
     var db = req.db;
-    // var collection= req.params.collection;
-    // if(collection !== COLLECTIONARTIST && collection !==COLLECTIONALBUM && collection !==COLLECTIONSONG){
-    //     return res.status(404).send([{error:config.http.error.global_404}]);
-    // }
     var producerName= req.params.producerName;
     db.collection(COLLECTIONSONG).find({producer:producerName},{name:1,titre:1,albumTitre:1}).sort({titre:1}).limit(LIMIT).toArray(function(err,objs){
         res.send(JSON.stringify(objs));
@@ -97,10 +93,6 @@ router.get('/producer/:producerName',function(req,res){
 //Peut évoluer en /recordlabel/:collection/:recordLabelName avec :collection = artist/album/song si un artiste ou un album a des recordLabel
 router.get('/recordlabel/:recordLabelName',function(req,res){
     var db = req.db;
-    // var collection= req.params.collection;
-    // if(collection !== COLLECTIONARTIST && collection !==COLLECTIONALBUM && collection !==COLLECTIONSONG){
-    //     return res.status(404).send([{error:config.http.error.global_404}]);
-    // }
     var recordLabelName= req.params.recordLabelName;
     db.collection(COLLECTIONSONG).find({recordLabel:recordLabelName},{name:1,titre:1,albumTitre:1}).sort({titre:1}).limit(LIMIT).toArray(function(err,objs){
         res.send(JSON.stringify(objs));
@@ -113,10 +105,6 @@ router.get('/recordlabel/:recordLabelName',function(req,res){
 //Peut évoluer en /recordlabel/:collection/:genreName avec :collection = album/song si un album a des Genre
 router.get('/genre/:genreName',function(req,res){
     var db = req.db;
-    // var collection= req.params.collection;
-    // if(collection !== COLLECTIONARTIST && collection !==COLLECTIONALBUM && collection !==COLLECTIONSONG){
-    //     return res.status(404).send([{error:config.http.error.global_404}]);
-    // }
     var genreName= req.params.genreName;
     db.collection(COLLECTIONSONG).find({genre:genreName},{name:1,titre:1,albumTitre:1}).sort({titre:1}).limit(LIMIT).toArray(function(err,objs){
         res.send(JSON.stringify(objs));
@@ -262,17 +250,35 @@ router.get('/artist/:artistName', function (req, res) {
 //GET ALBUM PAR NOM D'ARTISTE ET TITRE D'ALBUM
 //FIXME /!\ UN ARTIST PEUT AVOIR PLUSIEURS FOIS UN MEME TITRE D'ALBUM /!\ ERREUR A CORRIGER
 router.get('/artist/:artistName/album/:albumName', function (req, res) {
+    console.log("DEDANS GETTTT")
     var db = req.db, albumName= req.params.albumName, artistName = req.params.artistName;
     db.collection(COLLECTIONARTIST).findOne({name:artistName},{"urlAlbum":0,"wordCount":0}, function(err, artist) {
         if (artist==null) { return res.status(404).send([{error:config.http.error.artist_404}]);}
         //!\ UN ARTIST PEUT AVOIR PLUSIEURS FOIS UN MEME TITRE D'ALBUM /!\ ERREUR A CORRIGER
         db.collection(COLLECTIONALBUM).findOne({$and:[{"titre":albumName},{"id_artist":artist._id}]},{"urlAlbum":0,"wordCount":0}, function(err, album) {
             if (album==null) {   return res.status(404).send([{error:config.http.error.album_404}]); } 
-            db.collection(COLLECTIONSONG).find({"id_album":album._id},{"position":1,"titre":1}).toArray(function(err,song){
-                album.songs = song;
+            db.collection(COLLECTIONSONG).find({"id_album":album._id},{"position":1,"titre":1}).toArray(function(err,songs){
+                if (songs == null) { return res.status(404).send([{error:config.http.error.song_404}]);}
+                album.songs = songs;
                 artist.albums = album;
                 res.send(JSON.stringify(artist));
 
+            });
+        });
+    });
+});
+//GET ALBUM PAR ID D'ARTISTE ET D'ALBUM
+router.get('/artist_id/:artistId/album_id/:albumId', function (req, res) {
+    var db = req.db, artistId = req.params.artistId, albumId = req.params.albumId;
+    db.collection(COLLECTIONARTIST).findOne({_id:ObjectId(artistId)},{"urlAlbum":0,"wordCount":0}, function(err, artist) {
+        if (artist==null) { return res.status(404).send([{error:config.http.error.artist_404}]);}
+        db.collection(COLLECTIONALBUM).findOne({"_id":ObjectId(albumId)},{"urlAlbum":0,"wordCount":0}, function(err, album) {
+            if (album==null) {   return res.status(404).send([{error:config.http.error.album_404}]); }
+            db.collection(COLLECTIONSONG).find({"id_album":album._id},{"position":1,"titre":1}).toArray(function(err,songs){
+                if (songs == null) { return res.status(404).send([{error:config.http.error.song_404}]);}
+                album.songs = songs;
+                artist.albums = album;
+                res.send(JSON.stringify(artist));
             });
         });
     });
@@ -309,9 +315,9 @@ router.put('/artist/:artistName/album/:albumName', function (req, res) {
 router.get('/artist/:artistName/album/:albumName/song/:songName', function (req, res) {
     var db = req.db, artistName = req.params.artistName, albumName = req.params.albumName, songName = req.params.songName;
     db.collection(COLLECTIONARTIST).findOne({name:artistName},{"_id":1,"name":1}, function(err, artist) {
-        if (artist == null) { return res.status(404).sendFile([{error:config.http.error.artist_404}]);}
+        if (artist == null) { return res.status(404).send([{error:config.http.error.artist_404}]);}
         db.collection(COLLECTIONALBUM).findOne({$and:[{"id_artist":artist._id},{"titre":albumName}]},{"_id":1,"titre":1}, function(err, album) {
-            if (album == null) {  return res.status(404).sendFile([{error:config.http.error.album_404}]); }
+            if (album == null) {  return res.status(404).send([{error:config.http.error.album_404}]); }
             db.collection(COLLECTIONSONG).findOne({$and:[{"id_album":album._id},{"titre":songName}]},{"urlSong":0,"wordCount":0},function(err, song) {
                 if (song == null) { return res.status(404).send([{error:config.http.error.song_404}]);}
                 album.songs = song;
@@ -326,9 +332,9 @@ router.get('/artist/:artistName/album/:albumName/song/:songName', function (req,
 router.get('/artist_id/:artistId/album_id/:albumId/song_id/:songId', function (req, res) {
     var db = req.db, artistId = req.params.artistId, albumId = req.params.albumId, songId = req.params.songId;
     db.collection(COLLECTIONARTIST).findOne({_id:ObjectId(artistId)},{"_id":1,"name":1}, function(err, artist) {
-        if (artist == null) { return res.status(404).sendFile([{error:config.http.error.artist_404}]);}
+        if (artist == null) { return res.status(404).send([{error:config.http.error.artist_404}]);}
         db.collection(COLLECTIONALBUM).findOne({"_id":ObjectId(albumId)},{"_id":1,"titre":1}, function(err, album) {
-            if (album == null) {  return res.status(404).sendFile([{error:config.http.error.album_404}]); }
+            if (album == null) {  return res.status(404).send([{error:config.http.error.album_404}]); }
             db.collection(COLLECTIONSONG).findOne({"_id":ObjectId(songId)},{"urlSong":0,"wordCount":0},function(err, song) {
                 if (song == null) { return res.status(404).send([{error:config.http.error.song_404}]);}
                 album.songs = song;

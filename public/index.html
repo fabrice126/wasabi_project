@@ -17,66 +17,48 @@
 <!-- Use element -->
 	</head>
 	<body   class="layout vertical">
-    <!--is="polymer-body"-->
-<!--
-        <paper-drawer-panel>
-            <paper-header-panel drawer>
-                <paper-toolbar>
-                    <div>
-                        Application
-                    </div>
-                </paper-toolbar>
-                <div>
-                    Slider/Drawer content...
-                </div>
--->
+        <nav-bar></nav-bar>
+        <div id=mainContent>
+            <app-router trailingSlash="ignore">
+                <!--Page d'accueil-->
+                <app-route path="/" onUrlChange="updateModel" import="my_components/paper-tabs-content.html"></app-route>
+                <!--Page contenant des statistiques de l'application-->
+                <app-route path="/stats"  onUrlChange="updateModel" import="my_components/page-stats.html"></app-route>
+                <!--Page d'accueil + recherche d'artistes/albums/musiques par lettre-->
+                <app-route path="/search/categorie/:categorie/lettre/:lettre/page/:numPage"  onUrlChange="updateModel" import="my_components/paper-tabs-content.html"></app-route>
+                <!--Page d'un artiste contenant des infos + sa discographie-->
+                <app-route path="/search/artist/:nameArtist"  onUrlChange="updateModel" import="my_components/page-artist.html"></app-route>
+                <!--Page d'un album contenant des infos + les titres de l'album-->
+                <app-route path="/search/artist/:nameArtist/album/:nameAlbum"  onUrlChange="updateModel" import="my_components/page-album.html"></app-route>
+                <!--Page d'une musiques contenant des infos + les lyrics de la musique-->
+                <app-route path="/search/artist/:nameArtist/album/:nameAlbum/song/:nameSong"  onUrlChange="updateModel" import="my_components/page-song.html"></app-route>
+                <!--Page more contenant plus de résultats de recherche-->
+                <app-route path="/search/more/:searchText"  onUrlChange="updateModel" import="my_components/page-search.html"></app-route>
 
+                <!--LISTE DES FACETS-->
+                <!--Page categorie contenant les artistes/albums/musiques contenant la categorie cherchée en commun-->
+                <app-route path="/search/category/:collection/:categoryName"  onUrlChange="updateModel" import="my_components/facet/page-category.html"></app-route>
+                <!--Page producer contenant les musiques d'un producteur -->
+                <app-route path="/search/producer/:producerName"  onUrlChange="updateModel" import="my_components/facet/page-producer.html"></app-route>
+                <!--Page recordlabel contenant les musiques ayant étaient enregistrées par un studio d'enregistrement-->
+                <app-route path="/search/recordlabel/:recordLabelName"  onUrlChange="updateModel" import="my_components/facet/page-recordlabel.html"></app-route>
+                <!--Page genre contenant les musiques ayant étaient le même genre de musique (ex: Hard Rock)-->
+                <app-route path="/search/genre/:genreName"  onUrlChange="updateModel" import="my_components/facet/page-genre.html"></app-route>
+                <!--Page recorded contenant les musiques ayant étaient le même recorded (ex: London and Rockfield)-->
+                <app-route path="/search/recorded/:recordedName"  onUrlChange="updateModel" import="my_components/facet/page-recorded.html"></app-route>
+                <!--Page award contenant les musiques ayant le même award(ex: Toutes les musiques ayant un disque d'or)-->
+                <app-route path="/search/award/:awardName"  onUrlChange="updateModel" import="my_components/facet/page-award.html"></app-route>
+                <!--Page writer contenant les musiques ayant le même writer(ex: Toutes les musiques écrites par Jimmy Page)-->
+                <app-route path="/search/writer/:writerName"  onUrlChange="updateModel" import="my_components/facet/page-writer.html"></app-route>
+                <!--Page format contenant les musiques ayant le même format lors de la sortie(ex: format CD)-->
+                <app-route path="/search/format/:formatName"  onUrlChange="updateModel" import="my_components/facet/page-format.html"></app-route>
 
-<!--            <paper-header-panel main class="flex">-->
-                <nav-bar></nav-bar>
-                <div id=mainContent>
-                    <app-router trailingSlash="ignore">
-                        <!--Page d'accueil-->
-                        <app-route path="/" onUrlChange="updateModel" import="my_components/paper-tabs-content.html"></app-route>
-                        <!--Page contenant des statistiques de l'application-->
-                        <app-route path="/stats"  onUrlChange="updateModel" import="my_components/page-stats.html"></app-route>
-                        <!--Page d'accueil + recherche d'artistes/albums/musiques par lettre-->
-                        <app-route path="/search/categorie/:categorie/lettre/:lettre/page/:numPage"  onUrlChange="updateModel" import="my_components/paper-tabs-content.html"></app-route>
-                        <!--Page d'un artiste contenant des infos + sa discographie-->
-                        <app-route path="/search/artist/:nameArtist"  onUrlChange="updateModel" import="my_components/page-artist.html"></app-route>
-                        <!--Page d'un album contenant des infos + les titres de l'album-->
-                        <app-route path="/search/artist/:nameArtist/album/:nameAlbum"  onUrlChange="updateModel" import="my_components/page-album.html"></app-route>
-                        <!--Page d'une musiques contenant des infos + les lyrics de la musique-->
-                        <app-route path="/search/artist/:nameArtist/album/:nameAlbum/song/:nameSong"  onUrlChange="updateModel" import="my_components/page-song.html"></app-route>
-                        <!--Page more contenant plus de résultats de recherche-->
-                        <app-route path="/search/more/:searchText"  onUrlChange="updateModel" import="my_components/page-search.html"></app-route>
+                <!--<app-route path="public/my_components/MT5"  onUrlChange="updateModel" import="my_components/MT5/index.html"></app-route>-->
 
-                        <!--LISTE DES FACETS-->
-                        <!--Page categorie contenant les artistes/albums/musiques contenant la categorie cherchée en commun-->
-                        <app-route path="/search/category/:collection/:categoryName"  onUrlChange="updateModel" import="my_components/facet/page-category.html"></app-route>
-                        <!--Page producer contenant les musiques d'un producteur -->
-                        <app-route path="/search/producer/:producerName"  onUrlChange="updateModel" import="my_components/facet/page-producer.html"></app-route>
-                        <!--Page recordlabel contenant les musiques ayant étaient enregistrées par un studio d'enregistrement-->
-                        <app-route path="/search/recordlabel/:recordLabelName"  onUrlChange="updateModel" import="my_components/facet/page-recordlabel.html"></app-route>
-                        <!--Page genre contenant les musiques ayant étaient le même genre de musique (ex: Hard Rock)-->
-                        <app-route path="/search/genre/:genreName"  onUrlChange="updateModel" import="my_components/facet/page-genre.html"></app-route>
-                        <!--Page recorded contenant les musiques ayant étaient le même recorded (ex: London and Rockfield)-->
-                        <app-route path="/search/recorded/:recordedName"  onUrlChange="updateModel" import="my_components/facet/page-recorded.html"></app-route>
-                        <!--Page award contenant les musiques ayant le même award(ex: Toutes les musiques ayant un disque d'or)-->
-                        <app-route path="/search/award/:awardName"  onUrlChange="updateModel" import="my_components/facet/page-award.html"></app-route>
-                        <!--Page writer contenant les musiques ayant le même writer(ex: Toutes les musiques écrites par Jimmy Page)-->
-                        <app-route path="/search/writer/:writerName"  onUrlChange="updateModel" import="my_components/facet/page-writer.html"></app-route>
-                        <!--Page format contenant les musiques ayant le même format lors de la sortie(ex: format CD)-->
-                        <app-route path="/search/format/:formatName"  onUrlChange="updateModel" import="my_components/facet/page-format.html"></app-route>
-
-                        <!--<app-route path="public/my_components/MT5"  onUrlChange="updateModel" import="my_components/MT5/index.html"></app-route>-->
-
-                        <!--Lorsqu'une mauvaise URL est saisie-->
-                        <app-route path="*" onUrlChange="updateModel" import="my_components/page-404.html"></app-route>
-                    </app-router>
-                </div>
-<!--            </paper-header-panel>-->
-<!--        </paper-drawer-panel>-->
+                <!--Lorsqu'une mauvaise URL est saisie-->
+                <app-route path="*" onUrlChange="updateModel" import="my_components/page-404.html"></app-route>
+            </app-router>
+        </div>
 <!--	<todo-app></todo-app>-->
 	</body>
 </html>

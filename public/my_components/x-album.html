@@ -98,11 +98,11 @@
                 album:{
                     type: Object,
                     value: {},
+                    observer: 'onAlbumChanged'
                 },
                 editing: {
                     type: Boolean,
                     value: false,
-                    observer: 'editingChanged'
                 },
                 moredata:{
                     type:Boolean,
@@ -114,6 +114,9 @@
             },
             getURLAlbum: function(){
                 return "/search/artist/"+this._encodeUri(this.album.name)+"/album/"+this._encodeUri(this.album.titre);
+            },
+            getURLAlbumID: function(){
+                return "/search/artist_id/"+this.album.id_artist+"/album_id/"+this.album._id+"";
             },
 //            addSong:function(e){
 //                var xsong = document.createElement("x-song");
@@ -132,18 +135,32 @@
             doEdit: function(e){
                 this.editing=!this.editing;
                 if(this.editing){
-                    this.$.get_content.url = this.getURLAlbum();
+                    // on crée dans un premier temps les inputs contenant les infos potentiellement non mis a jour (la requête ajax étant généré juste après)
+                    // la mise a jour du titre ou de la date de sortie se feront dans onAlbumChanged
+                    this.checkIfInputExist();
+                    this.$.get_content.url = this.getURLAlbumID();
                     console.log("URL DE L'ALBUM A MODIFIER :"+this.$.get_content.url);
                     this.$.get_content.generateRequest();
                 }
                 else{
+                    this.checkIfInputExist();
                     console.log("DANS !THIS EDITING");
                     this.$.put_content.body = JSON.stringify(this.album);
                     this.$.put_content.url = this.getURLAlbum();
                     this.$.put_content.generateRequest();
+                    //si more data vaut true alors on est sur la page d'un album nous ne somme donc pas sur la page de la discographie de l'artist nous modifions donc l'url
+                    if(this.moredata){
+                        window.history.replaceState("","", "#"+this.getURLAlbum());
+                    }
                 }
             },
-            editingChanged: function(){
+            /**
+             * Permet de mettre à jour sur l'IHM du titre de l'album que l'ont veut modifier, l'observer se déclenchera lorsque la requête ajax de this.responseHandler sera fini
+             */
+            onAlbumChanged : function(){
+                this.checkIfInputExist();
+            },
+            checkIfInputExist: function(){
                 //on veut éditer
                 if(this.editing){
                     var paperInputTitre, paperInputDateSortie;
@@ -156,10 +173,7 @@
                         paperInputTitre.label = "Nom de l'album";
                         paperInputTitre.hidden= false;
                         paperInputTitre.value=this.album.titre;
-                        paperInputTitre.style.padding= "4%" ;
-                        paperInputTitre.style.height= "24px" ;
-                        paperInputTitre.style.marginLeft= "2%" ;
-                        paperInputTitre.style.display= "inline-block" ;
+                        paperInputTitre.style.cssText = "padding:4%; height:24px; margin-left:2%; display:inline-block;";
                         this.$.editTitre = paperInputTitre;
                         //On crée un paper input équivalent a celui ci-dessous
                         //<paper-input label="Date de sortie" id="editDateSortie" hidden="{{!editing}}" value="{{album.dateSortie}}"></paper-input>
@@ -168,10 +182,8 @@
                         paperInputDateSortie.label = "Date de sortie";
                         paperInputDateSortie.hidden= false;
                         paperInputDateSortie.value=this.album.dateSortie;
-                        paperInputDateSortie.style.padding= "4%" ;
-                        paperInputDateSortie.style.height= "24px" ;
-                        paperInputDateSortie.style.marginLeft= "2%" ;
-                        paperInputDateSortie.style.display= "inline-block" ;
+                        paperInputDateSortie.style.cssText = "padding:4%; height:24px; margin-left:2%; display:inline-block;";
+
                         this.$.editDateSortie = paperInputDateSortie;
 
                         this.$.container.appendChild(paperInputTitre);
@@ -194,11 +206,15 @@
                     if(this.$.editTitre && this.$.editDateSortie){
                         var paperInputTitre =  this.$.editTitre;
                         paperInputTitre.hidden = true;
+                        if(paperInputTitre.value == this.album.titre){
+                            this.fire("onTitleAlbumChanged",{titleAlbum:paperInputTitre.value});
+                        }
                         this.set("album.titre",paperInputTitre.value);
 
                         var paperInputDateSortie =  this.$.editDateSortie;
                         paperInputDateSortie.hidden = true;
                         this.set("album.dateSortie",paperInputDateSortie.value);
+
                     }
                 }
             },

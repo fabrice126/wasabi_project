@@ -2,7 +2,10 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../bower_components/paper-toolbar/paper-toolbar.html">
+<link rel="import" href="../bower_components/paper-ripple/paper-ripple.html">
+<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
+
 <link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
 <!--my_components-->
 <link rel="import" href="carbon-search-input.html">  
@@ -16,6 +19,11 @@
                 app-drawer{
                     z-index: 1;
                 }
+                app-toolbar{
+                    /*color: #3f51b5;*/
+                    color: white;
+                    background-color: #20295b;
+                }
                 a paper-icon-button, a:active paper-icon-button, a:visited paper-icon-button {
                     color: #FFFFFF;
                 }
@@ -23,12 +31,71 @@
                     max-width: 500px;
                     min-width: 220px;
                 }
+                .drawer-contents {
+                    height: 100%;
+                    overflow-y: auto;
+                    color:grey;
+                }
+                .linkMenu{
+                    line-height: 64px;
+                    display: block;
+                    position: relative;
+                    padding-left: 16px;
+                    padding-right: 16px;
+                    cursor: auto;
+                    color: white; /*Permet de changer la couleur du paper-ripple*/
+                    text-decoration:none;
+                    outline-style: none;
+                }
+                .colorTextMenu{
+                    color: #3f51b5;
+                }
+                /*Utilisé dans _closeAppDrawer*/
+                .colorTextMenuSelected{
+                    color: white;
+                }
+                .linkMenu:hover{
+                    background-color: #5767bb;
+                }
+                .linkMenu:hover>span,.linkMenu:hover>iron-icon{
+                    color: white;
+                }
+                /*Utilisé dans _closeAppDrawer*/
+                .linkMenuSelected{
+                    background-color: #3f51b5;
+                }
+                /*-------------------Modififaction de la couleur de la scrollbar----------------------------*/
+                .drawer-contents::-webkit-scrollbar,p::-webkit-scrollbar {
+                    width: 9px;
+                    height: 5px;
+                    background-color: #f2f2f2;
+                }
+                .drawer-contents::-webkit-scrollbar-track, p::-webkit-scrollbar-track{
+                    background-color: #f2f2f2;
+                }
+                .drawer-contents::-webkit-scrollbar-thumb ,p::-webkit-scrollbar-thumb {
+                    background-color: #3f51b5;
+                }
             </style>
             <!-- local DOM for your element -->
             <!--permet d'envoyer une requête ajax-->
             <iron-request id="createdb"></iron-request>
             <paper-toolbar justify="justified" middleJustify="justified" >
-                <app-drawer swipe-open opened="{{isOpen}}"></app-drawer>
+                <app-drawer id="appDrawer" swipe-open opened="{{isOpen}}">
+                    <app-toolbar>Menu</app-toolbar>
+                    <div class="drawer-contents">
+                        <a href="https://github.com/fabrice126/wasabi_project" target="_blank" on-tap="_closeAppDrawer" class="linkMenu">
+                            <iron-icon class="colorTextMenu" icon="help" item-icon> </iron-icon> <span class="colorTextMenu" >WASABI PROJECT</span>
+                            <paper-ripple></paper-ripple>
+                        </a>
+                        <template is="dom-repeat" id="menu" items="[[labelsAppDrawer]]">
+                                <a href="[[item.link]]" class="linkMenu" on-tap="_closeAppDrawer" >
+                                    <iron-icon class="colorTextMenu" icon="[[item.icon]]" item-icon> </iron-icon> <span class="colorTextMenu">[[item.label]]</span>
+                                    <paper-ripple></paper-ripple>
+                                </a>
+                        </template>
+                    </div>
+                </app-drawer>
                 <div>
                     <paper-icon-button icon="menu" on-tap="menuAction"></paper-icon-button>
                 </div>
@@ -54,9 +121,38 @@
         isOpen: {
             type: Boolean,
             value: false
+        },
+        labelsAppDrawer:{
+            type: Array,
+            value: [
+                {label:"Home",icon:"home",link:"/#/"},
+                {label:"Test",icon:"fingerprint",link:"#/stats"}
+            ],
+        },
+        elementSelected:{
+            type: Object,
         }
     },
 	ready: function(e){
+    },
+    _closeAppDrawer:function(event){
+        //Si il y a un element selectionné on lui enléve la class linkMenuSelected
+        if(this.elementSelected){
+            this.elementSelected.classList.remove("linkMenuSelected");
+            //On change la classe des elements contenu dans la balise <a> du menu afin que la couleur du text soit bleu
+            this.elementSelected.querySelectorAll(".colorTextMenuSelected").forEach(function(currElt){
+                currElt.classList.remove("colorTextMenuSelected");
+                currElt.classList.add("colorTextMenu");
+            });
+        }
+        event.currentTarget.classList.add("linkMenuSelected");
+        //On change la classe des elements contenu dans la balise <a> du menu afin que la couleur du text soit blanche
+        event.currentTarget.querySelectorAll(".colorTextMenu").forEach(function(currElt){
+            currElt.classList.remove("colorTextMenu");
+            currElt.classList.add("colorTextMenuSelected");
+        });
+        this.elementSelected =  event.currentTarget;
+        this.$.appDrawer.close();
     },
     createdb: function () {
         console.log("On tap Create Database : dans create db avant envoie ajax : nav-bar component");

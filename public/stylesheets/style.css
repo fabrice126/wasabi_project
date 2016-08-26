@@ -20,13 +20,13 @@ paper-toolbar{
 }
 /*-------------------Modififaction de la couleur de la scrollbar----------------------------*/
 
-body::-webkit-scrollbar,p::-webkit-scrollbar { 
-  width: 9px; 
-  height: 5px; 
+body::-webkit-scrollbar,p::-webkit-scrollbar {
+  width: 9px;
+  height: 5px;
   background-color: #f2f2f2;
   }
 
-body::-webkit-scrollbar-track, p::-webkit-scrollbar-track{ 
+body::-webkit-scrollbar-track, p::-webkit-scrollbar-track{
   background-color: #f2f2f2;
   }
 
