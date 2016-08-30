@@ -1,7 +1,9 @@
 
 **Conseils**
 =======
-Au cours du développement de wasabi, des champs récupérés de lyrics wikia seront peut être ajoutés. Si tel est le cas veillez à ajouter ces champs dans les objets correspondants au modèle : objArtist (createdb.js et lyricsWikia.js), objAlbum (lyricsWikia.js), objSong (lyricsWikia.js)
+Au cours du développement de wasabi, des champs récupérés de lyrics wikia seront peut être ajoutés. Si tel est le cas veillez à ajouter ces champs dans les objets correspondants au modèle : objArtist (createdb.js et lyricsWikia.js), objAlbum (lyricsWikia.js), objSong (lyricsWikia.js).
+
+Il est conseillé de lire ce que fais chaque API avant de l'utiliser notamment celle concernant updatedb et createdb.
 
 **Comment lancer l'application sous windows**
 =======
