@@ -118,37 +118,37 @@ Une collection artist contenant des documents représentant un artiste avec ses 
  
  2.  Le fichier `FindSameDocument.js` dans mongo afin de trouver les documents en double (ayant le même nom d'artiste car un nom d'artiste est unique en base de données, cf : comme dans lyrics wikia) dans la base de 	données
 
- 3.  Le fichier `ConstructBDAfterCreate.js` dans mongodb afin de créer :  
+ 3.  [doit être exécuté après 2.] Le fichier `ConstructBDAfterCreate.js` dans mongodb afin de créer :  
  	*3.1.* Une collection artist contenant uniquement les informations relatives à l'artiste (sans le champ album)  
 	*3.2.* Une collection album contenant les informations relatives à l'album  
  	*3.3.* Une collection song contenant les informations relatives à la musique  
  	*3.4.* Les index des collections artist, album et song  
  
- 4.  Le fichier `RefArtistInAlbum.js` permettant d'ajouter une référence d'artiste dans un document album(~2 minutes) et de créer l'index sur ce champ
+ 4.  [doit être exécuté après 3.] Le fichier `RefArtistInAlbum.js` permettant d'ajouter une référence d'artiste dans un document album(~2 minutes) et de créer l'index sur ce champ
  
- 5.  Le fichier `RefAlbumInSong.js` permettant d'ajouter une référence d'album dans un document song(~20 minutes) et de créer l'index sur ce champ
+ 5.  [doit être exécuté après 4.] Le fichier `RefAlbumInSong.js` permettant d'ajouter une référence d'album dans un document song(~20 minutes) et de créer l'index sur ce champ
  
- 6.  Le fichier `WordCount_Artist.js` faisant le word count des lyrics pour chaque artist (~3 heures d’exécution)(afin de voir les termes les plus utilisés par un artiste)
+ 6.  [Aucune restriction sur l'ordre d’exécution] Le fichier `WordCount_Artist.js` faisant le word count des lyrics pour chaque artist (~3 heures d’exécution)(afin de voir les termes les plus utilisés par un artiste)
  
- 7.  Le fichier `WordCount_Album.js` faisant le word count des lyrics pour chaque album (~10 heures d’exécution) (afin de voir les termes les plus utilisés dans un album)
+ 7.  [Aucune restriction sur l'ordre d’exécution] Le fichier `WordCount_Album.js` faisant le word count des lyrics pour chaque album (~10 heures d’exécution) (afin de voir les termes les plus utilisés dans un album)
  
- 8.  Le fichier `WordCount_Song.js` faisant le word count des lyrics pour chaque song (afin de voir les termes les plus utilisés dans une musique)
+ 8.  [Aucune restriction sur l'ordre d’exécution] Le fichier `WordCount_Song.js` faisant le word count des lyrics pour chaque song (afin de voir les termes les plus utilisés dans une musique)
 
- 9.  Le web service `extractdbpedia/artist` permettant d'extraire le RDF des artistes ayant un lien vers Wikipédia. Ce web service envoie des requêtes SPARQL sur DBpédia afin d'obtenir le RDF de l'artiste. Un champ rdf contenant le RDF de l'artiste est ensuite ajouté en base de données (durée: plusieurs heures)
+ 9.  [doit être exécuté après 5.] Le web service `extractdbpedia/artist` permettant d'extraire le RDF des artistes ayant un lien vers Wikipédia. Ce web service envoie des requêtes SPARQL sur DBpédia afin d'obtenir le RDF de l'artiste. Un champ rdf contenant le RDF de l'artiste est ensuite ajouté en base de données (durée: plusieurs heures)
  
- 10.  Le web service `extractdbpedia/album` permettant d'extraire le RDF des musiques ayant un lien vers Wikipédia. Ce web service envoie des requêtes sparql sur DBpédia afin d'obtenir le RDF de la musique. Un champ rdf contenant le RDF de la musique est ensuite ajouté en base de données (durée: plusieurs heures)
+ 10.  [doit être exécuté après 9.] Le web service `extractdbpedia/album` permettant d'extraire le RDF des musiques ayant un lien vers Wikipédia. Ce web service envoie des requêtes sparql sur DBpédia afin d'obtenir le RDF de la musique. Un champ rdf contenant le RDF de la musique est ensuite ajouté en base de données (durée: plusieurs heures)
  
- 11.  Le web service `extractdbpedia/song` permettant d'extraire le RDF des albums ayant un lien vers wikipédia. Ce web service envoie des requêtes sparql sur DBpédia afin d'obtenir le RDF de l'album. Un champ rdf contenant le RDF de l'album est ensuite ajouté en base de données (durée: plusieurs heures)
+ 11.  [doit être exécuté après 10.] Le web service `extractdbpedia/song` permettant d'extraire le RDF des albums ayant un lien vers wikipédia. Ce web service envoie des requêtes sparql sur DBpédia afin d'obtenir le RDF de l'album. Un champ rdf contenant le RDF de l'album est ensuite ajouté en base de données (durée: plusieurs heures)
  
- 12.  le web service `extractdbpedia/artist/createfields` transforme les propriétés de notre champ RDF en propriétés dans notre base de données
+ 12.  [doit être exécuté après 9.] le web service `extractdbpedia/artist/createfields` transforme les propriétés de notre champ RDF en propriétés dans notre base de données
  
- 13.  le web service `extractdbpedia/album/createfields` transforme les propriétés de notre champ RDF en propriétés dans notre base de données
+ 13.  [doit être exécuté après 10.] le web service `extractdbpedia/album/createfields` transforme les propriétés de notre champ RDF en propriétés dans notre base de données
  
- 14.  le web service `extractdbpedia/song/createfields` transforme les propriétés de notre champ RDF en propriétés dans notre base de données
+ 14.  [doit être exécuté après 11.] le web service `extractdbpedia/song/createfields` transforme les propriétés de notre champ RDF en propriétés dans notre base de données
  
- 15.  le fichier `CreateIndexAfterDBpediaExtraction` ce fichier permet de créer les index des nouveaux champs insérés dans la base de données
+ 15.  [doit être exécuté après 14.]le fichier `CreateIndexAfterDBpediaExtraction` ce fichier permet de créer les index des nouveaux champs insérés dans la base de données
  
- 16.  le fichier `Create_IsClassic_Field` permettant grâce aux subjects des musiques récupérées sur DBpédia de savoir si la musique est un classique
+ 16.  [doit être exécuté après 15.] le fichier `Create_IsClassic_Field` permettant grâce aux subjects des musiques récupérées sur DBpédia de savoir si la musique est un classique
  
 
 #### mongo/sparql/
