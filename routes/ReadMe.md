@@ -801,7 +801,8 @@
 <table>
 	<tbody>
 		<tr>
-			<th>Description</th><td>Permet de créer entierement la base de données en allant récupérer les discographies des artistes sur lyrics wikia</td>
+			<th>Description</th><td>Permet de créer entierement la base de données en allant récupérer les discographies des artistes sur lyrics wikia. Une fois que la base de données sera créée, voir <a href="https://github.com/fabrice126/wasabi_project/blob/master/ReadMe.md#mongorequest_mongo">comment compléter la base Wasabi avec les requêtes mongo</a> et avec l'API <a href="https://github.com/fabrice126/wasabi_project/blob/master/routes/ReadMe.md#createdbcreatedbelasticsearchartist">createdb/createdbelasticsearchartist</a> et <a href="https://github.com/fabrice126/wasabi_project/blob/master/routes/ReadMe.md#createdbcreatedbelasticsearchsong">createdb/createdbelasticsearchsong</a>
+			</td>
 		</tr>
 		<tr>
 			<th>URL</th><td>http://127.0.0.1/createdb
