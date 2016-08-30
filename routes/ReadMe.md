@@ -830,7 +830,10 @@
 <table>
 	<tbody>
 		<tr>
-			<th>Description</th><td>Permet d'ajouter la discographie d'un artiste dans notre base de données en allant l'extraire de lyrics wikia</td>
+			<th>Description</th><td>Permet d'ajouter la discographie d'un artiste dans notre base de données en allant l'extraire de lyrics wikia.<br>
+			Lorsqu'un artiste est ajouté, il est recommandé d’exécuter <a href="https://github.com/fabrice126/wasabi_project/blob/master/ReadMe.md#mongorequest_mongo">les requêtes de 6 à 16 </a> (la 1,2,3,4 étant déjà réalisé automatiquement par l'API)<br> 
+			Vous devez aussi ajouter ce nouvel artiste à la base de données elasticsearch via : <a href="https://github.com/fabrice126/wasabi_project/blob/master/routes/ReadMe.md#createdbcreatedbelasticsearchartist">createdb/createdbelasticsearchartist</a> et <a href="https://github.com/fabrice126/wasabi_project/blob/master/routes/ReadMe.md#createdbcreatedbelasticsearchsong">createdb/createdbelasticsearchsong</a>
+			</td>
 		</tr>
 		<tr>
 			<th>URL</th><td>http://127.0.0.1/createdb/add/Linkin_Park
