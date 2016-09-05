@@ -867,7 +867,7 @@
 <table>
 	<tbody>
 		<tr>
-			<th>Description</th><td>Une fois la base de données créees : permet d'insérer les documents de la collection 'artist' demandant une recherche avec autocomplétion dans la base de données elasticsearch</td>
+			<th>Description</th><td>Une fois la base de données créees : si l'index elasticsearch existe déjà il est supprimé, on insérera ensuite les champs de la collection 'artist'  pertinent pour une recherche avec autocomplétion </td>
 		</tr>
 		<tr>
 			<th>URL</th><td>http://127.0.0.1/createdb/createdbelasticsearchartist
@@ -895,7 +895,7 @@
 <table>
 	<tbody>
 		<tr>
-			<th>Description</th><td>Une fois la base de données créees : permet d'insérer les documents de la collection 'song' demandant une recherche avec autocomplétion dans la base de données elasticsearch</td>
+			<th>Description</th><td>Une fois la base de données créees : si l'index elasticsearch existe déjà il est supprimé, on insérera ensuite les champs de la collection 'song'  pertinent pour une recherche avec autocomplétion </td>
 		</tr>
 		<tr>
 			<th>URL</th><td>http://127.0.0.1/createdb/createdbelasticsearchsong
