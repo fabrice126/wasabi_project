@@ -46,6 +46,7 @@ var getArtistFromCategorie = function(url,selector,attr,removeStr){
                         //on récupére les #mw-pages>.mw-content-ltr>table a[href]
                         //Cette condition permet de ne pas remplir le dernier objet artist d'une page contenant 200 artists. Cet objet sera rempli lors de la reqête de changement de page
                         if(i<nbArtistPerPage-1){
+                            //Création de l'objet artist, il faudra modifier cette objet si de nouvelles propriétés doivent être ajoutées
                             var objArtist = {
                                 name:$(link).attr('title'),
                                 urlWikipedia:"",
@@ -276,7 +277,7 @@ var getAlbumsAndSongsOfArtist = function(url,selector,attr,objArtist){
                             }
                             var songs = [];//va contenir les objets objSong
                             $(eltAlbum).find($(".songs>li>a[href]")).each(function(ii,eltSong){
-                                //Création de l'objet song
+                                //Création de l'objet song, il faudra modifier cette objet si de nouvelles propriétés doivent être ajoutées
                                 var objSong = {
                                     titre: $(eltSong).text(),
                                     urlSong: $(eltSong).attr(attr),
@@ -286,6 +287,7 @@ var getAlbumsAndSongsOfArtist = function(url,selector,attr,objArtist){
                                 };
                                 songs.push(objSong);//On met l'objet song dans le tableau contenant les autres musiques de l'album
                             });
+                            //Création de l'objet album, il faudra modifier cette objet si de nouvelles propriétés doivent être ajoutées
                             var objAlbum = {
                                 titre: album,
                                 dateSortie: dateSortie,

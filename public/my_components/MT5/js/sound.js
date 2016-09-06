@@ -50,7 +50,6 @@ window.requestAnimFrame = (function() {
 function init() {
     
     View.init();
-    
     // Get handles on buttons
     buttonPlay = document.querySelector("#bplay");
     buttonPause = document.querySelector("#bpause");
@@ -82,12 +81,10 @@ function init() {
 
     // Init audio context
     context = initAudioContext();
-    
-   
-    
-    // Get the list of the songs available on the server and build a 
-    // drop down menu
-    loadSongList();
+
+
+
+
 
     // Instantiate the score renderer, parameter = id of the container
     scoreRendererPiste1 = new ScoreRenderer("alphaTab2");
@@ -98,6 +95,17 @@ function init() {
 
     // For Berlin studio
     //loadSong("jcollier-thegardenover-mix-stems-44100-powr3-320");
+    //Ajouté par Fabrice
+    window.top.addEventListener('firedataiframe', function (e) {
+        // Get the list of the songs available on the server and build a
+        // drop down menu
+        //Parametre ajouté par Fabrice
+        loadSongList(e.detail.song.multitrack_path);
+        loadSong(e.detail.song.multitrack_path);
+    }, true);
+    var event = new Event('firedata');
+    window.top.dispatchEvent(event);
+
 }
 
 function log(message) {
@@ -239,8 +247,8 @@ function resetAllBeforeLoadingANewSong() {
 
     // disable the menu for selecting song: avoid downloading more than one song 
     // at the same time
-    var s = document.querySelector("#songSelect");
-    s.disabled = true;
+    // var s = document.querySelector("#songSelect");//Commenté par Fabrice
+    // s.disabled = true;//Commenté par Fabrice
      
      // reset the selection
     resetSelection();
@@ -325,8 +333,8 @@ function finishedLoading(bufferList) {
     $(".solo").attr("disabled", false);
 
     // enable song select menu
-    var s = document.querySelector("#songSelect");
-    s.disabled = false;
+    // var s = document.querySelector("#songSelect");
+    // s.disabled = false;
 
     // Set each track volume slider to max
     for(i=0; i < currentSong.getNbTracks(); i++) {
@@ -346,40 +354,41 @@ function finishedLoading(bufferList) {
 
 
 // ######### SONGS
-function loadSongList() {
+function loadSongList(pathSong) {
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', "http://wasabi.i3s.unice.fr/MT5/track", true);
-
+    xhr.open('GET', "http://wasabi.i3s.unice.fr/MT5/track/"+pathSong, true); //http://wasabi.i3s.unice.fr/
+    //Commenté par Fabrice
     // Menu for song selection
-    var s = $("<select id='songSelect'/>");
-    s.appendTo("#songs");
-    
-    s.change(function(e) {
-        var songName = $(this).val();
-        //console.log("You chose : " + songName);
-        
-        if(songName !== "nochoice") {
-            // We load if there is no current song or if the current song is
-            // different than the one chosen
-            if((currentSong === undefined) || ((currentSong !== undefined) && (songName !== currentSong.name))) {
-                loadSong(songName);
-                View.activeConsoleTab();
-            }
-        }
-    });
+    // var s = $("<select id='songSelect'/>");
+    // s.appendTo("#songs");
+
+    // s.change(function(e) {
+    //     var songName = $(this).val();
+    //     //console.log("You chose : " + songName);
+    //
+    //     if(songName !== "nochoice") {
+    //         // We load if there is no current song or if the current song is
+    //         // different than the one chosen
+    //         if((currentSong === undefined) || ((currentSong !== undefined) && (songName !== currentSong.name))) {
+    //             loadSong(songName);
+    //             View.activeConsoleTab();
+    //         }
+    //     }
+    // });
 
     xhr.onload = function(e) {
-        var songList = JSON.parse(this.response);
-        
-        if(songList[0]) {
-            $("<option />", {value: "nochoice", text: "Choose a song..."}).appendTo(s);
-        }
-
-        songList.forEach(function(songName) {
-            //console.log(songName);
-
-            $("<option />", {value: songName, text: songName}).appendTo(s);
-        });
+        //Commenté par Fabrice
+        // var songList = JSON.parse(this.response);
+        //
+        // if(songList[0]) {
+        //     $("<option />", {value: "nochoice", text: "Choose a song..."}).appendTo(s);
+        // }
+        //
+        // songList.forEach(function(songName) {
+        //     //console.log(songName);
+        //
+        //     $("<option />", {value: songName, text: songName}).appendTo(s);
+        // });
     };
     xhr.send();
 }
@@ -393,14 +402,17 @@ function loadSong(songName) {
     // This function builds the current 
     // song and resets all states to default (zero muted and zero solo lists, all
     // volumes set to 1, start at 0 second, etc.)
+    console.log("songName == "+songName);
     currentSong = new Song(songName, context);
+    console.log("currentSong == "+currentSong.url);
+
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', "http://wasabi.i3s.unice.fr/"+currentSong.url, true);
+    xhr.open('GET', "http://wasabi.i3s.unice.fr/"+currentSong.url, true);//http://wasabi.i3s.unice.fr/
     
     xhr.onload = function(e) {
         // get a JSON description of the song
         var song = JSON.parse(this.response);
-        
+
         // set the metatada returned by the REST web service to the current song
         currentSong.metadata.setMetadata(song.metadata);
 

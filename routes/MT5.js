@@ -30,8 +30,9 @@ router.get('/track', function (req, res){
 });
 
 // routing
-router.get('/track/:id', function (req, res) {
+router.get('/track/:dir/:id', function (req, res) {
     var id = req.params.id;
+    var dir = req.params.dir;
     function sendTrack(track) {
         if (!track)
             return res.send(404, 'Track not found with id "' + id + '"');
@@ -39,7 +40,7 @@ router.get('/track/:id', function (req, res) {
         res.write(JSON.stringify(track));
         res.end();
     }
-    getTrack(id, sendTrack);
+    getTrack(id,dir, sendTrack);
 });
 
 function getTracks(callback) {
@@ -57,10 +58,9 @@ function isASoundFile(fileName) {
     return false;
 }
 
-function getTrack(id, callback) {
-    console.log("id = " + id);
+function getTrack(id,dir, callback) {
     if(!id) return;
-    getFiles(config.MT5.TRACKS_PATH + id, function(fileNames) {
+    getFiles(config.MT5.TRACKS_PATH +dir+'/'+ id, function(fileNames) {
         if(! fileNames) {
             callback(null);
             return;
@@ -119,8 +119,7 @@ function comparator(prop){
 }
 
 function getFiles(dirName, callback) {
-    console.log("dirName = ");
-    console.log(dirName);
+    console.log("dirName = "+dirName);
     fs.readdir(dirName, function(error, directoryObject) {
         if(directoryObject !== undefined) {
             directoryObject.sort();

@@ -31,7 +31,7 @@
                 <!--Page d'un album contenant des infos + les titres de l'album-->
                 <app-route path="/search/artist/:nameArtist/album/:nameAlbum"  onUrlChange="updateModel" import="my_components/page-album.html"></app-route>
                 <!--Page d'une musiques contenant des infos + les lyrics de la musique-->
-                <app-route path="/search/artist/:nameArtist/album/:nameAlbum/song/:nameSong"  onUrlChange="updateModel" import="my_components/page-song.html"></app-route>
+                <app-route path="/search/artist/:nameArtist/album/:nameAlbum/song/:nameSong"  import="my_components/page-song.html"></app-route>
                 <!--Page more contenant plus de résultats de recherche-->
                 <app-route path="/search/more/:searchText"  onUrlChange="updateModel" import="my_components/page-search.html"></app-route>
 

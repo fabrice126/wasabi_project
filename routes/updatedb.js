@@ -1,17 +1,18 @@
-var express         = require('express');
-var router          = express.Router();
-var config          = require('./conf/conf.json');
-var lyricsWikia     = require('./handler/lyricsWikia.js');
-var ObjectId        = require('mongoskin').ObjectID;
-const fs            = require('fs');
+var express             = require('express');
+var router              = express.Router();
+const config            = require('./conf/conf.json');
+const lyricsWikia       = require('./handler/lyricsWikia.js');
+const utilHandler       = require('./handler/utilHandler.js');
+const ObjectId          = require('mongoskin').ObjectID;
+const fs                = require('fs');
+const os                = require('os');
 const COLLECTIONARTIST  = config.database.collection_artist;
 const COLLECTIONALBUM   = config.database.collection_album;
 const COLLECTIONSONG    = config.database.collection_song;
 
 //Permet de changer de page pour récupérer tout les noms d'artistes d'une catégorie (exemple catégorie des artistes commencant par la lettre A)        
 //contient les liens des artistes de tout l'alphabet qui sont aussi les noms des répertoires sur le disque
-const URLPAGEARTIST = "http://lyrics.wikia.com/wiki/";//On construira l'url suivant : http://lyrics.wikia.com/wiki/nomArtiste
-
+const URLPAGEARTIST = "http://lyrics.wikia.com/wiki/";//On construira l'url suivant : http://lyrics.wikia.com/wiki/artistName
 
 //Cette fonction met à jour les informations existantes dans la collection artist
 router.get('/artist',function(req, res){
@@ -26,7 +27,7 @@ router.get('/artist',function(req, res){
                     var i = 0;
                     //on itére sur les artistes récupérés avec une fonction récursive
                     (function loop(i,result){
-                        //on appel la fonction permettant d'aller chercher des informations sur l'artiste sur lyrics wikia
+                        //on appel la fonction permettant de chercher des informations sur l'artiste sur lyrics wikia
                         //on récupère l'objet artist passé en parametre (result[i]) avec les propriétés mis à jour
                         //cette fonction update uniquement les propriétés de result[i] elle ne renvoie pas un nouvel objet
                         lyricsWikia.getInfosFromPageArtist(URLPAGEARTIST,result[i]).then(function(objArtist){
@@ -47,7 +48,7 @@ router.get('/artist',function(req, res){
                                 }
                                 else{
                                     //on a traité tous les artistes contenus dans result
-                                    //on ajout limit a skip afin de traiter les 500 données suivante dans la bdd
+                                    //on ajout limit a skip afin de traiter les 500 données suivantes dans la bdd
                                     skip += limit;
                                     console.log("\n\n SKIP = "+skip);
                                     setTimeout(function(){
@@ -68,14 +69,13 @@ router.get('/artist',function(req, res){
 });
 //Permet de mettre à jour les informations de l'artiste passé en parametre
 router.get('/artist/:artistName',function(req, res){
-    var db = req.db, artistName = req.params.artistName
+    var db = req.db, artistName = req.params.artistName;
     //on récupére :artistName
     db.collection(COLLECTIONARTIST).findOne({name:artistName}, function(err, result) {
         //on appel la fonction permettant d'aller chercher des informations sur l'artiste sur lyrics wikia
         //on récupère l'objet artist passé en parametre (result) avec les propriétés mis à jour
         //cette fonction update uniquement les propriétés de result elle ne renvoie pas un nouvel objet
         lyricsWikia.getInfosFromPageArtist(URLPAGEARTIST,result).then(function(objArtist){
-            console.log(objArtist);
             var idArtist = objArtist._id;
             //si _id n'est pas supprimé avant l'update, mongo lance un avertissement car un _id ne peut être modifié
             delete objArtist._id;
@@ -173,74 +173,125 @@ router.get('/song',function(req, res){
 
 //Cette fonction ajoute et met à jour les liens des musiques possédant du multipiste(.mogg)
 router.get('/multitrackspath',function(req, res){
-    const PATHMULTITRACKS = "E:/Multitracks downloadees/";
-    var db = req.db, countTotal = 0, countTotalDir = 0, countRead = 0, countDirRead= 0;
     this.console.log("dedans /updatedb/multitrackspath");
+    this.console.log("TEST MISE A JOUR");
+    var db = req.db, PATHMULTITRACKS = config.multitracks.path_linux,totalFilesDirLength = 0, countFilesDir = 0;
+    console.log(PATHMULTITRACKS);
+    // (os.platform() == 'win32')? PATHMULTITRACKS = config.multitracks.path_windows : PATHMULTITRACKS = config.multitracks.path_linux;
     //On cherche dans le dossier contenant les musiques multitracks
-    fs.readdir(PATHMULTITRACKS, (err, files) =>{
-        countTotalDir = files.length;
-        for (var file of files) {
-            (function(file){
-                fs.readdir(PATHMULTITRACKS+file, (err, filesDir) =>{
-                    countDirRead = countDirRead+1;
-                    countTotal += filesDir.length;
+    console.log("En cours de traitement ...");
+    fs.readdir(PATHMULTITRACKS, (err, directories) =>{
+        for (var dir of directories) {
+            (function(dir){
+                fs.readdir(PATHMULTITRACKS+dir, (err, filesDir) =>{
+                    //exemple filedir = Twisted Sister - We're Not Gonna Take It.mogg
                     for (var filedir of filesDir) {
                         (function(filedir){
-                            countRead = countRead+1;
+                            //filedir est encodé on le decode :
+                            filedir = utilHandler.decodePathWindows(filedir);
                             var countSepArtist_Title = (filedir.match(/(\s-\s)/g) || []).length;
-                            //Si nous avons 0 ou plusieurs séparations avec un '-' dans "nom d'artiste - nom musique" (avec espace avant et après le '-')
-                            if(countSepArtist_Title>1 || countSepArtist_Title ==0){
+                            // nous devons avoir 1 seul ' - ' afin de bien délimiter l'artiste du titre de musique
+                            if(countSepArtist_Title!=1 ){
                                 console.log(countSepArtist_Title+" : "+filedir);
                             }else{
-                                var tfiledirSplitted= filedir.split(/(\s-\s)/g);
-                                console.log(tfiledirSplitted);
-                                var musicTitle =tfiledirSplitted[0],artistName=tfiledirSplitted[1];
-                                musicTitle = musicTitle.trim();
-                                artistName = artistName.trim();
-                                var req = {$and:[{titre: musicTitle},{name:artistName}]};
-                                // console.log("{"+musicTitle+"},{"+artistName+"}");
-                                db.collection(COLLECTIONSONG).find(req).toArray(function(err,song){
-                                    if(err){ console.error(err); }
-                                    else{
-                                        var addMultitrackpath = {multitrackpath:file+"/"+filedir} // correspond au chemin de la musique multitracks dans le projet
-                                        // console.log(addMultitrackpath);
+                                var tfiledirSplitted= filedir.split(' - ');// /(\s-\s)/g
+                                var artistName = tfiledirSplitted[0].trim(), musicTitle = tfiledirSplitted[1].trim().replace(/\.mogg$/, "").trim().replace(/(\(live\))$/i, "").trim(), tQuery = [];
+                                // Les featuring sont de type : Artiste 1 _&_ Artiste 2 - Nom musique
+                                //ainsi on peut lancer deux requêtes via ce featuring : Artiste 1 - Nom musique, Artiste 2 - Nom musique afin d'ajouter aux deux artistes le chemin de la musique
+                                if(artistName.indexOf("_&_") !== -1){
+                                    var tfiledirSplitted= filedir.split(' - ');// /(\s-\s)/g
+                                    var tArtistName= tfiledirSplitted[0].split('_&_');
+                                    for(var i=0, l = tArtistName.length ; i<l;i++){
+                                        tQuery.push({$and:[{ name: tArtistName[i].trim()}, {titre:musicTitle} ]});
                                     }
-
-                                    // db.collection(COLLECTIONSONG).update(req,{ $set: addMultitrackpath }, function(err) {
-                                    //     if (err) throw err;
-                                    //     console.log(i+" => Add multitrackpath => "+song.name+" : "+song.titre+"       "+addMultitrackpath);
-                                    // });
-                                })
-                            }
-                            if(countTotal == countRead && countTotalDir == countDirRead){
-                                console.log("countRead = "+countRead);
+                                }
+                                else{
+                                    tQuery.push({$and:[{ name: artistName}, {titre:musicTitle} ]});
+                                }
+                                totalFilesDirLength += tQuery.length;
+                                for(var i=0, l = tQuery.length ; i<l;i++) {
+                                    /*Si l'artiste ou la musique n'est pas trouvé on doit modifier le nom dans le répertoire afin de matcher avec la bdd*/
+                                    db.collection(COLLECTIONSONG).find(tQuery[i]).toArray(function(err,tSongs){
+                                        if (err) throw err;
+                                        if(tSongs.length ==0){
+                                            console.log(artistName+" - "+musicTitle+" - non trouvé en base de données");
+                                        }
+                                        else{
+                                            var addMultitrackpath;
+                                            if(filedir.trim().endsWith('.mogg')){
+                                                addMultitrackpath = {multitrack_file:dir+"/"+filedir} // correspond au chemin de la musique multitracks .mogg dans le projet
+                                            }
+                                            else{
+                                                addMultitrackpath = {multitrack_path:dir+"/"+filedir} // correspond au chemin du dossier contenant des .ogg ou .mp3 dans le projet
+                                            }
+                                            var query = {$and:[{name:tSongs[0].name},{titre:tSongs[0].titre}]};
+                                            db.collection(COLLECTIONSONG).update(query,{ $set: addMultitrackpath },{multi:true}, function(err) {
+                                                if (err) throw err;
+                                            });
+                                        }
+                                        countFilesDir = countFilesDir+1;
+                                        if(countFilesDir%100 ==0){
+                                            console.log("En cours ... "+countFilesDir+"/"+totalFilesDirLength)
+                                        }
+                                        if(countFilesDir == totalFilesDirLength){
+                                            console.log("Traitement terminé: "+countFilesDir+"/"+totalFilesDirLength);
+                                        }
+                                    });
+                                }
                             }
                         })(filedir)
                     }
-
                 })
-            })(file)
+            })(dir)
         }
-        console.log(files);
-        // => [Error: EISDIR: illegal operation on a directory, open <directory>]
     });
-
-
-    //pour chaque nom d'artiste + nom musique récupérée on cherche son équivalent dans la base de données
-        //si la musique a son équivalent dans la base de données alors on ajoute le chemin de cette musique a l'attribut multitrackpath
-    //Permet de nommer la collection
-
-    // db.collection(COLLECTIONSONG).find(req).skip(skip).limit(limit).toArray(function(err,song){
-    //     var addMultitrackpath = {multitrackpath:""} // correspond au chemin de la musique multitracks dans le projet
-    //     console.log(addMultitrackpath);
-    //     // db.collection(COLLECTIONSONG).update(req,{ $set: addMultitrackpath }, function(err) {
-    //     //     if (err) throw err;
-    //     //     console.log(i+" => Add multitrackpath => "+song.name+" : "+song.titre+"       "+addMultitrackpath);
-    //     // });
-    // })
-        res.send("OK");
+    res.send("OK");
 });
 
-
+//A SUPPRIMER -> cette fonction est la recopie de celle du dessus afin de réaliser un test
+// router.get('/multitrackspathMT5Michel',function(req, res){
+//     this.console.log("dedans /updatedb/multitrackspath");
+//     var db = req.db, PATHMULTITRACKS = "E:/multitrack Michel MT5";
+//     //On cherche dans le dossier contenant les musiques multitracks
+//     fs.readdir(PATHMULTITRACKS, (err, filesDir) =>{
+//         //exemple filedir = Twisted Sister - We're Not Gonna Take It.mogg
+//         for (var filedir of filesDir) {
+//             (function(filedir){
+//                 //filedir est encodé on le decode :
+//                 filedir = utilHandler.decodePathWindows(filedir);
+//                 var countSepArtist_Title = (filedir.match(/(\s-\s)/g) || []).length;
+//                 // nous devons avoir 1 seul ' - ' afin de bien délimiter l'artiste du titre de musique
+//                 if(countSepArtist_Title!=1 ){
+//                     console.log(countSepArtist_Title+" : "+filedir);
+//                 }else{
+//                     var tfiledirSplitted= filedir.split(' - ');// /(\s-\s)/g
+//                     var artistName = tfiledirSplitted[0].trim(), musicTitle = tfiledirSplitted[1].trim().replace(/\.mogg$/, "").trim().replace(/(\(live\))$/i, "").trim(), tQuery = [];
+//                     // Les featuring sont de type : Artiste 1 _&_ Artiste 2 - Nom musique
+//                     //ainsi on peut lancer deux requêtes via ce featuring : Artiste 1 - Nom musique, Artiste 2 - Nom musique afin d'ajouter aux deux artistes le chemin de la musique
+//                     if(artistName.indexOf("_&_") !== -1){
+//                         var tfiledirSplitted= filedir.split(' - ');// /(\s-\s)/g
+//                         var tArtistName= tfiledirSplitted[0].split('_&_');
+//                         for(var i=0, l = tArtistName.length ; i<l;i++){
+//                             tQuery.push({$and:[{ name: tArtistName[i].trim()}, {titre:musicTitle} ]});
+//                         }
+//                     }
+//                     else{
+//                         tQuery.push({$and:[{ name: artistName}, {titre:musicTitle} ]});
+//                     }
+//                     for(var i=0, l = tQuery.length ; i<l;i++) {
+//                         /*Si l'artiste ou la musique n'est pas trouvé on doit modifier le nom dans le répertoire afin de matcher avec la bdd*/
+//                         db.collection(COLLECTIONSONG).find(tQuery[i]).toArray(function(err,tSongs){
+//                             if (err) throw err;
+//                             if(tSongs.length ==0){
+//                                 console.log(artistName+" - "+musicTitle+" - non trouvé en base de données");
+//                             }
+//                         })
+//                     }
+//                 }
+//             })(filedir)
+//         }
+//     });
+//     res.send("OK");
+// });
 
 module.exports = router;

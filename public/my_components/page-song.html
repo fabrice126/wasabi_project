@@ -210,7 +210,7 @@
                     </nav>
                 </div>
                 <div>
-                    <iframe style="width:100%; height:1000px" src="MT5/index.html">
+                    <iframe data-artist-type="{{artist.albums.songs}}" style="width:100%; height:1000px" src="MT5/index.html">
                     </iframe>
                 </div>
             </iron-pages>
@@ -243,6 +243,12 @@
             },
             ready: function(){
                 //Fonction permettant de réagir a un coller dans la zone prévu pour les lyrics
+                var self = this;
+                window.addEventListener('firedata', function (e) {
+                    console.log('DANS PAGE SONG !!!!');
+                    self.fire('firedataiframe', {song:self.artist.albums.songs});
+                }, false);
+
                 this.$.songLyricsEditable.addEventListener("paste", function(e) {
                     e.preventDefault();
                     var text = e.clipboardData.getData("text/plain");

@@ -6,6 +6,7 @@ var utilHandler     = require('./handler/utilHandler.js');
 var config          = require('./conf/conf.json');
 var elasticSearchHandler = require('./handler/elasticSearchHandler.js');
 const fs            = require('fs');
+var mkdirp          = require('mkdirp');
 const COLLECTIONARTIST  = config.database.collection_artist;
 const COLLECTIONALBUM   = config.database.collection_album;
 const COLLECTIONSONG    = config.database.collection_song;
@@ -25,6 +26,7 @@ router.get('/add/:urlArtist',function(req, res){
     var newLyricsWikia = lyricsWikia;
     var urlApiWikiaArtist = newLyricsWikia.urlApiWikia + req.params.urlArtist
     console.log("dedans /createdb/"+ req.params.urlArtist);
+    //Création de l'objet artist, il faudra modifier cette objet si de nouvelles propriétés doivent être ajoutées
     var objArtist = {
             name:"",
             urlWikipedia:"",
@@ -95,41 +97,37 @@ router.get('/createdbelasticsearchartist', function(req, res){
     res.send("OK");
 });
 
-//Cette fonction créee l'arborescence de dossier représentant la base de données
-// router.get('/createdirectories',function(req, res){
-//     var db = req.db, skip = 0, limit = 30000;
-//     this.console.log("dedans /updatedb/multitrackspath");
-//     const pathMultitracks = "E:/Multitracks downloadees/";
-//     (function nextSkipStep(skip){
-//         db.collection(COLLECTIONARTIST).find({}).skip(skip).limit(limit).toArray(function(err,tObj){
-//             var i = 0, l = tObj.length;
-//             var encoded = "";
-//             for(i ; i < l; i++){
-//                 //CON, COM1 ou LPT1 /^CON$/i || /^COM1$/i ||/^LPT1$/i ce sont des noms de fichier réservé sous windows on les remplacera par C_O_N   C_O_M_1   L_P_T_1
-//                 if(tObj[i].name.match(/^CON$/i) || tObj[i].name.match(/^COM1$/i) || tObj[i].name.match(/^LPT1$/i)){
-//                     tObj[i].name = tObj[i].name+'_';
-//                 }
-//                 encoded = utilHandler.encodePathWindows(tObj[i].name);
-//                 fs.mkdir("public/multitracks/"+encoded,(err)=>{
-//                     if(err){
-//                         console.log(err);
-//                     }
-//                 });
-//                 if(encoded.length > 224){
-//                     console.log("Taille encoded: "+encoded.length+" Original Taille: "+tObj[i].name.length);
-//                 }
-//                 if(i==limit-1){
-//                     skip += limit;
-//                     console.log("nextSkipStep = "+skip);
-//                     nextSkipStep(skip);
-//                 }
-//             }
-//         });
-//     })(skip)
-//
-//     //On cherche dans le dossier contenant les musiques multitracks
-//     res.send("OK");
-// });
+// Cette fonction créee l'arborescence de dossier représentant la base de données
+router.get('/createdirectories',function(req, res){
+    var db = req.db, skip = 0, limit = 10000;
+    this.console.log("dedans /createdb/createdirectories");
+    (function nextSkipStep(skip){
+        db.collection(COLLECTIONARTIST).find({}).skip(skip).limit(limit).toArray(function(err,tObj){
+            var encoded = "";
+            for(var i=0, l = tObj.length ; i < l; i++){
+                //CON, COM1 ou LPT1 /^CON$/i || /^COM1$/i ||/^LPT1$/i ce sont des noms de fichier réservé sous windows on les remplacera par C_O_N   C_O_M_1   L_P_T_1
+                // if(tObj[i].name.match(/^CON$/i) || tObj[i].name.match(/^COM1$/i) || tObj[i].name.match(/^LPT1$/i)){
+                //     tObj[i].name = tObj[i].name+'_';
+                // }
+                // encoded = utilHandler.encodePathWindows(tObj[i].name);
+                // if(encoded.length > 224){
+                //     console.log("Taille encoded: "+encoded.length+" Original Taille: "+tObj[i].name.length);
+                // }
+                fs.mkdir("mongo/wasabi_db_file/"+tObj._id,(err)=>{
+                    if(err) console.log(err);
+                });
+                if(i==limit-1){
+                    skip += limit;
+                    console.log("nextSkipStep = "+skip);
+                    nextSkipStep(skip);
+                }
+            }
+        });
+    })(skip)
+
+    //On cherche dans le dossier contenant les musiques multitracks
+    res.send("OK");
+});
 
 router.get('*', function(req, res){
     //On renvoie index.html qui ira match l'url via <app-router> de index.html ce qui renverra la page 404 si la page n'existe pas
