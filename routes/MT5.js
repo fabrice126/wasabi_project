@@ -4,6 +4,7 @@ var request         = require('request');
 var config          = require('./conf/conf.json');
 var fs              = require("fs");
 var path            = require('path');
+const utilHandler       = require('./handler/utilHandler.js');
 // TODO  a supprimer afin d'utiliser les promises
 var Q = require('q');
 
@@ -33,6 +34,9 @@ router.get('/track', function (req, res){
 router.get('/track/:dir/:id', function (req, res) {
     var id = req.params.id;
     var dir = req.params.dir;
+    id = utilHandler.encodePathWindows(id);
+    console.log("id  == "+id);
+    console.log("dir == "+dir);
     function sendTrack(track) {
         if (!track)
             return res.send(404, 'Track not found with id "' + id + '"');

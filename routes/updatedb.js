@@ -177,7 +177,8 @@ router.get('/multitrackspath',function(req, res){
     this.console.log("TEST MISE A JOUR");
     var db = req.db, PATHMULTITRACKS = config.multitracks.path_linux,totalFilesDirLength = 0, countFilesDir = 0;
     console.log(PATHMULTITRACKS);
-    // (os.platform() == 'win32')? PATHMULTITRACKS = config.multitracks.path_windows : PATHMULTITRACKS = config.multitracks.path_linux;
+    (os.platform() == 'win32')? PATHMULTITRACKS = config.multitracks.path_windows : PATHMULTITRACKS = config.multitracks.path_linux;
+    console.log(PATHMULTITRACKS);
     //On cherche dans le dossier contenant les musiques multitracks
     console.log("En cours de traitement ...");
     fs.readdir(PATHMULTITRACKS, (err, directories) =>{
@@ -219,10 +220,10 @@ router.get('/multitrackspath',function(req, res){
                                         else{
                                             var addMultitrackpath;
                                             if(filedir.trim().endsWith('.mogg')){
-                                                addMultitrackpath = {multitrack_file:dir+"/"+filedir} // correspond au chemin de la musique multitracks .mogg dans le projet
+                                                addMultitrackpath = {multitrack_file:dir+"/"+utilHandler.encodePathWindows(artistName+' - '+musicTitle)+".mogg"} // correspond au chemin de la musique multitracks .mogg dans le projet
                                             }
                                             else{
-                                                addMultitrackpath = {multitrack_path:dir+"/"+filedir} // correspond au chemin du dossier contenant des .ogg ou .mp3 dans le projet
+                                                addMultitrackpath = {multitrack_path:dir+"/"+utilHandler.encodePathWindows(filedir)} // correspond au chemin du dossier contenant des .ogg ou .mp3 dans le projet
                                             }
                                             var query = {$and:[{name:tSongs[0].name},{titre:tSongs[0].titre}]};
                                             db.collection(COLLECTIONSONG).update(query,{ $set: addMultitrackpath },{multi:true}, function(err) {

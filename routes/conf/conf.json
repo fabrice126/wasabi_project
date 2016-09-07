@@ -36,7 +36,7 @@
     },
     "multitracks":{
         "path_windows" : "E:/Multitracks downloadees/",
-        "path_linux" : "./public/Multitracks downloadees/"
+        "path_linux" : "./public/my_components/MT5/multitrack/"
 
     },
     "request" : {
