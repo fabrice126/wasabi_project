@@ -2,9 +2,39 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="33e3a497-95bf-4dc8-a96a-e2948ec227f8" name="Default" comment="">
+      <change type="DELETED" beforePath="$PROJECT_DIR$/public/my_components/MT5/multitrack/Aerosmith - Back in the Saddle/bass.mp3" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/public/my_components/MT5/multitrack/Aerosmith - Back in the Saddle/cymbals.mp3" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/public/my_components/MT5/multitrack/Aerosmith - Back in the Saddle/guitar.mp3" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/public/my_components/MT5/multitrack/Aerosmith - Back in the Saddle/kick.mp3" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/public/my_components/MT5/multitrack/Aerosmith - Back in the Saddle/snaretoms.mp3" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/public/my_components/MT5/multitrack/Aerosmith - Back in the Saddle/song.mp3" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/public/my_components/MT5/multitrack/Aerosmith - Same Old Song and Dance/SameOldSongAndDance.gpx" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/public/my_components/MT5/multitrack/Aerosmith - Same Old Song and Dance/guitar.mp3" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/public/my_components/MT5/multitrack/Aerosmith - Same Old Song and Dance/metadata.json" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/public/my_components/MT5/multitrack/Aerosmith - Same Old Song and Dance/notes.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/public/my_components/MT5/multitrack/Aerosmith - Same Old Song and Dance/rhythm.mp3" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/public/my_components/MT5/multitrack/Aerosmith - Same Old Song and Dance/song.ini" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/public/my_components/MT5/multitrack/Aerosmith - Same Old Song and Dance/song.mp3" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/public/my_components/MT5/multitrack/Aerosmith - Walk This Way (3 tracks)/Bass.mp3" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/public/my_components/MT5/multitrack/Aerosmith - Walk This Way (3 tracks)/Drums and Vocals.mp3" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/public/my_components/MT5/multitrack/Aerosmith - Walk This Way (3 tracks)/guitar.mp3" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/public/my_components/MT5/multitrack/M Multitracks/Metallica - Enter Sandman/drums.ogg" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/public/my_components/MT5/multitrack/M Multitracks/Metallica - Enter Sandman/guitar.ogg" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/public/my_components/MT5/multitrack/M Multitracks/Metallica - Enter Sandman/rhythm.ogg" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/public/my_components/MT5/multitrack/M Multitracks/Metallica - Enter Sandman/song.ogg" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/public/my_components/MT5/multitrack/M Multitracks/Metallica - One/drums.ogg" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/public/my_components/MT5/multitrack/M Multitracks/Metallica - One/guitar.ogg" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/public/my_components/MT5/multitrack/M Multitracks/Metallica - One/rhythm.ogg" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/public/my_components/MT5/multitrack/M Multitracks/Metallica - One/song.ogg" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/public/my_components/MT5/multitrack/M Multitracks/Michael Jackson - Beat It/drums.ogg" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/public/my_components/MT5/multitrack/M Multitracks/Michael Jackson - Beat It/guitar.ogg" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/public/my_components/MT5/multitrack/M Multitracks/Michael Jackson - Beat It/rhythm.ogg" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/public/my_components/MT5/multitrack/M Multitracks/Michael Jackson - Beat It/song.ogg" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/my_components/MT5/js/buffer-loader.js" afterPath="$PROJECT_DIR$/public/my_components/MT5/js/buffer-loader.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/my_components/MT5/js/sound.js" afterPath="$PROJECT_DIR$/public/my_components/MT5/js/sound.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/routes/MT5.js" afterPath="$PROJECT_DIR$/routes/MT5.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/routes/conf/conf.json" afterPath="$PROJECT_DIR$/routes/conf/conf.json" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/routes/updatedb.js" afterPath="$PROJECT_DIR$/routes/updatedb.js" />
     </list>
     <ignored path="wasabi_project.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -27,7 +57,7 @@
       <file leaf-file-name="page-song.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/public/my_components/page-song.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="17">
+            <state relative-caret-position="4488">
               <caret line="264" column="0" selection-start-line="264" selection-start-column="0" selection-end-line="264" selection-end-column="0" />
               <folding>
                 <element signature="n#style#0;n#iframe#0;n#div#1;n#iron-pages#0;n#paper-material#0;n#template#0;n#dom-module#0;n#!!top" expanded="true" />
@@ -39,14 +69,34 @@
       <file leaf-file-name="sound.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/public/my_components/MT5/js/sound.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="275">
-              <caret line="406" column="31" selection-start-line="406" selection-start-column="17" selection-end-line="406" selection-end-column="31" />
+            <state relative-caret-position="7055">
+              <caret line="416" column="29" selection-start-line="416" selection-start-column="29" selection-end-line="416" selection-end-column="29" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
-                <marker date="1473175731919" expanded="true" signature="13671:13699" ph="..." />
-                <marker date="1473175731919" expanded="true" signature="13834:13861" ph="..." />
-                <marker date="1473175731919" expanded="true" signature="13946:13960" ph="..." />
+                <marker date="1473259316604" expanded="true" signature="14103:14131" ph="..." />
+                <marker date="1473259316604" expanded="true" signature="14266:14293" ph="..." />
+                <marker date="1473259316604" expanded="true" signature="14378:14392" ph="..." />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="buffer-loader.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/public/my_components/MT5/js/buffer-loader.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1207">
+              <caret line="71" column="42" selection-start-line="71" selection-start-column="42" selection-end-line="71" selection-end-column="42" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="utilHandler.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/routes/handler/utilHandler.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="765">
+              <caret line="45" column="19" selection-start-line="45" selection-start-column="19" selection-end-line="45" selection-end-column="19" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -54,8 +104,8 @@
       <file leaf-file-name="MT5.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/routes/MT5.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="272">
-              <caret line="36" column="41" selection-start-line="36" selection-start-column="41" selection-end-line="36" selection-end-column="41" />
+            <state relative-caret-position="17">
+              <caret line="13" column="47" selection-start-line="13" selection-start-column="47" selection-end-line="13" selection-end-column="47" />
               <folding />
             </state>
           </provider>
@@ -64,8 +114,8 @@
       <file leaf-file-name="conf.json" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/routes/conf/conf.json">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="676">
-              <caret line="43" column="29" selection-start-line="43" selection-start-column="29" selection-end-line="43" selection-end-column="29" />
+            <state relative-caret-position="578">
+              <caret line="34" column="0" selection-start-line="34" selection-start-column="0" selection-end-line="34" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -74,18 +124,18 @@
       <file leaf-file-name="updatedb.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/routes/updatedb.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="85">
-              <caret line="5" column="0" selection-start-line="4" selection-start-column="0" selection-end-line="5" selection-end-column="0" />
+            <state relative-caret-position="119">
+              <caret line="7" column="33" selection-start-line="7" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
       <file leaf-file-name="index.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/public/index.html">
+        <entry file="file://$PROJECT_DIR$/public/my_components/MT5/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="200">
-              <caret line="32" column="74" selection-start-line="32" selection-start-column="74" selection-end-line="32" selection-end-column="74" />
+            <state relative-caret-position="476">
+              <caret line="28" column="22" selection-start-line="28" selection-start-column="20" selection-end-line="28" selection-end-column="22" />
               <folding />
             </state>
           </provider>
@@ -106,7 +156,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/public/my_components/app-router-test-import.html" />
         <option value="$PROJECT_DIR$/routes/handler/dbpediaHandler.js" />
         <option value="$PROJECT_DIR$/public/my_components/MT5/js/cubeEtcarre.html" />
         <option value="$PROJECT_DIR$/public/my_components/MT5/index-mt5.html" />
@@ -153,10 +202,11 @@
         <option value="$PROJECT_DIR$/routes/createdb.js" />
         <option value="$PROJECT_DIR$/public/my_components/page-song.html" />
         <option value="$PROJECT_DIR$/public/index.html" />
-        <option value="$PROJECT_DIR$/public/my_components/MT5/js/sound.js" />
-        <option value="$PROJECT_DIR$/routes/conf/conf.json" />
         <option value="$PROJECT_DIR$/routes/updatedb.js" />
+        <option value="$PROJECT_DIR$/routes/conf/conf.json" />
         <option value="$PROJECT_DIR$/routes/MT5.js" />
+        <option value="$PROJECT_DIR$/public/my_components/MT5/js/buffer-loader.js" />
+        <option value="$PROJECT_DIR$/public/my_components/MT5/js/sound.js" />
       </list>
     </option>
   </component>
@@ -202,6 +252,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scratches" />
       <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
@@ -245,6 +296,24 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+              <option name="myItemId" value="routes" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="handler" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="wasabi_project" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="wasabi_project" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
               <option name="myItemId" value="public" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
@@ -286,68 +355,11 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="MT5" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="wasabi_project" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="wasabi_project" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="public" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="my_components" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="MT5" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="multitrack" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="wasabi_project" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="wasabi_project" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="public" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="my_components" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="MT5" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="multitrack" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Aerosmith - Back in the Saddle" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -499,12 +511,14 @@
       <workItem from="1473058555092" duration="8922000" />
       <workItem from="1473149244866" duration="223000" />
       <workItem from="1473149518297" duration="23580000" />
-      <workItem from="1473229324757" duration="2073000" />
+      <workItem from="1473229324757" duration="2671000" />
+      <workItem from="1473245508480" duration="8730000" />
+      <workItem from="1473318134397" duration="597000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="604032000" />
+    <option name="totallyTimeSpent" value="613957000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -516,27 +530,27 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1176" extended-state="6" />
-    <editor active="true" />
+    <frame x="-8" y="-8" width="1936" height="1176" extended-state="1" />
+    <editor active="false" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.14857745" sideWeight="0.4944" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.22391991" sideWeight="0.4944" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32981783" sideWeight="0.49789253" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.15340364" sideWeight="0.55216014" order="0" side_tool="true" content_ui="tabs" />
-      <window_info id="npm" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.1938883" sideWeight="0.5052356" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.15340364" sideWeight="0.44783983" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24973656" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24832214" sideWeight="0.5574289" order="0" side_tool="true" content_ui="tabs" />
+      <window_info id="npm" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.1938883" sideWeight="0.5052356" order="1" side_tool="true" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24832214" sideWeight="0.44257113" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24973656" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.44774687" sideWeight="0.49367756" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.1938883" sideWeight="0.5056" order="3" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.1938883" sideWeight="0.5056" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Documentation" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="FLOATING" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" x="92" y="92" width="1736" height="976" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.20038351" sideWeight="0.48946258" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="Vcs.Log.UiProperties">
@@ -735,19 +749,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/routes/handler/utilHandler.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="362">
-          <caret line="55" column="2" selection-start-line="55" selection-start-column="2" selection-end-line="55" selection-end-column="2" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/public/my_components/x-album.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="795">
           <caret line="152" column="52" selection-start-line="152" selection-start-column="52" selection-end-line="152" selection-end-column="52" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -762,9 +767,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="n#!!doc" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -772,12 +774,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="413">
           <caret line="26" column="47" selection-start-line="26" selection-start-column="47" selection-end-line="26" selection-end-column="47" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-            <marker date="1467301058800" expanded="true" signature="3808:3836" ph="..." />
-            <marker date="1467301058800" expanded="true" signature="3959:3986" ph="..." />
-            <marker date="1467301058800" expanded="true" signature="4053:4067" ph="..." />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -785,7 +781,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -800,7 +795,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -808,7 +802,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-828">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -833,14 +826,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/public/my_components/MT5/js/buffer-loader.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/public/my_components/MT5/js/recorderjs/recorder.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-1304">
@@ -859,7 +844,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-3645">
           <caret line="29" column="26" selection-start-line="29" selection-start-column="26" selection-end-line="29" selection-end-column="26" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -867,29 +851,12 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/public/my_components/MT5/index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="494">
-          <caret line="181" column="53" selection-start-line="181" selection-start-column="53" selection-end-line="181" selection-end-column="53" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/public/index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="200">
-          <caret line="32" column="74" selection-start-line="32" selection-start-column="74" selection-end-line="32" selection-end-column="74" />
-          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/public/my_components/page-song.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="17">
+        <state relative-caret-position="4488">
           <caret line="264" column="0" selection-start-line="264" selection-start-column="0" selection-end-line="264" selection-end-column="0" />
           <folding>
             <element signature="n#style#0;n#iframe#0;n#div#1;n#iron-pages#0;n#paper-material#0;n#template#0;n#dom-module#0;n#!!top" expanded="true" />
@@ -897,39 +864,70 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/public/my_components/MT5/js/sound.js">
+    <entry file="file://$PROJECT_DIR$/public/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="275">
-          <caret line="406" column="31" selection-start-line="406" selection-start-column="17" selection-end-line="406" selection-end-column="31" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-            <marker date="1473175731919" expanded="true" signature="13671:13699" ph="..." />
-            <marker date="1473175731919" expanded="true" signature="13834:13861" ph="..." />
-            <marker date="1473175731919" expanded="true" signature="13946:13960" ph="..." />
-          </folding>
+        <state relative-caret-position="101">
+          <caret line="32" column="74" selection-start-line="32" selection-start-column="74" selection-end-line="32" selection-end-column="74" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/my_components/MT5/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="476">
+          <caret line="28" column="22" selection-start-line="28" selection-start-column="20" selection-end-line="28" selection-end-column="22" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/routes/updatedb.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="5" column="0" selection-start-line="4" selection-start-column="0" selection-end-line="5" selection-end-column="0" />
+        <state relative-caret-position="119">
+          <caret line="7" column="33" selection-start-line="7" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/routes/conf/conf.json">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="676">
-          <caret line="43" column="29" selection-start-line="43" selection-start-column="29" selection-end-line="43" selection-end-column="29" />
+        <state relative-caret-position="578">
+          <caret line="34" column="0" selection-start-line="34" selection-start-column="0" selection-end-line="34" selection-end-column="0" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/routes/handler/utilHandler.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="765">
+          <caret line="45" column="19" selection-start-line="45" selection-start-column="19" selection-end-line="45" selection-end-column="19" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/my_components/MT5/js/buffer-loader.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1207">
+          <caret line="71" column="42" selection-start-line="71" selection-start-column="42" selection-end-line="71" selection-end-column="42" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/my_components/MT5/js/sound.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="7055">
+          <caret line="416" column="29" selection-start-line="416" selection-start-column="29" selection-end-line="416" selection-end-column="29" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+            <marker date="1473259316604" expanded="true" signature="14103:14131" ph="..." />
+            <marker date="1473259316604" expanded="true" signature="14266:14293" ph="..." />
+            <marker date="1473259316604" expanded="true" signature="14378:14392" ph="..." />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/routes/MT5.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="272">
-          <caret line="36" column="41" selection-start-line="36" selection-start-column="41" selection-end-line="36" selection-end-column="41" />
+        <state relative-caret-position="17">
+          <caret line="13" column="47" selection-start-line="13" selection-start-column="47" selection-end-line="13" selection-end-column="47" />
           <folding />
         </state>
       </provider>

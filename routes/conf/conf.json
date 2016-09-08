@@ -35,7 +35,7 @@
         "TRACKS_URL" : "multitrack/"
     },
     "multitracks":{
-        "path_windows" : "E:/Multitracks downloadees/",
+        "path_windows" : "E:/Multitracks downloadees + MT5 multitracks/",
         "path_linux" : "./public/my_components/MT5/multitrack/"
 
     },

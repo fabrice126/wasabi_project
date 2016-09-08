@@ -10,7 +10,7 @@ function BufferLoader(context, urlList, callback, callbackDraw) {
 BufferLoader.prototype.loadBuffer = function(url, index) {
     // Load buffer asynchronously
     console.log('file : ' + url + "loading and decoding");
-
+    url = re_encodePathWindows(url);
     var request = new XMLHttpRequest();
     request.open("GET", url, true);
 
@@ -19,12 +19,9 @@ BufferLoader.prototype.loadBuffer = function(url, index) {
     var loader = this;
 
     request.onload = function() {
-
         // Asynchronously decode the audio file data in request.response
-        loader.context.decodeAudioData(
-                request.response,
-                function(buffer) {
-                        log("Loaded and decoded track " + (loader.loadCount+1) + 
+        loader.context.decodeAudioData(request.response, function(buffer) {
+                        log("Loaded and decoded track " + (loader.loadCount+1) +
                         "/" +  loader.urlList.length + "...");
 
                     if (!buffer) {
@@ -77,3 +74,19 @@ BufferLoader.prototype.load = function() {
         this.loadBuffer(this.urlList[i], i);
 }
 
+function re_encodePathWindows(str) {
+    //Sous windows les caractères interdit ou posant problème dans le nom d'un fichier/dossier sont " ? < > | \ : * / .
+    // les caractères ci dessus une fois encodé donnent respectivement: %22 %3F %3C %3E %7C %5C %3A %2A %2F %2E nous devons donc les décoder
+    return str.replace(/(%22|%3F|%3C|%3E|%7C|%5C|%3A|%2A|%2F|%2E)/g, function(c) {
+        if('%2E'==c){
+            c = '%252E';
+        }
+        else if ('%2A'==c){
+            c = '%252A';
+        }
+        else{
+            c = encodeURIComponent(c);
+        }
+        return c;
+    });
+};

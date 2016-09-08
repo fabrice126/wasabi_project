@@ -35,8 +35,6 @@ router.get('/track/:dir/:id', function (req, res) {
     var id = req.params.id;
     var dir = req.params.dir;
     id = utilHandler.encodePathWindows(id);
-    console.log("id  == "+id);
-    console.log("dir == "+dir);
     function sendTrack(track) {
         if (!track)
             return res.send(404, 'Track not found with id "' + id + '"');
@@ -120,10 +118,10 @@ function comparator(prop){
         }
         return 0;
     };
+
 }
 
 function getFiles(dirName, callback) {
-    console.log("dirName = "+dirName);
     fs.readdir(dirName, function(error, directoryObject) {
         if(directoryObject !== undefined) {
             directoryObject.sort();

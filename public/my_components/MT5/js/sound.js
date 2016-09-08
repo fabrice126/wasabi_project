@@ -32,7 +32,8 @@ var currentTime;
 var delta;
 // The x position in pixels of the timeline
 var currentXTimeline;
-
+//When you want to run the application locally set LOCALHOST to 'true'
+var LOCALHOST = false;
 // requestAnim shim layer by Paul Irish, like that canvas animation works
 // in all browsers
 window.requestAnimFrame = (function() {
@@ -356,7 +357,14 @@ function finishedLoading(bufferList) {
 // ######### SONGS
 function loadSongList(pathSong) {
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', "http://wasabi.i3s.unice.fr/MT5/track/"+pathSong, true); //http://wasabi.i3s.unice.fr/
+    pathSong = re_encodePathWindows(pathSong);
+    if(LOCALHOST == true){
+        console.log("EN LOCAL");
+        xhr.open('GET', "http://127.0.0.1/MT5/track/"+pathSong, true);
+    }else{
+        console.log("SUR LE SERVEUR");
+        xhr.open('GET', "http://wasabi.i3s.unice.fr/MT5/track/"+pathSong, true);
+    }
     //Commenté par Fabrice
     // Menu for song selection
     // var s = $("<select id='songSelect'/>");
@@ -402,17 +410,20 @@ function loadSong(songName) {
     // This function builds the current 
     // song and resets all states to default (zero muted and zero solo lists, all
     // volumes set to 1, start at 0 second, etc.)
-    console.log("songName == "+songName);
     currentSong = new Song(songName, context);
-    console.log("currentSong == "+currentSong.url);
-
+    currentSong.url = pathSong = re_encodePathWindows(currentSong.url);
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', "http://wasabi.i3s.unice.fr/"+currentSong.url, true);//http://wasabi.i3s.unice.fr/
-    
+    if(LOCALHOST == true){
+        console.log("EN LOCAL");
+        xhr.open('GET', "http://127.0.0.1/"+currentSong.url, true);
+    }else{
+        console.log("SUR LE SERVEUR");
+        xhr.open('GET', "http://wasabi.i3s.unice.fr/"+currentSong.url, true);
+    }
+
     xhr.onload = function(e) {
         // get a JSON description of the song
         var song = JSON.parse(this.response);
-
         // set the metatada returned by the REST web service to the current song
         currentSong.metadata.setMetadata(song.metadata);
 
@@ -886,4 +897,21 @@ function toggleRecordMix() {
         log("Stop to save the mix as .wav"); 
     } 
 }
+
+function re_encodePathWindows(str) {
+    //Sous windows les caractères interdit ou posant problème dans le nom d'un fichier/dossier sont " ? < > | \ : * / .
+    // les caractères ci dessus une fois encodé donnent respectivement: %22 %3F %3C %3E %7C %5C %3A %2A %2F %2E nous devons donc les décoder
+    return str.replace(/(%22|%3F|%3C|%3E|%7C|%5C|%3A|%2A|%2F|%2E)/g, function(c) {
+        if('%2E'==c){
+            c = '%252E';
+        }
+        else if ('%2A'==c){
+            c = '%252A';
+        }
+        else{
+            c = encodeURIComponent(c);
+        }
+        return c;
+    });
+};
 
