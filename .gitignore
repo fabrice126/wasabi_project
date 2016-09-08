@@ -1,5 +1,4 @@
-/node_modules/*
+mongo/backup_mongo/*
+mongo/backup_mongo_tmp/*
+public/my_components/MT5/multitrack/*
 routes/conf/login.json
-mongo/backup_mongo/
-mongo/backup_mongo_tmp/
-public/my_components/MT5/multitrack
