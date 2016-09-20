@@ -1088,6 +1088,7 @@
 			<th>DATA PARAMS</th>
 			<td> 
 				: collection = {artist,album,song}<br>
+				: _id = ObjectId MongoDB d'un document artist, album, song<br>
 			</td>
 		</tr>
 		<tr>
@@ -1201,6 +1202,12 @@
 		</tr>
 		<tr>
 			<th>METHOD</th><td>GET</td>
+		</tr>
+        <tr>
+			<th>DATA PARAMS</th>
+			<td> 
+				: _id= ObjectId MongoDB d'un document song<br>
+			</td>
 		</tr>
 		<tr>
 			<th>SUCCESS RESPONSE</th>
