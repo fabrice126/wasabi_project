@@ -1071,6 +1071,40 @@
 
 
 
+## extractdbpedia/add/:collection/:_id
+<table>
+	<tbody>
+		<tr>
+			<th>Description</th><td>Une fois la base de données créées : permet de récupérer sur DBpédia les 'artist','album' ou 'song' du document dont l'_id est passé en paramètre </td>
+		</tr>
+		<tr>
+			<th>URL</th><td>http://127.0.0.1/extractdbpedia/add/artist/57c92593e5c453a411c77256
+			</td>
+		</tr>
+		<tr>
+			<th>METHOD</th><td>GET</td>
+		</tr>
+        <tr>
+			<th>DATA PARAMS</th>
+			<td> 
+				: collection = {artist,album,song}<br>
+			</td>
+		</tr>
+		<tr>
+			<th>SUCCESS RESPONSE</th>
+			<td> 
+				Code : 200 <br>
+				Content GET : "OK"
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+
+
+
+
+
 ## extractdbpedia/artist/createfields
 <table>
 	<tbody>
@@ -1135,6 +1169,34 @@
 		</tr>
 		<tr>
 			<th>URL</th><td>http://127.0.0.1/extractdbpedia/song/createfields
+			</td>
+		</tr>
+		<tr>
+			<th>METHOD</th><td>GET</td>
+		</tr>
+		<tr>
+			<th>SUCCESS RESPONSE</th>
+			<td> 
+				Code : 200 <br>
+				Content GET : "OK"
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+
+
+
+
+
+## extractdbpedia/song/createfields/:_id
+<table>
+	<tbody>
+		<tr>
+			<th>Description</th><td>Après avoir effectué extractdbpedia/song (une fois que le document à un attribut nommé : 'rdf') : permet d’insérer dans notre base de données les informations contenues dans le RDF de la musique ayant son _id passé en paramètre </td>
+		</tr>
+		<tr>
+			<th>URL</th><td>http://127.0.0.1/extractdbpedia/song/createfields/57c92593e5c453a411c77257
 			</td>
 		</tr>
 		<tr>
