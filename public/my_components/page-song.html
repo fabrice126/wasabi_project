@@ -92,10 +92,15 @@
             <!--permet de faire des requêtes de modification-->
             <iron-ajax id="put_content" method="PUT" content-type="application/json"></iron-ajax>
 
-            <paper-tabs selected="{{idxCurrentTab}}">
-                <paper-tab>Lyrics</paper-tab>
-                <paper-tab>MT5</paper-tab>
-            </paper-tabs>
+            <!--Ce dom-if sert uniquement a ne pas avoir de problème d'affichage sur la selection du paper-tab (uniquement sur les musiques ayant du multitrack)-->
+            <template is="dom-if" if="{{artist}}">
+                <paper-tabs selected="{{idxCurrentTab}}">
+                    <paper-tab>Lyrics</paper-tab>
+                    <template is="dom-if" if="{{artist.albums.songs.multitrack_path.length}}">
+                        <paper-tab>Multitracks</paper-tab>
+                    </template>
+                </paper-tabs>
+            </template>
 
             <iron-pages selected="{{idxCurrentTab}}">
                 <div>
@@ -209,10 +214,11 @@
                         </template>
                     </nav>
                 </div>
-                <div>
-                    <iframe data-artist-type="{{artist.albums.songs}}" style="width:100%; height:1000px" src="MT5/index.html">
-                    </iframe>
-                </div>
+                <template is="dom-if" if="{{artist.albums.songs.multitrack_path.length}}">
+                    <div>
+                        <iframe id="frameMT5" style="width:100%; height:1000px" src="MT5/index.html" on-load="onFrameLoaded"></iframe>
+                    </div>
+                </template>
             </iron-pages>
         </paper-material>
     </template>
@@ -232,8 +238,7 @@
                 editing: {
                     type: Boolean,
                     value: false
-                },
-
+                }
             },
             getURLSongId : function(){
                 return "/search/artist_id/"+this.artist._id+"/album_id/"+this.artist.albums._id+"/song_id/"+this.artist.albums.songs._id;
@@ -242,13 +247,6 @@
                 return "/search/artist/"+this._encodeUri(this.artist.name)+"/album/"+this._encodeUri(this.artist.albums.titre)+"/song/"+this._encodeUri(this.artist.albums.songs.titre);
             },
             ready: function(){
-                //Fonction permettant de réagir a un coller dans la zone prévu pour les lyrics
-                var self = this;
-                window.addEventListener('firedata', function (e) {
-                    console.log('DANS PAGE SONG !!!!');
-                    self.fire('firedataiframe', {song:self.artist.albums.songs});
-                }, false);
-
                 this.$.songLyricsEditable.addEventListener("paste", function(e) {
                     e.preventDefault();
                     var text = e.clipboardData.getData("text/plain");
@@ -262,7 +260,6 @@
             },
             //Cette fonction est utilisé lorsque l'utilisateur charge la page et lorsqu'il clique sur le bouton de modification des lyrics
             handleResponse: function(request) {
-                console.log("Requête reçue dans handleResponse");
                 //Si l'utilisateur clique sur le bouton de modification des lyrics
                 if(this.editing){
                     //On ajoute via innerHTML les lyrics car nous récupérons du HTML en base de données (des balises <br>) cela nous permet de garder la mise en page
@@ -314,6 +311,12 @@
                 this.$.put_content.url = this.getURLSong();
                 this.$.put_content.generateRequest();
             },
+            //  /!\ si <template is="dom-if" if="{{artist.albums.songs.multitrack_path.length}}"> est supprimé il y a une change que la frame soit charger
+            //avant que la requête soit arrivée
+            onFrameLoaded: function(){
+                //Si la requête ajax a été recue avant la fin du chargement de l'iframe
+                this.fire('firedataiframe', {song: this.artist.albums.songs});
+            }
         });
     </script>
 </dom-module>

@@ -1,6 +1,21 @@
 var request = require('request');
 
 
+var addDocumentToElasticSearch = function(req, indexName, index_type, body,id){
+    console.log("addDocumentToElasticSearch");
+    return req.elasticsearchClient.index({
+        index: indexName,
+        type: index_type,
+        id:id,
+        body: body
+    });
+};
+
+/**
+ *
+ * @param url
+ * @returns {Promise}
+ */
 var deleteElasticSearchIndex = function(url){
     return new Promise(function(resolve, reject) {
         request({ url: url, method: 'DELETE'}, function(err, resp, body){
@@ -10,7 +25,12 @@ var deleteElasticSearchIndex = function(url){
         });
     })
 };
-//request PUT /{idx_artists||idx_songs} afin de créer l'index de zéro
+/**
+ * request PUT /{idx_artists||idx_songs} afin de créer l'index de zéro
+ * @param url
+ * @param mappingObj
+ * @returns {Promise}
+ */
 var createElasticSearchIndex = function(url,mappingObj){
     var setting = {
         "settings": {
@@ -39,7 +59,12 @@ var createElasticSearchIndex = function(url,mappingObj){
         });
     });
 };
-// request PUT /idx_artists/{artist||song}/_mapping afin de définir le type autocomplétion
+/**
+ * request PUT /idx_artists/{artist||song}/_mapping afin de définir le type autocomplétion
+ * @param url
+ * @param indexMappingObj
+ * @returns {Promise}
+ */
 var createMappingElasticSearchIndex = function(url,indexMappingObj){
     return new Promise(function(resolve, reject) {
         request({ url: url, method: 'PUT', json:indexMappingObj}, function(err, resp, body){
@@ -48,7 +73,14 @@ var createMappingElasticSearchIndex = function(url,indexMappingObj){
         });
     });
 };
-//Fonction permettant d'ajouter une grande quantité de données rapidement dans elasticsearch
+/**
+ * Fonction permettant d'ajouter une grande quantité de données rapidement dans elasticsearch
+ * @param req
+ * @param collectioName
+ * @param projectObj
+ * @param indexName
+ * @param typeName
+ */
 var insertBulkData = function(req,collectioName,projectObj,indexName,typeName){
     var elasticsearchClient = req.elasticsearchClient;
     var db = req.db;
@@ -79,7 +111,12 @@ var insertBulkData = function(req,collectioName,projectObj,indexName,typeName){
     })(skip)
 };
 
-//Permet de supprimer les chars spéciaux d'elasticsearch +-= && || ><!(){}[]^"~*?:\/
+
+/**
+ * Permet de supprimer les chars spéciaux d'elasticsearch +-= && || ><!(){}[]^"~*?:\/
+ * @param query
+ * @returns {XML|string}
+ */
 var escapeElasticSearch = function(query){
     return query
         .replace(/[\*\+\-=~><\"\?^\${}\(\)\:\!\/[\]]/g, '\\$&') // replace single character special characters
@@ -95,3 +132,4 @@ exports.createElasticSearchIndex        = createElasticSearchIndex;
 exports.createMappingElasticSearchIndex = createMappingElasticSearchIndex;
 exports.insertBulkData                  = insertBulkData;
 exports.escapeElasticSearch             = escapeElasticSearch;
+exports.addDocumentToElasticSearch      = addDocumentToElasticSearch;

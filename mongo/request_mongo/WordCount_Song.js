@@ -24,7 +24,6 @@ var reduce = function( key, values ) {
     return Array.sum(values);   
 };
 
-
 var limit = 2000;
 (function recusive(limit){
 

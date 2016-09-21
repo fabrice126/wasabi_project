@@ -1,6 +1,7 @@
 var express         = require('express');
 var router          = express.Router();
 var request         = require('request');
+var ObjectId        = require('mongoskin').ObjectID;
 var lyricsWikia     = require('./handler/lyricsWikia.js');
 var utilHandler     = require('./handler/utilHandler.js');
 var config          = require('./conf/conf.json');
@@ -15,16 +16,17 @@ router.get('/',function(req, res){
     console.log("dedans /createdb");
     //Pour chaque lettre  sur wikia et chaque catégorie on récupére pour commencer les albums de 5 artistes ainsi que tous ses albums et musiques
     //pour chaque categorie ex: http://lyrics.wikia.com/wiki/Category:Artists_A on récupére les artistes ici les artistes commencant par la lettre A
-    lyricsWikia.fetchData(lyricsWikia.urlArtists,lyricsWikia.alphabet[lyricsWikia.idxAlphabet],lyricsWikia.paramNextPage,lyricsWikia.selectorArtists,lyricsWikia.attrArtists,lyricsWikia.removeStrHrefArtists);
+    lyricsWikia.fetchData(lyricsWikia.urlArtists,lyricsWikia.alphabet[lyricsWikia.idxAlphabet],lyricsWikia.paramNextPage);
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.write(JSON.stringify({ status: "OK" }));
     res.end();
 });
 
 //Permet d'ajouter la discographie d'un artiste manquant dans notre base de données en allant la chercher sur lyrics wikia
+//exemple :urlArtist : createdb/add/3_Doors_Down pour la page http://lyrics.wikia.com/wiki/3_Doors_Down
 router.get('/add/:urlArtist',function(req, res){
     var newLyricsWikia = lyricsWikia;
-    var urlApiWikiaArtist = newLyricsWikia.urlApiWikia + req.params.urlArtist
+    var urlApiWikiaArtist = newLyricsWikia.urlApiWikia + req.params.urlArtist;
     console.log("dedans /createdb/"+ req.params.urlArtist);
     //Création de l'objet artist, il faudra modifier cette objet si de nouvelles propriétés doivent être ajoutées
     var objArtist = {
@@ -44,12 +46,12 @@ router.get('/add/:urlArtist',function(req, res){
             albums:[]
         };
     newLyricsWikia.idxAlphabet = newLyricsWikia.alphabet.length;
-    newLyricsWikia.getOneArtist(urlApiWikiaArtist, objArtist,newLyricsWikia.selectorName, newLyricsWikia.selectorAlbums, newLyricsWikia.attrAlbums).then(function(objArtist) {
-        //objArtist.tObjArtist => tableau d'objet représentant les artists: [{ name: 'A Dying God', urlWikia: 'A_Dying_God', albums: [] },{objet2}, etc]
-        console.log("objArtist.tObjArtist.length  ==="+objArtist.tObjArtist.length );
+    newLyricsWikia.getOneArtist(urlApiWikiaArtist, objArtist).then(function(objArtist) {
+        //objArtist.tObjArtist => tableau d'objet représentant les artists: [{ name: 'A Dying God', urlWikia: 'A_Dying_God', albums: [] }]
+        console.log("objArtist.tObjArtist.length  ==="+objArtist.tObjArtist.length ); // doit être == 1
         newLyricsWikia.getArtistDiscography(objArtist,"","",0);
         console.log("fin de GET createdb");
-    })
+    });
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.write(JSON.stringify({ status: "OK" }));
     res.end();
@@ -74,7 +76,7 @@ router.get('/createdbelasticsearchsong', function(req, res){
     }).then(function(resolve){
         console.log("Index "+typeName+" Crée");
         elasticSearchHandler.insertBulkData(req,COLLECTIONSONG,projectObj,indexName,typeName);
-    })
+    });
     res.send("OK");
 });
 router.get('/createdbelasticsearchartist', function(req, res){
@@ -93,11 +95,30 @@ router.get('/createdbelasticsearchartist', function(req, res){
     }).then(function(resolve){
         console.log("Index "+typeName+" Crée");
         elasticSearchHandler.insertBulkData(req,COLLECTIONARTIST,projectObj,indexName,typeName);
-    })
+    });
     res.send("OK");
 });
-
-// Cette fonction créee l'arborescence de dossier représentant la base de données
+//Permet d'ajouter l'artiste dont l'id est passé en parametre
+router.get('/add/elasticsearch/artist/:_id', function(req, res){
+    var db = req.db, id = req.params._id, index_artist = config.database.index_artist, type_artist = config.database.index_type_artist;
+    db.collection(COLLECTIONARTIST).findOne({_id:ObjectId(id)},{"name":1}, function(err,artist) {
+        if(artist == null) {return res.status(404).send([{error:config.http.error.global_404}]); }
+        delete artist._id; // impossible de faire l'insertion si un _id est présent dans le document à insérer
+        elasticSearchHandler.addDocumentToElasticSearch(req, index_artist, type_artist, artist, id);
+    });
+    res.send("OK");
+});
+//Permet d'ajouter la musique dont l'id est passé en parametre
+router.get('/add/elasticsearch/song/:_id', function(req, res){
+    var db = req.db, id = req.params._id, index_song = config.database.index_song, type_song = config.database.index_type_song;
+    db.collection(COLLECTIONSONG).findOne({_id:ObjectId(id)},{"name":1,"albumTitre":1,"titre":1}, function(err,song) {
+        if(song == null) {return res.status(404).send([{error:config.http.error.global_404}]); }
+        delete song._id; // impossible de faire l'insertion si un _id est présent dans le document à insérer
+        elasticSearchHandler.addDocumentToElasticSearch(req, index_song, type_song, song, id);
+    });
+    res.send("OK");
+});
+// A FINIR Cette fonction créee l'arborescence de dossier représentant la base de données
 router.get('/createdirectories',function(req, res){
     var db = req.db, skip = 0, limit = 10000;
     this.console.log("dedans /createdb/createdirectories");
@@ -123,7 +144,7 @@ router.get('/createdirectories',function(req, res){
                 }
             }
         });
-    })(skip)
+    })(skip);
 
     //On cherche dans le dossier contenant les musiques multitracks
     res.send("OK");

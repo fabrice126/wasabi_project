@@ -1,27 +1,30 @@
-var config          = require('./routes/conf/conf.json');
-var login           = require('./routes/conf/login.json');
-var express         = require('express');
-var app             = express();
-var path            = require('path');
-var favicon         = require('serve-favicon');
-var logger          = require('morgan');
-var cookieParser    = require('cookie-parser');
-var bodyParser      = require('body-parser');
-var helmet          = require('helmet');
-var escapeHTML      = require('escape-html');
-var errorHandler    = require('errorhandler');
-var basicAuth       = require('basic-auth-connect');
-var elasticsearch   = require('elasticsearch');
-var sanitizeHtml    = require('sanitize-html');
-var db              = require('mongoskin').db(config.database.mongodb_connect);
-var elasticsearchClient = new elasticsearch.Client({ host: config.database.elasticsearch_connect});
-var search          = require('./routes/search');
-var MT5             = require('./routes/MT5');
-var updatedb        = require('./routes/updatedb');
-// var mergedb         = require('./routes/mergedb');
-var createdb        = require('./routes/createdb');
-// var extractdbpedia  = require('./routes/extractdbpedia');
-
+const config          = require('./routes/conf/conf.json');
+const login           = require('./routes/conf/login.json');
+const express         = require('express');
+const app             = express();
+const querystring       = require('querystring');
+const path              = require('path');
+const favicon           = require('serve-favicon');
+const logger            = require('morgan');
+const cookieParser      = require('cookie-parser');
+const bodyParser        = require('body-parser');
+const helmet            = require('helmet');
+const escapeHTML        = require('escape-html');
+const errorHandler      = require('errorhandler');
+const basicAuth         = require('basic-auth-connect');
+const elasticsearch     = require('elasticsearch');
+const sanitizeHtml      = require('sanitize-html');
+const db                = require('mongoskin').db(config.database.mongodb_connect);
+const elasticsearchClient = new elasticsearch.Client({ host: config.database.elasticsearch_connect});
+const search            = require('./routes/search');
+const MT5               = require('./routes/MT5');
+const updatedb          = require('./routes/updatedb');
+// const mergedb         = require('./routes/mergedb');
+const createdb          = require('./routes/createdb');
+const extractdbpedia    = require('./routes/extractdbpedia');
+const COLLECTIONARTIST  = config.database.collection_artist;
+const COLLECTIONALBUM   = config.database.collection_album;
+const COLLECTIONSONG    = config.database.collection_song;
 
 app.disable('x-powered-by');
 // view cache
@@ -58,6 +61,9 @@ app.use(function(req,res,next){
     req.db = db;
     req.sanitize = sanitizeHtml;
     req.escapeHTML = escapeHTML;
+    req.COLLECTIONARTIST = COLLECTIONARTIST;
+    req.COLLECTIONALBUM = COLLECTIONALBUM;
+    req.COLLECTIONSONG = COLLECTIONSONG;
     req.elasticsearchClient = elasticsearchClient;
     next();
 });
@@ -67,7 +73,7 @@ app.use('/MT5', MT5);
 app.use('/updatedb', updatedb);
 // app.use('/mergedb',mergedb);
 app.use('/createdb', createdb);
-// app.use('/extractdbpedia', extractdbpedia);
+app.use('/extractdbpedia', extractdbpedia);
 
 // catch 404 and forward to error handler
 //Return la page-404.html via <app-router> dans index.html 

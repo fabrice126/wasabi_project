@@ -8,7 +8,7 @@ const config        = require('./conf/conf.json');
 const COLLECTIONARTIST  = config.database.collection_artist;
 const COLLECTIONALBUM   = config.database.collection_album;
 const COLLECTIONSONG    = config.database.collection_song;
-const LIMIT             = config.request.limit
+const LIMIT             = config.request.limit;
 //==========================================================================================================================\\
 //===========================WEBSERVICE REST POUR L'AFFICHAGE DU LISTING DES ARTISTES/ALBUMS/SONGS==========================\\
 //==========================================================================================================================\\
@@ -153,31 +153,35 @@ router.get('/format/:formatName',function(req,res){
 //==========================================================================================================================\\
 //====================WEBSERVICE REST POUR COMPTER LE NOMBRE D'OCCURENCE DE DOCUMENT DANS UNE COLLECTION ===================\\
 //==========================================================================================================================\\
+// /!\/!\ Cette fonction fait exploser la RAM car elle compte le nombre d'occurence de chaque titre commençant par la lettre :lettre dans la collection song/!\/!\
+
 router.get('/count/:collection/:lettre', function (req, res) {
-    var db = req.db, collection= req.params.collection,lettre= req.params.lettre, tParamToFind, fieldCollection, tObjectRequest;
-    if(collection == "Artists"){
-        collection = COLLECTIONARTIST;
-        fieldCollection = "name";
-    }else if(collection == "Albums"){
-        collection = COLLECTIONALBUM;
-        fieldCollection = "titre";
-    }else if(collection == "Songs"){
-        collection = COLLECTIONSONG;
-        fieldCollection = "titre";
-    }
-    if(collection !== COLLECTIONARTIST && collection !==COLLECTIONALBUM && collection !==COLLECTIONSONG || lettre.length>2){
-        return res.status(404).send([{error:config.http.error.global_404}]);
-    }
-    tParamToFind = searchHandler.optimizeFind(lettre);
-    tObjectRequest = searchHandler.constructData(fieldCollection, tParamToFind);
-    db.collection(collection).count({$or:tObjectRequest},function(err, countfield) {
-        if(err){
-            console.log(err);
-            return res.status(404).send([{error:config.http.error.global_404}]);
-        }
-        var dbcount = {count:countfield};
+    // var db = req.db, collection= req.params.collection,lettre= req.params.lettre, tParamToFind, fieldCollection, tObjectRequest;
+    // if(collection == "Artists"){
+    //     collection = COLLECTIONARTIST;
+    //     fieldCollection = "name";
+    // }else if(collection == "Albums"){
+    //     collection = COLLECTIONALBUM;
+    //     fieldCollection = "titre";
+    // }else if(collection == "Songs"){
+    //     collection = COLLECTIONSONG;
+    //     fieldCollection = "titre";
+    // }
+    // if(collection !== COLLECTIONARTIST && collection !==COLLECTIONALBUM && collection !==COLLECTIONSONG || lettre.length>2){
+    //     return res.status(404).send([{error:config.http.error.global_404}]);
+    // }
+    // tParamToFind = searchHandler.optimizeFind(lettre);
+    // tObjectRequest = searchHandler.constructData(fieldCollection, tParamToFind);
+    // db.collection(collection).count({$or:tObjectRequest},function(err, countfield) {
+    //     if(err){
+    //         console.log(err);
+    //         return res.status(404).send([{error:config.http.error.global_404}]);
+    //     }
+    //     var dbcount = {count:countfield};
+
+        var dbcount = {count:0};// si tout est commenté
         res.send(JSON.stringify(dbcount));
-    });
+    // });
 });
 //==========================================================================================================================\\
 //================WEBSERVICE REST POUR COMPTER LE NOMBRE D'OCCURENCE D'UN ATTRIBUT DANS UNE COLLECTION DONNEE===============\\
@@ -228,7 +232,7 @@ router.get('/artist/:artistName', function (req, res) {
             var nbAlbum = albums.length, cnt = 0;
             //On construit le tableau albums afin d'y ajouter les infos des albums
             artist.albums = albums;
-            for(var i = 0;i<albums.length;i++){
+            for(var i = 0;i<nbAlbum;i++){
                 (function(album){
                     db.collection(COLLECTIONSONG).find({"id_album":album._id},{"position":1,"titre":1}).sort( { "position": 1} ).toArray(function(err,songs){
                         if (err) throw err;
@@ -248,13 +252,12 @@ router.get('/artist/:artistName', function (req, res) {
 //========================================WEBSERVICE REST POUR LA GESTION DES ALBUMS========================================\\
 //==========================================================================================================================\\
 //GET ALBUM PAR NOM D'ARTISTE ET TITRE D'ALBUM
-//FIXME /!\ UN ARTIST PEUT AVOIR PLUSIEURS FOIS UN MEME TITRE D'ALBUM /!\ ERREUR A CORRIGER
+//FIXME /!\ UN ARTIST PEUT AVOIR PLUSIEURS TITRES D'ALBUMS IDENTIQUES/!\ ERREUR A CORRIGER eventullement : créer une autre route /artist/:artistName/album/:albumId ou utiliser la route /artist_id/:artistId/album_id/:albumId
 router.get('/artist/:artistName/album/:albumName', function (req, res) {
-    console.log("DEDANS GETTTT")
     var db = req.db, albumName= req.params.albumName, artistName = req.params.artistName;
     db.collection(COLLECTIONARTIST).findOne({name:artistName},{"urlAlbum":0,"wordCount":0}, function(err, artist) {
         if (artist==null) { return res.status(404).send([{error:config.http.error.artist_404}]);}
-        //!\ UN ARTIST PEUT AVOIR PLUSIEURS FOIS UN MEME TITRE D'ALBUM /!\ ERREUR A CORRIGER
+        //!\ UN ARTIST PEUT AVOIR PLUSIEURS FOIS UN MEME TITRE D'ALBUM /!\ ERREUR A CORRIGER -> si on clique sur un album
         db.collection(COLLECTIONALBUM).findOne({$and:[{"titre":albumName},{"id_artist":artist._id}]},{"urlAlbum":0,"wordCount":0}, function(err, album) {
             if (album==null) {   return res.status(404).send([{error:config.http.error.album_404}]); } 
             db.collection(COLLECTIONSONG).find({"id_album":album._id},{"position":1,"titre":1}).toArray(function(err,songs){
@@ -286,25 +289,34 @@ router.get('/artist_id/:artistId/album_id/:albumId', function (req, res) {
 
 //PUT ALBUM PAR ID D'ABUM ET DE MUSIQUE
 router.put('/artist/:artistName/album/:albumName', function (req, res) {
-    var db = req.db, albumBody = req.body, albumTitre = albumBody.titre.trim();
+    var db = req.db, albumBody = req.body, albumTitre = albumBody.titre.trim(), nbSongUpdated = 0;
     //FUTURE Si un album n'a pas encore d'attribut songs. Peut se produire lors de l'ajout d'un album
     for(var j=0;j<albumBody.songs.length;j++){
         //On change le titre de l'album contenu dans les documents musiques
-        albumBody.songs[j].albumTitre = albumTitre;
+        albumBody.songs[j].albumTitre = albumTitre; //déja trim lors de l'initialisation
         albumBody.songs[j].titre = albumBody.songs[j].titre.trim();
         var idSong = albumBody.songs[j]._id;
         // On supprime l'id car mongodb lance un avertissement si ce champ n'est pas supprimé (_id est immutable pas d'update possible)
         delete albumBody.songs[j]._id;
         delete albumBody.songs[j].id_album;
-        db.collection(COLLECTIONSONG).update( { _id: new ObjectId(idSong) },{ $set: albumBody.songs[j] } );
+        (function(idSong, song,totalSong){
+            db.collection(COLLECTIONSONG).update( { _id: new ObjectId(idSong) },{ $set: song },function(err){
+                if (err) throw err;
+                searchHandler.updateSongES(req,song, idSong)
+                //Quand toutes les musiques ont été update on update le document album. ainsi si il n'y a aucun risque que l'album soit update sans que les musiques le soit avant
+                nbSongUpdated = nbSongUpdated+1;
+                if(totalSong == nbSongUpdated){
+                    //On supprime le champ songs car il n'éxiste pas dans la collection album
+                    delete albumBody.songs;     //FUTURE Si un album n'a pas encore d'attribut songs. Peut se produire lors de l'ajout d'un album
+                    var idAlbum = albumBody._id;
+                    // On supprime l'id car mongodb lance un avertissement si ce champ n'est pas supprimé (_id est immutable pas d'update possible)
+                    delete albumBody._id;
+                    delete albumBody.id_artist;
+                    db.collection(COLLECTIONALBUM).update( { _id: new ObjectId(idAlbum) },{ $set: albumBody } );
+                }
+            })
+        })(idSong,albumBody.songs[j],albumBody.songs.length);
     }
-    //On supprime le champ songs car il n'éxiste pas dans la collection album
-    delete albumBody.songs;     //FUTURE Si un album n'a pas encore d'attribut songs. Peut se produire lors de l'ajout d'un album
-    var idAlbum = albumBody._id;
-    // On supprime l'id car mongodb lance un avertissement si ce champ n'est pas supprimé (_id est immutable pas d'update possible)
-    delete albumBody._id;
-    delete albumBody.id_artist;
-    db.collection(COLLECTIONALBUM).update( { _id: new ObjectId(idAlbum) },{ $set: albumBody } );
     res.send("OK");
 });
 
@@ -347,13 +359,15 @@ router.get('/artist_id/:artistId/album_id/:albumId/song_id/:songId', function (r
 //PUT SONG OBJECT
 router.put('/artist/:artistName/album/:albumName/song/:songName',function(req,res){
     var db = req.db, songBody = req.body;
-    // req.params.artistName.replace(/\\n|\\r|\\r\\n|(<((?!br)[^>]+)>)/ig,"").trim();
     //On récupére l'id de la musique afin de modifier l'objet en base de données
     var idSong = songBody._id;
     //!\ Il faut supprimer les attributs qui sont de type objectId dans notre base car songBody les récupéres en string
     delete songBody.id_album;
     delete songBody._id;
-    db.collection(COLLECTIONSONG).update( { _id: ObjectId(idSong) },{ $set: songBody } );
+    db.collection(COLLECTIONSONG).update( { _id: ObjectId(idSong) },{ $set: songBody },function(err){
+        //On fait un POST sur elasticsearch afin de modifier le champs titre de la musique sur le BDD elasticsearch
+        searchHandler.updateSongES(req,songBody, idSong)
+    });
     res.send("OK");
 });
 
@@ -381,7 +395,6 @@ router.get('/more/:searchText', function (req, res) {
     var querySong =     { "query": { "query_string" : {"query": searchText,"fields":["titre^4","name^2","albumTitre"]}},"size": LIMIT};
     var start = Date.now();
     searchHandler.fullTextQuery(req,LIMIT,queryArtist,querySong,maxinfoselected).then(function(resp) {
-        // console.log("                       fulltext fullTextQuery time ="+ (Date.now() - start));
         res.send(resp);
     }).catch(function(err) {
         res.send(err);

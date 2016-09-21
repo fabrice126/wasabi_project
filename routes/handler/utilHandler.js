@@ -1,5 +1,9 @@
 const fs    = require('fs');
-
+/**
+ *
+ * @param obj
+ * @returns {*}
+ */
 var sanitizeProperties = function(obj){
     for (var property in obj) {
         if (obj.hasOwnProperty(property)) {
@@ -16,10 +20,12 @@ var sanitizeProperties = function(obj){
     }
     return obj;
 };
-
-
-//encode uniquement les caractères présents dans le replace
-//Cette fonction est utilisé pour encoder les caractères spéciaux ne pouvant être présent dans le nom d'un dossier sous windows
+/**
+ * encode uniquement les caractères présents dans le replace
+ * Cette fonction est utilisé pour encoder les caractères spéciaux ne pouvant être présent dans le nom d'un dossier sous windows
+ * @param str
+ * @returns {*|XML|string|void}
+ */
 var encodePathWindows = function (str) {
     //Sous windows les caractères interdit dans le nom d'un fichier/dossier sont " ? < > | \ : * / .
     return str.replace(/["?<>|\\:*\/\.]/g, function(c) {
@@ -35,9 +41,12 @@ var encodePathWindows = function (str) {
         return c;
     });
 };
-
-//encode uniquement les caractères présents dans le replace
-//Cette fonction est utilisé pour encoder les caractères spéciaux ne pouvant être présent dans le nom d'un dossier sous windows
+/**
+ *  encode uniquement les caractères présents dans le replace
+ *  Cette fonction est utilisé pour encoder les caractères spéciaux ne pouvant être présent dans le nom d'un dossier sous windows
+ * @param str
+ * @returns {*|XML|string|void}
+ */
 var decodePathWindows = function (str) {
     //Sous windows les caractères interdit ou posant problème dans le nom d'un fichier/dossier sont " ? < > | \ : * / .
     // les caractères ci dessus une fois encodé donnent respectivement: %22 %3F %3C %3E %7C %5C %3A %2A %2F %2E nous devons donc les décoder
@@ -54,9 +63,12 @@ var decodePathWindows = function (str) {
         return c;
     });
 };
-
-//Fonction permettant de modifier le nom d'un fichier / dossier afin de l'encoder avec la fonction encodePathWindows de utilHandler.js
-//A utiliser lorsque de nouveaux fichier sont ajoutés dans le dossier contenant les musiques multipistes/single piste
+/**
+ * Permet de modifier le nom d'un fichier / dossier afin de l'encoder avec la fonction encodePathWindows de utilHandler.js
+ * A utiliser lorsque de nouveaux fichier sont ajoutés dans le dossier contenant les musiques multipistes/single piste
+ * @param oldPath
+ * @param newPath
+ */
 var writeEncodedFile = function(oldPath, newPath){
     //ne pas oublier de mettre l'extension si besoin
     if(oldPath == newPath){
@@ -66,11 +78,15 @@ var writeEncodedFile = function(oldPath, newPath){
         if ( err ) console.log('ERROR: ' + err);
     });
 };
-//Permet d'échapper les caractères utilisés dans les regex
+/**
+ * Permet d'échapper les caractères spéciaux utilisés dans les regex
+ * @param str
+ * @returns {*|XML|string|void}
+ */
 function escapeRegExp(str) {
     return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
 }
-exports.sanitizeProperties  = sanitizeProperties;
+exports.sanitizeProperties = sanitizeProperties;
 exports.encodePathWindows = encodePathWindows;
 exports.decodePathWindows = decodePathWindows;
 exports.writeEncodedFile = writeEncodedFile;

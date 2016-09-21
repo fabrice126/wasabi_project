@@ -19,25 +19,23 @@ var selectorName = 'body>h3>a';
 //Nous permet de créer une première arborescence en récupérerant toutes les lyrics d'un abum et tous les album d'un groupe
 var alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
 var idxAlphabet = 0;
-
- var self = this;
-
-//param 1 : url :       url de la page a récupérer
-//param 2 : selector :  selecteur pour récupérer la partie qui nous interesse dans leur page html
-//param 3 : attr :      valeur de l'attribut à récupérer
-//param 4 : removeStr : String a supprimer
-
-var getArtistFromCategorie = function(url,selector,attr,removeStr){
-    // La fonction de résolution est appelée avec la capacité de tenir ou de rompre la promesse
+var self = this;
+/**
+ * Permet de recupérer les nom d'artiste sur les pages : http://lyrics.wikia.com/wiki/Category:Artists_A ou_B etc.
+ * @param url : url de la page a récupérer
+ * @returns {Promise}
+ */
+var getArtistFromCategorie = function(url){
+    // La fonction resolve est appelée avec la capacité de tenir ou de rompre la promesse
     var promise = new Promise(function(resolve, reject) { 
-        (function requestArtistFromCategorie(url,selector,attr,removeStr){
+        (function requestArtistFromCategorie(url){
         //  /!\/!\/!\/!\/!\   Si dans l'avenir le nombre d'artiste sur la page de lyrics wikia (http://lyrics.wikia.com/wiki/Category:Artists_A) change ce parametre doit changer   /!\/!\/!\/!\/!\
             var nbArtistPerPage = 200;
             request(url, function(err, resp, body){
                 if (!err && resp.statusCode == 200) {
                     var tObjArtist = [];
                     $ = cheerio.load(body);
-                    var links = $(selector); //#mw-pages>.mw-content-ltr>table a[href]
+                    var links = $(selectorArtists); //#mw-pages>.mw-content-ltr>table a[href]
                     //Pour itérer sur toutes les pages d'un artiste commençant par une lettre il faut avoir un url de type :
                     //http://lyrics.wikia.com/wiki/Category:Artists_A?pagefrom=A+Pocket+Full+Of+Posers ou A+Pocket+Full+Of+Posers est le dernier titre d'artiste de la page analysé
                     var artistPageFrom = $(links)[$(links).length-1].attribs.title;
@@ -54,7 +52,7 @@ var getArtistFromCategorie = function(url,selector,attr,removeStr){
                                 urlFacebook:"",
                                 urlMySpace:"",
                                 urlTwitter:"",
-                                urlWikia:$(link).attr(attr).replace(removeStr, ""), //on récupére les #mw-pages>.mw-content-ltr>table a[href]
+                                urlWikia:$(link).attr(attrArtists).replace(removeStrHrefArtists, ""), //on récupére les #mw-pages>.mw-content-ltr>table a[href]
                                 activeYears:"",
                                 members:[],
                                 formerMembers:[],
@@ -78,18 +76,23 @@ var getArtistFromCategorie = function(url,selector,attr,removeStr){
                 else{
                     console.error('=====getArtistFromCategorie RELANCE DE LA REQUETE ====='+url);
                     console.error(new Error(err));
-                    requestArtistFromCategorie(url,selector,attr,removeStr);
+                    requestArtistFromCategorie(url);
                 }
             });
-        })(url,selector,attr,removeStr);
+        })(url);
     });
     return promise;
 };
 
-//Cette fonction est utilisée lors de l'ajout d'un nouvel artiste dans la base de données
-//Param 1 : urlApiWikia :   Ce param correspond à l'url de l'api de lyrics wikia exemple : http://lyrics.wikia.com/api.php?func=getArtist&artist=Linkin_Park
-var getOneArtist = function(urlApiWikia, objArtist, selectorName){
-    var promise = new Promise(function(resolve, reject) { 
+/**
+ * Cette fonction est utilisée lors de l'ajout d'un nouvel artiste dans la base de données
+ * @param urlApiWikia : Ce param correspond à l'url de l'api de lyrics wikia exemple : http://lyrics.wikia.com/api.php?func=getArtist&artist=Linkin_Park
+ * @param objArtist : objet artiste que l'on remplira au fur et a mesure de l'execution
+ * @param selectorName : correspond au selecteur permettant de récupérer les liens des albums et musiques
+ * @returns {Promise}
+ */
+var getOneArtist = function(urlApiWikia, objArtist){
+    var promise = new Promise(function(resolve, reject) {
         (function requestInfoOneArtist(objArtist,selectorName){
             request(urlApiWikia, function(err, resp, body){
                 if (!err && resp.statusCode == 200) {
@@ -125,11 +128,15 @@ var getOneArtist = function(urlApiWikia, objArtist, selectorName){
     });
     return promise;
 };
-//Extraction des données sur les pages d'artistes de lyrics wikia
-var getInfosFromPageArtist = function(url,objArtist){
+/**
+ * Extraction des données sur les pages d'artistes de lyrics wikia
+ * @param objArtist
+ * @returns {Promise}
+ */
+var getInfosFromPageArtist = function(objArtist){
     // La fonction de résolution est appelée avec la capacité de tenir ou de rompre la promesse
     var promise = new Promise(function(resolve, reject) { 
-        var urlArtist = url+objArtist.urlWikia;
+        var urlArtist = urlPageArtist+objArtist.urlWikia;
         request(urlArtist, function(err, resp, body){
             if (!err && resp.statusCode == 200) {
                 $ = cheerio.load(body);
@@ -166,7 +173,11 @@ var getInfosFromPageArtist = function(url,objArtist){
     });
     return promise;
 };
-
+/**
+ * fonction utilisé dans getInfosFromPageArtist et permettant de créer un objet représentant les artistes ayant joué dans un groupe
+ * @param membre
+ * @returns {{name: string, instruments: Array, activeYears: Array}}
+ */
 var extractMembersAndFormerMembers = function(membre){
     var objMember = {name:"",instruments:[],activeYears:[]};
     if( $(membre).text() !=""){
@@ -189,13 +200,18 @@ var extractMembersAndFormerMembers = function(membre){
         return objMember;
     }
 };
-//Extraction des données sur les pages d'albums de lyrics wikia
+/**
+ * Extraction des données sur les pages d'albums de lyrics wikia
+ * @param objArtist
+ * @returns {Promise}
+ */
 var getInfosFromPageAlbum = function(objArtist){
     var promise = new Promise(function(resolve, reject) { 
         var currNbAlbum = 0 ;
         var nbAlbum = objArtist.albums.length;
         for(var i = 0;i <nbAlbum;i++){
             (function requestInfoAlbums(objArtist, i){
+                //On lance une requête sur la page de l'album afin de recupérer des informations
                 request(objArtist.albums[i].urlAlbum, function(err, resp, body){
                     currNbAlbum++ ;
                     if (!err && resp.statusCode == 200) {
@@ -221,11 +237,12 @@ var getInfosFromPageAlbum = function(objArtist){
     });
     return promise;
 };
-
-
-
-//Extraction des données sur les pages des musiques de lyrics wikia
-//Fonction utilisé que lors de l'update de la collection song
+/**
+ * Extraction des données sur les pages des musiques de lyrics wikia
+ * Fonction utilisé que lors de l'update de la collection song
+ * @param objSong
+ * @returns {Promise}
+ */
 var getInfosFromPageSong = function(objSong){
     var promise = new Promise(function(resolve, reject) {
         request({url: objSong.urlSong,method: "GET",timeout: 10000}, function(err, resp, body){
@@ -241,7 +258,12 @@ var getInfosFromPageSong = function(objSong){
     });
     return promise;
 };
-
+/**
+ * Permet d'extraire les informations intéressantes d'une page musique de lyrics wikia
+ * @param objSong : l'objet musique à remplir avec les informations du body de la page html d'une musique
+ * @param body : le body de la page HTML d'une page de musique sur lyrics wikia exemple :  http://lyrics.wikia.com/wiki/Linkin_Park:A_Place_For_My_Head
+ * @returns {*}
+ */
 var extractInfosSong = function(objSong, body){
     $ = cheerio.load(body);
     var lyrics = $(selectorLyrics);
@@ -254,19 +276,19 @@ var extractInfosSong = function(objSong, body){
     objSong.urlWikipedia = $("#mw-content-text div:contains('Wikipedia') div>i>b>a.extiw").attr('href') != null ? $("#mw-content-text div:contains('Wikipedia') div>i>b>a.extiw").attr('href') : "";
     return objSong;
 };
-//recupére les albums des artists via l'api de lyrics wikia
-//param 1 : url :       url de la page a récupérer
-//param 2 : selector :  selecteur pour récupérer la partie qui nous interesse dans leur page html
-//param 3 : attr :      valeur de l'attribut à récupérer
-//param 4 : objArtist : tableau représentant l'objet Artist
-var getAlbumsAndSongsOfArtist = function(url,selector,attr,objArtist){
+/**
+ * recupére les albums des artists via l'api de lyrics wikia
+ * @param objArtist : tableau représentant l'objet Artist
+ * @returns {Promise}
+ */
+var getAlbumsAndSongsOfArtist = function(objArtist){
         var promise = new Promise(function(resolve, reject) { 
-            (function requestAlbumsAndSongs(url,selector,attr,objArtist){//permet de relancer la requête si il y a un probleme
-                var urlWikiaArtists = url+objArtist.urlWikia;
+            (function requestAlbumsAndSongs(objArtist){//permet de relancer la requête si il y a un probleme
+                var urlWikiaArtists = urlApiWikia+objArtist.urlWikia;
                 request({ pool: {maxSockets: Infinity}, url: urlWikiaArtists,method: "GET",timeout: 50000000}, function(err, resp, body){
                     if (!err && resp.statusCode == 200) {
                         $ = cheerio.load(body);
-                        var tElts = $(".albums>li")//$(selector);
+                        var tElts = $(".albums>li");
                         $(tElts).each(function(i, eltAlbum){
                             var album= $(eltAlbum).find($(".albums>li>a[href]:first-child")).text();
                             var dateSortie = "";
@@ -280,7 +302,7 @@ var getAlbumsAndSongsOfArtist = function(url,selector,attr,objArtist){
                                 //Création de l'objet song, il faudra modifier cette objet si de nouvelles propriétés doivent être ajoutées
                                 var objSong = {
                                     titre: $(eltSong).text(),
-                                    urlSong: $(eltSong).attr(attr),
+                                    urlSong: $(eltSong).attr(attrAlbums),
                                     lyrics:"",
                                     urlWikipedia:"",
                                     urlYoutube:""
@@ -294,7 +316,7 @@ var getAlbumsAndSongsOfArtist = function(url,selector,attr,objArtist){
                                 urlWikipedia:"",
                                 genre:"",
                                 length:"",
-                                urlAlbum: $(eltAlbum).find($(".albums>li>a[href]:first-child")).attr(attr),
+                                urlAlbum: $(eltAlbum).find($(".albums>li>a[href]:first-child")).attr(attrAlbums),
                                 songs:songs //array contenant les objets représentant les musiques d'un album
                             };
                             objArtist.albums.push(objAlbum);//on ajoute à l'ojet artiste l'objet album contenant le nom de l'album et ses musiques 
@@ -302,19 +324,22 @@ var getAlbumsAndSongsOfArtist = function(url,selector,attr,objArtist){
                         resolve(objArtist);//une fois le objArtist rempli resolve va indiquer que la promise s'est bien executée et va donc executer le then
                     }
                     else{
-                        console.error('=====getAlbumsAndSongsOfArtist RELANCE DE LA REQUETE ====='+url);
+                        console.error('=====getAlbumsAndSongsOfArtist RELANCE DE LA REQUETE ====='+urlApiWikia);
                         console.error('=====getAlbumsAndSongsOfArtist RELANCE DE LA REQUETE ====='+objArtist.urlWikia);
-                        console.error('=====getAlbumsAndSongsOfArtist RELANCE DE LA REQUETE ====='+selector);
-                        console.error('=====getAlbumsAndSongsOfArtist RELANCE DE LA REQUETE ====='+attr);
-                        requestAlbumsAndSongs(url,selector,attr,objArtist);
+                        console.error('=====getAlbumsAndSongsOfArtist RELANCE DE LA REQUETE ====='+attrAlbums);
+                        requestAlbumsAndSongs(objArtist);
                     }
                 });
-            })(url,selector,attr,objArtist);
+            })(objArtist);
        });
     return promise;
 };
-
-var getAllLyricsOfArtists = function(url,selector,objArtist){
+/**
+ * récupère le body des pages des musiques de lyrics wikia exemple :  http://lyrics.wikia.com/wiki/Linkin_Park:A_Place_For_My_Head
+ * @param objArtist
+ * @returns {Promise}
+ */
+var getAllLyricsOfArtists = function(objArtist){
         var promise = new Promise(function(resolve, reject) { 
             var nbTitre = 0;
             var currNbTitre = 0;
@@ -366,11 +391,16 @@ var getAllLyricsOfArtists = function(url,selector,objArtist){
        });
     return promise;
 };
-
-var fetchData = function(url,lettre,paramNextPage,selectorArtists,attrArtists,removeStrHrefArtists){
+/**
+ *
+ * @param url
+ * @param lettre
+ * @param paramNextPage
+ */
+var fetchData = function(url,lettre,paramNextPage){
     //Quand les artistes commencant par A sont récupérés (la requete ajax terminée) on entre dans le then
     setTimeout(function(){
-        self.getArtistFromCategorie(url+lettre+paramNextPage,selectorArtists,attrArtists,removeStrHrefArtists).then(function(objArtist) {
+        self.getArtistFromCategorie(url+lettre+paramNextPage).then(function(objArtist) {
             //objArtist.tObjArtist => tableau d'objet représentant les artists: [{ name: 'A Dying God', urlWikia: 'A_Dying_God', albums: [] },{objet2}, etc]
             console.log("objArtist.tObjArtist.length  ==="+objArtist.tObjArtist.length );
             var j=0;
@@ -383,18 +413,26 @@ var fetchData = function(url,lettre,paramNextPage,selectorArtists,attrArtists,re
 };
 
 
-
+/**
+ *
+ * @param newObjArtist: contient un tableau d'objet artiste  newObjArtist.tObjArtist[j] == un objet artiste
+ * @param url
+ * @param lettre
+ * @param j : index de l'artiste à récupérer dans newObjArtist
+ */
 var getArtistDiscography = function(newObjArtist,url,lettre,j){
-    //On récupére les albums (musiques incluses) des artistes commencant par la lettre A
+        //On récupére les albums (musiques incluses) des artistes commencant par la lettre 'lettre'
     //Seul facon de faire pour simuler une boucle avec un timeout a chaque tour (settimout ne fonctionne pas dans une boucle) on appel donc cette fonction récusivement
 //    setTimeout(function(){
         console.log("En cours : "+newObjArtist.tObjArtist[j].name);
-        self.getAlbumsAndSongsOfArtist(urlApiWikia,selectorAlbums,attrAlbums,newObjArtist.tObjArtist[j]).then(function(objArtist){
-            //lorsque la requete ajax pour récupérer les artistes est terminé on obtient un objet (voir ci-dessous la structure json)
-            //Nous allons maintenant ajouter dans chaque objet représentant l'artiste, les paroles des musiques
-            self.getInfosFromPageArtist(urlPageArtist,objArtist).then(function(objArtist){
+        //On envoie des requêtes sur l'API de Lyrics Wikia afin de récupérer le titre des albums et des musiques
+        self.getAlbumsAndSongsOfArtist(newObjArtist.tObjArtist[j]).then(function(objArtist){
+            //lorsque la requete ajax pour récupérer les artistes est terminé on obtient un objet
+            //Nous allons maintenant ajouter dans objArtist les informations concernant l'artiste,
+            self.getInfosFromPageArtist(objArtist).then(function(objArtist){
+                //Nous allons maintenant ajouter dans objArtist les informations concernant les albums de l'artiste,
                 self.getInfosFromPageAlbum(objArtist).then(function(objArtist){
-                    self.getAllLyricsOfArtists(urlApiWikia,selectorLyrics,objArtist).then(function(objArtist){
+                    self.getAllLyricsOfArtists(objArtist).then(function(objArtist){
                         //Quand on a traiter complétement une page d'artiste => albums avec ses musiques insérés en base de données, on passe a la page suivante
                         db.collection('artist').insert(objArtist, function(err, result) {
                             if (err) throw err;
@@ -433,7 +471,11 @@ var getArtistDiscography = function(newObjArtist,url,lettre,j){
 //    }, Math.floor((Math.random() * 20000) + 10000));
 };
 
-//Lorsqu'on veut ajouter un nouvel artiste a la base de données, il faut transformer le document à inserer sous une forme relationel
+
+/**
+ * Lorsqu'on veut ajouter un nouvel artiste a la base de données, il faut transformer le document à inserer sous une forme relationel
+ * @param objArtist : Un objet artist contenant des albums et des musiques
+ */
 var embeddedToRelationalSchema = function(objArtist){
     //Creation de la collection album
     db.collection('artist').findOne({name:objArtist.name}, function(err, artist) {                        

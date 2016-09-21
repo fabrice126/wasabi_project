@@ -3,6 +3,7 @@ var router              = express.Router();
 const config            = require('./conf/conf.json');
 const lyricsWikia       = require('./handler/lyricsWikia.js');
 const utilHandler       = require('./handler/utilHandler.js');
+const wordCountHandler  = require('./handler/wordCountHandler.js');
 const ObjectId          = require('mongoskin').ObjectID;
 const fs                = require('fs');
 const os                = require('os');
@@ -30,7 +31,7 @@ router.get('/artist',function(req, res){
                         //on appel la fonction permettant de chercher des informations sur l'artiste sur lyrics wikia
                         //on récupère l'objet artist passé en parametre (result[i]) avec les propriétés mis à jour
                         //cette fonction update uniquement les propriétés de result[i] elle ne renvoie pas un nouvel objet
-                        lyricsWikia.getInfosFromPageArtist(URLPAGEARTIST,result[i]).then(function(objArtist){
+                        lyricsWikia.getInfosFromPageArtist(result[i]).then(function(objArtist){
                             var idArtist = objArtist._id;
                             //si _id n'est pas supprimé avant l'update, mongo lance un avertissement car un _id ne peut être modifié
                             delete objArtist._id;
@@ -75,7 +76,7 @@ router.get('/artist/:artistName',function(req, res){
         //on appel la fonction permettant d'aller chercher des informations sur l'artiste sur lyrics wikia
         //on récupère l'objet artist passé en parametre (result) avec les propriétés mis à jour
         //cette fonction update uniquement les propriétés de result elle ne renvoie pas un nouvel objet
-        lyricsWikia.getInfosFromPageArtist(URLPAGEARTIST,result).then(function(objArtist){
+        lyricsWikia.getInfosFromPageArtist(result).then(function(objArtist){
             var idArtist = objArtist._id;
             //si _id n'est pas supprimé avant l'update, mongo lance un avertissement car un _id ne peut être modifié
             delete objArtist._id;
@@ -153,8 +154,8 @@ router.get('/song',function(req, res){
 //         //on appel la fonction permettant d'aller chercher des informations sur l'artiste sur lyrics wikia
 //         //on récupère l'objet artist passé en parametre (result) avec les propriétés mis à jour
 //         //cette fonction update uniquement les propriétés de result elle ne renvoie pas un nouvel objet
-//         // lyricsWikia.getInfosFromPageArtist(URLPAGEARTIST,result).then(function(objArtist){
-//         lyricsWikia.getInfosFromPageArtist(URLPAGEARTIST,result).then(function(objArtist){
+//         // lyricsWikia.getInfosFromPageArtist(result).then(function(objArtist){
+//         lyricsWikia.getInfosFromPageArtist(result).then(function(objArtist){
 //
 //             console.log(objArtist);
 //             var idArtist = objArtist._id;
@@ -249,50 +250,46 @@ router.get('/multitrackspath',function(req, res){
     res.send("OK");
 });
 
-//A SUPPRIMER -> cette fonction est la recopie de celle du dessus afin de réaliser un test
-// router.get('/multitrackspathMT5Michel',function(req, res){
-//     this.console.log("dedans /updatedb/multitrackspath");
-//     var db = req.db, PATHMULTITRACKS = "E:/multitrack Michel MT5";
-//     //On cherche dans le dossier contenant les musiques multitracks
-//     fs.readdir(PATHMULTITRACKS, (err, filesDir) =>{
-//         //exemple filedir = Twisted Sister - We're Not Gonna Take It.mogg
-//         for (var filedir of filesDir) {
-//             (function(filedir){
-//                 //filedir est encodé on le decode :
-//                 filedir = utilHandler.decodePathWindows(filedir);
-//                 var countSepArtist_Title = (filedir.match(/(\s-\s)/g) || []).length;
-//                 // nous devons avoir 1 seul ' - ' afin de bien délimiter l'artiste du titre de musique
-//                 if(countSepArtist_Title!=1 ){
-//                     console.log(countSepArtist_Title+" : "+filedir);
-//                 }else{
-//                     var tfiledirSplitted= filedir.split(' - ');// /(\s-\s)/g
-//                     var artistName = tfiledirSplitted[0].trim(), musicTitle = tfiledirSplitted[1].trim().replace(/\.mogg$/, "").trim().replace(/(\(live\))$/i, "").trim(), tQuery = [];
-//                     // Les featuring sont de type : Artiste 1 _&_ Artiste 2 - Nom musique
-//                     //ainsi on peut lancer deux requêtes via ce featuring : Artiste 1 - Nom musique, Artiste 2 - Nom musique afin d'ajouter aux deux artistes le chemin de la musique
-//                     if(artistName.indexOf("_&_") !== -1){
-//                         var tfiledirSplitted= filedir.split(' - ');// /(\s-\s)/g
-//                         var tArtistName= tfiledirSplitted[0].split('_&_');
-//                         for(var i=0, l = tArtistName.length ; i<l;i++){
-//                             tQuery.push({$and:[{ name: tArtistName[i].trim()}, {titre:musicTitle} ]});
-//                         }
-//                     }
-//                     else{
-//                         tQuery.push({$and:[{ name: artistName}, {titre:musicTitle} ]});
-//                     }
-//                     for(var i=0, l = tQuery.length ; i<l;i++) {
-//                         /*Si l'artiste ou la musique n'est pas trouvé on doit modifier le nom dans le répertoire afin de matcher avec la bdd*/
-//                         db.collection(COLLECTIONSONG).find(tQuery[i]).toArray(function(err,tSongs){
-//                             if (err) throw err;
-//                             if(tSongs.length ==0){
-//                                 console.log(artistName+" - "+musicTitle+" - non trouvé en base de données");
-//                             }
-//                         })
-//                     }
-//                 }
-//             })(filedir)
-//         }
-//     });
-//     res.send("OK");
-// });
+//Cette fonction réalise le word count pour le document ayant l'id :_id dans la collection :collection
+router.get('/wordcount/:collection/:_id',function(req, res){
+    var db = req.db, collection = req.params.collection, id = req.params._id, query;
+    console.log("Traitement du document "+collection+" ayant l'id="+id);
+    if(collection !=COLLECTIONARTIST && collection !=COLLECTIONALBUM && collection !=COLLECTIONSONG){
+        return res.status(404).send([{error:"Page not found"}]);
+    }
+    db.collection(collection).findOne({_id : ObjectId(id)},function(err,obj){
+        if (obj===null) { return res.status(404).send([{error:config.http.error.global_404}]);}
+        if(collection == COLLECTIONARTIST){
+            query = {name: obj.name};
+        }else if(collection == COLLECTIONALBUM){
+            query = {id_album: obj._id};
+        }else{
+            query = {_id: obj._id};
+        }
+        var collectionTmp = 'word_count_by_lyrics_tmp';
+        db.collection(COLLECTIONSONG).mapReduce(wordCountHandler.map ,wordCountHandler.reduce ,{query:query, out: collectionTmp }, function(err, results) {
+            if (results===null) { return res.status(404).send([{error:config.http.error.song_404}]);}
+            var currentWordCountSong = [];
+            db.collection(collectionTmp).find({}).sort({value:-1}).toArray(function(err,word){
+                if (obj===null) { return res.status(404).send([{error:config.http.error.global_404}]);}
+                for(var i = 0, l = word.length; i<l;i++){
+                    currentWordCountSong.push(word[i]);
+                }
+                db.collection(collection).update( {_id:obj._id},{ $set: {"wordCount":currentWordCountSong} },function(resultat){
+                    console.log("le word count pour la collection: "+collection+" est terminé");
+                    db.collection(collectionTmp).drop();
+                    res.send("OK");
+                });
+            });
+
+        });
+    } );
+});
+
+
+
+
+
+
 
 module.exports = router;

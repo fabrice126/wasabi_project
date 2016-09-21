@@ -5,7 +5,8 @@ var construct_endpoint = require('../sparql_request/construct_endpoint.js');
 var infos_artist    = require('../sparql_request/infos_artist.js');
 var infos_album     = require('../sparql_request/infos_album.js');
 var infos_song      = require('../sparql_request/infos_song.js');
-var urlDbpediaToSplit = "dbpedia.org/resource/";
+const parseString         = require('xml2js').parseString;
+const ObjectId            = require('mongoskin').ObjectID;
 
 var lngDetector = new LanguageDetect();
 
@@ -52,7 +53,7 @@ var getInfosDbpedia = function(obj,sparqlRequest,urlEndpoint){
 
 /*Avec le temps, les URIs d'un artist/album/musique peuvent changer, les anciens liens ne sont pas pour autant abandonnée, une redirection est effectuée sur le navigateur, 
 chose non réalisée avec une requête ajax. Cette fonction permet donc de retrouver la nouvelle URI en cas de changement sur sur site wikipédia et donc dbpedia */
-var getRedirectionOfDbpedia = function(obj,sparqlRedirect,urlEndpoint,objUrl){
+var getRedirectionOfDbpedia = function(obj,sparqlRedirect,urlEndpoint,objUrl,urlDbpediaToSplit){
     var failRequest = 0;
     var failEncode = false;
 
@@ -139,7 +140,32 @@ var getSameAsOfDbpedia = function(objSameAs,sameAsRequest){
         })(objSameAs,sameAsRequest,failEncode);
     });
     return promise;
-}
+};
+
+var handlerGetSameAsOfDbpedia = function(objSameAs,urlDbpediaToSplit,urlWikipediaToSplit){
+    if (objSameAs.objUrl.sameAs != "") {//si une URI vers dbpédia fr existe
+        console.log("FRENCH ARTIST FOUND : With SameAs")
+        objSameAs.objUrl.country = objSameAs.objUrl.fillIfFr;
+        //On transforme l'objet objUrl afin qu'il soit de même forme qu'un objUrl ayant une url pointant vers le dbpédia fr : http://en.wikipedia.org/wiki/fr:Artist_Name"
+        objSameAs.obj.urlWikipedia = constructNewURLWikipedia(objSameAs.objUrl.sameAs, urlWikipediaToSplit);
+        // objSameAs.objUrl.sameAs == http://fr.dbpedia.org/resource/Akhenaton_(rappeur) on ne garde que "Akhenaton_(rappeur)" pour urlDbpedia
+        objSameAs.objUrl.urlDbpedia = objSameAs.objUrl.sameAs.split(urlDbpediaToSplit)[1];
+    }
+    else{
+        //Si il n'y a pas de lien vers le dbpédia francais alors nous devons reconstruire l'objUrl afin qu'il cherche les infos sur le dbpédia anglais
+        //Ci-dessous nous allons donc recréer les requetes vers le dbpedia de départ
+        objSameAs.objUrl = extractInfosFromURL(objSameAs.obj.urlWikipedia, '', urlWikipediaToSplit);
+    }
+    objSameAs.objUrl.sameAs = "";
+    objSameAs.objUrl.fillIfFr = "";
+    //On recrée le endpoint et les requêtes SPARQL afin qu'elles puissent extraire les informations sur le dbpédia français
+    objSameAs.redirectRequest = redirect_request.construct_request(objSameAs.objUrl.urlDbpedia, objSameAs.objUrl.country);
+    //On construit l'url endpoint avec l'adresse du endpoint fr
+    objSameAs.urlEndpoint = construct_endpoint.construct_endpoint(objSameAs.objUrl.country);
+
+};
+
+
 //encode uniquement les caractères présents dans le replace
 //Cette fonction est utilisé 
 var fixedEncodeURIComponent = function (str) {
@@ -158,7 +184,7 @@ var checkURLEncode = function(failEncode,urlEndpoint,sparqlRequest,paramRequest)
         requestdbpedia = urlEndpoint+fixedEncodeURIComponent(sparqlRequest)+paramRequest;
     }
     return requestdbpedia;
-}
+};
 
 var constructExtractionRequest = function(collection,objRedirect){
     var sparql_request;
@@ -185,7 +211,7 @@ var getCountryOfEndpoint = function(country){
         objCountry.country = country;
     }
     return objCountry;
-}
+};
 
 var mergeRDFAndDBProperties = function(objArtist){
 //    objArtist.activeYears = objArtist.activeYears.;
@@ -306,7 +332,41 @@ var extractInfosFromURL = function(url,artistLocation,urlToSplit){
     }
     return objUrl;
 };
+var createFieldsSong = function(db,COLLECTIONSONG,SONG_RDF_PROPERTIES,id = ""){
+    //Propriété présent dans le RDF et dont nous avons besoin pour accèder a l'objet musique crée par parseString
+    var req;
+    var proj = {wordCount:0, lyrics:0};
+    (id!="")? req = {_id: ObjectId(id)} : req = { $and:[ {rdf:{$ne:""}}, {rdf:{$exists:true}} ] } ;
 
+    db.collection(COLLECTIONSONG).find(req,proj).toArray(function(err,tObjSong){
+        console.log('En cours de traitement ...');
+        for(var i = 0; i<tObjSong.length;i++){
+            //Pour chaque musique contenant du RDF valide
+            if(typeof tObjSong[i].rdf != "undefined" && tObjSong[i].rdf.length>200){
+                //Transformation du RDF en un objet JSON
+                parseString(tObjSong[i].rdf, function (err, result) {
+                    //Si le document est bien parsé et contient rdf:Description, c'est à dire la ou les pages DBpédia ayant servi pour l'extraction des données
+                    //Dans le cas d'une musique une seul page DBpédia a été utilisée pour extraire des données
+                    if(result != null && typeof result['rdf:RDF']['rdf:Description'] !== "undefined"){
+                        for(var k = 0;k<result['rdf:RDF']['rdf:Description'].length;k++){
+                            var description = result['rdf:RDF']['rdf:Description'][k];
+                            //Pour chaque propriété on récupére les données de l'objet musique représentant le RDF
+                            for(var j = 0;j<SONG_RDF_PROPERTIES.length;j++){
+                                var currProperty = SONG_RDF_PROPERTIES[j];
+                                //On va extraire le contenu de chaque propriété afin d'ajouter à l'objet tObjSong[i] les nouvelles propriétés
+                                tObjSong[i][currProperty] = extractInfosFromRDF(description,currProperty);
+                            }
+                        }
+                        db.collection(COLLECTIONSONG).update({_id : new ObjectId(tObjSong[i]._id)}, { $set: tObjSong[i] },function(err,result) {
+                            if (err) throw err;
+                        });
+                    }
+                });
+            }
+        }
+        console.log('Fin du traitement');
+    });
+};
 /*
 Copyright (c) 2011 Andrei Mackenzie
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
@@ -345,6 +405,7 @@ var levenshteinDistance = function(a, b){
 
     return matrix[b.length][a.length];
 };
+
 exports.getInfosDbpedia             = getInfosDbpedia;
 exports.extractInfosFromURL         = extractInfosFromURL;
 exports.extractInfosFromRDF         = extractInfosFromRDF;
@@ -356,3 +417,5 @@ exports.fixedEncodeURIComponent     = fixedEncodeURIComponent;
 exports.constructExtractionRequest  = constructExtractionRequest;
 exports.getSameAsOfDbpedia          = getSameAsOfDbpedia;
 exports.constructNewURLWikipedia    = constructNewURLWikipedia;
+exports.handlerGetSameAsOfDbpedia   = handlerGetSameAsOfDbpedia;
+exports.createFieldsSong            = createFieldsSong;

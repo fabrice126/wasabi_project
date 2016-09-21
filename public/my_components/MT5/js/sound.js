@@ -34,6 +34,9 @@ var delta;
 var currentXTimeline;
 //When you want to run the application locally set LOCALHOST to 'true'
 var LOCALHOST = false;
+if (window.location.host == "127.0.0.1"){
+    LOCALHOST = true;
+}
 // requestAnim shim layer by Paul Irish, like that canvas animation works
 // in all browsers
 window.requestAnimFrame = (function() {
@@ -98,14 +101,9 @@ function init() {
     //loadSong("jcollier-thegardenover-mix-stems-44100-powr3-320");
     //Ajouté par Fabrice
     window.top.addEventListener('firedataiframe', function (e) {
-        // Get the list of the songs available on the server and build a
-        // drop down menu
-        //Parametre ajouté par Fabrice
         loadSongList(e.detail.song.multitrack_path);
         loadSong(e.detail.song.multitrack_path);
     }, true);
-    var event = new Event('firedata');
-    window.top.dispatchEvent(event);
 
 }
 
@@ -357,7 +355,7 @@ function finishedLoading(bufferList) {
 // ######### SONGS
 function loadSongList(pathSong) {
     var xhr = new XMLHttpRequest();
-    pathSong = re_encodePathWindows(pathSong);
+    // pathSong = re_encodePathWindows(pathSong);
     if(LOCALHOST == true){
         console.log("EN LOCAL");
         xhr.open('GET', "http://127.0.0.1/MT5/track/"+pathSong, true);
@@ -411,7 +409,7 @@ function loadSong(songName) {
     // song and resets all states to default (zero muted and zero solo lists, all
     // volumes set to 1, start at 0 second, etc.)
     currentSong = new Song(songName, context);
-    currentSong.url = pathSong = re_encodePathWindows(currentSong.url);
+    // currentSong.url = re_encodePathWindows(currentSong.url);
     var xhr = new XMLHttpRequest();
     if(LOCALHOST == true){
         console.log("EN LOCAL");
@@ -898,20 +896,20 @@ function toggleRecordMix() {
     } 
 }
 
-function re_encodePathWindows(str) {
-    //Sous windows les caractères interdit ou posant problème dans le nom d'un fichier/dossier sont " ? < > | \ : * / .
-    // les caractères ci dessus une fois encodé donnent respectivement: %22 %3F %3C %3E %7C %5C %3A %2A %2F %2E nous devons donc les décoder
-    return str.replace(/(%22|%3F|%3C|%3E|%7C|%5C|%3A|%2A|%2F|%2E)/g, function(c) {
-        if('%2E'==c){
-            c = '%252E';
-        }
-        else if ('%2A'==c){
-            c = '%252A';
-        }
-        else{
-            c = encodeURIComponent(c);
-        }
-        return c;
-    });
-};
+// function re_encodePathWindows(str) {
+//     //Sous windows les caractères interdit ou posant problème dans le nom d'un fichier/dossier sont " ? < > | \ : * / .
+//     // les caractères ci dessus une fois encodé donnent respectivement: %22 %3F %3C %3E %7C %5C %3A %2A %2F %2E nous devons donc les décoder
+//     return str.replace(/(%22|%3F|%3C|%3E|%7C|%5C|%3A|%2A|%2F|%2E)/g, function(c) {
+//         if('%2E'==c){
+//             c = '%252E';
+//         }
+//         else if ('%2A'==c){
+//             c = '%252A';
+//         }
+//         else{
+//             c = encodeURIComponent(c);
+//         }
+//         return c;
+//     });
+// };
 

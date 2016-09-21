@@ -1,4 +1,11 @@
 var config  = require('../conf/conf.json');
+
+/**
+ *
+ * @param field
+ * @param tParamToFind
+ * @returns {Array}
+ */
 var constructData = function (field, tParamToFind) {
     'use strict';
     var tObjectRequest, i, objRequest;
@@ -10,9 +17,11 @@ var constructData = function (field, tParamToFind) {
     }
     return tObjectRequest;
 };
-
-
-//Fonction permettant d'optimiser le find de mongodb. En utilisant: /^AB/ /^Ab/ /^aB/ /^ab/ cela utilise l'index contrairement à lieu /^AB/i qui n'utilise pas l'index
+/**
+ * Fonction permettant d'optimiser le find de mongodb. En utilisant: /^AB/ /^Ab/ /^aB/ /^ab/ cela utilise l'index contrairement à lieu /^AB/i qui n'utilise pas l'index
+ * @param lettre
+ * @returns {Array}
+ */
 var optimizeFind = function(lettre){
     var tParamToFind = [];
     if(lettre.length==2){
@@ -27,7 +36,16 @@ var optimizeFind = function(lettre){
     } 
     return tParamToFind;
 };
-//Permet de construire les requetes elasticsearch
+
+/**
+ * Permet de construire les requetes elasticsearch
+ * @param req
+ * @param maxinfo
+ * @param queryArtist
+ * @param querySong
+ * @param maxinfoselected
+ * @returns {Promise}
+ */
 var fullTextQuery = function (req,maxinfo,queryArtist,querySong,maxinfoselected){
     var promise = new Promise(function(resolve, reject) { 
         var result = [];
@@ -54,7 +72,37 @@ var fullTextQuery = function (req,maxinfo,queryArtist,querySong,maxinfoselected)
         });
     });
     return promise;
-}
+};
+/**
+ *
+ * @param req
+ * @param objSong
+ * @param idSong
+ */
+var updateSongES = function(req,objSong, idSong){
+    console.log(idSong);
+    req.elasticsearchClient.update({
+        index: config.database.index_song,
+        type: config.database.index_type_song,
+        id: idSong,
+        body: {
+            // put the partial document under the `doc` key
+            doc: {
+                "name": objSong.name,
+                "albumTitre": objSong.albumTitre,
+                "titre": objSong.titre
+            }
+        }
+    }, function (err) {
+        if (err) throw err;
+    });
+};
+//Si un titre de musique est modifié et qu'il comporte l'attribut multitrack_path (indiquant que cette musique possède du multipiste)
+// alors on modifie le nom du dossier dans le filesystem et dans la bdd
+var updateDirMultitrack = function(objSong){
+
+};
 exports.constructData   = constructData;
 exports.optimizeFind    = optimizeFind;
 exports.fullTextQuery   = fullTextQuery;
+exports.updateSongES    = updateSongES;
