@@ -826,6 +826,64 @@
 
 
 
+## createdb/add/elasticsearch/artist/:_id
+<table>
+	<tbody>
+		<tr>
+			<th>Description</th><td>Permet d'ajouter un nouveau document artist dans la base de données elasticsearch, le nouveau document sera ainsi requêtable via la barre de recherche
+			</td>
+		</tr>
+		<tr>
+			<th>URL</th><td>http://127.0.0.1/createdb/add/elasticsearch/artist/57c92566e5c453a411c771f4
+			</td>
+		</tr>
+		<tr>
+			<th>METHOD</th><td>GET</td>
+		</tr>
+		<tr>
+			<th>SUCCESS RESPONSE</th>
+			<td> 
+				Code : 200 <br>
+				Content GET : { status: "OK" }
+			</td>
+		</tr>
+	</tbody>
+</table>  
+
+
+
+
+
+
+## createdb/add/elasticsearch/artist/:_id
+<table>
+	<tbody>
+		<tr>
+			<th>Description</th><td>Permet d'ajouter un nouveau document musique dans la base de données elasticsearch, le nouveau document sera ainsi requêtable via la barre de recherche
+			</td>
+		</tr>
+		<tr>
+			<th>URL</th><td>http://127.0.0.1/createdb/add/elasticsearch/song/57c92566e5c453a411c771f6
+			</td>
+		</tr>
+		<tr>
+			<th>METHOD</th><td>GET</td>
+		</tr>
+		<tr>
+			<th>SUCCESS RESPONSE</th>
+			<td> 
+				Code : 200 <br>
+				Content GET : { status: "OK" }
+			</td>
+		</tr>
+	</tbody>
+</table>  
+
+
+
+
+
+
 ## createdb/add/:urlArtist
 <table>
 	<tbody>
@@ -1071,14 +1129,49 @@
 
 
 
-## extractdbpedia/artist/createfields
+## extractdbpedia/add/:collection/:_id
+<table>
+	<tbody>
+		<tr>
+			<th>Description</th><td>Une fois la base de données créées : permet de récupérer sur DBpédia les 'artist','album' ou 'song' du document dont l'_id est passé en paramètre </td>
+		</tr>
+		<tr>
+			<th>URL</th><td>http://127.0.0.1/extractdbpedia/add/artist/57c92593e5c453a411c77256
+			</td>
+		</tr>
+		<tr>
+			<th>METHOD</th><td>GET</td>
+		</tr>
+        <tr>
+			<th>DATA PARAMS</th>
+			<td> 
+				: collection = {artist,album,song}<br>
+				: _id = ObjectId MongoDB d'un document artist, album, song<br>
+			</td>
+		</tr>
+		<tr>
+			<th>SUCCESS RESPONSE</th>
+			<td> 
+				Code : 200 <br>
+				Content GET : "OK"
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+
+
+
+
+
+## extractdbpedia/createfields/artist
 <table>
 	<tbody>
 		<tr>
 			<th>Description</th><td>Après avoir effectué extractdbpedia/artist : permet d'inserer dans notre base de données les informations contenues dans le RDF de chaque artiste</td>
 		</tr>
 		<tr>
-			<th>URL</th><td>http://127.0.0.1/extractdbpedia/artist/createfields
+			<th>URL</th><td>http://127.0.0.1/extractdbpedia/createfields/artist
 			</td>
 		</tr>
 		<tr>
@@ -1099,14 +1192,14 @@
 
 
 
-## extractdbpedia/album/createfields
+## extractdbpedia/createfields/album
 <table>
 	<tbody>
 		<tr>
 			<th>Description</th><td>Après avoir effectué extractdbpedia/album : permet d'inserer dans notre base de données les informations contenues dans le RDF de chaque album</td>
 		</tr>
 		<tr>
-			<th>URL</th><td>http://127.0.0.1/extractdbpedia/album/createfields
+			<th>URL</th><td>http://127.0.0.1/extractdbpedia/createfields/album
 			</td>
 		</tr>
 		<tr>
@@ -1127,18 +1220,52 @@
 
 
 
-## extractdbpedia/song/createfields
+## extractdbpedia/createfields/song
 <table>
 	<tbody>
 		<tr>
 			<th>Description</th><td>Après avoir effectué extractdbpedia/song : permet d'inserer dans notre base de données les informations contenues dans le RDF de chaque musiques</td>
 		</tr>
 		<tr>
-			<th>URL</th><td>http://127.0.0.1/extractdbpedia/song/createfields
+			<th>URL</th><td>http://127.0.0.1/extractdbpedia/createfields/song
 			</td>
 		</tr>
 		<tr>
 			<th>METHOD</th><td>GET</td>
+		</tr>
+		<tr>
+			<th>SUCCESS RESPONSE</th>
+			<td> 
+				Code : 200 <br>
+				Content GET : "OK"
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+
+
+
+
+
+## extractdbpedia/createfields/song/:_id
+<table>
+	<tbody>
+		<tr>
+			<th>Description</th><td>Après avoir effectué extractdbpedia/song (une fois que le document à un attribut nommé : 'rdf') : permet d’insérer dans notre base de données les informations contenues dans le RDF de la musique ayant son _id passé en paramètre </td>
+		</tr>
+		<tr>
+			<th>URL</th><td>http://127.0.0.1/extractdbpedia/createfields/song/57c92593e5c453a411c77257
+			</td>
+		</tr>
+		<tr>
+			<th>METHOD</th><td>GET</td>
+		</tr>
+        <tr>
+			<th>DATA PARAMS</th>
+			<td> 
+				: _id= ObjectId MongoDB d'un document song<br>
+			</td>
 		</tr>
 		<tr>
 			<th>SUCCESS RESPONSE</th>

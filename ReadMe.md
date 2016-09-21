@@ -140,11 +140,11 @@ Une collection artist contenant des documents représentant un artiste avec ses 
  
  11.  [doit être exécuté après 10.] Le web service `extractdbpedia/song` permettant d'extraire le RDF des albums ayant un lien vers wikipédia. Ce web service envoie des requêtes sparql sur DBpédia afin d'obtenir le RDF de l'album. Un champ rdf contenant le RDF de l'album est ensuite ajouté en base de données (durée: plusieurs heures)
  
- 12.  [doit être exécuté après 9.] le web service `extractdbpedia/artist/createfields` transforme les propriétés de notre champ RDF en propriétés dans notre base de données
+ 12.  [doit être exécuté après 9.] le web service `extractdbpedia/createfields/artist` transforme les propriétés de notre champ RDF en propriétés dans notre base de données
  
- 13.  [doit être exécuté après 10.] le web service `extractdbpedia/album/createfields` transforme les propriétés de notre champ RDF en propriétés dans notre base de données
+ 13.  [doit être exécuté après 10.] le web service `extractdbpedia/createfields/album` transforme les propriétés de notre champ RDF en propriétés dans notre base de données
  
- 14.  [doit être exécuté après 11.] le web service `extractdbpedia/song/createfields` transforme les propriétés de notre champ RDF en propriétés dans notre base de données
+ 14.  [doit être exécuté après 11.] le web service `extractdbpedia/createfields/song` transforme les propriétés de notre champ RDF en propriétés dans notre base de données
  
  15.  [doit être exécuté après 14.]le fichier `CreateIndexAfterDBpediaExtraction` ce fichier permet de créer les index des nouveaux champs insérés dans la base de données
  
