@@ -1106,7 +1106,7 @@
 
 
 
-## extractdbpedia/artist/createfields
+## extractdbpedia/createfields/artist
 <table>
 	<tbody>
 		<tr>
@@ -1134,7 +1134,7 @@
 
 
 
-## extractdbpedia/album/createfields
+## extractdbpedia/createfields/album
 <table>
 	<tbody>
 		<tr>
@@ -1162,7 +1162,7 @@
 
 
 
-## extractdbpedia/song/createfields
+## extractdbpedia/createfields/song
 <table>
 	<tbody>
 		<tr>
@@ -1190,7 +1190,7 @@
 
 
 
-## extractdbpedia/song/createfields/:_id
+## extractdbpedia/createfields/song/:_id
 <table>
 	<tbody>
 		<tr>
