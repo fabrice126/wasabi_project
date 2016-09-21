@@ -1113,7 +1113,7 @@
 			<th>Description</th><td>Après avoir effectué extractdbpedia/artist : permet d'inserer dans notre base de données les informations contenues dans le RDF de chaque artiste</td>
 		</tr>
 		<tr>
-			<th>URL</th><td>http://127.0.0.1/extractdbpedia/artist/createfields
+			<th>URL</th><td>http://127.0.0.1/extractdbpedia/createfields/artist
 			</td>
 		</tr>
 		<tr>
@@ -1141,7 +1141,7 @@
 			<th>Description</th><td>Après avoir effectué extractdbpedia/album : permet d'inserer dans notre base de données les informations contenues dans le RDF de chaque album</td>
 		</tr>
 		<tr>
-			<th>URL</th><td>http://127.0.0.1/extractdbpedia/album/createfields
+			<th>URL</th><td>http://127.0.0.1/extractdbpedia/createfields/album
 			</td>
 		</tr>
 		<tr>
@@ -1169,7 +1169,7 @@
 			<th>Description</th><td>Après avoir effectué extractdbpedia/song : permet d'inserer dans notre base de données les informations contenues dans le RDF de chaque musiques</td>
 		</tr>
 		<tr>
-			<th>URL</th><td>http://127.0.0.1/extractdbpedia/song/createfields
+			<th>URL</th><td>http://127.0.0.1/extractdbpedia/createfields/song
 			</td>
 		</tr>
 		<tr>
@@ -1197,7 +1197,7 @@
 			<th>Description</th><td>Après avoir effectué extractdbpedia/song (une fois que le document à un attribut nommé : 'rdf') : permet d’insérer dans notre base de données les informations contenues dans le RDF de la musique ayant son _id passé en paramètre </td>
 		</tr>
 		<tr>
-			<th>URL</th><td>http://127.0.0.1/extractdbpedia/song/createfields/57c92593e5c453a411c77257
+			<th>URL</th><td>http://127.0.0.1/extractdbpedia/createfields/song/57c92593e5c453a411c77257
 			</td>
 		</tr>
 		<tr>
