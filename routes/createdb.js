@@ -105,6 +105,7 @@ router.get('/add/elasticsearch/artist/:_id', function(req, res){
         if(artist == null) {return res.status(404).send([{error:config.http.error.global_404}]); }
         delete artist._id; // impossible de faire l'insertion si un _id est présent dans le document à insérer
         elasticSearchHandler.addDocumentToElasticSearch(req, index_artist, type_artist, artist, id);
+        
     });
     res.send("OK");
 });

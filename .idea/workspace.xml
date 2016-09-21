@@ -2,24 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="33e3a497-95bf-4dc8-a96a-e2948ec227f8" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/statistic.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/routes/handler/wordCountHandler.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app.js" afterPath="$PROJECT_DIR$/app.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mongo/request_mongo/WordCount_Artist.js" afterPath="$PROJECT_DIR$/mongo/request_mongo/WordCount_Artist.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mongo/request_mongo/WordCount_Song.js" afterPath="$PROJECT_DIR$/mongo/request_mongo/WordCount_Song.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/my_components/MT5/js/sound.js" afterPath="$PROJECT_DIR$/public/my_components/MT5/js/sound.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/my_components/page-artist.html" afterPath="$PROJECT_DIR$/public/my_components/page-artist.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/my_components/page-song.html" afterPath="$PROJECT_DIR$/public/my_components/page-song.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/routes/createdb.js" afterPath="$PROJECT_DIR$/routes/createdb.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/routes/extractdbpedia.js" afterPath="$PROJECT_DIR$/routes/extractdbpedia.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/routes/handler/dbpediaHandler.js" afterPath="$PROJECT_DIR$/routes/handler/dbpediaHandler.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/routes/handler/elasticSearchHandler.js" afterPath="$PROJECT_DIR$/routes/handler/elasticSearchHandler.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/routes/handler/lyricsWikia.js" afterPath="$PROJECT_DIR$/routes/handler/lyricsWikia.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/routes/handler/searchHandler.js" afterPath="$PROJECT_DIR$/routes/handler/searchHandler.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/routes/handler/utilHandler.js" afterPath="$PROJECT_DIR$/routes/handler/utilHandler.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/routes/search.js" afterPath="$PROJECT_DIR$/routes/search.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/routes/updatedb.js" afterPath="$PROJECT_DIR$/routes/updatedb.js" />
     </list>
     <ignored path="wasabi_project.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -62,8 +45,8 @@
       <file leaf-file-name="createdb.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/routes/createdb.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="371">
-              <caret line="100" column="61" selection-start-line="100" selection-start-column="61" selection-end-line="100" selection-end-column="61" />
+            <state relative-caret-position="490">
+              <caret line="107" column="8" selection-start-line="107" selection-start-column="8" selection-end-line="107" selection-end-column="8" />
               <folding />
             </state>
           </provider>
@@ -453,12 +436,12 @@
       <workItem from="1474007585565" duration="16681000" />
       <workItem from="1474269410069" duration="18784000" />
       <workItem from="1474352876475" duration="23652000" />
-      <workItem from="1474439287047" duration="10723000" />
+      <workItem from="1474439287047" duration="11827000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="724164000" />
+    <option name="totallyTimeSpent" value="725268000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -470,7 +453,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1176" extended-state="6" />
+    <frame x="-8" y="-8" width="1936" height="1176" extended-state="7" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.13435195" sideWeight="0.48679245" order="0" side_tool="false" content_ui="combo" />
@@ -869,8 +852,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/routes/createdb.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="371">
-          <caret line="100" column="61" selection-start-line="100" selection-start-column="61" selection-end-line="100" selection-end-column="61" />
+        <state relative-caret-position="490">
+          <caret line="107" column="8" selection-start-line="107" selection-start-column="8" selection-end-line="107" selection-end-column="8" />
           <folding />
         </state>
       </provider>
