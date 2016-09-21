@@ -826,6 +826,64 @@
 
 
 
+## createdb/add/elasticsearch/artist/:_id
+<table>
+	<tbody>
+		<tr>
+			<th>Description</th><td>Permet d'ajouter un nouveau document artist dans la base de données elasticsearch, le nouveau document sera ainsi requêtable via la barre de recherche
+			</td>
+		</tr>
+		<tr>
+			<th>URL</th><td>http://127.0.0.1/createdb/add/elasticsearch/artist/57c92566e5c453a411c771f4
+			</td>
+		</tr>
+		<tr>
+			<th>METHOD</th><td>GET</td>
+		</tr>
+		<tr>
+			<th>SUCCESS RESPONSE</th>
+			<td> 
+				Code : 200 <br>
+				Content GET : { status: "OK" }
+			</td>
+		</tr>
+	</tbody>
+</table>  
+
+
+
+
+
+
+## createdb/add/elasticsearch/artist/:_id
+<table>
+	<tbody>
+		<tr>
+			<th>Description</th><td>Permet d'ajouter un nouveau document musique dans la base de données elasticsearch, le nouveau document sera ainsi requêtable via la barre de recherche
+			</td>
+		</tr>
+		<tr>
+			<th>URL</th><td>http://127.0.0.1/createdb/add/elasticsearch/song/57c92566e5c453a411c771f6
+			</td>
+		</tr>
+		<tr>
+			<th>METHOD</th><td>GET</td>
+		</tr>
+		<tr>
+			<th>SUCCESS RESPONSE</th>
+			<td> 
+				Code : 200 <br>
+				Content GET : { status: "OK" }
+			</td>
+		</tr>
+	</tbody>
+</table>  
+
+
+
+
+
+
 ## createdb/add/:urlArtist
 <table>
 	<tbody>
