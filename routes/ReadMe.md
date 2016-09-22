@@ -855,7 +855,7 @@
 
 
 
-## createdb/add/elasticsearch/artist/:_id
+## createdb/add/elasticsearch/song/:_id
 <table>
 	<tbody>
 		<tr>
@@ -1048,19 +1048,48 @@
 	</tbody>
 </table>
 
-
-
-
-
-
-## updatedb/song
+## updatedb/artist/:artistName
 <table>
 	<tbody>
 		<tr>
-			<th>Description</th><td>Permet de mettre à jour chaque document de la collection 'song' en allant faire l'extraction sur lyrics wikia</td>
+			<th>Description</th><td>Permet de mettre à jour les informations d'un artist existantes dans la collection 'artist' en allant faire l'extraction sur lyrics wikia</td>
 		</tr>
 		<tr>
-			<th>URL</th><td>http://127.0.0.1/updatedb/song
+			<th>URL</th><td>http://127.0.0.1/updatedb/artist/Metallica
+			</td>
+		</tr>
+		<tr>
+			<th>METHOD</th><td>GET</td>
+		</tr>
+        <tr>
+			<th>DATA PARAMS</th>
+			<td> 
+				: artistName = nom de l'artiste dans la base de données qu'on veut mettre à jour<br>
+			</td>
+		</tr>
+		<tr>
+			<th>SUCCESS RESPONSE</th>
+			<td> 
+				Code : 200 <br>
+				Content GET : "OK"
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+
+
+
+
+
+## updatedb/song/isclassic/:_id
+<table>
+	<tbody>
+		<tr>
+			<th>Description</th><td>Permet de mettre à jour le document correspondant à :_id en modifiant la valeur de la propriété isClassic si nécessaire</td>
+		</tr>
+		<tr>
+			<th>URL</th><td>http://127.0.0.1/updatedb/song/isclassic/57c92593e5c453a411c77257
 			</td>
 		</tr>
 		<tr>
