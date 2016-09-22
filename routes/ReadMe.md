@@ -1095,6 +1095,12 @@
 		<tr>
 			<th>METHOD</th><td>GET</td>
 		</tr>
+        <tr>
+			<th>DATA PARAMS</th>
+			<td> 
+				: _id = ObjectId MongoDB d'un document song<br>
+			</td>
+		</tr>
 		<tr>
 			<th>SUCCESS RESPONSE</th>
 			<td> 
