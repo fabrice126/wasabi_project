@@ -11,9 +11,6 @@ const COLLECTIONARTIST  = config.database.collection_artist;
 const COLLECTIONALBUM   = config.database.collection_album;
 const COLLECTIONSONG    = config.database.collection_song;
 
-//Permet de changer de page pour récupérer tout les noms d'artistes d'une catégorie (exemple catégorie des artistes commencant par la lettre A)        
-//contient les liens des artistes de tout l'alphabet qui sont aussi les noms des répertoires sur le disque
-const URLPAGEARTIST = "http://lyrics.wikia.com/wiki/";//On construira l'url suivant : http://lyrics.wikia.com/wiki/artistName
 
 //Cette fonction met à jour les informations existantes dans la collection artist
 router.get('/artist',function(req, res){
@@ -286,7 +283,15 @@ router.get('/wordcount/:collection/:_id',function(req, res){
     } );
 });
 
-
+//Cette fonction permet de définir si la musique passé en paramètre est un classic
+router.get('/song/isclassic/:_id',function(req, res){
+    var db = req.db, collection = req.params.collection, id = req.params._id;
+    db.collection(COLLECTIONSONG).update(
+        { $and:[{_id:ObjectId(id)},{$or:[ {subject:/best/i}, {subject:/award/i}, {subject:/Hall_of_fame/i}, {subject:/diamond/i}, {subject:/platinum/i}, {subject:/gold/i}, {subject:/hot_100/i} ]} ]},
+        {$set: {isClassic: true}});
+    console.log("Traiement terminé");
+    res.send("OK");
+});
 
 
 

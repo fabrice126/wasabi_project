@@ -17,7 +17,6 @@ const urlDbpediaToSplit = "dbpedia.org/resource/";
 //propriétés RDF à extraire pour les musiques
 const SONG_RDF_PROPERTIES = ['subject','format','genre','producer','recordLabel','writer','recorded','abstract','releaseDate','runtime','award'];
 
-
 //WEBSERVICE permettant d'extraire les données de dbpédia en fonction de la propriété urlWikipedia présent dans chaque document de notre base de données
 router.get('/:collection',function(req, res){
     var db = req.db;
@@ -165,10 +164,12 @@ router.get('/add/:collection/:_id',function(req, res) {
                             console.log("Change urlWikipedia with redirectTo");
                             objCollection.urlWikipedia = dbpediaHandler.constructNewURLWikipedia(objRedirect.redirectTo, urlWikipediaToSplit);
                         }
-                        db.collection(collection).update({_id : new ObjectId(objCollection._id)}, { $set: {"urlWikipedia":objCollection.urlWikipedia,"rdf": rdfValue} });
-                        if (rdfValue.length < 200) {
-                            console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! RDF VIDE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-                        }
+                        db.collection(collection).update({_id : new ObjectId(objCollection._id)}, { $set: {"urlWikipedia":objCollection.urlWikipedia,"rdf": rdfValue} },function(){
+                            if (rdfValue.length < 200) {
+                                console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! RDF VIDE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                            }
+                            res.send("OK");
+                        });
                         console.log(rdfValue.length + " RDF Added => " + objRedirect.objUrl.urlDbpedia);
                         console.log("===========================TRAITEMENT TERMINEE===========================");
                     });
@@ -178,24 +179,6 @@ router.get('/add/:collection/:_id',function(req, res) {
     }).catch(function(e) {
         console.log('catch: ', e);
     });
-    res.send("OK");
-});
-//JUSTE POUR DES TESTS A SUPPRIMER
-router.get('/a/b/c',function(req, res) {
-    var db = req.db;//Utilisé dans le script ci-dessous;
-    var WordCount_Artist = require("../mongo/request_mongo/WordCount_Artist");
-    WordCount_Artist.recursiveWordCount(1);
-    // require("../mongo/request_mongo/WordCount_Album");
-
-    // var db = req.db;
-    // db.collection('bands').insert({name: "Guns N' Roses", members: ['Axl Rose', 'Slash', 'Izzy Stradlin', 'Matt Sorum', 'Duff McKagan'], year: 1986}, function(err, result) {
-    //     if (err) throw err;
-    //     if (result) {
-    //         console.log(result.ops);
-    //         console.log('Added!');
-    //     }
-    // });
-    res.send("OK");
 });
 
 //TODO

@@ -11,6 +11,8 @@ var mkdirp          = require('mkdirp');
 const COLLECTIONARTIST  = config.database.collection_artist;
 const COLLECTIONALBUM   = config.database.collection_album;
 const COLLECTIONSONG    = config.database.collection_song;
+var Artist = require('./model/Artist');
+
 //createdb, permet de créer entierement la base de données
 router.get('/',function(req, res){
     console.log("dedans /createdb");
@@ -25,31 +27,16 @@ router.get('/',function(req, res){
 //Permet d'ajouter la discographie d'un artiste manquant dans notre base de données en allant la chercher sur lyrics wikia
 //exemple :urlArtist : createdb/add/3_Doors_Down pour la page http://lyrics.wikia.com/wiki/3_Doors_Down
 router.get('/add/:urlArtist',function(req, res){
-    var newLyricsWikia = lyricsWikia;
-    var urlApiWikiaArtist = newLyricsWikia.urlApiWikia + req.params.urlArtist;
     console.log("dedans /createdb/"+ req.params.urlArtist);
+    var urlApiWikiaArtist = lyricsWikia.urlApiWikia + req.params.urlArtist;
     //Création de l'objet artist, il faudra modifier cette objet si de nouvelles propriétés doivent être ajoutées
-    var objArtist = {
-            name:"",
-            urlWikipedia:"",
-            urlOfficialWebsite : "",
-            urlFacebook:"",
-            urlMySpace:"",
-            urlTwitter:"",
-            urlWikia: req.params.urlArtist, 
-            activeYears:"",
-            members:[],
-            formerMembers:[],
-            locationInfo:[],
-            genres:[],
-            labels:[],
-            albums:[]
-        };
-    newLyricsWikia.idxAlphabet = newLyricsWikia.alphabet.length;
-    newLyricsWikia.getOneArtist(urlApiWikiaArtist, objArtist).then(function(objArtist) {
+    var objArtist = new Artist();
+    objArtist.urlWikia = req.params.urlArtist;
+    lyricsWikia.idxAlphabet = lyricsWikia.alphabet.length;
+    lyricsWikia.getOneArtist(urlApiWikiaArtist, objArtist).then(function(objArtist) {
         //objArtist.tObjArtist => tableau d'objet représentant les artists: [{ name: 'A Dying God', urlWikia: 'A_Dying_God', albums: [] }]
         console.log("objArtist.tObjArtist.length  ==="+objArtist.tObjArtist.length ); // doit être == 1
-        newLyricsWikia.getArtistDiscography(objArtist,"","",0);
+        lyricsWikia.getArtistDiscography(objArtist,"","",0);
         console.log("fin de GET createdb");
     });
     res.writeHead(200, { 'Content-Type': 'application/json' });
@@ -105,7 +92,7 @@ router.get('/add/elasticsearch/artist/:_id', function(req, res){
         if(artist == null) {return res.status(404).send([{error:config.http.error.global_404}]); }
         delete artist._id; // impossible de faire l'insertion si un _id est présent dans le document à insérer
         elasticSearchHandler.addDocumentToElasticSearch(req, index_artist, type_artist, artist, id);
-        
+
     });
     res.send("OK");
 });

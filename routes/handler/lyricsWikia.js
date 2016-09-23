@@ -2,6 +2,13 @@ var cheerio     = require('cheerio');
 var request     = require('request');
 var db          = require('mongoskin').db('mongodb://localhost:27017/wasabi');
 var ObjectId    = require('mongoskin').ObjectID;
+var Artist      = require('../model/Artist');
+var Album       = require('../model/Album');
+var Song        = require('../model/Song');
+const config              = require('../conf/conf.json');
+const COLLECTIONARTIST  = config.database.collection_artist;
+const COLLECTIONALBUM   = config.database.collection_album;
+const COLLECTIONSONG    = config.database.collection_song;
 
 //Permet de changer de page pour récupérer tout les noms d'artistes d'une catégorie (exemple catégorie des artistes commencant par la lettre A)        
 var paramNextPage = "?pagefrom=";
@@ -45,22 +52,9 @@ var getArtistFromCategorie = function(url){
                         //Cette condition permet de ne pas remplir le dernier objet artist d'une page contenant 200 artists. Cet objet sera rempli lors de la reqête de changement de page
                         if(i<nbArtistPerPage-1){
                             //Création de l'objet artist, il faudra modifier cette objet si de nouvelles propriétés doivent être ajoutées
-                            var objArtist = {
-                                name:$(link).attr('title'),
-                                urlWikipedia:"",
-                                urlOfficialWebsite : "",
-                                urlFacebook:"",
-                                urlMySpace:"",
-                                urlTwitter:"",
-                                urlWikia:$(link).attr(attrArtists).replace(removeStrHrefArtists, ""), //on récupére les #mw-pages>.mw-content-ltr>table a[href]
-                                activeYears:"",
-                                members:[],
-                                formerMembers:[],
-                                locationInfo:[],
-                                genres:[],
-                                labels:[],
-                                albums:[]
-                            };
+                            var objArtist =  new Artist();
+                            objArtist.name = $(link).attr('title');
+                            objArtist.urlWikia = $(link).attr(attrArtists).replace(removeStrHrefArtists, "");
                             tObjArtist.push(objArtist);
                         }
                     });
@@ -88,7 +82,6 @@ var getArtistFromCategorie = function(url){
  * Cette fonction est utilisée lors de l'ajout d'un nouvel artiste dans la base de données
  * @param urlApiWikia : Ce param correspond à l'url de l'api de lyrics wikia exemple : http://lyrics.wikia.com/api.php?func=getArtist&artist=Linkin_Park
  * @param objArtist : objet artiste que l'on remplira au fur et a mesure de l'execution
- * @param selectorName : correspond au selecteur permettant de récupérer les liens des albums et musiques
  * @returns {Promise}
  */
 var getOneArtist = function(urlApiWikia, objArtist){
@@ -124,7 +117,7 @@ var getOneArtist = function(urlApiWikia, objArtist){
                 }
             });
          })(objArtist,selectorName);
-        
+
     });
     return promise;
 };
@@ -300,25 +293,17 @@ var getAlbumsAndSongsOfArtist = function(objArtist){
                             var songs = [];//va contenir les objets objSong
                             $(eltAlbum).find($(".songs>li>a[href]")).each(function(ii,eltSong){
                                 //Création de l'objet song, il faudra modifier cette objet si de nouvelles propriétés doivent être ajoutées
-                                var objSong = {
-                                    titre: $(eltSong).text(),
-                                    urlSong: $(eltSong).attr(attrAlbums),
-                                    lyrics:"",
-                                    urlWikipedia:"",
-                                    urlYoutube:""
-                                };
+                                var objSong = new Song();
+                                objSong.titre = $(eltSong).text();
+                                objSong.urlSong = $(eltSong).attr(attrAlbums);
                                 songs.push(objSong);//On met l'objet song dans le tableau contenant les autres musiques de l'album
                             });
                             //Création de l'objet album, il faudra modifier cette objet si de nouvelles propriétés doivent être ajoutées
-                            var objAlbum = {
-                                titre: album,
-                                dateSortie: dateSortie,
-                                urlWikipedia:"",
-                                genre:"",
-                                length:"",
-                                urlAlbum: $(eltAlbum).find($(".albums>li>a[href]:first-child")).attr(attrAlbums),
-                                songs:songs //array contenant les objets représentant les musiques d'un album
-                            };
+                            var objAlbum = new Album();
+                            objAlbum.titre = album;
+                            objAlbum.dateSortie = dateSortie;
+                            objAlbum.urlAlbum = $(eltAlbum).find($(".albums>li>a[href]:first-child")).attr(attrAlbums);
+                            objAlbum.songs = songs;
                             objArtist.albums.push(objAlbum);//on ajoute à l'ojet artiste l'objet album contenant le nom de l'album et ses musiques 
                         });
                         resolve(objArtist);//une fois le objArtist rempli resolve va indiquer que la promise s'est bien executée et va donc executer le then
@@ -357,7 +342,7 @@ var getAllLyricsOfArtists = function(objArtist){
                                 //on récupérer l'objet correspondant a la chanson 
                                 //exemple : {"titre" : "Heavy Mind","urlSong" : "http://lyrics.wikia.com/A_Dead_Silence:Heavy_Mind"}  
                                 var currSong = objArtist.albums[nbAlbums].songs[nbLyrics];
-                                var urlWikiaLyrics = currSong.urlSong;    
+                                var urlWikiaLyrics = currSong.urlSong;
 
                                 (function getLyricsSongRequest(urlWikiaLyrics,nbAlbums,nbLyrics,objArtist){ 
                                     request({ pool: {maxSockets: Infinity}, url: urlWikiaLyrics,method: "GET",timeout: 50000000}, function(err, resp, body){
@@ -441,7 +426,11 @@ var getArtistDiscography = function(newObjArtist,url,lettre,j){
                                 //Si on veut ajouter un nouvel artist avec une base déjà crée
                                 if(newObjArtist.insertArtist){
                                     console.log("DANS INSERT ARTIST");
-                                    self.embeddedToRelationalSchema(objArtist)
+                                    self.embeddedToRelationalSchema(objArtist).then(function(objResolve) {
+                                        console.log("--------------LES DOCUMENTS SONT BIEN ENREGISTRES--------------");
+                                        //Lorsque le musiques sont ajoutées dans la collection song et que les albums sont aussi ajoutés dans la collection album alors:
+                                        //on fait le wordCount :de l'artist, de chaque album, de chaque musique
+                                    });
                                 }
                             }
                         }); 
@@ -471,6 +460,39 @@ var getArtistDiscography = function(newObjArtist,url,lettre,j){
 //    }, Math.floor((Math.random() * 20000) + 10000));
 };
 
+/**
+ * Permet d'envoyer une requête a chaque API utile à la construction d'un document (artist,album,song) complet
+ * @param id d'un document artist, album, song
+ * @param urlWikipedia d'un document artist, album, song
+ */
+//!\POUR UTILISER CETTE FONCTION VOUS DEVEZ COMMENTER PERMETTRE L'ACCES AU API : COMMENTER DANS APP.JS : app.use(basicAuth(login.login, login.password));
+var checkAPI = function(id,collection , urlWikipedia){
+    //Lancer une requête vers l'API de elasticsearch afin d'y ajouter la musique /createdb/add/elasticsearch/song/id
+    if(collection != COLLECTIONALBUM){
+        request("http://127.0.0.1/createdb/add/elasticsearch/"+collection+"/"+id, function(err, resp, body){
+            if(err) throw err;
+            console.log("Added to elasticsearch: "+id);
+        });
+    }
+    if(urlWikipedia != ""){
+        //on lance une requete vers l'API extractdbpedia/add/song/id
+        request("http://127.0.0.1/extractdbpedia/add/"+collection+"/"+id, function(err, resp, body){
+            if(err) throw err;
+            console.log("Extract from dbpédia: "+id);
+            //Seul la  collection peut possèder des attributs du RDF pour le moment et comme c'est grace a ces attributs qu'on peut définir si un document est un classique il est aussi dans cette condition
+            if(collection == COLLECTIONSONG){
+                //dans le callback de la requête ci-dessus on lance une nouvelle requete vers l'API extractdbpedia/createfields/song/id
+                request("http://127.0.0.1/extractdbpedia/createfields/song/"+id, function(err, resp, body) {
+                    console.log("Extract createfields: "+id);
+                    //dans le callback de la requête ci-dessus on lance une nouvelle requete vers l'API updatedb/song/isclassic/id
+                    request("http://127.0.0.1/updatedb/song/isclassic/"+id, function(err, resp, body) {
+                        console.log("Update isClassic: "+id);
+                    });
+                });
+            }
+        });
+    }
+};
 
 /**
  * Lorsqu'on veut ajouter un nouvel artiste a la base de données, il faut transformer le document à inserer sous une forme relationel
@@ -478,36 +500,53 @@ var getArtistDiscography = function(newObjArtist,url,lettre,j){
  */
 var embeddedToRelationalSchema = function(objArtist){
     //Creation de la collection album
-    db.collection('artist').findOne({name:objArtist.name}, function(err, artist) {                        
-        if (err) throw err;
-        if(!artist){
-            console.log("Erreur, aucun document trouvé dans la base de données");//une fois le tObjArtist rempli resolve va indiquer que la promise s'est bien executée et va donc executer le then
-        }
-        else{
-            console.log("Traitement embedded to relational schema");
-            for(var i = 0 ;i<artist.albums.length;i++){
-                artist.albums[i].id_artist = artist._id;
-                artist.albums[i].name = artist.name;
-                artist.albums[i]._id = new ObjectId();
-                for(var j = 0 ;j<artist.albums[i].songs.length;j++){
-                    artist.albums[i].songs[j].name = artist.name;
-                    artist.albums[i].songs[j].id_album = artist.albums[i]._id;
-                    artist.albums[i].songs[j].position = j;
-                    artist.albums[i].songs[j].albumTitre = artist.albums[i].titre;
-                    artist.albums[i].songs[j].lengthAlbum = artist.albums[i].length;
-                    artist.albums[i].songs[j].dateSortieAlbum = artist.albums[i].dateSortie;
-                    artist.albums[i].songs[j];
-                    db.collection('song').insert(artist.albums[i].songs[j]);
-                }
-                delete artist.albums[i].songs;
-                db.collection('album').insert(artist.albums[i]);
+    return new Promise(function(resolve, reject) {
+        var countNbSong = 0, totalInsertedSong = 0;
+        db.collection('artist').findOne({name:objArtist.name}, function(err, artist) {
+            if (err) throw err;
+            if(!artist){
+                console.log("Erreur, aucun document trouvé dans la base de données");//une fois le tObjArtist rempli resolve va indiquer que la promise s'est bien executée et va donc executer le then
             }
-        }
+            else{
+                console.log("Traitement embedded to relational schema");
+                //On check les API pour ajouter les informations à l'artist
+                checkAPI(artist._id, COLLECTIONARTIST,artist.urlWikipedia);
+                for(var i = 0 ;i<artist.albums.length;i++){
+                    artist.albums[i].id_artist = artist._id;
+                    artist.albums[i].name = artist.name;
+                    artist.albums[i]._id = new ObjectId();
+                    countNbSong += artist.albums[i].songs.length;
+                    for(var j = 0 ;j<artist.albums[i].songs.length;j++){
+                        artist.albums[i].songs[j].name = artist.name;
+                        artist.albums[i].songs[j].id_album = artist.albums[i]._id;
+                        artist.albums[i].songs[j].position = j;
+                        artist.albums[i].songs[j].albumTitre = artist.albums[i].titre;
+                        artist.albums[i].songs[j].lengthAlbum = artist.albums[i].length;
+                        artist.albums[i].songs[j].dateSortieAlbum = artist.albums[i].dateSortie;
+                        db.collection('song').insert(artist.albums[i].songs[j],function(err,song){
+                            totalInsertedSong += 1;
+                            var song = song.ops[0];
+                            //On check les API pour ajouter les informations à la song
+                            checkAPI(song._id, COLLECTIONSONG,song.urlWikipedia);
+                            if(countNbSong == totalInsertedSong){
+                                resolve();
+                            }
+                        });
+                    }
+                    delete artist.albums[i].songs;
+                    db.collection('album').insert(artist.albums[i],function(err,album){
+                        var album = album.ops[0];
+                        //On check les API pour ajouter les informations à l'album
+                        checkAPI(album._id, COLLECTIONALBUM,album.urlWikipedia);
+                    });
+                }
+            }
+        });
+        //suppression du champ albums dans la collection artist
+        db.collection('artist').update({name:objArtist.name},{$unset: {albums:1}},false,true);
+        console.log("L'artiste "+objArtist.name+" a été transformé sous forme relationel");
     });
-    //suppression du champ albums dans la collection artist      
-    db.collection('artist').update({name:objArtist.name},{$unset: {albums:1}},false,true);
-    console.log("L'artiste "+objArtist.name+" a été transformé sous forme relationel");
-}
+};
 
 exports.getArtistFromCategorie      = getArtistFromCategorie;
 exports.getAlbumsAndSongsOfArtist   = getAlbumsAndSongsOfArtist;
