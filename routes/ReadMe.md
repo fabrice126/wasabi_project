@@ -888,9 +888,16 @@
 <table>
 	<tbody>
 		<tr>
-			<th>Description</th><td>Permet d'ajouter la discographie d'un artiste dans notre base de données en allant l'extraire de lyrics wikia.<br>
-			Lorsqu'un artiste est ajouté, il est recommandé d’exécuter <a href="https://github.com/fabrice126/wasabi_project/blob/master/ReadMe.md#mongorequest_mongo">les requêtes de 6 à 16 </a> (la 1,2,3,4 étant déjà réalisé automatiquement par l'API)<br> 
-			Vous devez aussi ajouter ce nouvel artiste à la base de données elasticsearch via : <a href="https://github.com/fabrice126/wasabi_project/blob/master/routes/ReadMe.md#createdbcreatedbelasticsearchartist">createdb/createdbelasticsearchartist</a> et <a href="https://github.com/fabrice126/wasabi_project/blob/master/routes/ReadMe.md#createdbcreatedbelasticsearchsong">createdb/createdbelasticsearchsong</a>
+			<th>TODO</th><td style="color:red;">Cette API utilise d'autres API de WASABI vous devez donc commenter `app.use(basicAuth(login.login, login.password));` dans app.js afin de ne pas être bloqué par l'authentification
+			</td>
+		</tr>
+		<tr>
+			<th>Description</th><td>Permet d'ajouter la discographie d'un artiste dans notre base de données en allant l'extraire de lyrics wikia.<br> 
+			Cette fonction utilise plusieurs API notamment pour extraire: <br>
+				- les données RDF des artistes/albums/musiques ayant un lien vers Wikipédia  <br>
+				- L'extraction des données du RDF afin de l'ajouter à la collection song <br>
+				- L'ajout des artistes et musiques à elasticsearch afin de mettre à jour le moteur de recherche <br>
+				- L'update du champs isClassic (song) à true si les données extraits du champ RDF font de la musique un classique
 			</td>
 		</tr>
 		<tr>
@@ -902,8 +909,7 @@
 		</tr>
         <tr>
 			<th>DATA PARAMS</th>
-			<td> 
-				: urlArtist = urlLyricsWikia de l'artiste à ajouter exemple: pour ce lien http://lyrics.wikia.com/wiki/Linkin_Park , : urlArtist = Linkin_Park ce qui nous donnera le lien suivant : http://127.0.0.1/createdb/add/Linkin_Park<br>
+			<td> : urlArtist = urlLyricsWikia de l'artiste à ajouter exemple: pour ce lien http://lyrics.wikia.com/wiki/Linkin_Park , : urlArtist = Linkin_Park ce qui nous donnera le lien suivant : http://127.0.0.1/createdb/add/Linkin_Park<br>
 			</td>
 		</tr>
 		<tr>
