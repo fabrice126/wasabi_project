@@ -887,8 +887,8 @@
 ## createdb/add/:urlArtist
 <table>
 	<tbody>
-		<tr>
-			<th>TODO</th><td style="color:red;">Cette API utilise d'autres API de WASABI vous devez donc commenter<pre><code>app.use(basicAuth(login.login, login.password));</code></pre> dans <pre><code>app.js</code></pre> avant de lancer une requête pour ne pas être bloqué par l'authentification
+		<tr style="color:red;">
+			<th>TODO</th><td><b>Cette API utilise d'autres API de WASABI vous devez donc commenter<pre><code>app.use(basicAuth(login.login, login.password));</code></pre> dans <pre><code>app.js</code></pre> avant de lancer une requête pour ne pas être bloqué par l'authentification</b>
 			</td>
 		</tr>
 		<tr>
@@ -1238,7 +1238,7 @@
 <table>
 	<tbody>
     	<tr>
-			<th>TODO</th><td> **Cette API n'est pas implémenté** </td>
+			<th>TODO</th><td> <b>Cette API n'est pas implémenté</b> </td>
 		</tr>
 		<tr>
 			<th>Description</th><td>Après avoir effectué extractdbpedia/artist : permet d'inserer dans notre base de données les informations contenues dans le RDF de chaque artiste</td>
@@ -1269,7 +1269,7 @@
 <table>
 	<tbody>
     	<tr>
-			<th>TODO</th><td> **Cette API n'est pas implémenté** </td>
+			<th>TODO</th><td> <b>Cette API n'est pas implémenté</b> </td>
 		</tr>
 		<tr>
 			<th>Description</th><td>Après avoir effectué extractdbpedia/album : permet d'inserer dans notre base de données les informations contenues dans le RDF de chaque album</td>
