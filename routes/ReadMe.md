@@ -801,7 +801,7 @@
 <table>
 	<tbody>
 		<tr>
-			<th>Description</th><td>Permet de créer entierement la base de données en allant récupérer les discographies des artistes sur lyrics wikia. Une fois que la base de données sera créée, voir <a href="https://github.com/fabrice126/wasabi_project/blob/master/ReadMe.md#mongorequest_mongo">comment compléter la base Wasabi avec les requêtes mongo</a> et avec l'API <a href="https://github.com/fabrice126/wasabi_project/blob/master/routes/ReadMe.md#createdbcreatedbelasticsearchartist">createdb/createdbelasticsearchartist</a> et <a href="https://github.com/fabrice126/wasabi_project/blob/master/routes/ReadMe.md#createdbcreatedbelasticsearchsong">createdb/createdbelasticsearchsong</a>
+			<th>Description</th><td>Permet de créer entierement la base de données en allant récupérer les discographies des artistes sur lyrics wikia. Une fois que la base de données est créée, voir <a href="https://github.com/fabrice126/wasabi_project/blob/master/ReadMe.md#mongorequest_mongo">comment compléter la base Wasabi avec les requêtes mongo</a> et avec l'API <a href="https://github.com/fabrice126/wasabi_project/blob/master/routes/ReadMe.md#createdbcreatedbelasticsearchartist">createdb/createdbelasticsearchartist</a> et <a href="https://github.com/fabrice126/wasabi_project/blob/master/routes/ReadMe.md#createdbcreatedbelasticsearchsong">createdb/createdbelasticsearchsong</a>
 			</td>
 		</tr>
 		<tr>
@@ -888,7 +888,7 @@
 <table>
 	<tbody>
 		<tr>
-			<th>TODO</th><td style="color:red;">Cette API utilise d'autres API de WASABI vous devez donc commenter<pre><code>app.use(basicAuth(login.login, login.password));</code></pre> dans <pre><code>app.js</code></pre> afin de ne pas être bloqué par l'authentification
+			<th>TODO</th><td style="color:red;">Cette API utilise d'autres API de WASABI vous devez donc commenter<pre><code>app.use(basicAuth(login.login, login.password));</code></pre> dans <pre><code>app.js</code></pre> avant de lancer une requête pour ne pas être bloqué par l'authentification
 			</td>
 		</tr>
 		<tr>
@@ -1054,24 +1054,18 @@
 	</tbody>
 </table>
 
-## updatedb/artist/:artistName
+## updatedb/song
 <table>
 	<tbody>
 		<tr>
-			<th>Description</th><td>Permet de mettre à jour les informations d'un artist existantes dans la collection 'artist' en allant faire l'extraction sur lyrics wikia</td>
+			<th>Description</th><td>Permet de mettre à jour les informations existantes dans la collection 'song' en allant faire l'extraction sur lyrics wikia</td>
 		</tr>
 		<tr>
-			<th>URL</th><td>http://127.0.0.1/updatedb/artist/Metallica
+			<th>URL</th><td>http://127.0.0.1/updatedb/song
 			</td>
 		</tr>
 		<tr>
 			<th>METHOD</th><td>GET</td>
-		</tr>
-        <tr>
-			<th>DATA PARAMS</th>
-			<td> 
-				: artistName = nom de l'artiste dans la base de données qu'on veut mettre à jour<br>
-			</td>
 		</tr>
 		<tr>
 			<th>SUCCESS RESPONSE</th>
@@ -1104,6 +1098,41 @@
         <tr>
 			<th>DATA PARAMS</th>
 			<td> 
+				: _id = ObjectId MongoDB d'un document song<br>
+			</td>
+		</tr>
+		<tr>
+			<th>SUCCESS RESPONSE</th>
+			<td> 
+				Code : 200 <br>
+				Content GET : "OK"
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+
+
+
+
+
+## updatedb/wordcount/:collection/:_id
+<table>
+	<tbody>
+		<tr>
+			<th>Description</th><td>Permet créer le champ wordCount pour le document correspondant à :_id présent dans la collection :collection</td>
+		</tr>
+		<tr>
+			<th>URL</th><td>http://127.0.0.1/updatedb/wordcount/song/57c92593e5c453a411c77257
+			</td>
+		</tr>
+		<tr>
+			<th>METHOD</th><td>GET</td>
+		</tr>
+        <tr>
+			<th>DATA PARAMS</th>
+			<td> 
+            	: collection = {artist,album,song}<br>
 				: _id = ObjectId MongoDB d'un document song<br>
 			</td>
 		</tr>
@@ -1208,6 +1237,9 @@
 ## extractdbpedia/createfields/artist
 <table>
 	<tbody>
+    	<tr>
+			<th>TODO</th><td> **Cette API n'est pas implémenté** </td>
+		</tr>
 		<tr>
 			<th>Description</th><td>Après avoir effectué extractdbpedia/artist : permet d'inserer dans notre base de données les informations contenues dans le RDF de chaque artiste</td>
 		</tr>
@@ -1236,6 +1268,9 @@
 ## extractdbpedia/createfields/album
 <table>
 	<tbody>
+    	<tr>
+			<th>TODO</th><td> **Cette API n'est pas implémenté** </td>
+		</tr>
 		<tr>
 			<th>Description</th><td>Après avoir effectué extractdbpedia/album : permet d'inserer dans notre base de données les informations contenues dans le RDF de chaque album</td>
 		</tr>
