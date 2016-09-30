@@ -1,9 +1,9 @@
 
 **Conseils**
 =======
-Au cours du développement de wasabi, des champs récupérés de lyrics wikia seront peut être ajoutés. Si tel est le cas veillez à ajouter ces champs dans les objets correspondants au modèle : objArtist (createdb.js et lyricsWikia.js), objAlbum (lyricsWikia.js), objSong (lyricsWikia.js).
+Au cours du développement de wasabi, des champs récupérés de lyrics wikia seront peut-être ajoutés. Si tel est le cas veillez à ajouter ces champs dans les objets correspondant au modèle : objArtist (createdb.js et lyricsWikia.js), objAlbum (lyricsWikia.js), objSong (lyricsWikia.js).
 
-Il est conseillé de lire ce que fais chaque API avant de l'utiliser notamment celle concernant updatedb et createdb.
+Il est conseillé de lire ce que fait chaque API avant de l'utiliser notamment celle concernant updatedb et createdb.
 
 **Comment lancer l'application sous windows**
 =======
@@ -19,8 +19,9 @@ Il est conseillé de lire ce que fais chaque API avant de l'utiliser notamment c
 *5.1.* en ligne de commande : `cd C:/Users/user/Documents/wasabi_project`  
 *5.2.* taper la commande : `node bin/www` ou si installé : `nodemon bin/www`  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*5.2.1.* Si ça ne fonctionne pas : taper `npm install` en ligne commande dans le projet wasabi (voir 5.1.) cela installera les dépendances du projet  
-*5.3.* le serveur est maintenant lancé sur *http://localhost/* (dans le navigateur)
-6. Remplir la base de données d'elasticsearch pour cela utilisé l'api REST pour indexer le nom des artistes `http://127.0.0.1/createdb/createdbelasticsearchartist` et `http://127.0.0.1/createdb/createdbelasticsearchsong` pour indexer le nom des musiques avec le nom de l'artiste et le nom de l'album ainsi nous pourrons chercher une musique par son titre + nom d'album + nom d'artiste.
+*5.3.* le serveur est maintenant lancé sur *http://localhost/* (dans le navigateur)  
+*5.4.* /!\ Par souci de sécurité le fichier contenant le login / mot de passe n'est pas sur le git vous devez donc ajouter `login.json` dans le répertoire `routes/conf`. Ce fichier contient le json suivant: `{"login": "ADemanderALAdmin","password": "ADemanderALAdmin"}`
+6. Remplir la base de données d'elasticsearch pour cela utiliser l'api REST pour indexer le nom des artistes `http://127.0.0.1/createdb/createdbelasticsearchartist` et `http://127.0.0.1/createdb/createdbelasticsearchsong` pour indexer le nom des musiques avec les noms des artistes et les noms des albums ainsi nous pourrons chercher une musique par son titre + nom d'album + nom d'artiste.
 
 **Comment lancer l'application sous RedHat/Linux Centos 7 (serveur - uniquement en cas de ré-installation)**
 =======
@@ -42,19 +43,19 @@ Il est conseillé de lire ce que fais chaque API avant de l'utiliser notamment c
 *6.2.* taper la commande : `pm2 start bin/www`  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*6.2.1.* Si ça ne fonctionne pas : taper `npm install` en ligne commande dans le projet wasabi (voir 6.1.)  
 *6.3.* le serveur est maintenant lancé et accessible via l'URL à demander au chef du projet
-7. Remplir la base de données d'elasticsearch pour cela utilisé l'api REST pour indexer le nom des artistes http://urldusite/createdb/createdbelasticsearchartist et http://urldusite/createdb/createdbelasticsearchsong pour indexer le nom des musiques avec le nom de l'artiste et le nom de l'album ainsi nous pourrons chercher une musique par son titre + nom d'album + nom d'artiste.
+7. Remplir la base de données d'elasticsearch pour cela utiliser l'api REST pour indexer les noms des artistes http://urldusite/createdb/createdbelasticsearchartist et http://urldusite/createdb/createdbelasticsearchsong pour indexer le nom des musiques avec les noms des artistes et les noms des albums ainsi nous pourrons chercher une musique par son titre + nom d'album + nom d'artiste.
 
 **Connexion et gestion du serveur wasabi**
 =======
 
 - Vous pouvez vous connecter sur le serveur via putty :  *<a href="http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html ">ici</a>* 
 - Une fois connecté au serveur entrez votre login / mot de passe à demander à l'admin
-- Une fois connecté sur le compte root taper : `sudo su` et `screen -r` (*<a href="https://doc.ubuntu-fr.org/screen" target="_blank">documentation de screen</a>*) afin de restaurer les diverses sessions de ligne de commande
+- Une fois connecté sur le compte taper : `sudo su` et `screen -r` (*<a href="https://doc.ubuntu-fr.org/screen" target="_blank">documentation de screen</a>*) afin de restaurer les diverses sessions de ligne de commande
 - Vous pouvez naviguer entre ces sessions via `ctrl + a + n`
 - Le logiciel `htop` sera lancé (l'équivalent du gestionnaire de tâche windows)
 - Les logs du serveur seront aussi lancé dans une autre session (LOGS obtenus via PM2)
 - Mongodb sera lancé. 
-- D'autres sessions peuvent aussi être lancés mais n'ont pas de réel importance
+- D'autres sessions peuvent aussi être lancés mais n'ont pas de réelle importance
 
 **Comment lancer les bases de données**
 =======
@@ -64,7 +65,7 @@ Il est conseillé de lire ce que fais chaque API avant de l'utiliser notamment c
 
 ## MongoDB  sous Windows
 
-- En console tapez: `mongod` 
+- En console taper: `mongod` 
 
 ## Elasticsearch sous Linux RedHat/Centos 7
 
@@ -93,15 +94,16 @@ Il est conseillé de lire ce que fais chaque API avant de l'utiliser notamment c
  
  2. Rendez-vous dans le répertoire des dumps `(mongo/backup_mongo/)` en ligne de commande
  
- 3. Lancer la commande `mongodump --out dump_x+1` par exemple: si le dernier dump a pour nom `dump_5` lancer la commande `mongodump --out dump_6` pour créer un nouveau dump, un dossier `dump_6` sera crée. Vous pouvez aussi lancer la commande `mongodump` pour créer un dump nommé `dump`. Restaurer la base de données via un dump
+ 3. Lancer la commande `mongodump --out dump_x+1` par exemple: si le dernier dump a pour nom `dump_5` lancer la commande `mongodump --out dump_6` pour créer un nouveau dump, un dossier `dump_6` sera crée. Vous pouvez aussi lancer la commande `mongodump` pour créer un dump nommé `dump`.
  
- 4. Rendez-vous dans le répertoire des dumps `(mongo/backup_mongo/)` en ligne de commande
- 
- 5. (Facultatif) Si vous n'avez rien a garder dans la base actuel vous pouvez la drop :  
- *5.1.* Taper en ligne de commande `mongo wasabi` pour avoir accès a la base de données wasabi  
- *5.2.* Taper en ligne de commande `db.dropDatabase()` afin de supprimer la base de données wasabi  
+ **Restaurer la base de données via un dump :**
+ 1. Rendez-vous dans le répertoire des dumps `(mongo/backup_mongo/)` en ligne de commande
 
- 6. Lancer la commande `mongorestore dump_6` pour restaurer la base de données wasabi (données + index)  
+ 2. (Facultatif) Si vous n'avez rien a garder dans la base actuel vous pouvez la drop :  
+ *2.1.* Taper en ligne de commande `mongo wasabi` pour avoir accès a la base de données wasabi  
+ *2.2.* Taper en ligne de commande `db.dropDatabase()` afin de supprimer la base de données wasabi  
+ 
+ 3. Lancer la commande `mongorestore dump_6` pour restaurer la base de données wasabi (données + index)  
 
 
 
@@ -120,7 +122,7 @@ Une collection artist contenant des documents représentant un artiste avec ses 
 
  3.  [doit être exécuté après 2.] Le fichier `ConstructBDAfterCreate.js` dans mongodb afin de créer :  
  	*3.1.* Une collection artist contenant uniquement les informations relatives à l'artiste (sans le champ album)  
-	*3.2.* Une collection album contenant les informations relatives à l'album  
+	*3.2.* Une collection album contenant les informations relatives à l'album (sans le champ song)  
  	*3.3.* Une collection song contenant les informations relatives à la musique  
  	*3.4.* Les index des collections artist, album et song  
  
@@ -128,17 +130,17 @@ Une collection artist contenant des documents représentant un artiste avec ses 
  
  5.  [doit être exécuté après 4.] Le fichier `RefAlbumInSong.js` permettant d'ajouter une référence d'album dans un document song(~20 minutes) et de créer l'index sur ce champ
  
- 6.  [Aucune restriction sur l'ordre d’exécution] Le fichier `WordCount_Artist.js` faisant le word count des lyrics pour chaque artist (~3 heures d’exécution)(afin de voir les termes les plus utilisés par un artiste)
+ 6.  [doit être exécuté après 5.] Le fichier `WordCount_Artist.js` faisant le word count des lyrics pour chaque artist (~3 heures d’exécution)(afin de voir les termes les plus utilisés par artistes)
  
- 7.  [Aucune restriction sur l'ordre d’exécution] Le fichier `WordCount_Album.js` faisant le word count des lyrics pour chaque album (~10 heures d’exécution) (afin de voir les termes les plus utilisés dans un album)
+ 7.  [doit être exécuté après 5.] Le fichier `WordCount_Album.js` faisant le word count des lyrics pour chaque album (~10 heures d’exécution) (afin de voir les termes les plus utilisés dans un album)
  
- 8.  [Aucune restriction sur l'ordre d’exécution] Le fichier `WordCount_Song.js` faisant le word count des lyrics pour chaque song (afin de voir les termes les plus utilisés dans une musique)
+ 8.  [doit être exécuté après 5.] Le fichier `WordCount_Song.js` faisant le word count des lyrics pour chaque song (afin de voir les termes les plus utilisés dans une musique)
 
  9.  [doit être exécuté après 5.] Le web service `extractdbpedia/artist` permettant d'extraire le RDF des artistes ayant un lien vers Wikipédia. Ce web service envoie des requêtes SPARQL sur DBpédia afin d'obtenir le RDF de l'artiste. Un champ rdf contenant le RDF de l'artiste est ensuite ajouté en base de données (durée: plusieurs heures)
  
- 10.  [doit être exécuté après 9.] Le web service `extractdbpedia/album` permettant d'extraire le RDF des musiques ayant un lien vers Wikipédia. Ce web service envoie des requêtes sparql sur DBpédia afin d'obtenir le RDF de la musique. Un champ rdf contenant le RDF de la musique est ensuite ajouté en base de données (durée: plusieurs heures)
+ 10.  [doit être exécuté après 5.] Le web service `extractdbpedia/album` permettant d'extraire le RDF des musiques ayant un lien vers Wikipédia. Ce web service envoie des requêtes sparql sur DBpédia afin d'obtenir le RDF de la musique. Un champ rdf contenant le RDF de la musique est ensuite ajouté en base de données (durée: plusieurs heures)
  
- 11.  [doit être exécuté après 10.] Le web service `extractdbpedia/song` permettant d'extraire le RDF des albums ayant un lien vers wikipédia. Ce web service envoie des requêtes sparql sur DBpédia afin d'obtenir le RDF de l'album. Un champ rdf contenant le RDF de l'album est ensuite ajouté en base de données (durée: plusieurs heures)
+ 11.  [doit être exécuté après 5.] Le web service `extractdbpedia/song` permettant d'extraire le RDF des albums ayant un lien vers wikipédia. Ce web service envoie des requêtes sparql sur DBpédia afin d'obtenir le RDF de l'album. Un champ rdf contenant le RDF de l'album est ensuite ajouté en base de données (durée: plusieurs heures)
  
  12.  [doit être exécuté après 9.] le web service `extractdbpedia/createfields/artist` transforme les propriétés de notre champ RDF en propriétés dans notre base de données
  
@@ -148,7 +150,7 @@ Une collection artist contenant des documents représentant un artiste avec ses 
  
  15.  [doit être exécuté après 14.]le fichier `CreateIndexAfterDBpediaExtraction` ce fichier permet de créer les index des nouveaux champs insérés dans la base de données
  
- 16.  [doit être exécuté après 15.] le fichier `Create_IsClassic_Field` permettant grâce aux subjects des musiques récupérées sur DBpédia de savoir si la musique est un classique
+ 16.  [doit être exécuté après 15.] le fichier `Create_IsClassic_Field` permettant grâce aux subjects des musiques récupérées du rdf de savoir si la musique est un classique
  
 
 #### mongo/sparql/
@@ -184,7 +186,7 @@ Une collection artist contenant des documents représentant un artiste avec ses 
 ## routes/
 	Contient la définition des routes supportées par l'application. C'est ici que se situe l'API REST  
 #### routes/conf/  
-	conf.json : Fichier de configuration permettant  de ne pas réécrire les données redondante dans l'application  
+	conf.json : Fichier de configuration permettant  de ne pas réécrire les données redondantes dans l'application  
 #### routes/handler/  
 	xxxx.js : Contient la logique applicative à appliquer lors de requêtes sur les routes.   
 	
