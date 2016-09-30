@@ -888,7 +888,7 @@
 <table>
 	<tbody>
 		<tr>
-			<th>TODO</th><td style="color:red;">Cette API utilise d'autres API de WASABI vous devez donc commenter `app.use(basicAuth(login.login, login.password));` dans app.js afin de ne pas être bloqué par l'authentification
+			<th>TODO</th><td style="color:red;">Cette API utilise d'autres API de WASABI vous devez donc commenter<pre><code>app.use(basicAuth(login.login, login.password));</code></pre> dans <pre><code>app.js</code></pre> afin de ne pas être bloqué par l'authentification
 			</td>
 		</tr>
 		<tr>
