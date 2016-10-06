@@ -90,14 +90,15 @@ router.get('/artist/:artistName',function(req, res){
 
 //Cette fonction met à jour les informations existantes dans la collection song
 router.get('/song',function(req, res){
-    var db = req.db, skip = 0, limit = 1000, req = {};
+    var db = req.db, skip = 0, limit = 1000, query = {};
     this.console.log("dedans /updatedb/song");
-    db.collection(COLLECTIONSONG).find(req).count(function(err, nbSong) {
+    db.collection(COLLECTIONSONG).find(query).count(function(err, nbSong) {
         console.log('There are ' + nbSong + ' song in the database');
         (function fetchSong(skip,nbSong){
+            var nbSongUpdated = 0;
             if(skip<nbSong){
                 //on récupére les musiques
-                db.collection(COLLECTIONSONG).find(req).skip(skip).limit(limit).toArray(function(err,result){
+                db.collection(COLLECTIONSONG).find(query).skip(skip).limit(limit).toArray(function(err,result){
                     var i = 0;
                     //on itére sur les artistes récupérés avec une fonction récursive
                     (function loop(i,result){
@@ -112,31 +113,33 @@ router.get('/song',function(req, res){
                                 delete objSong._id;
                                 //On met à jour l'artist avec les nouvelles propriétés
                                 db.collection(COLLECTIONSONG).update( { _id: new ObjectId(idSong) },{ $set: objSong }, function(err) {
+                                    nbSongUpdated++;
                                     if (err) throw err;
                                     console.log(i+" => Updated => "+objSong.name+" : "+objSong.titre+"       "+objSong.urlSong);
+                                    if(nbSongUpdated == limit){
+                                        skip += limit;
+                                        console.log("\n\n\n\n !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! SKIP = "+skip+"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n\n\n\n");
+                                        fetchSong(skip,nbSong);
+                                    }
                                 });
                             }).catch(function() {
-                                console.log("==================================================ERREUR : REJECT==================================================");
-                                console.log(i);
+                                // console.log("==================================================ERREUR : REJECT==================================================");
+                                nbSongUpdated++;
+                                if(nbSongUpdated == limit){
+                                    skip += limit;
+                                    console.log("\n\n\n\n !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! SKIP = "+skip+"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n\n\n\n");
+                                    fetchSong(skip,nbSong);
+                                }
                             });
                             setTimeout(function() {
                                 i++;
                                 loop(i,result);
-                            },5);
-                        }
-                        else{
-                            skip += limit;
-                            console.log("\n\n\n\n !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! SKIP = "+skip+"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n\n\n\n");
-                            setTimeout(function(){
-                                fetchSong(skip,nbSong);
-                            },6000);
+                            },55);
                         }
                     })(i,result);
                 });
             }
-            else{
-                console.log("MISE A JOUR TERMINEE");
-            }
+            else{ console.log("MISE A JOUR TERMINEE");}
         })(skip,nbSong);
         res.send("OK");
     });

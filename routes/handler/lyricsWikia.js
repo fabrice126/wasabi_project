@@ -238,13 +238,14 @@ var getInfosFromPageAlbum = function(objArtist){
  */
 var getInfosFromPageSong = function(objSong){
     var promise = new Promise(function(resolve, reject) {
-        request({url: objSong.urlSong,method: "GET",timeout: 10000}, function(err, resp, body){
+        request({url: objSong.urlSong,method: "GET",timeout: 200000}, function(err, resp, body){
             if (!err && resp.statusCode == 200) {
                 objSong = extractInfosSong(objSong,body);
                 resolve(objSong);
             }
             else{
-                console.log(" => REJECTED => "+objSong.name+" : "+objSong.titre+"       "+objSong.urlSong);
+                if(typeof resp != 'undefined')
+                    console.log("REJECT ===========> "+resp.statusCode+" <=========== REJECT");
                 reject(objSong);
             }
         });
@@ -267,6 +268,34 @@ var extractInfosSong = function(objSong, body){
     var srcYoutube = $("#mw-content-text .youtube").text();
     objSong.urlYoutube = srcYoutube != null ? srcYoutube.split('|')[0] : ""; // srcYoutube sera de ce style : wG5ilt3Hrt4|209|252
     objSong.urlWikipedia = $("#mw-content-text div:contains('Wikipedia') div>i>b>a.extiw").attr('href') != null ? $("#mw-content-text div:contains('Wikipedia') div>i>b>a.extiw").attr('href') : "";
+    var tSelector = ['iTunes','Amazon','GoEar','Spotify','allmusic','MusicBrainz','Last.fm','Hype Machine','Pandora'];
+    for(var i = 0 ;i<tSelector.length;i++){
+        var selector = ".plainlinks:contains("+tSelector[i]+") a";
+        //Si la taille est > 0 alors ce n'est pas un lien vers une page d'un des sites ci-dessous 
+        var size = $(selector).length-1;
+        if(size == 0){
+            switch (tSelector[i]) {
+                case "iTunes":
+                    objSong.urlITunes = $(selector)[size].attribs.href; break;
+                case "Amazon":
+                    objSong.urlAmazon = $(selector)[size].attribs.href; break;
+                case "GoEar":
+                    objSong.urlGoEar = $(selector)[size].attribs.href; break;
+                case "Spotify":
+                    objSong.urlSpotify = $(selector)[size].attribs.href; break;
+                case "allmusic":
+                    objSong.urlAllmusic = $(selector)[size].attribs.href; break;
+                case "MusicBrainz":
+                    objSong.urlMusicBrainz = $(selector)[size].attribs.href; break;
+                case "Last.fm":
+                    objSong.urlLastFm = $(selector)[size].attribs.href; break;            
+                case "Hype Machine":
+                    objSong.urlHypeMachine = $(selector)[size].attribs.href; break;            
+                case "Pandora":
+                    objSong.urlPandora = $(selector)[size].attribs.href; break;
+            }
+        }
+    }
     return objSong;
 };
 /**
