@@ -83,6 +83,9 @@
                 background-color: inherit;
                 text-decoration:none;
             }
+            .urlMargin{
+                margin-right: 5px;
+            }
         </style>
         <paper-material elevation="1">
             <!--permet de lancer automatiquement la requête get chargeant la page-->
@@ -135,6 +138,37 @@
                         <template is="dom-if" if="{{artist.albums.songs.urlYoutube.length}}">
                             <google-youtube video-id="{{artist.albums.songs.urlYoutube}}" height="270px" width="480px"></google-youtube>
                         </template>
+
+
+                        <template is="dom-if" if="{{artist.albums.songs.urlSpotify.length}}">
+                            <a class="urlMargin" href="{{artist.albums.songs.urlSpotify}}">Spotify</a>
+                        </template>
+                        <template is="dom-if" if="{{artist.albums.songs.urlMusicBrainz.length}}">
+                            <a class="urlMargin" href="{{artist.albums.songs.urlMusicBrainz}}">MusicBrainz</a>
+                        </template>
+                        <template is="dom-if" if="{{artist.albums.songs.urlITunes.length}}">
+                            <a class="urlMargin" href="{{artist.albums.songs.urlITunes}}">iTunes</a>
+                        </template>
+                        <template is="dom-if" if="{{artist.albums.songs.urlAllmusic.length}}">
+                            <a class="urlMargin" href="{{artist.albums.songs.urlAllmusic}}">Allmusic</a>
+                        </template>
+                        <template is="dom-if" if="{{artist.albums.songs.urlLastFm.length}}">
+                            <a class="urlMargin" href="{{artist.albums.songs.urlLastFm}}">LastFm</a>
+                        </template>
+                        <template is="dom-if" if="{{artist.albums.songs.urlPandora.length}}">
+                            <a class="urlMargin" href="{{artist.albums.songs.urlPandora}}">Pandora</a>
+                        </template>
+                        <template is="dom-if" if="{{artist.albums.songs.urlAmazon.length}}">
+                            <a class="urlMargin" href="{{artist.albums.songs.urlAmazon}}">Amazon</a>
+                        </template>
+                        <template is="dom-if" if="{{artist.albums.songs.urlGoEar.length}}">
+                            <a class="urlMargin" href="{{artist.albums.songs.urlGoEar}}">GoEar</a>
+                        </template>
+                        <template is="dom-if" if="{{artist.albums.songs.urlHypeMachine.length}}">
+                            <a class="urlMargin" href="{{artist.albums.songs.urlHypeMachine}}">Hype Machine</a>
+                        </template>
+
+
                         <template is="dom-if" if="{{artist.albums.songs.runtime.length}}">
                             <article>Runtime: {{artist.albums.songs.runtime}}</article>
                         </template>
@@ -145,6 +179,11 @@
                                 </template>
                             </article>
                         </template>
+
+
+
+
+
                         <template is="dom-if" if="{{artist.albums.songs.genre.length}}">
                             <article>
                                 Genre:
