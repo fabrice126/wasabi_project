@@ -23,6 +23,7 @@
     "languagedetect": "^1.1.1",
     "mkdirp": "^0.5.1",
     "mongodb": "^2.1.0",
+    "mongoose": "^4.8.1",
     "mongoskin": "^2.0.3",
     "morgan": "~1.6.1",
     "q": "^1.4.1",
