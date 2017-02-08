@@ -1,15 +1,16 @@
-var express             = require('express');
-var router              = express.Router();
-const config            = require('./conf/conf.json');
-const lyricsWikia       = require('./handler/lyricsWikia.js');
-const utilHandler       = require('./handler/utilHandler.js');
-const wordCountHandler  = require('./handler/wordCountHandler.js');
-const ObjectId          = require('mongoskin').ObjectID;
-const fs                = require('fs');
-const os                = require('os');
-const COLLECTIONARTIST  = config.database.collection_artist;
-const COLLECTIONALBUM   = config.database.collection_album;
-const COLLECTIONSONG    = config.database.collection_song;
+import express from 'express';
+import config from './conf/conf.json';
+import lyricsWikia from './handler/lyricsWikia.js';
+import utilHandler from './handler/utilHandler.js';
+import wordCountHandler from './handler/wordCountHandler.js';
+import {ObjectId} from 'mongoskin';
+import fs from 'fs';
+import os from 'os';
+const router = express.Router();
+const COLLECTIONARTIST = config.database.collection_artist;
+const COLLECTIONALBUM = config.database.collection_album;
+const COLLECTIONSONG = config.database.collection_song;
+
 
 
 //Cette fonction met à jour les informations existantes dans la collection artist
@@ -300,4 +301,4 @@ router.get('/song/isclassic/:_id',function(req, res){
 
 
 
-module.exports = router;
+export default router;

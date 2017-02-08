@@ -1,17 +1,18 @@
-var express         = require('express');
-var router          = express.Router();
-var request         = require('request');
-var ObjectId        = require('mongoskin').ObjectID;
-var lyricsWikia     = require('./handler/lyricsWikia.js');
-var utilHandler     = require('./handler/utilHandler.js');
-var config          = require('./conf/conf.json');
-var elasticSearchHandler = require('./handler/elasticSearchHandler.js');
-const fs            = require('fs');
-var mkdirp          = require('mkdirp');
+import express from 'express';
+import request from 'request';
+import lyricsWikia from './handler/lyricsWikia.js';
+import utilHandler from './handler/utilHandler.js';
+import config from './conf/conf.json';
+import elasticSearchHandler from './handler/elasticSearchHandler.js';
+import fs from 'fs';
+import mkdirp from 'mkdirp';
+import Artist from './model/Artist';
+import {ObjectId} from 'mongoskin';
+
+const router          = express.Router();
 const COLLECTIONARTIST  = config.database.collection_artist;
 const COLLECTIONALBUM   = config.database.collection_album;
 const COLLECTIONSONG    = config.database.collection_song;
-var Artist = require('./model/Artist');
 
 //createdb, permet de créer entierement la base de données
 router.get('/',function(req, res){
@@ -143,4 +144,4 @@ router.get('*', function(req, res){
     res.sendFile(path.join(__dirname ,'public',  'index.html'));
 });
 
-module.exports = router;
+export default router;

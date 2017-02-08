@@ -1,12 +1,11 @@
-var request = require('request');
+import request from 'request';
 
-
-var addDocumentToElasticSearch = function(req, indexName, index_type, body,id){
+var addDocumentToElasticSearch = function (req, indexName, index_type, body, id) {
     console.log("addDocumentToElasticSearch");
     return req.elasticsearchClient.index({
         index: indexName,
         type: index_type,
-        id:id,
+        id: id,
         body: body
     });
 };
@@ -16,12 +15,18 @@ var addDocumentToElasticSearch = function(req, indexName, index_type, body,id){
  * @param url
  * @returns {Promise}
  */
-var deleteElasticSearchIndex = function(url){
-    return new Promise(function(resolve, reject) {
-        request({ url: url, method: 'DELETE'}, function(err, resp, body){
+var deleteElasticSearchIndex = function (url) {
+    return new Promise(function (resolve, reject) {
+        request({
+            url: url,
+            method: 'DELETE'
+        }, function (err, resp, body) {
             //en cas de succes ou d'erreur on resolve()
-            if (!err && resp.statusCode == 200) {resolve();}
-            else{resolve();}
+            if (!err && resp.statusCode == 200) {
+                resolve();
+            } else {
+                resolve();
+            }
         });
     })
 };
@@ -31,31 +36,38 @@ var deleteElasticSearchIndex = function(url){
  * @param mappingObj
  * @returns {Promise}
  */
-var createElasticSearchIndex = function(url,mappingObj){
+var createElasticSearchIndex = function (url, mappingObj) {
     var setting = {
         "settings": {
             "analysis": {
                 "analyzer": {
                     "folding": {
                         "tokenizer": "standard",
-                        "filter":  ["lowercase","asciifolding","my_word_delimiter"]
+                        "filter": ["lowercase", "asciifolding", "my_word_delimiter"]
                     }
                 },
-                "filter" : {
-                    "my_word_delimiter" : {
-                        "type" : "word_delimiter",
-                        "catenate_words" : true,
-                        "preserve_original" : true
+                "filter": {
+                    "my_word_delimiter": {
+                        "type": "word_delimiter",
+                        "catenate_words": true,
+                        "preserve_original": true
                     }
                 }
             }
         },
         "mappings": mappingObj
     }
-    return new Promise(function(resolve, reject) {
-        request({url: url, method: 'PUT',json:setting}, function (err, resp, body) {
-            if (!err && resp.statusCode == 200) { resolve(); }
-            else {reject();}
+    return new Promise(function (resolve, reject) {
+        request({
+            url: url,
+            method: 'PUT',
+            json: setting
+        }, function (err, resp, body) {
+            if (!err && resp.statusCode == 200) {
+                resolve();
+            } else {
+                reject();
+            }
         });
     });
 };
@@ -65,11 +77,18 @@ var createElasticSearchIndex = function(url,mappingObj){
  * @param indexMappingObj
  * @returns {Promise}
  */
-var createMappingElasticSearchIndex = function(url,indexMappingObj){
-    return new Promise(function(resolve, reject) {
-        request({ url: url, method: 'PUT', json:indexMappingObj}, function(err, resp, body){
-            if (!err && resp.statusCode == 200) {resolve();}
-            else{reject();}
+var createMappingElasticSearchIndex = function (url, indexMappingObj) {
+    return new Promise(function (resolve, reject) {
+        request({
+            url: url,
+            method: 'PUT',
+            json: indexMappingObj
+        }, function (err, resp, body) {
+            if (!err && resp.statusCode == 200) {
+                resolve();
+            } else {
+                reject();
+            }
         });
     });
 };
@@ -81,29 +100,39 @@ var createMappingElasticSearchIndex = function(url,indexMappingObj){
  * @param indexName
  * @param typeName
  */
-var insertBulkData = function(req,collectioName,projectObj,indexName,typeName){
+var insertBulkData = function (req, collectioName, projectObj, indexName, typeName) {
     var elasticsearchClient = req.elasticsearchClient;
     var db = req.db;
     var skip = 0;
     var limit = 10000;
-    (function recursivePost(skip){
-        console.log("Traitement en cours : "+skip);
-        db.collection(collectioName).find({},projectObj).skip(skip).limit(limit).toArray(function(err,obj){
+    (function recursivePost(skip) {
+        console.log("Traitement en cours : " + skip);
+        db.collection(collectioName).find({}, projectObj).skip(skip).limit(limit).toArray(function (err, obj) {
             //On insérera l'enregistrement dans cet index
             var bulk_request = [];
             for (var i = 0; i < obj.length; i++) {
                 var id = obj[i]._id;
                 delete obj[i]._id;
-                bulk_request.push({index: {_index: indexName, _type: typeName,_id:id}});// Insert index
-                bulk_request.push(obj[i]);// Insert data
+                bulk_request.push({
+                    index: {
+                        _index: indexName,
+                        _type: typeName,
+                        _id: id
+                    }
+                }); // Insert index
+                bulk_request.push(obj[i]); // Insert data
             }
-            elasticsearchClient.bulk({body : bulk_request}, function (err, resp) {
-                if(err) {console.log(err);}
+            elasticsearchClient.bulk({
+                body: bulk_request
+            }, function (err, resp) {
+                if (err) {
+                    console.log(err);
+                }
             });
-            skip+= limit;
-            if(obj.length !=limit) {
+            skip += limit;
+            if (obj.length != limit) {
                 console.log("FIN DU TRAITEMENT !");
-                console.log(indexName+" Crée");
+                console.log(indexName + " Crée");
                 return;
             }
             recursivePost(skip);
@@ -117,7 +146,7 @@ var insertBulkData = function(req,collectioName,projectObj,indexName,typeName){
  * @param query
  * @returns {XML|string}
  */
-var escapeElasticSearch = function(query){
+var escapeElasticSearch = function (query) {
     return query
         .replace(/[\*\+\-=~><\"\?^\${}\(\)\:\!\/[\]]/g, '\\$&') // replace single character special characters
         .replace(/\|\|/g, '\\||') // replace ||
@@ -127,9 +156,9 @@ var escapeElasticSearch = function(query){
         .replace(/NOT/g, '\\N\\O\\T'); // replace NOT
 };
 
-exports.deleteElasticSearchIndex        = deleteElasticSearchIndex;
-exports.createElasticSearchIndex        = createElasticSearchIndex;
+exports.deleteElasticSearchIndex = deleteElasticSearchIndex;
+exports.createElasticSearchIndex = createElasticSearchIndex;
 exports.createMappingElasticSearchIndex = createMappingElasticSearchIndex;
-exports.insertBulkData                  = insertBulkData;
-exports.escapeElasticSearch             = escapeElasticSearch;
-exports.addDocumentToElasticSearch      = addDocumentToElasticSearch;
+exports.insertBulkData = insertBulkData;
+exports.escapeElasticSearch = escapeElasticSearch;
+exports.addDocumentToElasticSearch = addDocumentToElasticSearch;

@@ -1,12 +1,12 @@
-var request         = require('request');
-var LanguageDetect  = require('languagedetect');
-var redirect_request= require('../sparql_request/redirect_request.js');
-var construct_endpoint = require('../sparql_request/construct_endpoint.js');
-var infos_artist    = require('../sparql_request/infos_artist.js');
-var infos_album     = require('../sparql_request/infos_album.js');
-var infos_song      = require('../sparql_request/infos_song.js');
-const parseString         = require('xml2js').parseString;
-const ObjectId            = require('mongoskin').ObjectID;
+import request from 'request';
+import LanguageDetect from 'languagedetect';
+import redirect_request from '../sparql_request/redirect_request.js';
+import construct_endpoint from '../sparql_request/construct_endpoint.js';
+import infos_artist from '../sparql_request/infos_artist.js';
+import infos_album from '../sparql_request/infos_album.js';
+import infos_song from '../sparql_request/infos_song.js';
+import {parseString} from 'xml2js';
+import {ObjectId} from 'mongoskin';
 
 var lngDetector = new LanguageDetect();
 

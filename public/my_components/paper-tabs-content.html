@@ -4,33 +4,34 @@
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../bower_components/paper-fab/paper-fab.html">
-
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
-
-    <dom-module id="paper-tabs-content">
-       <template>
+<dom-module id="paper-tabs-content">
+    <template>
         <style>
-            paper-tab{
-                --paper-tab-ink :#E0E0E0;
+            paper-tab {
+                --paper-tab-ink: #E0E0E0;
             }
-            paper-tab:hover{
+            
+            paper-tab:hover {
                 background-color: #f2f2f2;
             }
+            
             paper-tabs {
-                --paper-tabs-selection-bar-color:#3f51b5;
+                --paper-tabs-selection-bar-color: #3f51b5;
             }
             
             paper-button:hover {
-              @apply(--shadow-elevation-6dp);
+                @apply(--shadow-elevation-6dp);
             }
-            paper-button{
+            
+            paper-button {
                 -o-transition: all 1s linear;
                 -moz-transition: all 1s linear;
                 -khtml-transition: all 1s linear;
                 -webkit-transition: all 1s linear;
                 -ms-transition: all 1s linear;
-                transition: all 1s linear; 
+                transition: all 1s linear;
                 width: 300px;
                 height: 60px;
                 background: #F2F2F2;
@@ -38,352 +39,356 @@
                 display: inline-table;
                 padding-top: 18px;
             }
-            #loader{
+            
+            #loader {
                 display: block;
                 text-align: center;
                 margin-top: 1%;
-                
-            }
-          .flex-wrap {
-            @apply(--layout-horizontal);
-            @apply(--layout-wrap);
             }
             
-            [id^=alphabet_]>li{
+            .flex-wrap {
+                @apply(--layout-horizontal);
+                @apply(--layout-wrap);
+            }
+            
+            [id^=alphabet_]>li {
                 padding-left: 0.2%;
                 padding-right: 0.2%;
                 font-size: 20px;
                 display: inline-block;
             }
-            [id^=alphabet_]>li>a{
+            
+            [id^=alphabet_]>li>a {
                 color: #3f51b5;
                 text-decoration: none;
             }
-            [id^=alphabet_]{
+            
+            [id^=alphabet_] {
                 list-style: none;
                 display: inline-block;
-                width:100%;
+                width: 100%;
                 padding-left: 0px;
             }
-            #nav_alphabet{
+            
+            #nav_alphabet {
                 text-align: center;
             }
-            #nav_sub_alphabet{
+            
+            #nav_sub_alphabet {
                 text-align: center;
             }
-            [id^=alphabet_sub]>li{
+            
+            [id^=alphabet_sub]>li {
                 padding-left: 0.2%;
                 padding-right: 0.2%;
                 font-size: 20px;
                 display: inline-block;
             }
-            [id^=alphabet_sub]>li>a{
+            
+            [id^=alphabet_sub]>li>a {
                 color: #3f51b5;
                 text-decoration: none;
             }
-            [id^=alphabet_sub]{
+            
+            [id^=alphabet_sub] {
                 list-style: none;
                 display: inline-block;
-                width:100%;
+                width: 100%;
                 padding-left: 0px;
             }
+            
             paper-fab.blue {
                 --paper-fab-background: #3F51B5;
                 --paper-fab-keyboard-focus-background: var(--paper-light-blue-900);
             }
-            .previousPage{
+            
+            .previousPage {
                 display: inline-flex;
                 position: relative;
                 left: -42%;
                 margin: 1%;
             }
-            .nextPage{
+            
+            .nextPage {
                 display: inline-flex;
                 position: relative;
                 left: 42%;
                 margin: 1%;
             }
-            #paginationBottom{
+            
+            #paginationBottom {
                 margin-bottom: 5%;
             }
-            .listData{
+            
+            .listData {
                 padding-bottom: 2%;
             }
         </style>
-            <!--Chargement en ajax du contenu -->
-            
-            <template is="dom-if" if="{{_checkUrlParams(lettre,numPage)}}">
-                <iron-ajax id="get_content" url="/search/categorie/{{categorie}}/lettre/{{lettre}}/page/{{numPage}}" last-response="{{data}}" auto handleAs="json"> </iron-ajax>
-            </template>
-            <iron-ajax id="get_db_info" url="/search/dbinfo" last-response="{{db_info}}" auto handleAs="json"> </iron-ajax>
-            <iron-ajax id="get_db_info_count" url="/search/count/{{categorie}}/{{lettre}}" last-response="{{dbcount}}" auto handleAs="json"> </iron-ajax>
-
-           <!-- Génération des listes de catégories -->
-            <paper-material elevation="1">
-                <paper-tabs id="paperTabsCategorie" selected={{idxCurrentTab}}>
+        <!--Chargement en ajax du contenu -->
+        <template is="dom-if" if="{{_checkUrlParams(lettre,numPage)}}">
+            <iron-ajax id="get_content" url="/search/categorie/{{categorie}}/lettre/{{lettre}}/page/{{numPage}}" last-response="{{data}}"
+                auto handleAs="json"> </iron-ajax>
+        </template>
+        <iron-ajax id="get_db_info" url="/search/dbinfo" last-response="{{db_info}}" auto handleAs="json"> </iron-ajax>
+        <iron-ajax id="get_db_info_count" url="/search/count/{{categorie}}/{{lettre}}" last-response="{{dbcount}}" auto handleAs="json">
+        </iron-ajax>
+        <!-- Génération des listes de catégories -->
+        <paper-material elevation="1">
+            <paper-tabs id="paperTabsCategorie" selected={{idxCurrentTab}}>
+                <template is="dom-repeat" items="{{categories}}" as="categorie">
+                    <paper-tab id="categorie_{{categorie}}">{{categorie}}</paper-tab>
+                </template>
+            </paper-tabs>
+        </paper-material>
+        <!--Génération de l'alphabet-->
+        <paper-material elevation="1">
+            <nav id="nav_alphabet">
+                <iron-pages id="iron_alphabet" selected="0">
                     <template is="dom-repeat" items="{{categories}}" as="categorie">
-                        <paper-tab id="categorie_{{categorie}}" >{{categorie}}</paper-tab>
-                    </template>
-                </paper-tabs>
-            </paper-material>
-            <!--Génération de l'alphabet-->
-            <paper-material elevation="1">
-                <nav id="nav_alphabet">
-                    <iron-pages id="iron_alphabet" selected="0">  
-                        <template is="dom-repeat" items="{{categories}}" as="categorie">
-                            <ul id="alphabet_{{categorie}}">
+                        <ul id="alphabet_{{categorie}}">
                             <template is="dom-repeat" items="{{alphabet}}" as="lettre">
-                                <li>  
+                                <li>
                                     <a href="#/search/categorie/{{categorie}}/lettre/{{lettre}}/page/0">{{lettre}} </a>
                                 </li>
                             </template>
-                            </ul>
-                        </template>
-                                                            
-                        <template is="dom-if" if="{{_countNbArtist(idxCurrentTab)}}">
-                                Nous avons actuellement {{ db_info.nbArtist}} artistes !
-                        </template>
-                        <template is="dom-if" if="{{_countNbAlbum(idxCurrentTab)}}">
-                                Nous avons actuellement {{db_info.nbAlbum}} albums !
-                        </template>                      
-                        <template is="dom-if" if="{{_countNbSong(idxCurrentTab)}}">
-                               Nous avons actuellement {{db_info.nbSong}} musiques !
-                        </template>
-                    </iron-pages>
-                </nav>
-            </paper-material>
-            
-            
-            <!-- Chargement des liens -->
-            <template is="dom-if" if="{{_isData(data)}}">
-                <div id="loader">
-                        <paper-material elevation="1">
-                            <a class="previousPage" href="#/search/categorie/{{categorie}}/lettre/{{lettre}}/page/{{_hasPrevious(numPage)}}" tabindex="-1">
-                                <paper-fab mini  icon="chevron-left" title="previous" class="blue"></paper-fab>
-                            </a>
-                            <a class="nextPage" href="#/search/categorie/{{categorie}}/lettre/{{lettre}}/page/{{_hasNext(numPage,data)}}" tabindex="-1">
-                                <paper-fab  mini icon="chevron-right" title="next" class="blue"></paper-fab>
-                            </a>
-                            <nav id="nav_sub_alphabet">
-                                <ul id="alphabet_sub{{categorie}}">
-                                    <template is="dom-repeat" items="{{alphabet}}" as="lettreIdx" index-as="idx">
-                                        <li>  
-                                            <a href="#/search/categorie/{{categorie}}/lettre/{{currentLetter(lettre)}}{{lettreIdx}}/page/0">{{currentLetter(lettre)}}{{lettreIdx}}</a>
-                                        </li>
-                                    </template>
-                                </ul>
-                            </nav>
-                        </paper-material>
-                    <!-- Affichage des artists -->
-                     <template is="dom-if" if="{{_isArtist(data)}}">
-                        <paper-material class="listData" elevation="1">
-                            <div>Il y a actuellement {{_getNbCount(dbcount)}} artists commençant par la lettre {{lettre}}</div>
-                             <template class="flex-wrap" is="dom-repeat" items="{{data.artists}}" as="artist">
-                                 <paper-button on-tap='doLoadCategorie' id="#/search/artist/{{_encodeUri(artist.name)}}" raised>
-                                     {{artist.name}}
-                                 </paper-button>
-                             </template>
-                         </paper-material>
+                        </ul>
                     </template>
-                    <!-- Affichage des albums -->
-                    <template is="dom-if" if="{{_isAlbum(data)}}">
-                        <paper-material class="listData" elevation="1">
-                            <div>Il y a actuellement {{_getNbCount(dbcount)}} albums commençant par la lettre {{lettre}}</div>
-                            <template class="flex-wrap" is="dom-repeat" items="{{data.albums}}" as="album">
-                                 <paper-button on-tap='doLoadCategorie' id="#/search/artist/{{_encodeUri(album.name)}}/album/{{_encodeUri(album.titleAlbum)}}" raised>
-                                     {{album.titleAlbum}}<br>
-                                     de: {{album.name}}
-                                 </paper-button>
+                    <template is="dom-if" if="{{_countNbArtist(idxCurrentTab)}}">
+                        Nous avons actuellement {{ db_info.nbArtist}} artistes !
+                    </template>
+                    <template is="dom-if" if="{{_countNbAlbum(idxCurrentTab)}}">
+                        Nous avons actuellement {{db_info.nbAlbum}} albums !
+                    </template>
+                    <template is="dom-if" if="{{_countNbSong(idxCurrentTab)}}">
+                        Nous avons actuellement {{db_info.nbSong}} musiques !
+                    </template>
+                </iron-pages>
+            </nav>
+        </paper-material>
+        <!-- Chargement des liens -->
+        <template is="dom-if" if="{{_isData(data)}}">
+            <div id="loader">
+                <paper-material elevation="1">
+                    <a class="previousPage" href="#/search/categorie/{{categorie}}/lettre/{{lettre}}/page/{{_hasPrevious(numPage)}}" tabindex="-1">
+                        <paper-fab mini icon="chevron-left" title="previous" class="blue"></paper-fab>
+                    </a>
+                    <a class="nextPage" href="#/search/categorie/{{categorie}}/lettre/{{lettre}}/page/{{_hasNext(numPage,data)}}" tabindex="-1">
+                        <paper-fab mini icon="chevron-right" title="next" class="blue"></paper-fab>
+                    </a>
+                    <nav id="nav_sub_alphabet">
+                        <ul id="alphabet_sub{{categorie}}">
+                            <template is="dom-repeat" items="{{alphabet}}" as="lettreIdx" index-as="idx">
+                                <li>
+                                    <a href="#/search/categorie/{{categorie}}/lettre/{{currentLetter(lettre)}}{{lettreIdx}}/page/0">{{currentLetter(lettre)}}{{lettreIdx}}</a>
+                                </li>
                             </template>
-                         </paper-material>
-                    </template>
-                    <!-- Affichage des songs -->
-
-                    <template is="dom-if" if="{{_isSong(data)}}">
-                       <paper-material class="listData" elevation="1">
-                           <div>Il y a actuellement {{_getNbCount(dbcount)}} musiques commençant par la lettre {{lettre}}</div>
-                            <template class="flex-wrap" is="dom-repeat" items="{{data.songs}}" as="song">
-                                 <paper-button on-tap='doLoadCategorie' id="#/search/artist/{{_encodeUri(song.name)}}/album/{{_encodeUri(song.albumTitre)}}/song/{{_encodeUri(song.titleSong)}}" raised>
-                                    {{song.titleSong}}<br>
-                                    de: {{song.name}}
-                                 </paper-button>
-                            </template>
-                        </paper-material>
-                    </template>
-                    <paper-material id="paginationBottom" elevation="1">
-                        <a class="previousPage" href="#/search/categorie/{{categorie}}/lettre/{{lettre}}/page/{{_hasPrevious(numPage)}}" tabindex="-1">
-                            <paper-fab mini icon="chevron-left" title="previous" class="blue"></paper-fab>
-                        </a>
-                        <a class="nextPage" href="#/search/categorie/{{categorie}}/lettre/{{lettre}}/page/{{_hasNext(numPage,data)}}" tabindex="-1">
-                            <paper-fab  mini icon="chevron-right" title="next" class="blue"></paper-fab>
-                        </a>
+                        </ul>
+                    </nav>
+                </paper-material>
+                <!-- Affichage des artists -->
+                <template is="dom-if" if="{{_isArtist(data)}}">
+                    <paper-material class="listData" elevation="1">
+                        <div>Il y a actuellement {{_getNbCount(dbcount)}} artists commençant par la lettre {{lettre}}</div>
+                        <template class="flex-wrap" is="dom-repeat" items="{{data.artists}}" as="artist">
+                            <paper-button on-tap='doLoadCategorie' id="#/search/artist/{{_encodeUri(artist.name)}}" raised>
+                                {{artist.name}}
+                            </paper-button>
+                        </template>
                     </paper-material>
-                </div>
-            </template>
+                </template>
+                <!-- Affichage des albums -->
+                <template is="dom-if" if="{{_isAlbum(data)}}">
+                    <paper-material class="listData" elevation="1">
+                        <div>Il y a actuellement {{_getNbCount(dbcount)}} albums commençant par la lettre {{lettre}}</div>
+                        <template class="flex-wrap" is="dom-repeat" items="{{data.albums}}" as="album">
+                            <paper-button on-tap='doLoadCategorie' id="#/search/artist/{{_encodeUri(album.name)}}/album/{{_encodeUri(album.titleAlbum)}}"
+                                raised>
+                                {{album.titleAlbum}}<br> de: {{album.name}}
+                                </paper-button>
+                        </template>
+                    </paper-material>
+                </template>
+                <!-- Affichage des songs -->
+                <template is="dom-if" if="{{_isSong(data)}}">
+                    <paper-material class="listData" elevation="1">
+                        <div>Il y a actuellement {{_getNbCount(dbcount)}} musiques commençant par la lettre {{lettre}}</div>
+                        <template class="flex-wrap" is="dom-repeat" items="{{data.songs}}" as="song">
+                            <paper-button on-tap='doLoadCategorie' id="#/search/artist/{{_encodeUri(song.name)}}/album/{{_encodeUri(song.albumTitre)}}/song/{{_encodeUri(song.titleSong)}}"
+                                raised>
+                                {{song.titleSong}}<br> de: {{song.name}}
+                                </paper-button>
+                        </template>
+                    </paper-material>
+                </template>
+                <paper-material id="paginationBottom" elevation="1">
+                    <a class="previousPage" href="#/search/categorie/{{categorie}}/lettre/{{lettre}}/page/{{_hasPrevious(numPage)}}" tabindex="-1">
+                        <paper-fab mini icon="chevron-left" title="previous" class="blue"></paper-fab>
+                    </a>
+                    <a class="nextPage" href="#/search/categorie/{{categorie}}/lettre/{{lettre}}/page/{{_hasNext(numPage,data)}}" tabindex="-1">
+                        <paper-fab mini icon="chevron-right" title="next" class="blue"></paper-fab>
+                    </a>
+                </paper-material>
+            </div>
         </template>
+    </template>
+    <script>
+        // element registration
+        Polymer({
+            is: "paper-tabs-content",
+            // add properties and methods on the element's prototype
+            properties: {
+                categories: {
+                    type: Array,
+                    value: ['Artists', 'Albums', 'Songs', 'Label']
+                },
+                alphabet: {
+                    type: Array,
+                    value: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q',
+                        'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
+                    ]
+                },
+                idxCurrentTab: {
+                    type: Number,
+                    value: 0,
+                },
+                //Permet de calculer le nombre moyen d'élement par page ce nombre change c'est qu'on arrive à la fin d'une catégorie et qu'on doit hide le boutton next
+                nbElement: {
+                    type: Number,
+                    value: 0,
+                },
+                nbTotalElement: {
+                    type: Number,
+                }
+            },
+            ready: function () {
+                this.checkUrlCategorie();
+                //Lorsqu'on clique sur paperTabsCategorie l'event iron-select est envoyé
+                this.$.paperTabsCategorie.addEventListener('iron-select', function (e) {
+                    var tabs = this.$.paperTabsCategorie;
+                    var pages = this.$.iron_alphabet;
+                    pages.selected = tabs.selected;
+                }.bind(this));
+            },
+            //fonction vérifiant l'url afin de mettre en highlight le bon onglet de la tab lors du chargement de la page
+            checkUrlCategorie: function () {
+                for (var i = 0; i < this.categories.length; i++) {
+                    if (document.location.href.search(this.categories[i]) != -1) {
+                        this.idxCurrentTab = i;
+                    }
+                }
+            },
+            doLoadCategorie: function (e) {
+                window.location.href = e.target.id;
+            },
+            currentLetter: function (letter) {
+                var currLetter;
+                if (letter.length > 1) {
+                    currLetter = letter[0];
+                } else {
+                    currLetter = letter;
+                }
+                return currLetter;
+            },
+            //fonction vérifiant si le numéro de la page est bien un nombre
+            _checkUrlParams: function (lettre, numPage) {
+                var urlParamValid = false;
+                var numPage = parseInt(numPage);
+                if (Number.isInteger(numPage) && numPage >= 0) {
+                    urlParamValid = true;
+                }
+                return urlParamValid;
+            },
+            //fonction comptant le nombre d'occurences commençant par une certaine lettre
+            _getNbCount: function (infosData) {
+                if (this._isData(infosData)) {
+                    return infosData.count;
+                }
+                return 0;
+            },
+            //fonction vérifiant si oui ou non il y a des données
+            _isData: function (infosData) {
+                return Boolean(infosData);
+            },
+            //fonction vérifiant si ce sont des données d'artistes
+            _isArtist: function (infosData) {
+                if (!this._isData(infosData)) {
+                    return false;
+                }
+                return Boolean(infosData.artists);
+            },
+            //fonction vérifiant si ce sont des données d'album
+            _isAlbum: function (infosData) {
+                if (!this._isData(infosData)) {
+                    return false;
+                }
+                return Boolean(infosData.albums);
+            },
+            //fonction vérifiant si ce sont des données de musiques
+            _isSong: function (infosData) {
+                if (!this._isData(infosData)) {
+                    return false;
+                }
+                return Boolean(infosData.songs);
+            },
+            _encodeUri: function (infosData) {
+                return encodeURIComponent(infosData);
+            },
+            //Fonction vérifiant si il éxiste un page précédente ou non
+            _hasPrevious: function (numPage) {
+                var newNumPage = 0;
+                var numPage = parseInt(numPage, 10);
+                if (numPage < 1) {
+                    newNumPage = numPage;
+                } else {
+                    newNumPage = numPage - 1;
+                }
+                return newNumPage;
 
-    
-<script>
-  // element registration
-  Polymer({
-    is: "paper-tabs-content",
-    // add properties and methods on the element's prototype
-    properties: {
-        categories:{
-            type: Array,
-            value: ['Artists', 'Albums', 'Songs', 'Label']
-        },
-        alphabet :{
-            type: Array,
-            value: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
-        },
-        idxCurrentTab:{
-            type:Number,
-            value:0,
-        },
-        //Permet de calculer le nombre moyen d'élement par page ce nombre change c'est qu'on arrive à la fin d'une catégorie et qu'on doit hide le boutton next
-         nbElement:{
-            type: Number,
-            value:0,
-        },
-        nbTotalElement:{
-            type: Number,
-        }
-    },
-    ready: function(){
-        this.checkUrlCategorie();
-        //Lorsqu'on clique sur paperTabsCategorie l'event iron-select est envoyé
-        this.$.paperTabsCategorie.addEventListener('iron-select', function(e) {
-            var tabs = this.$.paperTabsCategorie;
-            var pages = this.$.iron_alphabet;
-            pages.selected = tabs.selected;
-        }.bind(this));
-    },
-    //fonction vérifiant l'url afin de mettre en highlight le bon onglet de la tab lors du chargement de la page
-    checkUrlCategorie:function(){
-        for(var i = 0;i<this.categories.length;i++){
-            if(document.location.href.search(this.categories[i])!=-1){ this.idxCurrentTab = i;}
-        }
-    },
-    doLoadCategorie:function(e){
-        window.location.href = e.target.id;
-    },
-    currentLetter:function(letter){
-        var currLetter;
-        if(letter.length>1){
-            currLetter = letter[0];
-        }else{
-            currLetter = letter;
-        }
-        return currLetter;
-    },
-    //fonction vérifiant si le numéro de la page est bien un nombre
-    _checkUrlParams:function(lettre,numPage){
-        var urlParamValid = false;
-        var numPage = parseInt(numPage);
-        if(Number.isInteger(numPage) && numPage>=0){
-            urlParamValid = true;
-        }
-        return urlParamValid;
-    },
-    //fonction comptant le nombre d'occurences commençant par une certaine lettre
-    _getNbCount:function(infosData){
-        if(this._isData(infosData)){
-            return infosData.count;
-        }
-        return 0;
-    },
-      //fonction vérifiant si oui ou non il y a des données
-    _isData:function(infosData){
-        return Boolean(infosData);
-    },
-      //fonction vérifiant si ce sont des données d'artistes
-    _isArtist: function (infosData) {
-        if(!this._isData(infosData)){
-            return false;
-        }
-        return Boolean(infosData.artists);
-    },
-      //fonction vérifiant si ce sont des données d'album
-    _isAlbum: function (infosData) {
-        if(!this._isData(infosData)){
-            return false;
-        }
-        return Boolean(infosData.albums);
-    },
-      //fonction vérifiant si ce sont des données de musiques
-    _isSong: function (infosData) {
-        if(!this._isData(infosData)){
-            return false;
-        }
-        return Boolean(infosData.songs);
-    },
-    _encodeUri : function(infosData){
-        return encodeURIComponent(infosData);
-    },
-    //Fonction vérifiant si il éxiste un page précédente ou non
-    _hasPrevious : function(numPage){
-        var newNumPage =0;
-        var numPage = parseInt(numPage, 10);
-        if(numPage<1){           
-            newNumPage = numPage;
-        }
-        else{
-            newNumPage = numPage-1;
-        }
-        return newNumPage;
-
-    },
-      //fonction verifiant si il éxiste une page suivante ou non
-    _hasNext : function(numPage,infosData){
-        if( this._isArtist(infosData) && this._isFullOfItems(infosData.artists,infosData.limit) ){
-            return parseInt(numPage, 10)+1;
-        }
-        else if (this._isAlbum(infosData) && this._isFullOfItems(infosData.albums,infosData.limit)){
-            return parseInt(numPage, 10)+1;
-
-        }
-        else if (this._isSong(infosData) && this._isFullOfItems(infosData.songs,infosData.limit)){
-            return parseInt(numPage, 10)+1;
-        }
-        else{
-            return parseInt(numPage, 10);
-        }
-    },
-    //Fonction vérifiant si la page est pleine ou non
-    _isFullOfItems : function(items, limit){
-        if( items.length == limit ){
-            return true;
-        }
-        return false;
-    },
-      //Fonction comptant le nombre d'artistes dans la BDD
-    _countNbArtist:function(idxCurrentTab){
-        var artist=false;
-        if(this.categories[idxCurrentTab] == "Artists"){
-            artist = true;
-        }
-        return artist;
-    },
-    //Fonction comptant le nombre d'albums dans la BDD
-    _countNbAlbum:function(idxCurrentTab){
-        var album=false;
-        if(this.categories[idxCurrentTab] == "Albums"){
-            album = true;
-        }
-        return album;
-    },
-    //Fonction comptant le nombre de musiques dans la BDD
-    _countNbSong:function(idxCurrentTab){
-        var song=false;
-        if(this.categories[idxCurrentTab] == "Songs"){
-            song = true;
-        }
-        return song;
-    },
-
-      
-  });  
-
-</script>   
+            },
+            //fonction verifiant si il éxiste une page suivante ou non
+            _hasNext: function (numPage, infosData) {
+                console.log("test");
+                if (this._isArtist(infosData) && this._isFullOfItems(infosData.artists, infosData.limit)) {
+                    return parseInt(numPage, 10) + 1;
+                } else if (this._isAlbum(infosData) && this._isFullOfItems(infosData.albums, infosData.limit)) {
+                    return parseInt(numPage, 10) + 1;
+                } else if (this._isSong(infosData) && this._isFullOfItems(infosData.songs, infosData.limit)) {
+                    return parseInt(numPage, 10) + 1;
+                } else {
+                    return parseInt(numPage, 10);
+                }
+            },
+            //Fonction vérifiant si la page est pleine ou non
+            _isFullOfItems: function (items, limit) {
+                if (items.length == limit) {
+                    return true;
+                }
+                return false;
+            },
+            //Fonction comptant le nombre d'artistes dans la BDD
+            _countNbArtist: function (idxCurrentTab) {
+                var artist = false;
+                if (this.categories[idxCurrentTab] == "Artists") {
+                    artist = true;
+                }
+                return artist;
+            },
+            //Fonction comptant le nombre d'albums dans la BDD
+            _countNbAlbum: function (idxCurrentTab) {
+                var album = false;
+                if (this.categories[idxCurrentTab] == "Albums") {
+                    album = true;
+                }
+                return album;
+            },
+            //Fonction comptant le nombre de musiques dans la BDD
+            _countNbSong: function (idxCurrentTab) {
+                var song = false;
+                if (this.categories[idxCurrentTab] == "Songs") {
+                    song = true;
+                }
+                return song;
+            },
+        });
+    </script>
 </dom-module>

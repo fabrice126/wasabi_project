@@ -1,4 +1,4 @@
-const ObjectId          = require('mongoskin').ObjectID;
+import {ObjectId} from 'mongoskin';
 
 var map = function (){
     if(this.lyrics != null){

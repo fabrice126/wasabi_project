@@ -1,11 +1,13 @@
-var cheerio     = require('cheerio');
-var request     = require('request');
-var db          = require('mongoskin').db('mongodb://localhost:27017/wasabi');
-var ObjectId    = require('mongoskin').ObjectID;
-var Artist      = require('../model/Artist');
-var Album       = require('../model/Album');
-var Song        = require('../model/Song');
-const config              = require('../conf/conf.json');
+import cheerio from 'cheerio';
+import request from 'request';
+import {db as dbConnect} from 'mongoskin';
+import {ObjectId} from 'mongoskin';
+import Artist from '../model/Artist';
+import Album from '../model/Album';
+import Song from '../model/Song';
+import config from '../conf/conf.json';
+const db = dbConnect('mongodb://localhost:27017/wasabi');
+
 const COLLECTIONARTIST  = config.database.collection_artist;
 const COLLECTIONALBUM   = config.database.collection_album;
 const COLLECTIONSONG    = config.database.collection_song;

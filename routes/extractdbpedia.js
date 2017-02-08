@@ -1,13 +1,14 @@
-var express             = require('express');
-var router              = express.Router();
-const parseString         = require('xml2js').parseString;
-const dbpediaHandler      = require('./handler/dbpediaHandler.js');
-const utilHandler         = require('./handler/utilHandler.js');
-const construct_endpoint  = require('./sparql_request/construct_endpoint.js');
-const redirect_request    = require('./sparql_request/redirect_request.js');
-const sameas_request      = require('./sparql_request/sameas_request.js');
-const ObjectId            = require('mongoskin').ObjectID;
-const config              = require('./conf/conf.json');
+import express from 'express';
+import dbpediaHandler from './handler/dbpediaHandler.js';
+import utilHandler from './handler/utilHandler.js';
+import construct_endpoint from './sparql_request/construct_endpoint.js';
+import redirect_request from './sparql_request/redirect_request.js';
+import sameas_request from './sparql_request/sameas_request.js';
+import config from './conf/conf.json';
+import {ObjectId} from 'mongoskin';
+import {parseString} from 'xml2js';
+
+const router            = express.Router();
 const COLLECTIONARTIST  = config.database.collection_artist;
 const COLLECTIONALBUM   = config.database.collection_album;
 const COLLECTIONSONG    = config.database.collection_song;
@@ -398,7 +399,7 @@ router.get('/createfields/song/:_id',function(req, res){
     res.send("OK");
 });
 
-module.exports = router;
+export default router;
 
 
 

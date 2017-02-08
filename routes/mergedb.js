@@ -8,11 +8,12 @@
  *  - Pour restaurer la BDD du serveur en local, taper la commande suivante dans le dossier wasabi_project/mongo/backup_mongo_tmp : mongorestore --db wasabi_server wasabi_server/wasabi
  */
 
-var express     = require('express');
-var router      = express.Router();
-var db_server   = require('mongoskin').db("mongodb://localhost:27017/wasabi_server");
-var ObjectId    = require('mongoskin').ObjectID;
-var config      = require('./conf/conf.json');
+import express from 'express';
+import config from './conf/conf.json';
+import {db} from 'mongoskin';
+import {ObjectId} from 'mongoskin';
+const db_server = db("mongodb://localhost:27017/wasabi_server");
+const router = express.Router();
 const COLLECTIONARTIST  = config.database.collection_artist;
 const COLLECTIONALBUM   = config.database.collection_album;
 const COLLECTIONSONG    = config.database.collection_song;
@@ -92,4 +93,4 @@ router.get('/song/lyrics',function(req, res) {
     })(skip);
     res.send("OK");
 });
-module.exports = router;
+export default router;
