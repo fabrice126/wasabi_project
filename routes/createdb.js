@@ -6,7 +6,7 @@ import config from './conf/conf.json';
 import elasticSearchHandler from './handler/elasticSearchHandler.js';
 import fs from 'fs';
 import mkdirp from 'mkdirp';
-import Artist from './model/Artist';
+import Artist from '../model/Artist';
 import {ObjectId} from 'mongoskin';
 
 const router          = express.Router();

@@ -2,9 +2,9 @@ import cheerio from 'cheerio';
 import request from 'request';
 import {db as dbConnect} from 'mongoskin';
 import {ObjectId} from 'mongoskin';
-import Artist from '../model/Artist';
-import Album from '../model/Album';
-import Song from '../model/Song';
+import Artist from '../../model/Artist';
+import Album from '../../model/Album';
+import Song from '../../model/Song';
 import config from '../conf/conf.json';
 const db = dbConnect('mongodb://localhost:27017/wasabi');
 

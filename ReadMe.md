@@ -203,6 +203,9 @@ Une collection artist contenant des documents représentant un artiste avec ses 
 ## package.json
 	Fichier décrivant l'application, c'est aussi le gestionnaire de dépendance de node js. 
 	
+**Installer la base de données Musicbrainz en local**
+=======
 
+**voir : **https://musicbrainz.org/doc/MusicBrainz_Server/Setup, lorsque bin/reindex est exécuté, vous pouvez lancer des requêtes via l'API Musicbrainz local
 
 

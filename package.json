@@ -4,6 +4,9 @@
   "private": true,
   "author": "Jauvat Fabrice",
   "main": "./app.js",
+  "babel": {
+    "presets": ["env"]
+  },
   "scripts": {
     "start": "nodemon bin/www --exec babel-node --presets es2015",
     "test": "mocha --require babel-polyfill --compilers js:babel-register"

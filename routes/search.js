@@ -15,6 +15,74 @@ const LIMIT = config.request.limit;
 //===========================WEBSERVICE REST POUR L'AFFICHAGE DU LISTING DES ARTISTES/ALBUMS/SONGS==========================\\
 //==========================================================================================================================\\
 //GET LISTING DES ARTISTES ALBUMS ET MUSIQUES EN FONCTION DE OU DES LETTRES 
+/**
+ * @api {get} search/categorie/:nomCategorie/lettre/:lettre/page/:numPage Get page information
+ * @apiExample Example usage: 
+ *      wasabi.i3s.unice.fr/search/categorie/artists/lettre/b/page/5
+ * @apiVersion 0.1.0
+ * @apiName GetPageByCategory
+ * @apiGroup Search
+ *
+ * @apiParam {String} nomCategorie {artists,albums,songs}.
+ * @apiParam {String} lettre Une ou deux lettres.
+ * @apiParam {Number} numPage Users unique ID.
+ *
+ * @apiSuccessExample Success-Response for an artist:
+    HTTP/1.1 200 OK
+    {
+        "limit": 200,
+        "artists": [{
+                "_id": "56d843ec53a7ddfc01f96d17",
+                "name": "J"
+            },
+            {
+                "_id": "56d843ed53a7ddfc01f96d18",
+                "name": "J Alvarez"
+            }
+        ]
+    } 
+ *  @apiSuccessExample Success-Response for an album:
+    HTTP/1.1 200 OK
+    {
+        "limit": 200,
+        "albums": [{
+                "_id": "5714debb25ac0d8aee34e3a7",
+                "name": "Agnetha Fältskog",
+                "titleAlbum": "A"
+            },
+            {
+                "_id": "5714debb25ac0d8aee355421",
+                "name": "Cass McCombs",
+                "titleAlbum": "A"
+            }
+        ]
+    }   
+ *  @apiSuccessExample Success-Response for a song:
+    HTTP/1.1 200 OK
+    {
+        "limit": 200,
+        "songs": [{
+                "_id": "5714dec325ac0d8aee3859f9",
+                "name": "Addict",
+                "albumTitre": "Come On Sun",
+                "titleSong": "K"
+            },
+            {
+                "_id": "5714dec325ac0d8aee3804f5",
+                "name": "A",
+                "albumTitre": "A Vs. Monkey Kong",
+                "titleSong": "A"
+            }
+        ]
+    }
+ * @apiError error The nomCategorie or lettre or numPage was not found.
+ * @apiErrorExample Error-Response:
+    HTTP/1.1 404 Not Found
+    {
+        "error": "Page not found"
+    }
+ */
+
 router.get('/categorie/:nomCategorie/lettre/:lettre/page/:numPage', (req, res, next) => {
     var tObjectRequest, skip, tParamToFind;
     var nomCategorie = req.params.nomCategorie.toLowerCase(),
@@ -33,6 +101,7 @@ router.get('/categorie/:nomCategorie/lettre/:lettre/page/:numPage', (req, res, n
         nomCategorie = "default";
     }
     switch (nomCategorie) {
+        case "artist":
         case "artists":
             tObjectRequest = searchHandler.constructData("name", tParamToFind);
             db.collection(COLLECTIONARTIST).find({
@@ -45,6 +114,7 @@ router.get('/categorie/:nomCategorie/lettre/:lettre/page/:numPage', (req, res, n
                 res.send(JSON.stringify(objSend));
             });
             break;
+        case "album":
         case "albums":
             tObjectRequest = searchHandler.constructData("titre", tParamToFind);
             db.collection(COLLECTIONALBUM).aggregate([{
@@ -66,6 +136,7 @@ router.get('/categorie/:nomCategorie/lettre/:lettre/page/:numPage', (req, res, n
                 res.send(JSON.stringify(objSend));
             });
             break;
+        case "song":
         case "songs":
             tObjectRequest = searchHandler.constructData("titre", tParamToFind);
             db.collection(COLLECTIONSONG).aggregate([{
@@ -89,9 +160,9 @@ router.get('/categorie/:nomCategorie/lettre/:lettre/page/:numPage', (req, res, n
             });
             break;
         default:
-            res.status(404).send([{
+            res.status(404).send({
                 error: config.http.error.global_404
-            }]);
+            });
             break;
     }
 });
@@ -100,12 +171,49 @@ router.get('/categorie/:nomCategorie/lettre/:lettre/page/:numPage', (req, res, n
 //==============================WEBSERVICE REST POUR LA NAVIGATION ENTRE CATEGORIES (SUBJCET)===============================\\
 //==========================================================================================================================\\
 //GET CATEGORY PAR NOM DE CATEGORY ET PAR COLLECTION
+/**
+ * @api {get} search/category/:collection/:categoryName Get category
+ * @apiExample Example usage: 
+ *      wasabi.i3s.unice.fr/search/category/song/Songs%20written%20by%20Cliff%20Burton
+ * @apiVersion 0.1.0
+ * @apiName GetSongsByCategory
+ * @apiGroup Search
+ *
+ * @apiParam {Number} collection {artists,albums,songs}.
+ * @apiParam {Number} categoryName category is the subject field in the database.
+ * 
+ * @apiSuccess {String} _id id of the song.
+ * @apiSuccess {String} name Band name.
+ * @apiSuccess {String} albumTitre  Album title.
+ * @apiSuccess {String} titre Song title.
+ * 
+ * @apiSuccessExample Success-Response:
+    HTTP/1.1 200 OK
+    [{
+        "_id": "5714dece25ac0d8aee403c97",
+        "name": "Drowning Pool",
+        "albumTitre": "Other Releases",
+        "titre": "Creeping Death"
+    }, {
+        "_id": "5714dedb25ac0d8aee4ad814",
+        "name": "Metallica",
+        "albumTitre": "Ride The Lightning",
+        "titre": "Creeping Death"
+    }]
+ *
+ * @apiError error The collection was not found.
+ * @apiErrorExample Error-Response:
+    HTTP/1.1 404 Not Found
+    {
+        "error": "Page not found"
+    }
+ */
 router.get('/category/:collection/:categoryName', (req, res) => {
     var collection = req.params.collection;
     if (collection !== COLLECTIONARTIST && collection !== COLLECTIONALBUM && collection !== COLLECTIONSONG) {
-        return res.status(404).send([{
+        return res.status(404).send({
             error: config.http.error.global_404
-        }]);
+        });
     }
     var categoryName = req.params.categoryName;
     req.db.collection(collection).find({
@@ -126,6 +234,36 @@ router.get('/category/:collection/:categoryName', (req, res) => {
 //==========================================================================================================================\\
 //GET PRODUCER PAR NOM DE PRODUCER
 //Peut évoluer en /producer/:collection/:producerName avec :collection = artist/album/song si un artist ou un album a des producer
+/**
+ * @api {get} search/producer/:producerName Get songs by producer
+ * @apiExample Example usage: 
+ *      wasabi.i3s.unice.fr/search/producer/Flemming%20Rasmussen
+ * @apiVersion 0.1.0
+ * @apiName GetSongsByProducer
+ * @apiGroup Search
+ *
+ * @apiParam {Number} producerName producer name.
+ * 
+ * @apiSuccess {String} _id id of the song.
+ * @apiSuccess {String} name Band name.
+ * @apiSuccess {String} albumTitre  Album title.
+ * @apiSuccess {String} titre Song title.
+ * 
+ * @apiSuccessExample Success-Response:
+    HTTP/1.1 200 OK
+    [{
+        "_id": "5714dedb25ac0d8aee4ad81f",
+        "name": "Metallica",
+        "albumTitre": "...And Justice For All",
+        "titre": "...And Justice For All"
+    }, {
+        "_id": "5714dedb25ac0d8aee4ad89d",
+        "name": "Metallica",
+        "albumTitre": "Singles",
+        "titre": "...And Justice For All"
+    }]
+ *
+ */
 router.get('/producer/:producerName', (req, res) => {
     var producerName = req.params.producerName;
     req.db.collection(COLLECTIONSONG).find({
@@ -146,6 +284,38 @@ router.get('/producer/:producerName', (req, res) => {
 //==========================================================================================================================\\
 //GET RECORDLABEL PAR NOM DE RECORDLABEL
 //Peut évoluer en /recordlabel/:collection/:recordLabelName avec :collection = artist/album/song si un artiste ou un album a des recordLabel
+/**
+ * @api {get} search/recordlabel/:recordLabelName Get songs by recordLabel
+ * @apiExample {get} Example usage: 
+ *      wasabi.i3s.unice.fr/search/recordlabel/Elektra%20Records
+ * @apiVersion 0.1.0
+ * @apiName GetSongsByRecordLabel
+ * @apiGroup Search
+ *
+ * @apiParam {Number} recordLabelName a record label name.
+ * 
+ * @apiSuccess {String} _id id of the song.
+ * @apiSuccess {String} name Band name.
+ * @apiSuccess {String} albumTitre  Album title.
+ * @apiSuccess {String} titre Song title.
+ * 
+ * @apiSuccessExample Success-Response:
+    HTTP/1.1 200 OK
+    [{
+        "_id": "5714dee025ac0d8aee4ea2d5",
+        "name": "Queen",
+        "albumTitre": "A Night At The Opera",
+        "titre": "'39"
+    }, {
+        "_id": "5714dee025ac0d8aee4ea30a",
+        "name": "Queen",
+        "albumTitre": "Live Killers",
+        "titre": "'39"
+    }]
+ *
+ */
+
+
 router.get('/recordlabel/:recordLabelName', (req, res) => {
     var db = req.db;
     var recordLabelName = req.params.recordLabelName;
@@ -161,11 +331,40 @@ router.get('/recordlabel/:recordLabelName', (req, res) => {
         res.send(JSON.stringify(objs));
     })
 });
+
 //==========================================================================================================================\\
 //=====================================WEBSERVICE REST POUR LA NAVIGATION ENTRE GENRE=======================================\\
 //==========================================================================================================================\\
 //GET RECORDLABEL PAR NOM DE RECORDLABEL
-//Peut évoluer en /recordlabel/:collection/:genreName avec :collection = album/song si un album a des Genre
+/**
+ * @api {get} search/genre/:genreName Get songs by genre
+ * @apiExample Example usage: 
+ *      wasabi.i3s.unice.fr/search/genre/Thrash%20metal
+ * @apiVersion 0.1.0
+ * @apiName GetSongsByGenre
+ * @apiGroup Search
+ *
+ * @apiParam {String} genreName songs having this genre.
+ * 
+ * @apiSuccess {String} _id id of the song.
+ * @apiSuccess {String} name Band name.
+ * @apiSuccess {String} albumTitre  Album title.
+ * @apiSuccess {String} titre Song title.
+ * 
+ * @apiSuccessExample Success-Response:
+    HTTP/1.1 200 OK
+    [{
+        "_id": "5714dedb25ac0d8aee4ad81f",
+        "name": "Metallica",
+        "albumTitre": "...And Justice For All",
+        "titre": "...And Justice For All"
+    }, {
+        "_id": "5714dedb25ac0d8aee4aa923",
+        "name": "Megadeth",
+        "albumTitre": "Endgame",
+        "titre": "Dialectic Chaos"
+    }]
+ */
 router.get('/genre/:genreName', (req, res) => {
     var genreName = req.params.genreName;
     req.db.collection(COLLECTIONSONG).find({
@@ -184,6 +383,37 @@ router.get('/genre/:genreName', (req, res) => {
 //====================================WEBSERVICE REST POUR LA NAVIGATION ENTRE RECORDED=====================================\\
 //==========================================================================================================================\\
 //GET RECORDED PAR NOM DE RECORDED
+/**
+ * @api {get} search/recorded/:recordedName Get songs by recordedName
+ * @apiExample Example usage: 
+ *      wasabi.i3s.unice.fr/search/recorded/1985
+ *      wasabi.i3s.unice.fr/search/recorded/--06-16
+ * @apiVersion 0.1.0
+ * @apiName GetSongsByRecordedName
+ * @apiGroup Search
+ *
+ * @apiParam {String} recordedName The field may assume different values.
+ *
+ * @apiSuccess {String} _id id of the song.
+ * @apiSuccess {String} name Band name.
+ * @apiSuccess {String} albumTitre  Album title.
+ * @apiSuccess {String} titre Song title.
+ *
+ * @apiSuccessExample Success-Response:
+    HTTP/1.1 200 OK
+    [{
+        "_id": "5714dec325ac0d8aee388df2",
+        "name": "Aimee Mann",
+        "albumTitre": "Ultimate Collection",
+        "titre": "'Til Tuesday:Voices Carry"
+    }, {
+        "_id": "5714decf25ac0d8aee41bd1c",
+        "name": "Feargal Sharkey",
+        "albumTitre": "Feargal Sharkey",
+        "titre": "A Good Heart"
+    }]
+ *
+ */
 router.get('/recorded/:recordedName', (req, res) => {
     var recordedName = req.params.recordedName;
     req.db.collection(COLLECTIONSONG).find({
@@ -202,6 +432,40 @@ router.get('/recorded/:recordedName', (req, res) => {
 //=====================================WEBSERVICE REST POUR LA NAVIGATION ENTRE AWARD=======================================\\
 //==========================================================================================================================\\
 //GET AWARD PAR NOM DE AWARD
+/**
+ * @api {get} search/award/:awardName Get songs by awardName
+ * @apiExample Example usage: 
+ *      wasabi.i3s.unice.fr/search/award/Platinum
+ * @apiVersion 0.1.0
+ * @apiName GetSongsByAwardName
+ * @apiGroup Search
+ *
+ * @apiParam {String} awardName {undefined,Diamond,
+    Gold,Gold+Gold+Platinum,Gold+Silver,Million,Million2× Platinum,
+    Multi Platinum,N/A,Platinum,Platinum+Gold,
+    Platinum+Platinum","Platinumref|The Platinum award for \"Summertime Sadness\" in the United States represents sales of both the original version and the Cedric Gervais remix.|group=\"note\"|name=RIAA,
+    Silver,platinum,—,−}.
+ *
+ * @apiSuccess {String} _id id of the song.
+ * @apiSuccess {String} name Band name.
+ * @apiSuccess {String} albumTitre  Album title.
+ * @apiSuccess {String} titre Song title.
+ *
+ * @apiSuccessExample Success-Response:
+    HTTP/1.1 200 OK
+    [{
+        "_id": "5714ded425ac0d8aee459dfe",
+        "name": "Jay-Z",
+        "albumTitre": "The Blueprint²: The Gift & The Curse",
+        "titre": "'03 Bonnie & Clyde"
+    }, {
+        "_id": "5714dee025ac0d8aee4ea2d5",
+        "name": "Queen",
+        "albumTitre": "A Night At The Opera",
+        "titre": "'39"
+    }]
+ *
+ */
 router.get('/award/:awardName', (req, res) => {
     var awardName = req.params.awardName;
     req.db.collection(COLLECTIONSONG).find({
@@ -216,10 +480,41 @@ router.get('/award/:awardName', (req, res) => {
         res.send(JSON.stringify(objs));
     })
 });
+
 //==========================================================================================================================\\
 //=====================================WEBSERVICE REST POUR LA NAVIGATION ENTRE WRITER======================================\\
 //==========================================================================================================================\\
 //GET WRITER PAR NOM DE WRITER
+/**
+ * @api {get} search/writer/:writerName Get songs by writerName
+ * @apiExample Example usage: 
+ *      wasabi.i3s.unice.fr/search/writer/Lars%20Ulrich
+ * @apiVersion 0.1.0
+ * @apiName GetSongsByWriterName
+ * @apiGroup Search
+ *
+ * @apiParam {String} writerName a writer name 
+ *
+ * @apiSuccess {String} _id id of the song.
+ * @apiSuccess {String} name Band name.
+ * @apiSuccess {String} albumTitre  Album title.
+ * @apiSuccess {String} titre Song title.
+ *
+ * @apiSuccessExample Success-Response:
+    HTTP/1.1 200 OK
+    [{
+        "_id": "5714dedb25ac0d8aee4ad8ae",
+        "name": "Metallica",
+        "albumTitre": "Singles",
+        "titre": "Better Than You"
+    }, {
+        "_id": "5714dedb25ac0d8aee4ad83c",
+        "name": "Metallica",
+        "albumTitre": "Load",
+        "titre": "Bleeding Me"
+    }]
+ *
+ */
 router.get('/writer/:writerName', (req, res) => {
     var writerName = req.params.writerName;
     req.db.collection(COLLECTIONSONG).find({
@@ -238,6 +533,37 @@ router.get('/writer/:writerName', (req, res) => {
 //=====================================WEBSERVICE REST POUR LA NAVIGATION ENTRE FORMAT======================================\\
 //==========================================================================================================================\\
 //GET FORMAT PAR NOM DE FORMAT
+/**
+ * @api {get} search/format/:formatName Get songs by formatName
+ * @apiExample Example usage: 
+ *      wasabi.i3s.unice.fr/search/format/Gramophone%20record
+ *      wasabi.i3s.unice.fr/search/format/CD%20single
+ * @apiVersion 0.1.0
+ * @apiName GetSongsByFormatName
+ * @apiGroup Search
+ *
+ * @apiParam {String} formatName a writer name 
+ *
+ * @apiSuccess {String} _id id of the song.
+ * @apiSuccess {String} name Band name.
+ * @apiSuccess {String} albumTitre  Album title.
+ * @apiSuccess {String} titre Song title.
+ *
+ * @apiSuccessExample Success-Response:
+    HTTP/1.1 200 OK
+    [{
+        "_id": "5714dee725ac0d8aee54060e",
+        "name": "The Gaslight Anthem",
+        "albumTitre": "Handwritten",
+        "titre": "\"45\""
+    }, {
+        "_id": "5714decc25ac0d8aee3ed894",
+        "name": "David Bowie",
+        "albumTitre": "\"Heroes\"",
+        "titre": "\"Heroes\""
+    }]
+ *
+ */
 router.get('/format/:formatName', (req, res) => {
     var formatName = req.params.formatName;
     req.db.collection(COLLECTIONSONG).find({
@@ -270,14 +596,14 @@ router.get('/count/:collection/:lettre', (req, res) => {
     //     fieldCollection = "titre";
     // }
     // if(collection !== COLLECTIONARTIST && collection !==COLLECTIONALBUM && collection !==COLLECTIONSONG || lettre.length>2){
-    //     return res.status(404).send([{error:config.http.error.global_404}]);
+    //     return res.status(404).send({error:config.http.error.global_404});
     // }
     // tParamToFind = searchHandler.optimizeFind(lettre);
     // tObjectRequest = searchHandler.constructData(fieldCollection, tParamToFind);
     // db.collection(collection).count({$or:tObjectRequest},(err, countfield) => {
     //     if(err){
     //         console.log(err);
-    //         return res.status(404).send([{error:config.http.error.global_404}]);
+    //         return res.status(404).send({error:config.http.error.global_404});
     //     }
     //     var dbcount = {count:countfield};
 
@@ -290,23 +616,46 @@ router.get('/count/:collection/:lettre', (req, res) => {
 //==========================================================================================================================\\
 //================WEBSERVICE REST POUR COMPTER LE NOMBRE D'OCCURENCE D'UN ATTRIBUT DANS UNE COLLECTION DONNEE===============\\
 //==========================================================================================================================\\
+/**
+ * @api {get} search/count/:collection/:fieldName/:fieldValue Get number of :fieldValue
+ * @apiExample Example usage: 
+ *      wasabi.i3s.unice.fr/search/count/song/award/Platinum
+ *      wasabi.i3s.unice.fr/search/count/album/genre/Alternative%20Rock
+ * @apiVersion 0.1.0
+ * @apiName GetNumberOfFieldValue
+ * @apiGroup Search
+ *
+ * @apiParam {String} collection {artist, album, song}
+ * @apiParam {String} fieldName a field name in the database
+ * @apiParam {String} fieldValue a value of a field in the database 
+ * 
+ * @apiSuccess {Number} count The number of occurrences found
+ *
+ * @apiSuccessExample Success-Response:
+    HTTP/1.1 200 OK
+    {
+        "count":3366
+    }
+ *
+ */
+
 router.get('/count/:collection/:fieldName/:fieldValue', (req, res) => {
     var collection = req.params.collection,
         fieldName = req.params.fieldName,
         fieldValue = req.params.fieldValue;
     if (collection !== COLLECTIONARTIST && collection !== COLLECTIONALBUM && collection !== COLLECTIONSONG) {
-        return res.status(404).send([{
+        return res.status(404).send({
             error: config.http.error.global_404
-        }]);
+        });
     }
     var query = {};
     query[fieldName] = fieldValue;
     req.db.collection(collection).count(query, (err, countfield) => {
         if (err) {
             console.log(err);
-            return res.status(404).send([{
+            return res.status(404).send({
                 error: config.http.error.global_404
-            }]);
+            });
         }
         var dbcount = {
             count: countfield
@@ -318,6 +667,27 @@ router.get('/count/:collection/:fieldName/:fieldValue', (req, res) => {
 //============================WEBSERVICE REST POUR L'AFFICHAGE DU NOMBRE D'ARTISTES/ALBUMS/SONGS============================\\
 //==========================================================================================================================\\
 //GET PERMET D'OBTENIR LE NOMBRE D'ARTISTES/ALBUMS/SONGS
+/**
+ * @api {get} search/dbinfo Get number of artist,album,song
+ * @apiExample Example usage: 
+ *      wasabi.i3s.unice.fr/search/dbinfo
+ * @apiVersion 0.1.0
+ * @apiName GetNumberOfArtistAlbumSong
+ * @apiGroup Search
+ * 
+ * @apiSuccess {Number} nbArtist The number of occurrences found
+ * @apiSuccess {Number} nbAlbum The number of occurrences found
+ * @apiSuccess {Number} nbSong The number of occurrences found
+ *
+ * @apiSuccessExample Success-Response:
+    HTTP/1.1 200 OK
+    {
+        "nbArtist":77492,
+        "nbAlbum":208743,
+        "nbSong":2099289
+    }
+ *
+ */
 router.get('/dbinfo', (req, res) => {
     var db = req.db;
     db.collection(COLLECTIONARTIST).count((err, count) => {
@@ -336,6 +706,111 @@ router.get('/dbinfo', (req, res) => {
 //=======================================WEBSERVICE REST POUR LA GESTION DES ARTISTES=======================================\\
 //==========================================================================================================================\\
 //GET ARTIST PAR NOM D'ARTISTE (UN NOM D'ARTISTE EST UNIQUE -> REGLE DE LYRICS WIKIA LORS DE L'EXTRACTION DES DONNEES)
+/**
+ * @api {get} search/artist/:artistName Get infos about artist
+ * @apiExample Example usage: 
+ *      wasabi.i3s.unice.fr/search/artist/Metallica
+ * @apiVersion 0.1.0
+ * @apiName GetInfosArtistByArtistName
+ * @apiGroup Search
+ *
+ * @apiParam {String} artistName An artist name.
+ *
+ * @apiSuccess {String} _id Artist id
+ * @apiSuccess {String} name Artist name
+ * @apiSuccess {String} urlWikipedia Artist urlWikipedia
+ * @apiSuccess {String} urlOfficialWebsite Artist urlOfficialWebsite
+ * @apiSuccess {String} urlFacebook Artist urlFacebook
+ * @apiSuccess {String} urlMySpace Artist urlMySpace
+ * @apiSuccess {String} urlTwitter Artist urlTwitter
+ * @apiSuccess {Array} locationInfo Artist locationInfo
+ * @apiSuccess {String} activeYears Artist activeYears
+ * @apiSuccess {Array} genres Artist genres
+ * @apiSuccess {Array} labels Artist labels
+ * 
+ * @apiSuccess {Object[]} members Members object
+ * @apiSuccess {String} members.name Members name
+ * @apiSuccess {Array} members.instruments Members instruments
+ * @apiSuccess {Array} members.activeYears Members activeYears
+ * 
+ * @apiSuccess {Object[]} formerMembers FormerMembers object
+ * @apiSuccess {String} formerMembers.name FormerMembers name
+ * @apiSuccess {Array} formerMembers.instruments FormerMembers instruments
+ * @apiSuccess {Array} formerMembers.activeYears FormerMembers activeYears
+ *
+ * @apiSuccess {String} rdf Artist rdf
+ * 
+ * @apiSuccess {Object[]} albums Album object
+ * @apiSuccess {String} albums._id Album id
+ * @apiSuccess {String} albums.name Artist name
+ * @apiSuccess {String} albums.titre Album titre
+ * @apiSuccess {String} albums.dateSortie Album dateSortie
+ * @apiSuccess {String} albums.genre Album genre
+ * @apiSuccess {String} albums.length Album length
+ * @apiSuccess {String} albums.id_artist Artist id
+ * 
+ * @apiSuccess {Object[]} albums.songs Song object
+ * @apiSuccess {String} albums.songs._id Song id
+ * @apiSuccess {String} albums.songs.position Song position
+ * @apiSuccess {String} albums.songs.titre Song titre
+ * 
+ * @apiSuccessExample Success-Response:
+    HTTP/1.1 200 OK
+    {
+        "_id": "56d93d84ce06f50c0fed8747",
+        "name": "Metallica",
+        "urlWikipedia": "http://en.wikipedia.org/wiki/Metallica",
+        "urlOfficialWebsite": "http://www.metallica.com/",
+        "urlFacebook": "http://www.facebook.com/metallica",
+        "urlMySpace": "https://myspace.com/Metallica",
+        "urlTwitter": "http://twitter.com/metallica",
+        "locationInfo": ["United States", "California", "Los Angeles"],
+        "activeYears": "",
+        "genres": ["Heavy Metal", "Thrash Metal"],
+        "labels": ["Elektra", "Megaforce Records", "Mercury Records", "Warner Bros. Records"],
+        "members": [{
+            "name": " James Hetfield",
+            "instruments": ["lead vocals", " rhythm guitar "],
+            "activeYears": ["1981-present\n"]
+        }],
+        "formerMembers": [{
+            "name": " Dave Mustaine",
+            "instruments": ["lead guitar", " backing vocals "],
+            "activeYears": ["1981-1983\n"]
+        }],
+        "rdf": " 1963-03-04 Jason Curtis Newsted Bass, guitar, drums, vocals Jason Newsted Jason Curtis Newsted (born March 4, 1963) is an American metal musician, known for playing bass guitar with the bands Metallica (in which he did occasional lead vocals) ...",
+        "albums": [{
+            "_id": "5714debe25ac0d8aee36b664",
+            "name": "Metallica",
+            "titre": "Master Of Puppets",
+            "dateSortie": "1986",
+            "genre": "Thrash Metal",
+            "length": "54:46",
+            "id_artist": "56d93d84ce06f50c0fed8747",
+            "songs": [{
+                "_id": "5714dedb25ac0d8aee4ad816",
+                "position": 0,
+                "titre": "Battery"
+                }, {
+                "_id": "5714dedb25ac0d8aee4ad817",
+                "position": 1,
+                "titre": "Master Of Puppets"
+                }, {
+                "_id": "5714dedb25ac0d8aee4ad81d",
+                "position": 7,
+                "titre": "Damage, Inc."
+            }]
+        }]
+    }
+ * @apiError error The artistName was not found.
+ * @apiErrorExample Error-Response:
+    HTTP/1.1 404 Not Found
+    {
+        "error":"Artist not found"
+    }
+ */
+
+
 router.get('/artist/:artistName', (req, res) => {
     var db = req.db,
         artistName = req.params.artistName;
@@ -346,9 +821,9 @@ router.get('/artist/:artistName', (req, res) => {
         wordCount: 0
     }, (err, artist) => {
         if (artist === null) {
-            return res.status(404).send([{
+            return res.status(404).send({
                 error: config.http.error.artist_404
-            }]);
+            });
         }
         db.collection(COLLECTIONALBUM).find({
             id_artist: artist._id
@@ -393,6 +868,131 @@ router.get('/artist/:artistName', (req, res) => {
 //==========================================================================================================================\\
 //GET ALBUM PAR NOM D'ARTISTE ET TITRE D'ALBUM
 //FIXME /!\ UN ARTIST PEUT AVOIR PLUSIEURS TITRES D'ALBUMS IDENTIQUES/!\ ERREUR A CORRIGER eventullement : créer une autre route /artist/:artistName/album/:albumId ou utiliser la route /artist_id/:artistId/album_id/:albumId
+/**
+ * @api {get} search/artist/:artistName/album/:albumName Get infos about album
+ * @apiExample Example usage: 
+ *      wasabi.i3s.unice.fr/search/artist/Metallica/album/Master%20Of%20Puppets
+ * @apiVersion 0.1.0
+ * @apiName GetInfosAlbumByAlbumName
+ * @apiGroup Search
+ *
+ * @apiParam {String} artistName An artist name.
+ * @apiParam {String} albumName An album title of artistName.
+ * 
+ * @apiSuccess {String} _id Artist id
+ * @apiSuccess {String} name Artist name
+ * @apiSuccess {String} urlWikipedia Artist urlWikipedia
+ * @apiSuccess {String} urlOfficialWebsite Artist urlOfficialWebsite
+ * @apiSuccess {String} urlFacebook Artist urlFacebook
+ * @apiSuccess {String} urlMySpace Artist urlMySpace
+ * @apiSuccess {String} urlTwitter Artist urlTwitter
+ * @apiSuccess {Array} locationInfo Artist locationInfo
+ * @apiSuccess {String} activeYears Artist activeYears
+ * @apiSuccess {Array} genres Artist genres
+ * @apiSuccess {Array} labels Artist labels
+ * 
+ * @apiSuccess {Object[]} members Members object
+ * @apiSuccess {String} members.name Members name
+ * @apiSuccess {Array} members.instruments Members instruments
+ * @apiSuccess {Array} members.activeYears Members activeYears
+ * 
+ * @apiSuccess {Object[]} formerMembers FormerMembers object
+ * @apiSuccess {String} formerMembers.name FormerMembers name
+ * @apiSuccess {Array} formerMembers.instruments FormerMembers instruments
+ * @apiSuccess {Array} formerMembers.activeYears FormerMembers activeYears
+ *
+ * @apiSuccess {String} rdf Artist rdf
+ * 
+ * @apiSuccess {Object[]} albums Album object
+ * @apiSuccess {String} albums._id Album id
+ * @apiSuccess {String} albums.name Artist name
+ * @apiSuccess {String} albums.titre Album titre
+ * @apiSuccess {String} albums.dateSortie Album dateSortie
+ * @apiSuccess {String} albums.genre Album genre
+ * @apiSuccess {String} albums.length Album length
+ * @apiSuccess {String} albums.id_artist Artist id
+ * @apiSuccess {String} albums.rdf Album rdf
+
+ * @apiSuccess {Object[]} albums.songs Song object
+ * @apiSuccess {String} albums.songs._id Song id
+ * @apiSuccess {String} albums.songs.position Song position
+ * @apiSuccess {String} albums.songs.titre Song titre
+ *
+ * @apiSuccessExample Success-Response:
+    HTTP/1.1 200 OK
+    {
+        "_id": "56d93d84ce06f50c0fed8747",
+        "name": "Metallica",
+        "urlWikipedia": "http://en.wikipedia.org/wiki/Metallica",
+        "urlOfficialWebsite": "http://www.metallica.com/",
+        "urlFacebook": "http://www.facebook.com/metallica",
+        "urlMySpace": "https://myspace.com/Metallica",
+        "urlTwitter": "http://twitter.com/metallica",
+        "locationInfo": ["United States", "California", "Los Angeles"],
+        "activeYears": "",
+        "genres": ["Heavy Metal", "Thrash Metal"],
+        "labels": ["Elektra", "Megaforce Records", "Mercury Records", "Warner Bros. Records"],
+        "members": [{
+            "name": " James Hetfield",
+            "instruments": ["lead vocals", " rhythm guitar "],
+            "activeYears": ["1981-present\n"]
+        }, {
+            "name": " Kirk Hammett",
+            "instruments": ["lead guitar "],
+            "activeYears": ["1983-present\n"]
+        }],
+        "formerMembers": [{
+            "name": " Dave Mustaine",
+            "instruments": ["lead guitar", " backing vocals "],
+            "activeYears": ["1981-1983\n"]
+        }, {
+            "name": " Ron McGovney",
+            "instruments": ["bass "],
+            "activeYears": ["1981-1982\n"]
+        }],
+        "rdf": " 1963-03-04 Jason Curtis Newsted Bass, guitar ...",
+        "albums": {
+            "_id": "5714debe25ac0d8aee36b664",
+            "name": "Metallica",
+            "titre": "Master Of Puppets",
+            "dateSortie": "1986",
+            "urlWikipedia": "http://en.wikipedia.org/wiki/Master_of_Puppets",
+            "genre": "Thrash Metal",
+            "length": "54:46",
+            "id_artist": "56d93d84ce06f50c0fed8747",
+            "rdf": " Gold Platinum Master of Puppets is the third studio album by American heavy metal band Metallica... ",
+            "songs": [{
+                "_id": "5714dedb25ac0d8aee4ad816",
+                "position": 0,
+                "titre": "Battery"
+                }, {
+                "_id": "5714dedb25ac0d8aee4ad817",
+                "position": 1,
+                "titre": "Master Of Puppets"
+                }, {
+                "_id": "5714dedb25ac0d8aee4ad818",
+                "position": 2,
+                "titre": "The Thing That Should Not Be"
+                }, {
+                "_id": "5714dedb25ac0d8aee4ad819",
+                "position": 3,
+                "titre": "Welcome Home (Sanitarium)"
+            }]
+        }
+    }
+ * @apiError error albumName was not found.
+ * @apiErrorExample Error-Response:
+    HTTP/1.1 404 Not Found
+    {
+        "error": "Album not found"
+    }
+ * @apiError error artistName was not found.
+ * @apiErrorExample Error-Response:
+    HTTP/1.1 404 Not Found
+    {
+        "error": "Artist not found"
+    }
+ */
 router.get('/artist/:artistName/album/:albumName', (req, res) => {
     var db = req.db,
         albumName = req.params.albumName,
@@ -400,13 +1000,13 @@ router.get('/artist/:artistName/album/:albumName', (req, res) => {
     db.collection(COLLECTIONARTIST).findOne({
         name: artistName
     }, {
-        "urlAlbum": 0,
+        "urlWikia": 0,
         "wordCount": 0
     }, (err, artist) => {
         if (artist == null) {
-            return res.status(404).send([{
+            return res.status(404).send({
                 error: config.http.error.artist_404
-            }]);
+            });
         }
         //!\ UN ARTIST PEUT AVOIR PLUSIEURS FOIS UN MEME TITRE D'ALBUM /!\ ERREUR A CORRIGER -> si on clique sur un album
         db.collection(COLLECTIONALBUM).findOne({
@@ -420,9 +1020,9 @@ router.get('/artist/:artistName/album/:albumName', (req, res) => {
             "wordCount": 0
         }, (err, album) => {
             if (album == null) {
-                return res.status(404).send([{
+                return res.status(404).send({
                     error: config.http.error.album_404
-                }]);
+                });
             }
             db.collection(COLLECTIONSONG).find({
                 "id_album": album._id
@@ -431,9 +1031,9 @@ router.get('/artist/:artistName/album/:albumName', (req, res) => {
                 "titre": 1
             }).toArray((err, songs) => {
                 if (songs == null) {
-                    return res.status(404).send([{
+                    return res.status(404).send({
                         error: config.http.error.song_404
-                    }]);
+                    });
                 }
                 album.songs = songs;
                 artist.albums = album;
@@ -444,6 +1044,131 @@ router.get('/artist/:artistName/album/:albumName', (req, res) => {
     });
 });
 //GET ALBUM PAR ID D'ARTISTE ET D'ALBUM
+/**
+ * @api {get} search/artist_id/:artistId/album_id/:albumId Get infos about album by id
+ * @apiExample Example usage: 
+ *      wasabi.i3s.unice.fr/search/artist_id/56d93d84ce06f50c0fed8747/album_id/5714debe25ac0d8aee36b664
+ * @apiVersion 0.1.0
+ * @apiName GetInfosAlbumByAlbumId
+ * @apiGroup Search
+ *
+ * @apiParam {String} artistId An artist name.
+ * @apiParam {String} albumId An album title of artistName.
+ * 
+ * @apiSuccess {String} _id Artist id
+ * @apiSuccess {String} name Artist name
+ * @apiSuccess {String} urlWikipedia Artist urlWikipedia
+ * @apiSuccess {String} urlOfficialWebsite Artist urlOfficialWebsite
+ * @apiSuccess {String} urlFacebook Artist urlFacebook
+ * @apiSuccess {String} urlMySpace Artist urlMySpace
+ * @apiSuccess {String} urlTwitter Artist urlTwitter
+ * @apiSuccess {Array} locationInfo Artist locationInfo
+ * @apiSuccess {String} activeYears Artist activeYears
+ * @apiSuccess {Array} genres Artist genres
+ * @apiSuccess {Array} labels Artist labels
+ * 
+ * @apiSuccess {Object[]} members Members object
+ * @apiSuccess {String} members.name Members name
+ * @apiSuccess {Array} members.instruments Members instruments
+ * @apiSuccess {Array} members.activeYears Members activeYears
+ * 
+ * @apiSuccess {Object[]} formerMembers FormerMembers object
+ * @apiSuccess {String} formerMembers.name FormerMembers name
+ * @apiSuccess {Array} formerMembers.instruments FormerMembers instruments
+ * @apiSuccess {Array} formerMembers.activeYears FormerMembers activeYears
+ *
+ * @apiSuccess {String} rdf Artist rdf
+ * 
+ * @apiSuccess {Object[]} albums Album object
+ * @apiSuccess {String} albums._id Album id
+ * @apiSuccess {String} albums.name Artist name
+ * @apiSuccess {String} albums.titre Album titre
+ * @apiSuccess {String} albums.dateSortie Album dateSortie
+ * @apiSuccess {String} albums.genre Album genre
+ * @apiSuccess {String} albums.length Album length
+ * @apiSuccess {String} albums.id_artist Artist id
+ * @apiSuccess {String} albums.rdf Album rdf
+
+ * @apiSuccess {Object[]} albums.songs Song object
+ * @apiSuccess {String} albums.songs._id Song id
+ * @apiSuccess {String} albums.songs.position Song position
+ * @apiSuccess {String} albums.songs.titre Song titre
+ *
+ * @apiSuccessExample Success-Response:
+    HTTP/1.1 200 OK
+    {
+        "_id": "56d93d84ce06f50c0fed8747",
+        "name": "Metallica",
+        "urlWikipedia": "http://en.wikipedia.org/wiki/Metallica",
+        "urlOfficialWebsite": "http://www.metallica.com/",
+        "urlFacebook": "http://www.facebook.com/metallica",
+        "urlMySpace": "https://myspace.com/Metallica",
+        "urlTwitter": "http://twitter.com/metallica",
+        "locationInfo": ["United States", "California", "Los Angeles"],
+        "activeYears": "",
+        "genres": ["Heavy Metal", "Thrash Metal"],
+        "labels": ["Elektra", "Megaforce Records", "Mercury Records", "Warner Bros. Records"],
+        "members": [{
+            "name": " James Hetfield",
+            "instruments": ["lead vocals", " rhythm guitar "],
+            "activeYears": ["1981-present\n"]
+        }, {
+            "name": " Kirk Hammett",
+            "instruments": ["lead guitar "],
+            "activeYears": ["1983-present\n"]
+        }],
+        "formerMembers": [{
+            "name": " Dave Mustaine",
+            "instruments": ["lead guitar", " backing vocals "],
+            "activeYears": ["1981-1983\n"]
+        }, {
+            "name": " Ron McGovney",
+            "instruments": ["bass "],
+            "activeYears": ["1981-1982\n"]
+        }],
+        "rdf": " 1963-03-04 Jason Curtis Newsted Bass, guitar ...",
+        "albums": {
+            "_id": "5714debe25ac0d8aee36b664",
+            "name": "Metallica",
+            "titre": "Master Of Puppets",
+            "dateSortie": "1986",
+            "urlWikipedia": "http://en.wikipedia.org/wiki/Master_of_Puppets",
+            "genre": "Thrash Metal",
+            "length": "54:46",
+            "id_artist": "56d93d84ce06f50c0fed8747",
+            "rdf": " Gold Platinum Master of Puppets is the third studio album by American heavy metal band Metallica... ",
+            "songs": [{
+                "_id": "5714dedb25ac0d8aee4ad816",
+                "position": 0,
+                "titre": "Battery"
+                }, {
+                "_id": "5714dedb25ac0d8aee4ad817",
+                "position": 1,
+                "titre": "Master Of Puppets"
+                }, {
+                "_id": "5714dedb25ac0d8aee4ad818",
+                "position": 2,
+                "titre": "The Thing That Should Not Be"
+                }, {
+                "_id": "5714dedb25ac0d8aee4ad819",
+                "position": 3,
+                "titre": "Welcome Home (Sanitarium)"
+            }]
+        }
+    }
+ * @apiError error albumName was not found.
+ * @apiErrorExample Error-Response:
+    HTTP/1.1 404 Not Found
+    {
+        "error": "Album not found"
+    }
+ * @apiError error artistName was not found.
+ * @apiErrorExample Error-Response:
+    HTTP/1.1 404 Not Found
+    {
+        "error": "Artist not found"
+    }
+ */
 router.get('/artist_id/:artistId/album_id/:albumId', (req, res) => {
     var db = req.db,
         artistId = req.params.artistId,
@@ -451,13 +1176,13 @@ router.get('/artist_id/:artistId/album_id/:albumId', (req, res) => {
     db.collection(COLLECTIONARTIST).findOne({
         _id: ObjectId(artistId)
     }, {
-        "urlAlbum": 0,
+        "urlWikia": 0,
         "wordCount": 0
     }, (err, artist) => {
         if (artist == null) {
-            return res.status(404).send([{
+            return res.status(404).send({
                 error: config.http.error.artist_404
-            }]);
+            });
         }
         db.collection(COLLECTIONALBUM).findOne({
             "_id": ObjectId(albumId)
@@ -466,9 +1191,9 @@ router.get('/artist_id/:artistId/album_id/:albumId', (req, res) => {
             "wordCount": 0
         }, (err, album) => {
             if (album == null) {
-                return res.status(404).send([{
+                return res.status(404).send({
                     error: config.http.error.album_404
-                }]);
+                });
             }
             db.collection(COLLECTIONSONG).find({
                 "id_album": album._id
@@ -477,9 +1202,9 @@ router.get('/artist_id/:artistId/album_id/:albumId', (req, res) => {
                 "titre": 1
             }).toArray((err, songs) => {
                 if (songs == null) {
-                    return res.status(404).send([{
+                    return res.status(404).send({
                         error: config.http.error.song_404
-                    }]);
+                    });
                 }
                 album.songs = songs;
                 artist.albums = album;
@@ -489,12 +1214,65 @@ router.get('/artist_id/:artistId/album_id/:albumId', (req, res) => {
     });
 });
 
-//PUT ALBUM PAR ID D'ABUM ET DE MUSIQUE
+//PUT ALBUM PAR NOM D'ALBUM
+/**
+ * @api {put} search/artist/:artistName/album/:albumName Put infos about album by album name
+ * @apiExample Example usage: 
+ *      wasabi.i3s.unice.fr/search/artist/Metallica/album/Master%20Of%20Puppets
+ * @apiVersion 0.1.0
+ * @apiName PutInfosAlbumByAlbumName
+ * @apiGroup Search
+ *
+ * @apiParam {String} artistName An artist name.
+ * @apiParam {String} albumName An album title of artistName.
+ *
+ * 
+ * @apiSuccess {String} _id Album id
+ * @apiSuccess {String} name Artist name
+ * @apiSuccess {String} titre Album titre
+ * @apiSuccess {String} dateSortie Album dateSortie
+ * @apiSuccess {String} genre Album genre
+ * @apiSuccess {String} length Album length
+ * @apiSuccess {String} id_artist Artist id
+ * @apiSuccess {String} rdf Album rdf
+
+ * @apiSuccess {Object[]} songs Song object
+ * @apiSuccess {String} songs._id Song id
+ * @apiSuccess {String} songs.position Song position
+ * @apiSuccess {String} songs.titre Song titre
+ *
+ * @apiSuccessExample Success-Response:
+    HTTP/1.1 200 OK
+    {
+        "_id": "5714debe25ac0d8aee36b664",
+        "name": "Metallica",
+        "titre": "Master Of Puppets",
+        "dateSortie": "1986",
+        "urlWikipedia": "http://en.wikipedia.org/wiki/Master_of_Puppets",
+        "genre": "Thrash Metal",
+        "length": "54:46",
+        "id_artist": "56d93d84ce06f50c0fed8747",
+        "rdf": "Un champ au format RDF",
+        "songs": [{
+                "_id": "5714dedb25ac0d8aee4ad816",
+                "position": 0,
+                "titre": "Battery"
+            },
+            {
+                "_id": "5714dedb25ac0d8aee4ad817",
+                "position": 1,
+                "titre": "Master Of Puppets"
+            }
+        ]}
+    }
+ *
+ */
 router.put('/artist/:artistName/album/:albumName', (req, res) => {
     var db = req.db,
         albumBody = req.body,
         albumTitre = albumBody.titre.trim(),
         nbSongUpdated = 0;
+    console.log(albumBody);
     //FUTURE Si un album n'a pas encore d'attribut songs. Peut se produire lors de l'ajout d'un album
     for (var j = 0; j < albumBody.songs.length; j++) {
         //On change le titre de l'album contenu dans les documents musiques
@@ -537,6 +1315,120 @@ router.put('/artist/:artistName/album/:albumName', (req, res) => {
 //=======================================WEBSERVICE REST POUR LA GESTION DES MUSIQUES=======================================\\
 //==========================================================================================================================\\
 //GET SONG PAR NOM D'ARTISTE TITRE D'ALBUM ET TITRE DE MUSIQUE
+/**
+ * @api {get} search/artist/:artistName/album/:albumName/song/:songName Get infos about song by song name
+ * @apiExample Example usage: 
+ *      wasabi.i3s.unice.fr/search/artist/Metallica/album/Master%20Of%20Puppets/song/Master%20Of%20Puppets
+ * @apiVersion 0.1.0
+ * @apiName GetInfosSongBySongName
+ * @apiGroup Search
+ *
+ * @apiParam {String} artistName An artist name.
+ * @apiParam {String} albumName An album title of artistName.
+ * @apiParam {String} songName A song title of songName.
+ * 
+ * @apiSuccess {String} _id Artist id
+ * @apiSuccess {String} name Artist name
+ * 
+ * @apiSuccess {Object[]} albums Album object
+ * @apiSuccess {String} albums._id Album id
+ * @apiSuccess {String} albums.titre Album titre
+
+ * @apiSuccess {Object[]} albums.songs Song object
+ * @apiSuccess {String} albums.songs._id Song id
+ * @apiSuccess {String} albums.songs.name Artist name
+ * @apiSuccess {Number} albums.songs.position Song position
+ * @apiSuccess {String} albums.songs.albumTitre Album titre
+ * @apiSuccess {String} albums.songs.lengthAlbum Album lengthAlbum
+ * @apiSuccess {String} albums.songs.dateSortieAlbum Song dateSortieAlbum
+ * @apiSuccess {String} albums.songs.titre Song titre
+ * @apiSuccess {String} albums.songs.lyrics Song lyrics
+ * @apiSuccess {String} albums.songs.urlWikipedia Song urlWikipedia
+ * @apiSuccess {String} albums.songs.id_album Song id_album
+ * @apiSuccess {String} albums.songs.rdf Song rdf
+ * @apiSuccess {String} albums.songs.format Song format
+ * @apiSuccess {String} albums.songs.genre Song genre
+ * @apiSuccess {String} albums.songs.producer Song producer
+ * @apiSuccess {String} albums.songs.recordLabel Song recordLabel
+ * @apiSuccess {String} albums.songs.writer Song writer
+ * @apiSuccess {String} albums.songs.recorded Song recorded
+ * @apiSuccess {String} albums.songs.abstract Song abstract
+ * @apiSuccess {String} albums.songs.releaseDate Song releaseDate
+ * @apiSuccess {String} albums.songs.runtime Song runtime
+ * @apiSuccess {String} albums.songs.award Song award
+ * @apiSuccess {String} albums.songs.subject Song subject
+ * @apiSuccess {String} albums.songs.isClassic Song isClassic
+ * @apiSuccess {String} albums.songs.urlYoutube Song urlYoutube
+ * @apiSuccess {String} albums.songs.multitrack_path Song multitrack_path
+ * @apiSuccess {String} albums.songs.urlITunes Song urlITunes
+ * @apiSuccess {String} albums.songs.urlAmazon Song urlAmazon
+ * @apiSuccess {String} albums.songs.urlGoEar Song urlGoEar
+ * @apiSuccess {String} albums.songs.urlSpotify Song urlSpotify
+ * @apiSuccess {String} albums.songs.urlAllmusic Song urlAllmusic
+ * @apiSuccess {String} albums.songs.urlMusicBrainz Song urlMusicBrainz
+ * 
+ * @apiSuccessExample Success-Response for an artist:
+    HTTP/1.1 200 OK
+    {
+        "_id": "56d93d84ce06f50c0fed8747",
+        "name": "Metallica",
+        "albums": {
+            "_id": "5714debe25ac0d8aee36b664",
+            "titre": "Master Of Puppets",
+            "songs": {
+                "_id": "5714dedb25ac0d8aee4ad817",
+                "name": "Metallica",
+                "position": 1,
+                "albumTitre": "Master Of Puppets",
+                "lengthAlbum": "54:46",
+                "dateSortieAlbum": "1986",
+                "titre": "Master Of Puppets",
+                "lyrics": "End of passion play, crumbling away<br>I&apos;m your source of self-destruction...",
+                "urlWikipedia": "http://en.wikipedia.org/wiki/Master_of_Puppets_(song)",
+                "id_album": "5714debe25ac0d8aee36b664",
+                "rdf": "<?xml version='1.0' encoding='utf-8' ?><rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'  xmlns:rdfs='http://www.w3.org/2000/01/rdf-schema#' xmlns:dct='http://purl.org/dc/terms/' xmlns:dbp='http://dbpedia.org/property/' xmlns:dbo='http://dbpedia.org/ontology/' >   <rdf:Description rdf:about='http://dbpedia.org/resource/Master_of_Puppets_(song)'><dct:subject rdf:resource='http://dbpedia.org/resource/Category:Songs_written_by_Lars_Ulrich' />     <dct:subject rdf:resource='http://dbpedia.org/resource/Category:Metallica_songs' /><dct:subject rdf:resource='http://dbpedia.org/resource/Category:Elektra_Records_singles' /></rdf:Description> </rdf:RDF>",
+                "format": ["Gramophone record", "12-inch single"],
+                "genre": ["Thrash metal", "Progressive metal"],
+                "producer": ["Flemming Rasmussen"],
+                "recordLabel": ["Elektra Records", "Music for Nations"],
+                "writer": ["Cliff Burton", "Lars Ulrich", "James Hetfield", "Kirk Hammett"],
+                "recorded": ["1985"],
+                "abstract": "\"Master of Puppets\" is a song by the American heavy metal band Metallica...",
+                "releaseDate": ["1986-07-02"],
+                "runtime": ["516.0"],
+                "award": [],
+                "subject": ["Songs written by Lars Ulrich", "Metallica songs", "Elektra Records singles", "Songs written by Cliff Burton", "Songs about drugs", "Songs written by James Hetfield", "Songs written by Kirk Hammett", "1986 singles"],
+                "urlYoutube": "",
+                "isClassic": false,
+                "multitrack_path": "M Multitracks/Metallica - Master Of Puppets",
+                "urlITunes": "https://itunes.apple.com/us/album/id167353581?i=167353601",
+                "urlAmazon": "http://www.amazon.com/exec/obidos/redirect?link_code=ur2&tag=wikia-20&camp=1789&creative=9325&path=http%3A%2F%2Fwww.amazon.com%2Fgp%2Fproduct%2FB00122A546%2Fsr%3D8-1%2Fqid%3D1147400297%2Fref%3Dpd_bbs_1%3F%255Fencoding%3DUTF8",
+                "urlGoEar": "http://goear.com/listen.php?v=afd1e62",
+                "urlSpotify": "https://play.spotify.com/track/6NwbeybX6TDtXlpXvnUOZC",
+                "urlAllmusic": "http://www.allmusic.com/song/mt0002228132",
+                "urlMusicBrainz": "http://musicbrainz.org/recording/49b8371f-156a-41e8-92c9-8cd899235b90"
+            }
+        }
+    }
+ * @apiError error The artistName was not found.
+ * @apiErrorExample Error-Response for artist not found:
+    HTTP/1.1 404 Artist Not Found
+    {
+        "error": "Artist not found"
+    }
+ * @apiError error The albumName was not found.
+ * @apiErrorExample Error-Response for album not found:
+    HTTP/1.1 404 Album Not Found
+    {
+        "error": "Album not found"
+    }
+ * @apiError error The songName was not found.
+ * @apiErrorExample Error-Response for song not found:
+    HTTP/1.1 404 Song Not Found
+    {
+        "error": "Song not found"
+    }
+ */
 router.get('/artist/:artistName/album/:albumName/song/:songName', (req, res) => {
     var db = req.db,
         artistName = req.params.artistName,
@@ -549,9 +1441,9 @@ router.get('/artist/:artistName/album/:albumName/song/:songName', (req, res) => 
         "name": 1
     }, (err, artist) => {
         if (artist == null) {
-            return res.status(404).send([{
+            return res.status(404).send({
                 error: config.http.error.artist_404
-            }]);
+            });
         }
         db.collection(COLLECTIONALBUM).findOne({
             $and: [{
@@ -564,9 +1456,9 @@ router.get('/artist/:artistName/album/:albumName/song/:songName', (req, res) => 
             "titre": 1
         }, (err, album) => {
             if (album == null) {
-                return res.status(404).send([{
+                return res.status(404).send({
                     error: config.http.error.album_404
-                }]);
+                });
             }
             db.collection(COLLECTIONSONG).findOne({
                 $and: [{
@@ -579,9 +1471,9 @@ router.get('/artist/:artistName/album/:albumName/song/:songName', (req, res) => 
                 "wordCount": 0
             }, (err, song) => {
                 if (song == null) {
-                    return res.status(404).send([{
+                    return res.status(404).send({
                         error: config.http.error.song_404
-                    }]);
+                    });
                 }
                 album.songs = song;
                 artist.albums = album;
@@ -592,6 +1484,73 @@ router.get('/artist/:artistName/album/:albumName/song/:songName', (req, res) => 
     });
 });
 //GET SONG PAR ID D'ARTISTE,ALBUM,MUSIQUE
+/**
+ * @api {get} search/categorie/:nomCategorie/lettre/:lettre/page/:numPage Get Page information
+ * @apiExample Example usage: 
+ *      wasabi.i3s.unice.fr/search/categorie/artists/lettre/b/page/5
+ * @apiVersion 0.1.0
+ * @apiName GetPageByCategory
+ * @apiGroup Search
+ *
+ * @apiParam {String} nomCategorie {artists,albums,songs}.
+ * @apiParam {String} lettre Une ou deux lettres.
+ * @apiParam {Number} numPage Users unique ID.
+ *
+ * @apiSuccessExample Success-Response for an artist:
+    HTTP/1.1 200 OK
+    {
+        "limit": 200,
+        "artists": [{
+                "_id": "56d843ec53a7ddfc01f96d17",
+                "name": "J"
+            },
+            {
+                "_id": "56d843ed53a7ddfc01f96d18",
+                "name": "J Alvarez"
+            }
+        ]
+    } 
+ *  @apiSuccessExample Success-Response for an album:
+    HTTP/1.1 200 OK
+    {
+        "limit": 200,
+        "albums": [{
+                "_id": "5714debb25ac0d8aee34e3a7",
+                "name": "Agnetha Fältskog",
+                "titleAlbum": "A"
+            },
+            {
+                "_id": "5714debb25ac0d8aee355421",
+                "name": "Cass McCombs",
+                "titleAlbum": "A"
+            }
+        ]
+    }   
+ *  @apiSuccessExample Success-Response for a song:
+    HTTP/1.1 200 OK
+    {
+        "limit": 200,
+        "songs": [{
+                "_id": "5714dec325ac0d8aee3859f9",
+                "name": "Addict",
+                "albumTitre": "Come On Sun",
+                "titleSong": "K"
+            },
+            {
+                "_id": "5714dec325ac0d8aee3804f5",
+                "name": "A",
+                "albumTitre": "A Vs. Monkey Kong",
+                "titleSong": "A"
+            }
+        ]
+    }
+ * @apiError error The nomCategorie or lettre or numPage was not found.
+ * @apiErrorExample Error-Response:
+    HTTP/1.1 404 Not Found
+    {
+        "error": "Page not found"
+    }
+ */
 router.get('/artist_id/:artistId/album_id/:albumId/song_id/:songId', (req, res) => {
     console.log("test ===============");
     var db = req.db,
@@ -605,9 +1564,9 @@ router.get('/artist_id/:artistId/album_id/:albumId/song_id/:songId', (req, res) 
         "name": 1
     }, (err, artist) => {
         if (artist == null) {
-            return res.status(404).send([{
+            return res.status(404).send({
                 error: config.http.error.artist_404
-            }]);
+            });
         }
         db.collection(COLLECTIONALBUM).findOne({
             "_id": ObjectId(albumId)
@@ -616,9 +1575,9 @@ router.get('/artist_id/:artistId/album_id/:albumId/song_id/:songId', (req, res) 
             "titre": 1
         }, (err, album) => {
             if (album == null) {
-                return res.status(404).send([{
+                return res.status(404).send({
                     error: config.http.error.album_404
-                }]);
+                });
             }
             db.collection(COLLECTIONSONG).findOne({
                 "_id": ObjectId(songId)
@@ -627,9 +1586,9 @@ router.get('/artist_id/:artistId/album_id/:albumId/song_id/:songId', (req, res) 
                 "wordCount": 0
             }, (err, song) => {
                 if (song == null) {
-                    return res.status(404).send([{
+                    return res.status(404).send({
                         error: config.http.error.song_404
-                    }]);
+                    });
                 }
                 album.songs = song;
                 artist.albums = album;
@@ -639,6 +1598,73 @@ router.get('/artist_id/:artistId/album_id/:albumId/song_id/:songId', (req, res) 
     });
 });
 //PUT SONG OBJECT
+/**
+ * @api {get} search/categorie/:nomCategorie/lettre/:lettre/page/:numPage Get Page information
+ * @apiExample Example usage: 
+ *      wasabi.i3s.unice.fr/search/categorie/artists/lettre/b/page/5
+ * @apiVersion 0.1.0
+ * @apiName GetPageByCategory
+ * @apiGroup Search
+ *
+ * @apiParam {String} nomCategorie {artists,albums,songs}.
+ * @apiParam {String} lettre Une ou deux lettres.
+ * @apiParam {Number} numPage Users unique ID.
+ *
+ * @apiSuccessExample Success-Response for an artist:
+    HTTP/1.1 200 OK
+    {
+        "limit": 200,
+        "artists": [{
+                "_id": "56d843ec53a7ddfc01f96d17",
+                "name": "J"
+            },
+            {
+                "_id": "56d843ed53a7ddfc01f96d18",
+                "name": "J Alvarez"
+            }
+        ]
+    } 
+ *  @apiSuccessExample Success-Response for an album:
+    HTTP/1.1 200 OK
+    {
+        "limit": 200,
+        "albums": [{
+                "_id": "5714debb25ac0d8aee34e3a7",
+                "name": "Agnetha Fältskog",
+                "titleAlbum": "A"
+            },
+            {
+                "_id": "5714debb25ac0d8aee355421",
+                "name": "Cass McCombs",
+                "titleAlbum": "A"
+            }
+        ]
+    }   
+ *  @apiSuccessExample Success-Response for a song:
+    HTTP/1.1 200 OK
+    {
+        "limit": 200,
+        "songs": [{
+                "_id": "5714dec325ac0d8aee3859f9",
+                "name": "Addict",
+                "albumTitre": "Come On Sun",
+                "titleSong": "K"
+            },
+            {
+                "_id": "5714dec325ac0d8aee3804f5",
+                "name": "A",
+                "albumTitre": "A Vs. Monkey Kong",
+                "titleSong": "A"
+            }
+        ]
+    }
+ * @apiError error The nomCategorie or lettre or numPage was not found.
+ * @apiErrorExample Error-Response:
+    HTTP/1.1 404 Not Found
+    {
+        "error": "Page not found"
+    }
+ */
 router.put('/artist/:artistName/album/:albumName/song/:songName', (req, res) => {
     var db = req.db,
         songBody = req.body;
@@ -663,6 +1689,73 @@ router.put('/artist/:artistName/album/:albumName/song/:songName', (req, res) => 
 //==========================================================================================================================\\
 //permet de chercher des artistes via la barre de recherche
 //FUTURE voir la configuration
+/**
+ * @api {get} search/categorie/:nomCategorie/lettre/:lettre/page/:numPage Get Page information
+ * @apiExample Example usage: 
+ *      wasabi.i3s.unice.fr/search/categorie/artists/lettre/b/page/5
+ * @apiVersion 0.1.0
+ * @apiName GetPageByCategory
+ * @apiGroup Search
+ *
+ * @apiParam {String} nomCategorie {artists,albums,songs}.
+ * @apiParam {String} lettre Une ou deux lettres.
+ * @apiParam {Number} numPage Users unique ID.
+ *
+ * @apiSuccessExample Success-Response for an artist:
+    HTTP/1.1 200 OK
+    {
+        "limit": 200,
+        "artists": [{
+                "_id": "56d843ec53a7ddfc01f96d17",
+                "name": "J"
+            },
+            {
+                "_id": "56d843ed53a7ddfc01f96d18",
+                "name": "J Alvarez"
+            }
+        ]
+    } 
+ *  @apiSuccessExample Success-Response for an album:
+    HTTP/1.1 200 OK
+    {
+        "limit": 200,
+        "albums": [{
+                "_id": "5714debb25ac0d8aee34e3a7",
+                "name": "Agnetha Fältskog",
+                "titleAlbum": "A"
+            },
+            {
+                "_id": "5714debb25ac0d8aee355421",
+                "name": "Cass McCombs",
+                "titleAlbum": "A"
+            }
+        ]
+    }   
+ *  @apiSuccessExample Success-Response for a song:
+    HTTP/1.1 200 OK
+    {
+        "limit": 200,
+        "songs": [{
+                "_id": "5714dec325ac0d8aee3859f9",
+                "name": "Addict",
+                "albumTitre": "Come On Sun",
+                "titleSong": "K"
+            },
+            {
+                "_id": "5714dec325ac0d8aee3804f5",
+                "name": "A",
+                "albumTitre": "A Vs. Monkey Kong",
+                "titleSong": "A"
+            }
+        ]
+    }
+ * @apiError error The nomCategorie or lettre or numPage was not found.
+ * @apiErrorExample Error-Response:
+    HTTP/1.1 404 Not Found
+    {
+        "error": "Page not found"
+    }
+ */
 router.get('/fulltext/:searchText', (req, res) => {
     var searchText = elasticSearchHandler.escapeElasticSearch(req.params.searchText);
     var maxinfo = config.request.limit_search_bar;
@@ -691,6 +1784,73 @@ router.get('/fulltext/:searchText', (req, res) => {
         res.send(err);
     });
 });
+/**
+ * @api {get} search/categorie/:nomCategorie/lettre/:lettre/page/:numPage Get Page information
+ * @apiExample Example usage: 
+ *      wasabi.i3s.unice.fr/search/categorie/artists/lettre/b/page/5
+ * @apiVersion 0.1.0
+ * @apiName GetPageByCategory
+ * @apiGroup Search
+ *
+ * @apiParam {String} nomCategorie {artists,albums,songs}.
+ * @apiParam {String} lettre Une ou deux lettres.
+ * @apiParam {Number} numPage Users unique ID.
+ *
+ * @apiSuccessExample Success-Response for an artist:
+    HTTP/1.1 200 OK
+    {
+        "limit": 200,
+        "artists": [{
+                "_id": "56d843ec53a7ddfc01f96d17",
+                "name": "J"
+            },
+            {
+                "_id": "56d843ed53a7ddfc01f96d18",
+                "name": "J Alvarez"
+            }
+        ]
+    } 
+ *  @apiSuccessExample Success-Response for an album:
+    HTTP/1.1 200 OK
+    {
+        "limit": 200,
+        "albums": [{
+                "_id": "5714debb25ac0d8aee34e3a7",
+                "name": "Agnetha Fältskog",
+                "titleAlbum": "A"
+            },
+            {
+                "_id": "5714debb25ac0d8aee355421",
+                "name": "Cass McCombs",
+                "titleAlbum": "A"
+            }
+        ]
+    }   
+ *  @apiSuccessExample Success-Response for a song:
+    HTTP/1.1 200 OK
+    {
+        "limit": 200,
+        "songs": [{
+                "_id": "5714dec325ac0d8aee3859f9",
+                "name": "Addict",
+                "albumTitre": "Come On Sun",
+                "titleSong": "K"
+            },
+            {
+                "_id": "5714dec325ac0d8aee3804f5",
+                "name": "A",
+                "albumTitre": "A Vs. Monkey Kong",
+                "titleSong": "A"
+            }
+        ]
+    }
+ * @apiError error The nomCategorie or lettre or numPage was not found.
+ * @apiErrorExample Error-Response:
+    HTTP/1.1 404 Not Found
+    {
+        "error": "Page not found"
+    }
+ */
 router.get('/more/:searchText', (req, res) => {
     var searchText = elasticSearchHandler.escapeElasticSearch(req.params.searchText);
     var maxinfoselected = LIMIT / 2;

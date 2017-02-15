@@ -15,6 +15,7 @@ import errorHandler from 'errorhandler';
 import basicAuth from 'basic-auth-connect';
 import elasticsearch from 'elasticsearch';
 import search from './routes/search';
+import api from './routes/api';
 import MT5 from './routes/MT5';
 import updatedb from './routes/updatedb';
 import mergedb from './routes/mergedb';
@@ -49,9 +50,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: true
 })); //false
-//permet de s'authentifier, personne ne doit pouvoir accèder au site
-app.use(basicAuth(login.login, login.password));
-
 //<start> MT5
 String.prototype.endsWith = function (suffix) {
     return this.indexOf(suffix, this.length - suffix.length) !== -1;
@@ -67,7 +65,6 @@ app.use((req, res, next) => {
     next();
 });
 //<end> MT5
-
 app.use((req, res, next) => {
     req.db = db;
     req.COLLECTIONARTIST = config.database.collection_artist;
@@ -76,8 +73,11 @@ app.use((req, res, next) => {
     req.elasticsearchClient = elasticsearchClient;
     next();
 });
-
+app.use('/api', api);
+//permet de s'authentifier, personne ne doit pouvoir accèder au site
+app.use(basicAuth(login.login, login.password));
 app.use('/', express.static(path.join(__dirname, 'public')));
+app.use('/apidoc', express.static('apidoc'));
 app.use('/search', search);
 app.use('/MT5', MT5);
 if (app.get('env') === 'development') {

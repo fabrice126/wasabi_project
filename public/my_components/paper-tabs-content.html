@@ -124,14 +124,12 @@
                 padding-bottom: 2%;
             }
         </style>
-        <!--Chargement en ajax du contenu -->
+        <!--Chargement automatique du contenu en ajax et vérification avec _checkUrlParams que les parametres sont les bons-->
         <template is="dom-if" if="{{_checkUrlParams(lettre,numPage)}}">
-            <iron-ajax id="get_content" url="/search/categorie/{{categorie}}/lettre/{{lettre}}/page/{{numPage}}" last-response="{{data}}"
-                auto handleAs="json"> </iron-ajax>
+            <iron-ajax id="get_content" url="/search/categorie/{{categorie}}/lettre/{{lettre}}/page/{{numPage}}" last-response="{{data}}"handleAs="json" auto> </iron-ajax>
         </template>
-        <iron-ajax id="get_db_info" url="/search/dbinfo" last-response="{{db_info}}" auto handleAs="json"> </iron-ajax>
-        <iron-ajax id="get_db_info_count" url="/search/count/{{categorie}}/{{lettre}}" last-response="{{dbcount}}" auto handleAs="json">
-        </iron-ajax>
+        <iron-ajax id="get_db_info" url="/search/dbinfo" last-response="{{db_info}}" auto handleAs="json"></iron-ajax>
+        <iron-ajax id="get_db_info_count" url="/search/count/{{categorie}}/{{lettre}}" last-response="{{dbcount}}" auto handleAs="json"></iron-ajax>
         <!-- Génération des listes de catégories -->
         <paper-material elevation="1">
             <paper-tabs id="paperTabsCategorie" selected={{idxCurrentTab}}>
@@ -144,6 +142,7 @@
         <paper-material elevation="1">
             <nav id="nav_alphabet">
                 <iron-pages id="iron_alphabet" selected="0">
+                    <!--Génération de l'alphabet pour chaque les categories : artist,album, song, label-->
                     <template is="dom-repeat" items="{{categories}}" as="categorie">
                         <ul id="alphabet_{{categorie}}">
                             <template is="dom-repeat" items="{{alphabet}}" as="lettre">
@@ -153,9 +152,9 @@
                             </template>
                         </ul>
                     </template>
-                    <template is="dom-if" if="{{_countNbArtist(idxCurrentTab)}}">
+                    <template is="dom-if" if="{{_countNbArtist(idxCurrentTab)}}"> 
                         Nous avons actuellement {{ db_info.nbArtist}} artistes !
-                    </template>
+                        </template>
                     <template is="dom-if" if="{{_countNbAlbum(idxCurrentTab)}}">
                         Nous avons actuellement {{db_info.nbAlbum}} albums !
                     </template>
@@ -343,11 +342,9 @@
                     newNumPage = numPage - 1;
                 }
                 return newNumPage;
-
             },
             //fonction verifiant si il éxiste une page suivante ou non
             _hasNext: function (numPage, infosData) {
-                console.log("test");
                 if (this._isArtist(infosData) && this._isFullOfItems(infosData.artists, infosData.limit)) {
                     return parseInt(numPage, 10) + 1;
                 } else if (this._isAlbum(infosData) && this._isFullOfItems(infosData.albums, infosData.limit)) {
