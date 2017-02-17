@@ -1238,11 +1238,16 @@ define({ "api": [
             "group": "Error 4xx",
             "optional": false,
             "field": "error",
-            "description": "<p>albumName was not found.</p>"
+            "description": "<p>You must type a valid ObjectId.</p>"
           }
         ]
       },
       "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 404 Not Found\n{\n    \"error\": \"You must type a valid ObjectId\"\n}",
+          "type": "json"
+        },
         {
           "title": "Error-Response:",
           "content": "HTTP/1.1 404 Not Found\n{\n    \"error\": \"Album not found\"\n}",
@@ -2739,11 +2744,16 @@ define({ "api": [
             "group": "Error 4xx",
             "optional": false,
             "field": "error",
-            "description": "<p>The artistId was not found.</p>"
+            "description": "<p>The ObjectId is not valid.</p>"
           }
         ]
       },
       "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 404 Not Found\n{\n    \"error\": \"You must type a valid ObjectId\"\n}",
+          "type": "json"
+        },
         {
           "title": "Error-Response:",
           "content": "HTTP/1.1 404 Not Found\n{\n    \"error\": \"Artist not found\"\n}",

@@ -1140,6 +1140,12 @@ router.get('/artist/:artistName/album/:albumName', (req, res) => {
             }]
         }
     }
+ * @apiError error You must type a valid ObjectId.
+ * @apiErrorExample Error-Response:
+    HTTP/1.1 404 Not Found
+    {
+        "error": "You must type a valid ObjectId"
+    }
  * @apiError error albumName was not found.
  * @apiErrorExample Error-Response:
     HTTP/1.1 404 Not Found
@@ -1157,6 +1163,9 @@ router.get('/artist_id/:artistId/album_id/:albumId', (req, res) => {
     var db = req.db,
         artistId = req.params.artistId,
         albumId = req.params.albumId;
+    if (!ObjectId.isValid(artistId) || !ObjectId.isValid(albumId)) {
+        return res.status(404).json(config.http.error.objectid_404);
+    }
     db.collection(COLLECTIONARTIST).findOne({
         _id: ObjectId(artistId)
     }, {
@@ -1499,7 +1508,12 @@ router.get('/artist/:artistName/album/:albumName/song/:songName', (req, res) => 
             }
         }
     }
-
+ * @apiError error The ObjectId is not valid.
+ * @apiErrorExample Error-Response:
+    HTTP/1.1 404 Not Found
+    {
+        "error": "You must type a valid ObjectId"
+    }
  * @apiError error The artistId was not found.
  * @apiErrorExample Error-Response:
     HTTP/1.1 404 Not Found
@@ -1525,6 +1539,9 @@ router.get('/artist_id/:artistId/album_id/:albumId/song_id/:songId', (req, res) 
         artistId = req.params.artistId,
         albumId = req.params.albumId,
         songId = req.params.songId;
+    if (!ObjectId.isValid(artistId) || !ObjectId.isValid(albumId) || !ObjectId.isValid(songId)) {
+        return res.status(404).json(config.http.error.objectid_404);
+    }
     db.collection(COLLECTIONARTIST).findOne({
         _id: ObjectId(artistId)
     }, {
@@ -1565,6 +1582,9 @@ router.put('/artist/:artistName/album/:albumName/song/:songName', (req, res) => 
         songBody = req.body;
     //On récupére l'id de la musique afin de modifier l'objet en base de données
     var idSong = songBody._id;
+    if (!ObjectId.isValid(idSong)) {
+        return res.status(404).json(config.http.error.objectid_404);
+    }
     //!\ Il faut supprimer les attributs qui sont de type objectId dans notre base car songBody les récupéres en string
     delete songBody.id_album;
     delete songBody._id;
