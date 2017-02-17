@@ -15,7 +15,7 @@ import errorHandler from 'errorhandler';
 import basicAuth from 'basic-auth-connect';
 import elasticsearch from 'elasticsearch';
 import search from './routes/search';
-import api from './routes/api';
+import api_v1 from './routes/api/v1/api_v1';
 import MT5 from './routes/MT5';
 import updatedb from './routes/updatedb';
 import mergedb from './routes/mergedb';
@@ -73,11 +73,11 @@ app.use((req, res, next) => {
     req.elasticsearchClient = elasticsearchClient;
     next();
 });
-app.use('/api', api);
+app.use('/api/v1', api_v1);
 //permet de s'authentifier, personne ne doit pouvoir accèder au site
 app.use(basicAuth(login.login, login.password));
 app.use('/', express.static(path.join(__dirname, 'public')));
-app.use('/apidoc', express.static('apidoc'));
+app.use('/apidoc', express.static(path.join(__dirname, 'apidoc')));
 app.use('/search', search);
 app.use('/MT5', MT5);
 if (app.get('env') === 'development') {

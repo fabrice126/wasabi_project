@@ -19,7 +19,7 @@ const LIMIT = config.request.limit;
  * @api {get} search/categorie/:nomCategorie/lettre/:lettre/page/:numPage Get page information
  * @apiExample Example usage: 
  *      wasabi.i3s.unice.fr/search/categorie/artists/lettre/b/page/5
- * @apiVersion 0.1.0
+ * @apiVersion 1.0.0
  * @apiName GetPageByCategory
  * @apiGroup Search
  *
@@ -111,7 +111,7 @@ router.get('/categorie/:nomCategorie/lettre/:lettre/page/:numPage', (req, res, n
             }).skip(skip).limit(LIMIT).toArray((err, artists) => {
                 if (err) throw err;
                 objSend.artists = artists;
-                res.send(JSON.stringify(objSend));
+                res.json(objSend);
             });
             break;
         case "album":
@@ -133,7 +133,7 @@ router.get('/categorie/:nomCategorie/lettre/:lettre/page/:numPage', (req, res, n
             }], (err, albums) => {
                 if (err) throw err;
                 objSend.albums = albums;
-                res.send(JSON.stringify(objSend));
+                res.json(objSend);
             });
             break;
         case "song":
@@ -156,13 +156,11 @@ router.get('/categorie/:nomCategorie/lettre/:lettre/page/:numPage', (req, res, n
             }], (err, songs) => {
                 if (err) throw err;
                 objSend.songs = songs;
-                res.send(JSON.stringify(objSend));
+                res.json(objSend);
             });
             break;
         default:
-            res.status(404).send({
-                error: config.http.error.global_404
-            });
+            res.status(404).json(config.http.error.global_404);
             break;
     }
 });
@@ -175,7 +173,7 @@ router.get('/categorie/:nomCategorie/lettre/:lettre/page/:numPage', (req, res, n
  * @api {get} search/category/:collection/:categoryName Get category
  * @apiExample Example usage: 
  *      wasabi.i3s.unice.fr/search/category/song/Songs%20written%20by%20Cliff%20Burton
- * @apiVersion 0.1.0
+ * @apiVersion 1.0.0
  * @apiName GetSongsByCategory
  * @apiGroup Search
  *
@@ -211,9 +209,7 @@ router.get('/categorie/:nomCategorie/lettre/:lettre/page/:numPage', (req, res, n
 router.get('/category/:collection/:categoryName', (req, res) => {
     var collection = req.params.collection;
     if (collection !== COLLECTIONARTIST && collection !== COLLECTIONALBUM && collection !== COLLECTIONSONG) {
-        return res.status(404).send({
-            error: config.http.error.global_404
-        });
+        return res.status(404).json(config.http.error.global_404);
     }
     var categoryName = req.params.categoryName;
     req.db.collection(collection).find({
@@ -225,7 +221,7 @@ router.get('/category/:collection/:categoryName', (req, res) => {
     }).sort({
         titre: 1
     }).limit(LIMIT).toArray((err, objs) => {
-        res.send(JSON.stringify(objs));
+        res.json(objs);
     })
 });
 
@@ -238,7 +234,7 @@ router.get('/category/:collection/:categoryName', (req, res) => {
  * @api {get} search/producer/:producerName Get songs by producer
  * @apiExample Example usage: 
  *      wasabi.i3s.unice.fr/search/producer/Flemming%20Rasmussen
- * @apiVersion 0.1.0
+ * @apiVersion 1.0.0
  * @apiName GetSongsByProducer
  * @apiGroup Search
  *
@@ -275,7 +271,7 @@ router.get('/producer/:producerName', (req, res) => {
     }).sort({
         titre: 1
     }).limit(LIMIT).toArray((err, objs) => {
-        res.send(JSON.stringify(objs));
+        res.json(objs);
     })
 });
 
@@ -288,7 +284,7 @@ router.get('/producer/:producerName', (req, res) => {
  * @api {get} search/recordlabel/:recordLabelName Get songs by recordLabel
  * @apiExample {get} Example usage: 
  *      wasabi.i3s.unice.fr/search/recordlabel/Elektra%20Records
- * @apiVersion 0.1.0
+ * @apiVersion 1.0.0
  * @apiName GetSongsByRecordLabel
  * @apiGroup Search
  *
@@ -328,7 +324,7 @@ router.get('/recordlabel/:recordLabelName', (req, res) => {
     }).sort({
         titre: 1
     }).limit(LIMIT).toArray((err, objs) => {
-        res.send(JSON.stringify(objs));
+        res.json(objs);
     })
 });
 
@@ -340,7 +336,7 @@ router.get('/recordlabel/:recordLabelName', (req, res) => {
  * @api {get} search/genre/:genreName Get songs by genre
  * @apiExample Example usage: 
  *      wasabi.i3s.unice.fr/search/genre/Thrash%20metal
- * @apiVersion 0.1.0
+ * @apiVersion 1.0.0
  * @apiName GetSongsByGenre
  * @apiGroup Search
  *
@@ -376,7 +372,7 @@ router.get('/genre/:genreName', (req, res) => {
     }).sort({
         titre: 1
     }).limit(LIMIT).toArray((err, objs) => {
-        res.send(JSON.stringify(objs));
+        res.json(objs);
     })
 });
 //==========================================================================================================================\\
@@ -388,7 +384,7 @@ router.get('/genre/:genreName', (req, res) => {
  * @apiExample Example usage: 
  *      wasabi.i3s.unice.fr/search/recorded/1985
  *      wasabi.i3s.unice.fr/search/recorded/--06-16
- * @apiVersion 0.1.0
+ * @apiVersion 1.0.0
  * @apiName GetSongsByRecordedName
  * @apiGroup Search
  *
@@ -425,7 +421,7 @@ router.get('/recorded/:recordedName', (req, res) => {
     }).sort({
         titre: 1
     }).limit(LIMIT).toArray((err, objs) => {
-        res.send(JSON.stringify(objs));
+        res.json(objs);
     })
 });
 //==========================================================================================================================\\
@@ -436,7 +432,7 @@ router.get('/recorded/:recordedName', (req, res) => {
  * @api {get} search/award/:awardName Get songs by awardName
  * @apiExample Example usage: 
  *      wasabi.i3s.unice.fr/search/award/Platinum
- * @apiVersion 0.1.0
+ * @apiVersion 1.0.0
  * @apiName GetSongsByAwardName
  * @apiGroup Search
  *
@@ -477,7 +473,7 @@ router.get('/award/:awardName', (req, res) => {
     }).sort({
         titre: 1
     }).limit(LIMIT).toArray((err, objs) => {
-        res.send(JSON.stringify(objs));
+        res.json(objs);
     })
 });
 
@@ -489,7 +485,7 @@ router.get('/award/:awardName', (req, res) => {
  * @api {get} search/writer/:writerName Get songs by writerName
  * @apiExample Example usage: 
  *      wasabi.i3s.unice.fr/search/writer/Lars%20Ulrich
- * @apiVersion 0.1.0
+ * @apiVersion 1.0.0
  * @apiName GetSongsByWriterName
  * @apiGroup Search
  *
@@ -526,7 +522,7 @@ router.get('/writer/:writerName', (req, res) => {
     }).sort({
         titre: 1
     }).limit(LIMIT).toArray((err, objs) => {
-        res.send(JSON.stringify(objs));
+        res.json(objs);
     })
 });
 //==========================================================================================================================\\
@@ -538,7 +534,7 @@ router.get('/writer/:writerName', (req, res) => {
  * @apiExample Example usage: 
  *      wasabi.i3s.unice.fr/search/format/Gramophone%20record
  *      wasabi.i3s.unice.fr/search/format/CD%20single
- * @apiVersion 0.1.0
+ * @apiVersion 1.0.0
  * @apiName GetSongsByFormatName
  * @apiGroup Search
  *
@@ -575,7 +571,7 @@ router.get('/format/:formatName', (req, res) => {
     }).sort({
         titre: 1
     }).limit(LIMIT).toArray((err, objs) => {
-        res.send(JSON.stringify(objs));
+        res.json(objs);
     })
 });
 //==========================================================================================================================\\
@@ -596,21 +592,21 @@ router.get('/count/:collection/:lettre', (req, res) => {
     //     fieldCollection = "titre";
     // }
     // if(collection !== COLLECTIONARTIST && collection !==COLLECTIONALBUM && collection !==COLLECTIONSONG || lettre.length>2){
-    //     return res.status(404).send({error:config.http.error.global_404});
+    //     return res.status(404).json(config.http.error.global_404);
     // }
     // tParamToFind = searchHandler.optimizeFind(lettre);
     // tObjectRequest = searchHandler.constructData(fieldCollection, tParamToFind);
     // db.collection(collection).count({$or:tObjectRequest},(err, countfield) => {
     //     if(err){
     //         console.log(err);
-    //         return res.status(404).send({error:config.http.error.global_404});
+    //         return res.status(404).json(config.http.error.global_404);
     //     }
     //     var dbcount = {count:countfield};
 
     var dbcount = {
         count: 0
     }; // si tout est commenté
-    res.send(JSON.stringify(dbcount));
+    res.json(dbcount);
     // });
 });
 //==========================================================================================================================\\
@@ -621,7 +617,7 @@ router.get('/count/:collection/:lettre', (req, res) => {
  * @apiExample Example usage: 
  *      wasabi.i3s.unice.fr/search/count/song/award/Platinum
  *      wasabi.i3s.unice.fr/search/count/album/genre/Alternative%20Rock
- * @apiVersion 0.1.0
+ * @apiVersion 1.0.0
  * @apiName GetNumberOfFieldValue
  * @apiGroup Search
  *
@@ -644,23 +640,19 @@ router.get('/count/:collection/:fieldName/:fieldValue', (req, res) => {
         fieldName = req.params.fieldName,
         fieldValue = req.params.fieldValue;
     if (collection !== COLLECTIONARTIST && collection !== COLLECTIONALBUM && collection !== COLLECTIONSONG) {
-        return res.status(404).send({
-            error: config.http.error.global_404
-        });
+        return res.status(404).json(config.http.error.global_404);
     }
     var query = {};
     query[fieldName] = fieldValue;
     req.db.collection(collection).count(query, (err, countfield) => {
         if (err) {
             console.log(err);
-            return res.status(404).send({
-                error: config.http.error.global_404
-            });
+            return res.status(404).json(config.http.error.global_404);
         }
         var dbcount = {
             count: countfield
         };
-        res.send(JSON.stringify(dbcount));
+        res.json(dbcount);
     });
 });
 //==========================================================================================================================\\
@@ -671,7 +663,7 @@ router.get('/count/:collection/:fieldName/:fieldValue', (req, res) => {
  * @api {get} search/dbinfo Get number of artist,album,song
  * @apiExample Example usage: 
  *      wasabi.i3s.unice.fr/search/dbinfo
- * @apiVersion 0.1.0
+ * @apiVersion 1.0.0
  * @apiName GetNumberOfArtistAlbumSong
  * @apiGroup Search
  * 
@@ -697,7 +689,7 @@ router.get('/dbinfo', (req, res) => {
             dbinfo.nbAlbum = count;
             db.collection(COLLECTIONSONG).count((err, count) => {
                 dbinfo.nbSong = count;
-                res.send(JSON.stringify(dbinfo));
+                res.json(dbinfo);
             });
         });
     });
@@ -710,7 +702,7 @@ router.get('/dbinfo', (req, res) => {
  * @api {get} search/artist/:artistName Get infos about artist
  * @apiExample Example usage: 
  *      wasabi.i3s.unice.fr/search/artist/Metallica
- * @apiVersion 0.1.0
+ * @apiVersion 1.0.0
  * @apiName GetInfosArtistByArtistName
  * @apiGroup Search
  *
@@ -723,36 +715,36 @@ router.get('/dbinfo', (req, res) => {
  * @apiSuccess {String} urlFacebook Artist urlFacebook
  * @apiSuccess {String} urlMySpace Artist urlMySpace
  * @apiSuccess {String} urlTwitter Artist urlTwitter
- * @apiSuccess {Array} locationInfo Artist locationInfo
+ * @apiSuccess {String[]} locationInfo Artist locationInfo
  * @apiSuccess {String} activeYears Artist activeYears
- * @apiSuccess {Array} genres Artist genres
- * @apiSuccess {Array} labels Artist labels
+ * @apiSuccess {String[]} genres Artist genres
+ * @apiSuccess {String[]} labels Artist labels
  * 
  * @apiSuccess {Object[]} members Members object
- * @apiSuccess {String} members.name Members name
- * @apiSuccess {Array} members.instruments Members instruments
- * @apiSuccess {Array} members.activeYears Members activeYears
+ *  @apiSuccess {String} members.name Members name
+ *  @apiSuccess {String[]} members.instruments Members instruments
+ *  @apiSuccess {String[]} members.activeYears Members activeYears
  * 
  * @apiSuccess {Object[]} formerMembers FormerMembers object
- * @apiSuccess {String} formerMembers.name FormerMembers name
- * @apiSuccess {Array} formerMembers.instruments FormerMembers instruments
- * @apiSuccess {Array} formerMembers.activeYears FormerMembers activeYears
+ *  @apiSuccess {String} formerMembers.name FormerMembers name
+ *  @apiSuccess {String[]} formerMembers.instruments FormerMembers instruments
+ *  @apiSuccess {String[]} formerMembers.activeYears FormerMembers activeYears
  *
  * @apiSuccess {String} rdf Artist rdf
  * 
  * @apiSuccess {Object[]} albums Album object
- * @apiSuccess {String} albums._id Album id
- * @apiSuccess {String} albums.name Artist name
- * @apiSuccess {String} albums.titre Album titre
- * @apiSuccess {String} albums.dateSortie Album dateSortie
- * @apiSuccess {String} albums.genre Album genre
- * @apiSuccess {String} albums.length Album length
- * @apiSuccess {String} albums.id_artist Artist id
+ *  @apiSuccess {String} albums._id Album id
+ *  @apiSuccess {String} albums.name Artist name
+ *  @apiSuccess {String} albums.titre Album titre
+ *  @apiSuccess {String} albums.dateSortie Album dateSortie
+ *  @apiSuccess {String} albums.genre Album genre
+ *  @apiSuccess {String} albums.length Album length
+ *  @apiSuccess {String} albums.id_artist Artist id
  * 
- * @apiSuccess {Object[]} albums.songs Song object
- * @apiSuccess {String} albums.songs._id Song id
- * @apiSuccess {String} albums.songs.position Song position
- * @apiSuccess {String} albums.songs.titre Song titre
+ *  @apiSuccess {Object[]} albums.songs Song object
+ *      @apiSuccess {String} albums.songs._id Song id
+ *      @apiSuccess {Number} albums.songs.position Song position
+ *      @apiSuccess {String} albums.songs.titre Song titre
  * 
  * @apiSuccessExample Success-Response:
     HTTP/1.1 200 OK
@@ -821,9 +813,7 @@ router.get('/artist/:artistName', (req, res) => {
         wordCount: 0
     }, (err, artist) => {
         if (artist === null) {
-            return res.status(404).send({
-                error: config.http.error.artist_404
-            });
+            return res.status(404).json(config.http.error.artist_404);
         }
         db.collection(COLLECTIONALBUM).find({
             id_artist: artist._id
@@ -855,7 +845,7 @@ router.get('/artist/:artistName', (req, res) => {
                         album.songs = songs;
                         cnt++;
                         if (nbAlbum == cnt) {
-                            res.send(JSON.stringify(artist));
+                            res.json(artist);
                         }
                     });
                 })(artist.albums[i]);
@@ -872,7 +862,7 @@ router.get('/artist/:artistName', (req, res) => {
  * @api {get} search/artist/:artistName/album/:albumName Get infos about album
  * @apiExample Example usage: 
  *      wasabi.i3s.unice.fr/search/artist/Metallica/album/Master%20Of%20Puppets
- * @apiVersion 0.1.0
+ * @apiVersion 1.0.0
  * @apiName GetInfosAlbumByAlbumName
  * @apiGroup Search
  *
@@ -886,37 +876,37 @@ router.get('/artist/:artistName', (req, res) => {
  * @apiSuccess {String} urlFacebook Artist urlFacebook
  * @apiSuccess {String} urlMySpace Artist urlMySpace
  * @apiSuccess {String} urlTwitter Artist urlTwitter
- * @apiSuccess {Array} locationInfo Artist locationInfo
+ * @apiSuccess {String[]} locationInfo Artist locationInfo
  * @apiSuccess {String} activeYears Artist activeYears
- * @apiSuccess {Array} genres Artist genres
- * @apiSuccess {Array} labels Artist labels
+ * @apiSuccess {String[]} genres Artist genres
+ * @apiSuccess {String[]} labels Artist labels
  * 
  * @apiSuccess {Object[]} members Members object
- * @apiSuccess {String} members.name Members name
- * @apiSuccess {Array} members.instruments Members instruments
- * @apiSuccess {Array} members.activeYears Members activeYears
+ *  @apiSuccess {String} members.name Members name
+ *  @apiSuccess {String[]} members.instruments Members instruments
+ *  @apiSuccess {String[]} members.activeYears Members activeYears
  * 
  * @apiSuccess {Object[]} formerMembers FormerMembers object
- * @apiSuccess {String} formerMembers.name FormerMembers name
- * @apiSuccess {Array} formerMembers.instruments FormerMembers instruments
- * @apiSuccess {Array} formerMembers.activeYears FormerMembers activeYears
+ *  @apiSuccess {String} formerMembers.name FormerMembers name
+ *  @apiSuccess {String[]} formerMembers.instruments FormerMembers instruments
+ *  @apiSuccess {String[]} formerMembers.activeYears FormerMembers activeYears
  *
  * @apiSuccess {String} rdf Artist rdf
  * 
  * @apiSuccess {Object[]} albums Album object
- * @apiSuccess {String} albums._id Album id
- * @apiSuccess {String} albums.name Artist name
- * @apiSuccess {String} albums.titre Album titre
- * @apiSuccess {String} albums.dateSortie Album dateSortie
- * @apiSuccess {String} albums.genre Album genre
- * @apiSuccess {String} albums.length Album length
- * @apiSuccess {String} albums.id_artist Artist id
- * @apiSuccess {String} albums.rdf Album rdf
+ *  @apiSuccess {String} albums._id Album id
+ *  @apiSuccess {String} albums.name Artist name
+ *  @apiSuccess {String} albums.titre Album titre
+ *  @apiSuccess {String} albums.dateSortie Album dateSortie
+ *  @apiSuccess {String} albums.genre Album genre
+ *  @apiSuccess {String} albums.length Album length
+ *  @apiSuccess {String} albums.id_artist Artist id
+ *  @apiSuccess {String} albums.rdf Album rdf
 
- * @apiSuccess {Object[]} albums.songs Song object
- * @apiSuccess {String} albums.songs._id Song id
- * @apiSuccess {String} albums.songs.position Song position
- * @apiSuccess {String} albums.songs.titre Song titre
+ *  @apiSuccess {Object[]} albums.songs Song object
+ *      @apiSuccess {String} albums.songs._id Song id
+ *      @apiSuccess {Number} albums.songs.position Song position
+ *      @apiSuccess {String} albums.songs.titre Song titre
  *
  * @apiSuccessExample Success-Response:
     HTTP/1.1 200 OK
@@ -1004,9 +994,7 @@ router.get('/artist/:artistName/album/:albumName', (req, res) => {
         "wordCount": 0
     }, (err, artist) => {
         if (artist == null) {
-            return res.status(404).send({
-                error: config.http.error.artist_404
-            });
+            return res.status(404).json(config.http.error.artist_404);
         }
         //!\ UN ARTIST PEUT AVOIR PLUSIEURS FOIS UN MEME TITRE D'ALBUM /!\ ERREUR A CORRIGER -> si on clique sur un album
         db.collection(COLLECTIONALBUM).findOne({
@@ -1020,9 +1008,7 @@ router.get('/artist/:artistName/album/:albumName', (req, res) => {
             "wordCount": 0
         }, (err, album) => {
             if (album == null) {
-                return res.status(404).send({
-                    error: config.http.error.album_404
-                });
+                return res.status(404).json(config.http.error.album_404);
             }
             db.collection(COLLECTIONSONG).find({
                 "id_album": album._id
@@ -1031,13 +1017,11 @@ router.get('/artist/:artistName/album/:albumName', (req, res) => {
                 "titre": 1
             }).toArray((err, songs) => {
                 if (songs == null) {
-                    return res.status(404).send({
-                        error: config.http.error.song_404
-                    });
+                    return res.status(404).json(config.http.error.song_404);
                 }
                 album.songs = songs;
                 artist.albums = album;
-                res.send(JSON.stringify(artist));
+                res.json(artist);
 
             });
         });
@@ -1048,7 +1032,7 @@ router.get('/artist/:artistName/album/:albumName', (req, res) => {
  * @api {get} search/artist_id/:artistId/album_id/:albumId Get infos about album by id
  * @apiExample Example usage: 
  *      wasabi.i3s.unice.fr/search/artist_id/56d93d84ce06f50c0fed8747/album_id/5714debe25ac0d8aee36b664
- * @apiVersion 0.1.0
+ * @apiVersion 1.0.0
  * @apiName GetInfosAlbumByAlbumId
  * @apiGroup Search
  *
@@ -1062,37 +1046,37 @@ router.get('/artist/:artistName/album/:albumName', (req, res) => {
  * @apiSuccess {String} urlFacebook Artist urlFacebook
  * @apiSuccess {String} urlMySpace Artist urlMySpace
  * @apiSuccess {String} urlTwitter Artist urlTwitter
- * @apiSuccess {Array} locationInfo Artist locationInfo
+ * @apiSuccess {String[]} locationInfo Artist locationInfo
  * @apiSuccess {String} activeYears Artist activeYears
- * @apiSuccess {Array} genres Artist genres
- * @apiSuccess {Array} labels Artist labels
+ * @apiSuccess {String[]} genres Artist genres
+ * @apiSuccess {String[]} labels Artist labels
  * 
  * @apiSuccess {Object[]} members Members object
- * @apiSuccess {String} members.name Members name
- * @apiSuccess {Array} members.instruments Members instruments
- * @apiSuccess {Array} members.activeYears Members activeYears
+ *  @apiSuccess {String} members.name Members name
+ *  @apiSuccess {String[]} members.instruments Members instruments
+ *  @apiSuccess {String[]} members.activeYears Members activeYears
  * 
  * @apiSuccess {Object[]} formerMembers FormerMembers object
- * @apiSuccess {String} formerMembers.name FormerMembers name
- * @apiSuccess {Array} formerMembers.instruments FormerMembers instruments
- * @apiSuccess {Array} formerMembers.activeYears FormerMembers activeYears
+ *  @apiSuccess {String} formerMembers.name FormerMembers name
+ *  @apiSuccess {String[]} formerMembers.instruments FormerMembers instruments
+ *  @apiSuccess {String[]} formerMembers.activeYears FormerMembers activeYears
  *
  * @apiSuccess {String} rdf Artist rdf
  * 
  * @apiSuccess {Object[]} albums Album object
- * @apiSuccess {String} albums._id Album id
- * @apiSuccess {String} albums.name Artist name
- * @apiSuccess {String} albums.titre Album titre
- * @apiSuccess {String} albums.dateSortie Album dateSortie
- * @apiSuccess {String} albums.genre Album genre
- * @apiSuccess {String} albums.length Album length
- * @apiSuccess {String} albums.id_artist Artist id
- * @apiSuccess {String} albums.rdf Album rdf
-
- * @apiSuccess {Object[]} albums.songs Song object
- * @apiSuccess {String} albums.songs._id Song id
- * @apiSuccess {String} albums.songs.position Song position
- * @apiSuccess {String} albums.songs.titre Song titre
+ *  @apiSuccess {String} albums._id Album id
+ *  @apiSuccess {String} albums.name Artist name
+ *  @apiSuccess {String} albums.titre Album titre
+ *  @apiSuccess {String} albums.dateSortie Album dateSortie
+ *  @apiSuccess {String} albums.genre Album genre
+ *  @apiSuccess {String} albums.length Album length
+ *  @apiSuccess {String} albums.id_artist Artist id
+ *  @apiSuccess {String} albums.rdf Album rdf
+ * 
+ *  @apiSuccess {Object[]} albums.songs Song object
+ *      @apiSuccess {String} albums.songs._id Song id
+ *      @apiSuccess {Number} albums.songs.position Song position
+ *      @apiSuccess {String} albums.songs.titre Song titre
  *
  * @apiSuccessExample Success-Response:
     HTTP/1.1 200 OK
@@ -1180,9 +1164,7 @@ router.get('/artist_id/:artistId/album_id/:albumId', (req, res) => {
         "wordCount": 0
     }, (err, artist) => {
         if (artist == null) {
-            return res.status(404).send({
-                error: config.http.error.artist_404
-            });
+            return res.status(404).json(config.http.error.artist_404);
         }
         db.collection(COLLECTIONALBUM).findOne({
             "_id": ObjectId(albumId)
@@ -1191,9 +1173,7 @@ router.get('/artist_id/:artistId/album_id/:albumId', (req, res) => {
             "wordCount": 0
         }, (err, album) => {
             if (album == null) {
-                return res.status(404).send({
-                    error: config.http.error.album_404
-                });
+                return res.status(404).json(config.http.error.album_404);
             }
             db.collection(COLLECTIONSONG).find({
                 "id_album": album._id
@@ -1202,71 +1182,17 @@ router.get('/artist_id/:artistId/album_id/:albumId', (req, res) => {
                 "titre": 1
             }).toArray((err, songs) => {
                 if (songs == null) {
-                    return res.status(404).send({
-                        error: config.http.error.song_404
-                    });
+                    return res.status(404).json(config.http.error.song_404);
                 }
                 album.songs = songs;
                 artist.albums = album;
-                res.send(JSON.stringify(artist));
+                res.json(artist);
             });
         });
     });
 });
 
 //PUT ALBUM PAR NOM D'ALBUM
-/**
- * @api {put} search/artist/:artistName/album/:albumName Put infos about album by album name
- * @apiExample Example usage: 
- *      wasabi.i3s.unice.fr/search/artist/Metallica/album/Master%20Of%20Puppets
- * @apiVersion 0.1.0
- * @apiName PutInfosAlbumByAlbumName
- * @apiGroup Search
- *
- * @apiParam {String} artistName An artist name.
- * @apiParam {String} albumName An album title of artistName.
- *
- * 
- * @apiSuccess {String} _id Album id
- * @apiSuccess {String} name Artist name
- * @apiSuccess {String} titre Album titre
- * @apiSuccess {String} dateSortie Album dateSortie
- * @apiSuccess {String} genre Album genre
- * @apiSuccess {String} length Album length
- * @apiSuccess {String} id_artist Artist id
- * @apiSuccess {String} rdf Album rdf
-
- * @apiSuccess {Object[]} songs Song object
- * @apiSuccess {String} songs._id Song id
- * @apiSuccess {String} songs.position Song position
- * @apiSuccess {String} songs.titre Song titre
- *
- * @apiSuccessExample Success-Response:
-    HTTP/1.1 200 OK
-    {
-        "_id": "5714debe25ac0d8aee36b664",
-        "name": "Metallica",
-        "titre": "Master Of Puppets",
-        "dateSortie": "1986",
-        "urlWikipedia": "http://en.wikipedia.org/wiki/Master_of_Puppets",
-        "genre": "Thrash Metal",
-        "length": "54:46",
-        "id_artist": "56d93d84ce06f50c0fed8747",
-        "rdf": "Un champ au format RDF",
-        "songs": [{
-                "_id": "5714dedb25ac0d8aee4ad816",
-                "position": 0,
-                "titre": "Battery"
-            },
-            {
-                "_id": "5714dedb25ac0d8aee4ad817",
-                "position": 1,
-                "titre": "Master Of Puppets"
-            }
-        ]}
-    }
- *
- */
 router.put('/artist/:artistName/album/:albumName', (req, res) => {
     var db = req.db,
         albumBody = req.body,
@@ -1308,7 +1234,7 @@ router.put('/artist/:artistName/album/:albumName', (req, res) => {
             })
         })(idSong, albumBody.songs[j], albumBody.songs.length);
     }
-    res.send("OK");
+    res.json(config.http.valid.send_message_ok);
 });
 
 //==========================================================================================================================\\
@@ -1319,7 +1245,7 @@ router.put('/artist/:artistName/album/:albumName', (req, res) => {
  * @api {get} search/artist/:artistName/album/:albumName/song/:songName Get infos about song by song name
  * @apiExample Example usage: 
  *      wasabi.i3s.unice.fr/search/artist/Metallica/album/Master%20Of%20Puppets/song/Master%20Of%20Puppets
- * @apiVersion 0.1.0
+ * @apiVersion 1.0.0
  * @apiName GetInfosSongBySongName
  * @apiGroup Search
  *
@@ -1328,44 +1254,45 @@ router.put('/artist/:artistName/album/:albumName', (req, res) => {
  * @apiParam {String} songName A song title of songName.
  * 
  * @apiSuccess {String} _id Artist id
- * @apiSuccess {String} name Artist name
  * 
  * @apiSuccess {Object[]} albums Album object
- * @apiSuccess {String} albums._id Album id
- * @apiSuccess {String} albums.titre Album titre
-
- * @apiSuccess {Object[]} albums.songs Song object
- * @apiSuccess {String} albums.songs._id Song id
- * @apiSuccess {String} albums.songs.name Artist name
- * @apiSuccess {Number} albums.songs.position Song position
- * @apiSuccess {String} albums.songs.albumTitre Album titre
- * @apiSuccess {String} albums.songs.lengthAlbum Album lengthAlbum
- * @apiSuccess {String} albums.songs.dateSortieAlbum Song dateSortieAlbum
- * @apiSuccess {String} albums.songs.titre Song titre
- * @apiSuccess {String} albums.songs.lyrics Song lyrics
- * @apiSuccess {String} albums.songs.urlWikipedia Song urlWikipedia
- * @apiSuccess {String} albums.songs.id_album Song id_album
- * @apiSuccess {String} albums.songs.rdf Song rdf
- * @apiSuccess {String} albums.songs.format Song format
- * @apiSuccess {String} albums.songs.genre Song genre
- * @apiSuccess {String} albums.songs.producer Song producer
- * @apiSuccess {String} albums.songs.recordLabel Song recordLabel
- * @apiSuccess {String} albums.songs.writer Song writer
- * @apiSuccess {String} albums.songs.recorded Song recorded
- * @apiSuccess {String} albums.songs.abstract Song abstract
- * @apiSuccess {String} albums.songs.releaseDate Song releaseDate
- * @apiSuccess {String} albums.songs.runtime Song runtime
- * @apiSuccess {String} albums.songs.award Song award
- * @apiSuccess {String} albums.songs.subject Song subject
- * @apiSuccess {String} albums.songs.isClassic Song isClassic
- * @apiSuccess {String} albums.songs.urlYoutube Song urlYoutube
- * @apiSuccess {String} albums.songs.multitrack_path Song multitrack_path
- * @apiSuccess {String} albums.songs.urlITunes Song urlITunes
- * @apiSuccess {String} albums.songs.urlAmazon Song urlAmazon
- * @apiSuccess {String} albums.songs.urlGoEar Song urlGoEar
- * @apiSuccess {String} albums.songs.urlSpotify Song urlSpotify
- * @apiSuccess {String} albums.songs.urlAllmusic Song urlAllmusic
- * @apiSuccess {String} albums.songs.urlMusicBrainz Song urlMusicBrainz
+ *  @apiSuccess {String} albums._id Album id
+ *  @apiSuccess {Object[]} albums.songs Song object
+ *      @apiSuccess {String} albums.songs._id Song id
+ *      @apiSuccess {String} albums.songs.name Artist name
+ *      @apiSuccess {Number} albums.songs.position Song position
+ *      @apiSuccess {String} albums.songs.albumTitre Album titre
+ *      @apiSuccess {String} albums.songs.lengthAlbum Album lengthAlbum
+ *      @apiSuccess {String} albums.songs.dateSortieAlbum Song dateSortieAlbum
+ *      @apiSuccess {String} albums.songs.titre Song titre
+ *      @apiSuccess {String} albums.songs.lyrics Song lyrics
+ *      @apiSuccess {String} albums.songs.urlWikipedia Song urlWikipedia
+ *      @apiSuccess {String} albums.songs.id_album Song id_album
+ *      @apiSuccess {String} albums.songs.rdf Song rdf
+ *      @apiSuccess {String[]} albums.songs.format Song format
+ *      @apiSuccess {String[]} albums.songs.genre Song genre
+ *      @apiSuccess {String[]} albums.songs.producer Song producer
+ *      @apiSuccess {String[]} albums.songs.recordLabel Song recordLabel
+ *      @apiSuccess {String[]} albums.songs.writer Song writer
+ *      @apiSuccess {String[]} albums.songs.recorded Song recorded
+ *      @apiSuccess {String} albums.songs.abstract Song abstract
+ *      @apiSuccess {String[]} albums.songs.releaseDate Song releaseDate
+ *      @apiSuccess {String[]} albums.songs.runtime Song runtime
+ *      @apiSuccess {String[]} albums.songs.award Song award
+ *      @apiSuccess {String[]} albums.songs.subject Song subject
+ *      @apiSuccess {Boolean} albums.songs.isClassic Song isClassic
+ *      @apiSuccess {String} albums.songs.urlYoutube Song urlYoutube
+ *      @apiSuccess {String} albums.songs.multitrack_path Song multitrack_path
+ *      @apiSuccess {String} albums.songs.multitrack_file Song multitrack_file
+ *      @apiSuccess {String} albums.songs.urlITunes Song urlITunes
+ *      @apiSuccess {String} albums.songs.urlAmazon Song urlAmazon
+ *      @apiSuccess {String} albums.songs.urlGoEar Song urlGoEar
+ *      @apiSuccess {String} albums.songs.urlSpotify Song urlSpotify
+ *      @apiSuccess {String} albums.songs.urlAllmusic Song urlAllmusic
+ *      @apiSuccess {String} albums.songs.urlMusicBrainz Song urlMusicBrainz
+ *      @apiSuccess {String} albums.songs.urlHypeMachine Song urlHypeMachine
+ *      @apiSuccess {String} albums.songs.urlLastFm Song urlLastFm
+ *      @apiSuccess {String} albums.songs.urlPandora Song urlPandora
  * 
  * @apiSuccessExample Success-Response for an artist:
     HTTP/1.1 200 OK
@@ -1441,9 +1368,7 @@ router.get('/artist/:artistName/album/:albumName/song/:songName', (req, res) => 
         "name": 1
     }, (err, artist) => {
         if (artist == null) {
-            return res.status(404).send({
-                error: config.http.error.artist_404
-            });
+            return res.status(404).json(config.http.error.artist_404);
         }
         db.collection(COLLECTIONALBUM).findOne({
             $and: [{
@@ -1456,9 +1381,7 @@ router.get('/artist/:artistName/album/:albumName/song/:songName', (req, res) => 
             "titre": 1
         }, (err, album) => {
             if (album == null) {
-                return res.status(404).send({
-                    error: config.http.error.album_404
-                });
+                return res.status(404).json(config.http.error.album_404);
             }
             db.collection(COLLECTIONSONG).findOne({
                 $and: [{
@@ -1471,84 +1394,129 @@ router.get('/artist/:artistName/album/:albumName/song/:songName', (req, res) => 
                 "wordCount": 0
             }, (err, song) => {
                 if (song == null) {
-                    return res.status(404).send({
-                        error: config.http.error.song_404
-                    });
+                    return res.status(404).json(config.http.error.song_404);
                 }
                 album.songs = song;
                 artist.albums = album;
-                res.send(JSON.stringify(artist));
+                res.json(artist);
             });
         });
-
     });
 });
 //GET SONG PAR ID D'ARTISTE,ALBUM,MUSIQUE
 /**
- * @api {get} search/categorie/:nomCategorie/lettre/:lettre/page/:numPage Get Page information
+ * @api {get} search/artist_id/:artistId/album_id/:albumId/song_id/:songId Get Page information
  * @apiExample Example usage: 
- *      wasabi.i3s.unice.fr/search/categorie/artists/lettre/b/page/5
- * @apiVersion 0.1.0
- * @apiName GetPageByCategory
+ *      wasabi.i3s.unice.fr/search/artist_id/56d93d84ce06f50c0fed8747/album_id/5714debe25ac0d8aee36b664/song_id/5714dedb25ac0d8aee4ad817
+ * @apiVersion 1.0.0
+ * @apiName GetPageSongByID
  * @apiGroup Search
  *
- * @apiParam {String} nomCategorie {artists,albums,songs}.
- * @apiParam {String} lettre Une ou deux lettres.
- * @apiParam {Number} numPage Users unique ID.
- *
- * @apiSuccessExample Success-Response for an artist:
+ * @apiParam {String} artistId Artist's id.
+ * @apiParam {String} albumId Album's id.
+ * @apiParam {String} songId Song's id.
+ * 
+ * @apiSuccess {String} _id Artist id
+ * 
+ * @apiSuccess {Object[]} albums Album object
+ *  @apiSuccess {String} albums._id Album id
+ *  @apiSuccess {Object[]} albums.songs Song object
+ *      @apiSuccess {String} albums.songs._id Song id
+ *      @apiSuccess {String} albums.songs.name Artist name
+ *      @apiSuccess {Number} albums.songs.position Song position
+ *      @apiSuccess {String} albums.songs.albumTitre Album titre
+ *      @apiSuccess {String} albums.songs.lengthAlbum Album lengthAlbum
+ *      @apiSuccess {String} albums.songs.dateSortieAlbum Song dateSortieAlbum
+ *      @apiSuccess {String} albums.songs.titre Song titre
+ *      @apiSuccess {String} albums.songs.lyrics Song lyrics
+ *      @apiSuccess {String} albums.songs.urlWikipedia Song urlWikipedia
+ *      @apiSuccess {String} albums.songs.id_album Song id_album
+ *      @apiSuccess {String} albums.songs.rdf Song rdf
+ *      @apiSuccess {String[]} albums.songs.format Song format
+ *      @apiSuccess {String[]} albums.songs.genre Song genre
+ *      @apiSuccess {String[]} albums.songs.producer Song producer
+ *      @apiSuccess {String[]} albums.songs.recordLabel Song recordLabel
+ *      @apiSuccess {String[]} albums.songs.writer Song writer
+ *      @apiSuccess {String[]} albums.songs.recorded Song recorded
+ *      @apiSuccess {String} albums.songs.abstract Song abstract
+ *      @apiSuccess {String[]} albums.songs.releaseDate Song releaseDate
+ *      @apiSuccess {String[]} albums.songs.runtime Song runtime
+ *      @apiSuccess {String[]} albums.songs.award Song award
+ *      @apiSuccess {String[]} albums.songs.subject Song subject
+ *      @apiSuccess {Boolean} albums.songs.isClassic Song isClassic
+ *      @apiSuccess {String} albums.songs.urlYoutube Song urlYoutube
+ *      @apiSuccess {String} albums.songs.multitrack_path Song multitrack_path
+ *      @apiSuccess {String} albums.songs.multitrack_file Song multitrack_file
+ *      @apiSuccess {String} albums.songs.urlITunes Song urlITunes
+ *      @apiSuccess {String} albums.songs.urlAmazon Song urlAmazon
+ *      @apiSuccess {String} albums.songs.urlGoEar Song urlGoEar
+ *      @apiSuccess {String} albums.songs.urlSpotify Song urlSpotify
+ *      @apiSuccess {String} albums.songs.urlAllmusic Song urlAllmusic
+ *      @apiSuccess {String} albums.songs.urlMusicBrainz Song urlMusicBrainz
+ *      @apiSuccess {String} albums.songs.urlHypeMachine Song urlHypeMachine
+ *      @apiSuccess {String} albums.songs.urlLastFm Song urlLastFm
+ *      @apiSuccess {String} albums.songs.urlPandora Song urlPandora
+ * @apiSuccessExample Success-Response:
     HTTP/1.1 200 OK
     {
-        "limit": 200,
-        "artists": [{
-                "_id": "56d843ec53a7ddfc01f96d17",
-                "name": "J"
-            },
-            {
-                "_id": "56d843ed53a7ddfc01f96d18",
-                "name": "J Alvarez"
+        "_id": "56d93d84ce06f50c0fed8747",
+        "name": "Metallica",
+        "albums": {
+        "_id": "5714debe25ac0d8aee36b664",
+        "titre": "Master Of Puppets",
+        "songs": {
+            "_id": "5714dedb25ac0d8aee4ad817",
+            "name": "Metallica",
+            "position": 1,
+            "albumTitre": "Master Of Puppets",
+            "lengthAlbum": "54:46",
+            "dateSortieAlbum": "1986",
+            "titre": "Master Of Puppets",
+            "lyrics": "End of passion play, crumbling away I&apos;m your source ...",
+            "urlWikipedia": "http://en.wikipedia.org/wiki/Master_of_Puppets_(song)",
+            "id_album": "5714debe25ac0d8aee36b664",
+            "rdf": "Some RDF...",
+            "format": ["Gramophone record", "12-inch single"],
+            "genre": ["Thrash metal", "Progressive metal"],
+            "producer": ["Flemming Rasmussen"],
+            "recordLabel": ["Elektra Records", "Music for Nations"],
+            "writer": ["Cliff Burton", "Lars Ulrich", "James Hetfield", "Kirk Hammett"],
+            "recorded": ["1985"],
+            "abstract": "\"Master of Puppets\" is a song by the American heavy metal ...",
+            "releaseDate": ["1986-07-02"],
+            "runtime": ["516.0"],
+            "award": [],
+            "subject": ["Songs written by Lars Ulrich", "Metallica songs", "Elektra Records singles", "Songs written by Cliff Burton", "Songs about drugs", "Songs written by James Hetfield", "Songs written by Kirk Hammett", "1986 singles"],
+            "urlYoutube": "",
+            "isClassic": false,
+            "multitrack_path": "M Multitracks/Metallica - Master Of Puppets",
+            "urlITunes": "https://itunes.apple.com/us/album/id167353581?i=167353601",
+            "urlAmazon": "http://www.amazon.com/exec/obidos/redirect?link_code=ur2&tag=wikia-20&camp=1789&creative=9325&path=http%3A%2F%2Fwww.amazon.com%2Fgp%2Fproduct%2FB00122A546%2Fsr%3D8-1%2Fqid%3D1147400297%2Fref%3Dpd_bbs_1%3F%255Fencoding%3DUTF8",
+            "urlGoEar": "http://goear.com/listen.php?v=afd1e62",
+            "urlSpotify": "https://play.spotify.com/track/6NwbeybX6TDtXlpXvnUOZC",
+            "urlAllmusic": "http://www.allmusic.com/song/mt0002228132",
+            "urlMusicBrainz": "http://musicbrainz.org/recording/49b8371f-156a-41e8-92c9-8cd899235b90"
             }
-        ]
-    } 
- *  @apiSuccessExample Success-Response for an album:
-    HTTP/1.1 200 OK
-    {
-        "limit": 200,
-        "albums": [{
-                "_id": "5714debb25ac0d8aee34e3a7",
-                "name": "Agnetha Fältskog",
-                "titleAlbum": "A"
-            },
-            {
-                "_id": "5714debb25ac0d8aee355421",
-                "name": "Cass McCombs",
-                "titleAlbum": "A"
-            }
-        ]
-    }   
- *  @apiSuccessExample Success-Response for a song:
-    HTTP/1.1 200 OK
-    {
-        "limit": 200,
-        "songs": [{
-                "_id": "5714dec325ac0d8aee3859f9",
-                "name": "Addict",
-                "albumTitre": "Come On Sun",
-                "titleSong": "K"
-            },
-            {
-                "_id": "5714dec325ac0d8aee3804f5",
-                "name": "A",
-                "albumTitre": "A Vs. Monkey Kong",
-                "titleSong": "A"
-            }
-        ]
+        }
     }
- * @apiError error The nomCategorie or lettre or numPage was not found.
+
+ * @apiError error The artistId was not found.
  * @apiErrorExample Error-Response:
     HTTP/1.1 404 Not Found
     {
-        "error": "Page not found"
+        "error": "Artist not found"
+    }
+ * @apiError error The albumId was not found
+ * @apiErrorExample Error-Response:
+    HTTP/1.1 404 Not Found
+    {
+        "error": "Album not found"
+    }
+ * @apiError error The songId was not found
+ * @apiErrorExample Error-Response:
+    HTTP/1.1 404 Not Found
+    {
+        "error": "Song not found"
     }
  */
 router.get('/artist_id/:artistId/album_id/:albumId/song_id/:songId', (req, res) => {
@@ -1564,9 +1532,7 @@ router.get('/artist_id/:artistId/album_id/:albumId/song_id/:songId', (req, res) 
         "name": 1
     }, (err, artist) => {
         if (artist == null) {
-            return res.status(404).send({
-                error: config.http.error.artist_404
-            });
+            return res.status(404).json(config.http.error.artist_404);
         }
         db.collection(COLLECTIONALBUM).findOne({
             "_id": ObjectId(albumId)
@@ -1575,9 +1541,7 @@ router.get('/artist_id/:artistId/album_id/:albumId/song_id/:songId', (req, res) 
             "titre": 1
         }, (err, album) => {
             if (album == null) {
-                return res.status(404).send({
-                    error: config.http.error.album_404
-                });
+                return res.status(404).json(config.http.error.album_404);
             }
             db.collection(COLLECTIONSONG).findOne({
                 "_id": ObjectId(songId)
@@ -1586,85 +1550,16 @@ router.get('/artist_id/:artistId/album_id/:albumId/song_id/:songId', (req, res) 
                 "wordCount": 0
             }, (err, song) => {
                 if (song == null) {
-                    return res.status(404).send({
-                        error: config.http.error.song_404
-                    });
+                    return res.status(404).json(config.http.error.song_404);
                 }
                 album.songs = song;
                 artist.albums = album;
-                res.send(JSON.stringify(artist));
+                res.json(artist);
             });
         });
     });
 });
 //PUT SONG OBJECT
-/**
- * @api {get} search/categorie/:nomCategorie/lettre/:lettre/page/:numPage Get Page information
- * @apiExample Example usage: 
- *      wasabi.i3s.unice.fr/search/categorie/artists/lettre/b/page/5
- * @apiVersion 0.1.0
- * @apiName GetPageByCategory
- * @apiGroup Search
- *
- * @apiParam {String} nomCategorie {artists,albums,songs}.
- * @apiParam {String} lettre Une ou deux lettres.
- * @apiParam {Number} numPage Users unique ID.
- *
- * @apiSuccessExample Success-Response for an artist:
-    HTTP/1.1 200 OK
-    {
-        "limit": 200,
-        "artists": [{
-                "_id": "56d843ec53a7ddfc01f96d17",
-                "name": "J"
-            },
-            {
-                "_id": "56d843ed53a7ddfc01f96d18",
-                "name": "J Alvarez"
-            }
-        ]
-    } 
- *  @apiSuccessExample Success-Response for an album:
-    HTTP/1.1 200 OK
-    {
-        "limit": 200,
-        "albums": [{
-                "_id": "5714debb25ac0d8aee34e3a7",
-                "name": "Agnetha Fältskog",
-                "titleAlbum": "A"
-            },
-            {
-                "_id": "5714debb25ac0d8aee355421",
-                "name": "Cass McCombs",
-                "titleAlbum": "A"
-            }
-        ]
-    }   
- *  @apiSuccessExample Success-Response for a song:
-    HTTP/1.1 200 OK
-    {
-        "limit": 200,
-        "songs": [{
-                "_id": "5714dec325ac0d8aee3859f9",
-                "name": "Addict",
-                "albumTitre": "Come On Sun",
-                "titleSong": "K"
-            },
-            {
-                "_id": "5714dec325ac0d8aee3804f5",
-                "name": "A",
-                "albumTitre": "A Vs. Monkey Kong",
-                "titleSong": "A"
-            }
-        ]
-    }
- * @apiError error The nomCategorie or lettre or numPage was not found.
- * @apiErrorExample Error-Response:
-    HTTP/1.1 404 Not Found
-    {
-        "error": "Page not found"
-    }
- */
 router.put('/artist/:artistName/album/:albumName/song/:songName', (req, res) => {
     var db = req.db,
         songBody = req.body;
@@ -1681,7 +1576,7 @@ router.put('/artist/:artistName/album/:albumName/song/:songName', (req, res) => 
         //On fait un POST sur elasticsearch afin de modifier le champs titre de la musique sur le BDD elasticsearch
         searchHandler.updateSongES(req, songBody, idSong)
     });
-    res.send("OK");
+    res.json(config.http.valid.send_message_ok);
 });
 
 //==========================================================================================================================\\
@@ -1689,73 +1584,6 @@ router.put('/artist/:artistName/album/:albumName/song/:songName', (req, res) => 
 //==========================================================================================================================\\
 //permet de chercher des artistes via la barre de recherche
 //FUTURE voir la configuration
-/**
- * @api {get} search/categorie/:nomCategorie/lettre/:lettre/page/:numPage Get Page information
- * @apiExample Example usage: 
- *      wasabi.i3s.unice.fr/search/categorie/artists/lettre/b/page/5
- * @apiVersion 0.1.0
- * @apiName GetPageByCategory
- * @apiGroup Search
- *
- * @apiParam {String} nomCategorie {artists,albums,songs}.
- * @apiParam {String} lettre Une ou deux lettres.
- * @apiParam {Number} numPage Users unique ID.
- *
- * @apiSuccessExample Success-Response for an artist:
-    HTTP/1.1 200 OK
-    {
-        "limit": 200,
-        "artists": [{
-                "_id": "56d843ec53a7ddfc01f96d17",
-                "name": "J"
-            },
-            {
-                "_id": "56d843ed53a7ddfc01f96d18",
-                "name": "J Alvarez"
-            }
-        ]
-    } 
- *  @apiSuccessExample Success-Response for an album:
-    HTTP/1.1 200 OK
-    {
-        "limit": 200,
-        "albums": [{
-                "_id": "5714debb25ac0d8aee34e3a7",
-                "name": "Agnetha Fältskog",
-                "titleAlbum": "A"
-            },
-            {
-                "_id": "5714debb25ac0d8aee355421",
-                "name": "Cass McCombs",
-                "titleAlbum": "A"
-            }
-        ]
-    }   
- *  @apiSuccessExample Success-Response for a song:
-    HTTP/1.1 200 OK
-    {
-        "limit": 200,
-        "songs": [{
-                "_id": "5714dec325ac0d8aee3859f9",
-                "name": "Addict",
-                "albumTitre": "Come On Sun",
-                "titleSong": "K"
-            },
-            {
-                "_id": "5714dec325ac0d8aee3804f5",
-                "name": "A",
-                "albumTitre": "A Vs. Monkey Kong",
-                "titleSong": "A"
-            }
-        ]
-    }
- * @apiError error The nomCategorie or lettre or numPage was not found.
- * @apiErrorExample Error-Response:
-    HTTP/1.1 404 Not Found
-    {
-        "error": "Page not found"
-    }
- */
 router.get('/fulltext/:searchText', (req, res) => {
     var searchText = elasticSearchHandler.escapeElasticSearch(req.params.searchText);
     var maxinfo = config.request.limit_search_bar;
@@ -1779,78 +1607,13 @@ router.get('/fulltext/:searchText', (req, res) => {
         "size": maxinfo
     };
     searchHandler.fullTextQuery(req, maxinfo, queryArtist, querySong, maxinfoselected).then((resp) => {
+        //Ne pas renvoyer avec res.json
         res.send(resp);
     }).catch((err) => {
         res.send(err);
     });
 });
-/**
- * @api {get} search/categorie/:nomCategorie/lettre/:lettre/page/:numPage Get Page information
- * @apiExample Example usage: 
- *      wasabi.i3s.unice.fr/search/categorie/artists/lettre/b/page/5
- * @apiVersion 0.1.0
- * @apiName GetPageByCategory
- * @apiGroup Search
- *
- * @apiParam {String} nomCategorie {artists,albums,songs}.
- * @apiParam {String} lettre Une ou deux lettres.
- * @apiParam {Number} numPage Users unique ID.
- *
- * @apiSuccessExample Success-Response for an artist:
-    HTTP/1.1 200 OK
-    {
-        "limit": 200,
-        "artists": [{
-                "_id": "56d843ec53a7ddfc01f96d17",
-                "name": "J"
-            },
-            {
-                "_id": "56d843ed53a7ddfc01f96d18",
-                "name": "J Alvarez"
-            }
-        ]
-    } 
- *  @apiSuccessExample Success-Response for an album:
-    HTTP/1.1 200 OK
-    {
-        "limit": 200,
-        "albums": [{
-                "_id": "5714debb25ac0d8aee34e3a7",
-                "name": "Agnetha Fältskog",
-                "titleAlbum": "A"
-            },
-            {
-                "_id": "5714debb25ac0d8aee355421",
-                "name": "Cass McCombs",
-                "titleAlbum": "A"
-            }
-        ]
-    }   
- *  @apiSuccessExample Success-Response for a song:
-    HTTP/1.1 200 OK
-    {
-        "limit": 200,
-        "songs": [{
-                "_id": "5714dec325ac0d8aee3859f9",
-                "name": "Addict",
-                "albumTitre": "Come On Sun",
-                "titleSong": "K"
-            },
-            {
-                "_id": "5714dec325ac0d8aee3804f5",
-                "name": "A",
-                "albumTitre": "A Vs. Monkey Kong",
-                "titleSong": "A"
-            }
-        ]
-    }
- * @apiError error The nomCategorie or lettre or numPage was not found.
- * @apiErrorExample Error-Response:
-    HTTP/1.1 404 Not Found
-    {
-        "error": "Page not found"
-    }
- */
+
 router.get('/more/:searchText', (req, res) => {
     var searchText = elasticSearchHandler.escapeElasticSearch(req.params.searchText);
     var maxinfoselected = LIMIT / 2;
@@ -1874,6 +1637,7 @@ router.get('/more/:searchText', (req, res) => {
     };
     var start = Date.now();
     searchHandler.fullTextQuery(req, LIMIT, queryArtist, querySong, maxinfoselected).then((resp) => {
+        //Ne pas renvoyer avec res.json
         res.send(resp);
     }).catch((err) => {
         res.send(err);

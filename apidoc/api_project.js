@@ -1,6 +1,6 @@
 define({
   "name": "WASABI",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Description de l'API REST de l'application WASABI",
   "title": "Projet WASABI",
   "url": "http://wasabi.i3s.unice.fr/",
@@ -9,7 +9,7 @@ define({
   "apidoc": "0.3.0",
   "generator": {
     "name": "apidoc",
-    "time": "2017-02-15T07:20:11.832Z",
+    "time": "2017-02-17T10:35:43.185Z",
     "url": "http://apidocjs.com",
     "version": "0.17.5"
   }
