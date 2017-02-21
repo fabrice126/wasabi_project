@@ -832,11 +832,11 @@ router.get('/song/id/:id', function (req, res, next) {
 //====================================API REST POUR RECUPERER UN ARTISTE PAR NOM DE MEMBRE==================================\\
 //==========================================================================================================================\\
 /**
- * @api {get} api/v1/artist/name/:memberName Get an artist document by memberName
+ * @api {get} api/v1/member/name/:memberName Get an artist document by memberName
  * @apiExample Example usage: 
- *      wasabi.i3s.unice.fr/api/v1/member/Bruce%20Dickinson
+ *      wasabi.i3s.unice.fr/api/v1/member/name/Adrian%20Smith
  * @apiVersion 1.0.0
- * @apiName GetArtistByMember
+ * @apiName GetArtistByMemberName
  * @apiGroup Api/v1
  * 
  * @apiParam {String} memberName artist's name
@@ -878,11 +878,18 @@ router.get('/song/id/:id', function (req, res, next) {
         "error": "An internal error occurred"
     }
  */
-router.get('/member/:memberName', function (req, res, next) {
+router.get('/member/name/:memberName', function (req, res, next) {
     var db = req.db,
-        memberName = req.params.memberName;
+        memberName = req.params.memberName,
+        regexMember = new RegExp(memberName, 'i');
     db.collection(COLLECTIONARTIST).find({
-        "members.name": memberName
+        $or: [{
+                "members.name": regexMember
+            },
+            {
+                "formerMembers.name": regexMember
+            }
+        ]
     }, {
         wordCount: 0,
         rdf: 0
