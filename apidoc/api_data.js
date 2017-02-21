@@ -775,7 +775,7 @@ define({ "api": [
       }
     ],
     "version": "1.0.0",
-    "name": "GetArtistWithAlbumsAndSongs",
+    "name": "GetArtistByIdWithAlbumsAndSongs",
     "group": "Api_v1",
     "parameter": {
       "fields": {
@@ -786,6 +786,127 @@ define({ "api": [
             "optional": false,
             "field": "id",
             "description": "<p>artist's id</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response for an artist:",
+          "content": "HTTP/1.1 200 OK\n{\n    \"_id\": \"56d93d84ce06f50c0fed8747\",\n    \"name\": \"Metallica\",\n    \"urlWikipedia\": \"http://en.wikipedia.org/wiki/Metallica\",\n    \"urlOfficialWebsite\": \"http://www.metallica.com/\",\n    \"urlFacebook\": \"http://www.facebook.com/metallica\",\n    \"urlMySpace\": \"https://myspace.com/Metallica\",\n    \"urlTwitter\": \"http://twitter.com/metallica\",\n    \"locationInfo\": [\"United States\", \"California\", \"Los Angeles\"],\n    \"urlWikia\": \"Metallica\",\n    \"activeYears\": \"\",\n    \"genres\": [\"Heavy Metal\", \"Thrash Metal\"],\n    \"labels\": [\"Elektra\", \"Megaforce Records\", \"Mercury Records\", \"Warner Bros. Records\"],\n    \"members\": [{\n        \"name\": \" James Hetfield\",\n        \"instruments\": [\"lead vocals\", \" rhythm guitar \"],\n        \"activeYears\": [\"1981-present\\n\"]\n        }, {\n        \"name\": \" Kirk Hammett\",\n        \"instruments\": [\"lead guitar \"],\n        \"activeYears\": [\"1983-present\\n\"]\n    }],\n    \"formerMembers\": [{\n        \"name\": \" Dave Mustaine\",\n        \"instruments\": [\"lead guitar\", \" backing vocals \"],\n        \"activeYears\": [\"1981-1983\\n\"]\n        }, {\n        \"name\": \" Ron McGovney\",\n        \"instruments\": [\"bass \"],\n        \"activeYears\": [\"1981-1982\\n\"]\n    }],\n    \"albums\": [{\n        \"_id\": \"5714debe25ac0d8aee36b662\",\n        \"name\": \"Metallica\",\n        \"titre\": \"Kill 'Em All\",\n        \"dateSortie\": \"1983\",\n        \"urlWikipedia\": \"http://en.wikipedia.org/wiki/Kill_%27Em_All\",\n        \"genre\": \"Thrash Metal\",\n        \"length\": \"51:14\",\n        \"urlAlbum\": \"http://lyrics.wikia.com/Metallica:Kill_%27Em_All_%281983%29\",\n        \"id_artist\": \"56d93d84ce06f50c0fed8747\",\n        \"songs\": [{\n            \"_id\": \"5714dedb25ac0d8aee4ad800\",\n            \"position\": 0,\n            \"titre\": \"Hit The Lights\",\n            \"urlSong\": \"http://lyrics.wikia.com/Metallica:Hit_The_Lights\",\n            \"lyrics\": \"No life till leather, we&apos;re gonna kick some ass tonight We got the metal madness...\",\n            \"urlWikipedia\": \"\",\n            \"id_album\": \"5714debe25ac0d8aee36b662\",\n            \"urlYoutube\": \"\",\n            \"isClassic\": false,\n            \"multitrack_path\": \"M Multitracks/Metallica - Hit The Lights\",\n            \"urlITunes\": \"https://itunes.apple.com/us/album/id167352861?i=167352894\",\n            \"urlAmazon\": \"http://www.amazon.com/exec/obidos/redirect?link_code=ur2&tag=wikia-20&camp=1789&creative=9325&path=http%3A%2F%2Fwww.amazon.com%2Fgp%2Fproduct%2FB00122D6X8%2Fsr%3D8-1%2Fqid%3D1147400297%2Fref%3Dpd_bbs_1%3F%255Fencoding%3DUTF8\",\n            \"urlGoEar\": \"http://goear.com/listen.php?v=41b192c\",\n            \"urlSpotify\": \"https://play.spotify.com/track/4Pn6l1ZzsYFrx64h1gWTyy\",\n            \"urlAllmusic\": \"http://www.allmusic.com/song/mt0034723664\",\n            \"urlMusicBrainz\": \"http://musicbrainz.org/recording/8467f4e7-ef5b-458c-bbc5-6727d9f2252d\"\n        }, {\n            \"_id\": \"5714dedb25ac0d8aee4ad801\",\n            \"position\": 1,\n            \"titre\": \"The Four Horsemen\",\n            \"urlSong\": \"http://lyrics.wikia.com/Metallica:The_Four_Horsemen\",\n            \"lyrics\": \"By the last breath, the fourth winds blow Better raise your ears...\",\n            \"urlWikipedia\": \"http://en.wikipedia.org/wiki/The_Mechanix\",\n            \"id_album\": \"5714debe25ac0d8aee36b662\",\n            \"format\": [],\n            \"genre\": [\"Thrash metal\", \"Speed metal\"],\n            \"producer\": [\"Dave Mustaine\"],\n            \"recordLabel\": [\"Combat Records\"],\n            \"writer\": [],\n            \"recorded\": [\"December 1984 – January 1985 at Indigo Ranch Studios in Malibu, California\"],\n            \"abstract\": \"Killing Is My Business... and Business Is Good! is the debut studio album by American thrash metal band Megadeth. It was released on June 12, 1985...\",\n            \"releaseDate\": [\"1985-06-12\"],\n            \"runtime\": [\"1870.0\"],\n            \"award\": [],\n            \"subject\": [\"1985 debut albums\", \"Megadeth albums\", \"Combat Records albums\"],\n            \"urlYoutube\": \"\",\n            \"isClassic\": false,\n            \"urlITunes\": \"https://itunes.apple.com/us/album/id167352861?i=167352995\",\n            \"urlAmazon\": \"http://www.amazon.com/exec/obidos/redirect?link_code=ur2&tag=wikia-20&camp=1789&creative=9325&path=http%3A%2F%2Fwww.amazon.com%2Fgp%2Fproduct%2FB00122D6ZG%2Fsr%3D8-1%2Fqid%3D1147400297%2Fref%3Dpd_bbs_1%3F%255Fencoding%3DUTF8\",\n            \"urlGoEar\": \"http://goear.com/listen.php?v=2bc44cf\",\n            \"urlAllmusic\": \"http://www.allmusic.com/song/mt0010502640\",\n            \"urlMusicBrainz\": \"http://musicbrainz.org/recording/20826102-147b-4376-a1f3-72c25bfd43cd\"\n        }]\n    }]\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "error",
+            "description": "<p>The id is not valid.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error-Response invalid ObjectId:",
+          "content": "HTTP/1.1 404 Not Found\n{\n    \"error\": \"You must type a valid ObjectId\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error-Response internal error:",
+          "content": "HTTP/1.1 404 Not Found\n{\n    \"error\": \"An internal error occurred\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "routes/api/v1/api_v1.js",
+    "groupTitle": "Api_v1"
+  },
+  {
+    "type": "get",
+    "url": "api/v1/artist/name/:memberName",
+    "title": "Get an artist document by memberName",
+    "examples": [
+      {
+        "title": "Example usage: ",
+        "content": "wasabi.i3s.unice.fr/api/v1/member/Bruce%20Dickinson",
+        "type": "json"
+      }
+    ],
+    "version": "1.0.0",
+    "name": "GetArtistByMember",
+    "group": "Api_v1",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "memberName",
+            "description": "<p>artist's name</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response for an artist:",
+          "content": "HTTP/1.1 200 OK\n{\n    \"_id\": \"56d8432453a7ddfc01f96c1f\",\n    \"name\": \"Iron Maiden\",\n    \"urlWikipedia\": \"http://en.wikipedia.org/wiki/Iron_Maiden\",\n    \"urlOfficialWebsite\": \"http://www.ironmaiden.com/\",\n    \"urlFacebook\": \"https://www.facebook.com/ironmaiden\",\n    \"urlMySpace\": \"https://myspace.com/ironmaiden\",\n    \"urlTwitter\": \"https://twitter.com/ironmaiden\",\n    \"locationInfo\": [\"England\", \"London\"],\n    \"urlWikia\": \"Iron_Maiden\",\n    \"activeYears\": \"\",\n    \"genres\": [\"Heavy Metal\"],\n    \"labels\": [\"Atlantic Records\", \"EMI\", \"Elektra\", \"Epic Records\"],\n    \"members\": [{\n        \"name\": \"Bruce Dickinson\",\n        \"instruments\": [\"lead vocals \"],\n        \"activeYears\": [\"1982-1993\", \" 1999-present\\n\"]\n    }],\n    \"formerMembers\": [{\n        \"name\": \"Paul Day\",\n        \"instruments\": [\"lead vocals \"],\n        \"activeYears\": [\"1975-1976\\n\"]\n    }, {\n        \"name\": \"Denis Wilcock\",\n        \"instruments\": [\"lead vocals \"],\n        \"activeYears\": [\"1976-1977\\n\"]\n    }]\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "error",
+            "description": "<p>the database does not respond.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error-Response internal error:",
+          "content": "HTTP/1.1 404 Not Found\n{\n    \"error\": \"An internal error occurred\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "routes/api/v1/api_v1.js",
+    "groupTitle": "Api_v1"
+  },
+  {
+    "type": "get",
+    "url": "api/v1/artist_all/name/:name",
+    "title": "Get songs of each album of the artist having this name",
+    "examples": [
+      {
+        "title": "Example usage: ",
+        "content": "wasabi.i3s.unice.fr/api/v1/artist_all/name/Metallica",
+        "type": "json"
+      }
+    ],
+    "version": "1.0.0",
+    "name": "GetArtistByNameWithAlbumsAndSongs",
+    "group": "Api_v1",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "name",
+            "description": "<p>artist's name</p>"
           }
         ]
       }

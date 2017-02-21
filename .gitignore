@@ -3,3 +3,4 @@ mongo/backup_mongo_tmp/*
 public/my_components/MT5/multitrack/*
 node_modules/*
 routes/conf/login.json
+apidoc/
