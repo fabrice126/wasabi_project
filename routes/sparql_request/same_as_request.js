@@ -1,4 +1,4 @@
-//sameas_request.js de récupérer les attributs same as de la page dbpédia correspondant a un artist
+//same_as_request.js de récupérer les attributs same as de la page dbpédia correspondant a un artist
 //Quand l'utiliser : Si nous sommes en présence d'un artiste francais ayant une url wikipédia pointant vers un dbpédia non francais dans notre base de données
 //Si tel est le cas, nous devons envoyer une requête vers l'url wikipédia afin de récupérer son attribut same as et ensuite recupérer le same as pointant vers le dbpédia francais
 // si l'attribut same as pointant vers le dbpédia francais n'existe pas alors nous requêterons vers le dbpédia de l'url de notre base

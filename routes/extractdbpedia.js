@@ -3,7 +3,7 @@ import dbpediaHandler from './handler/dbpediaHandler.js';
 import utilHandler from './handler/utilHandler.js';
 import construct_endpoint from './sparql_request/construct_endpoint.js';
 import redirect_request from './sparql_request/redirect_request.js';
-import sameas_request from './sparql_request/same_as_request.js';
+import same_as_request from './sparql_request/same_as_request.js';
 import config from './conf/conf.json';
 import {ObjectId} from 'mongoskin';
 import {parseString} from 'xml2js';
@@ -66,7 +66,7 @@ router.get('/:collection',function(req, res){
                                 if (objRedirect.objUrl.fillIfFr == 'fr.') {
                                     console.log("FRENCH ARTIST FOUND");
                                     // on lance la requête SPARQL vers le dbpédia non français afin de récupérer l'attribut sameAs contenant une URI vers dbpédia fr
-                                    var sameAsRequest = sameas_request.construct_request(objRedirect.objUrl.urlDbpedia, objRedirect.objUrl.country);
+                                    var sameAsRequest = same_as_request.construct_request(objRedirect.objUrl.urlDbpedia, objRedirect.objUrl.country);
                                     dbpediaHandler.getSameAsOfDbpedia(objRedirect, sameAsRequest).then(function (objSameAs) {
                                         dbpediaHandler.handlerGetSameAsOfDbpedia(objSameAs,urlDbpediaToSplit,urlWikipediaToSplit);
                                         //On relance la fonction requestsDbpedia avec l'objUrl ne contenant plus de fillIfFr afin de passer dans le ELSE ci-dessous
@@ -149,7 +149,7 @@ router.get('/add/:collection/:_id',function(req, res) {
                 if (objRedirect.objUrl.fillIfFr == 'fr.') {
                     console.log("FRENCH ARTIST FOUND");
                     // on lance la requête SPARQL vers le dbpédia non français afin de récupérer l'attribut sameAs contenant une URI vers dbpédia fr
-                    var sameAsRequest = sameas_request.construct_request(objRedirect.objUrl.urlDbpedia, objRedirect.objUrl.country);
+                    var sameAsRequest = same_as_request.construct_request(objRedirect.objUrl.urlDbpedia, objRedirect.objUrl.country);
                     dbpediaHandler.getSameAsOfDbpedia(objRedirect, sameAsRequest).then(function (objSameAs) {
                         dbpediaHandler.handlerGetSameAsOfDbpedia(objSameAs,urlDbpediaToSplit,urlWikipediaToSplit);
                         //On relance la fonction requestsDbpedia avec l'objUrl ne contenant plus de fillIfFr afin de passer dans le ELSE ci-dessous
