@@ -30,8 +30,8 @@ const elasticsearchClient = new elasticsearch.Client({
 // view cache
 app.set('view cache', true); // désactivation du cache express
 app.set('config', config);
-// app.set('env', 'development');
-app.set('env', 'production'); //Utiliser ce mode avant d'envoyer sur le serveur
+app.set('env', 'development');
+// app.set('env', 'production'); //Utiliser ce mode avant d'envoyer sur le serveur
 app.use(helmet());
 const expiryDate = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
 app.use(session({
