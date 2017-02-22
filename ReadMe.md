@@ -21,7 +21,7 @@ Il est conseillé de lire ce que fait chaque API avant de l'utiliser notamment c
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*5.2.1.* Si ça ne fonctionne pas : taper `npm install` en ligne commande dans le projet wasabi (voir 5.1.) cela installera les dépendances du projet  
 *5.3.* le serveur est maintenant lancé sur *http://localhost/* (dans le navigateur)  
 *5.4.* /!\ Par souci de sécurité le fichier contenant le login / mot de passe n'est pas sur le git vous devez donc ajouter `login.json` dans le répertoire `routes/conf`. Ce fichier contient le json suivant: `{"login": "ADemanderALAdmin","password": "ADemanderALAdmin"}`
-6. Remplir la base de données d'elasticsearch pour cela utiliser l'api REST pour indexer le nom des artistes `http://127.0.0.1/createdb/createdbelasticsearchartist` et `http://127.0.0.1/createdb/createdbelasticsearchsong` pour indexer le nom des musiques avec les noms des artistes et les noms des albums ainsi nous pourrons chercher une musique par son titre + nom d'album + nom d'artiste.
+6. Remplir la base de données d'elasticsearch pour cela utiliser l'api REST pour indexer le nom des artistes `http://127.0.0.1/createdb/createdbelasticsearchartist` et `http://127.0.0.1/createdb/createdbelasticsearchsong` pour indexer le nom des musiques avec les noms des artistes et les noms des albums ainsi nous pourrons chercher une musique par son title + nom d'album + nom d'artiste.
 
 **Comment lancer l'application sous RedHat/Linux Centos 7 (serveur - uniquement en cas de ré-installation)**
 =======
@@ -43,7 +43,7 @@ Il est conseillé de lire ce que fait chaque API avant de l'utiliser notamment c
 *6.2.* taper la commande : `pm2 start bin/www`  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*6.2.1.* Si ça ne fonctionne pas : taper `npm install` en ligne commande dans le projet wasabi (voir 6.1.)  
 *6.3.* le serveur est maintenant lancé et accessible via l'URL à demander au chef du projet
-7. Remplir la base de données d'elasticsearch pour cela utiliser l'api REST pour indexer les noms des artistes http://urldusite/createdb/createdbelasticsearchartist et http://urldusite/createdb/createdbelasticsearchsong pour indexer le nom des musiques avec les noms des artistes et les noms des albums ainsi nous pourrons chercher une musique par son titre + nom d'album + nom d'artiste.
+7. Remplir la base de données d'elasticsearch pour cela utiliser l'api REST pour indexer les noms des artistes http://urldusite/createdb/createdbelasticsearchartist et http://urldusite/createdb/createdbelasticsearchsong pour indexer le nom des musiques avec les noms des artistes et les noms des albums ainsi nous pourrons chercher une musique par son title + nom d'album + nom d'artiste.
 
 **Connexion et gestion du serveur wasabi**
 =======

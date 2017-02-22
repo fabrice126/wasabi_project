@@ -55,10 +55,10 @@
             <p class="center searchText-info">Nous avons actuellement : {{countField.count}} musiques produites par: {{producerName}}</p>
             AJOUTER DES INFOS SUR LE PRODUCTEUR.<br>
             <template class="flex-wrap" is="dom-repeat" items="{{producers}}" as="producer" initial-count="1" >
-                <a href="#/search/artist/{{_encodeUri(producer.name)}}/album/{{_encodeUri(producer.albumTitre)}}/song/{{_encodeUri(producer.titre)}}" class="inherit">
+                <a href="#/search/artist/{{_encodeUri(producer.name)}}/album/{{_encodeUri(producer.albumTitle)}}/song/{{_encodeUri(producer.title)}}" class="inherit">
                     <paper-card elevation="0" >
                         <img class="song_search_bar" src="../../img/song_search_bar.svg" alt="Band">
-                        <span class="search_title">{{producer.titre}} - {{producer.name}} - {{producer.albumTitre}}</span>
+                        <span class="search_title">{{producer.title}} - {{producer.name}} - {{producer.albumTitle}}</span>
                         <paper-ripple></paper-ripple>
                     </paper-card>
                 </a>

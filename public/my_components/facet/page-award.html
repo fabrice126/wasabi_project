@@ -56,10 +56,10 @@
             <iron-ajax id="get_count"   auto url="/search/count/song/award/{{_encodeUri(awardName)}}" last-response="{{countField}}" handleAs="json"> </iron-ajax>
             <p class="center searchText-info">Nous avons actuellement : {{countField.count}} musiques ayant reçu un award {{awardName}}</p>
             <template class="flex-wrap" is="dom-repeat" items="{{awards}}" as="award" initial-count="1" >
-                <a href="#/search/artist/{{_encodeUri(award.name)}}/album/{{_encodeUri(award.albumTitre)}}/song/{{_encodeUri(award.titre)}}" class="inherit">
+                <a href="#/search/artist/{{_encodeUri(award.name)}}/album/{{_encodeUri(award.albumTitle)}}/song/{{_encodeUri(award.title)}}" class="inherit">
                     <paper-card elevation="0" >
                         <img class="song_search_bar" src="../../img/song_search_bar.svg" alt="Band">
-                        <span class="search_title">{{award.titre}} - {{award.name}} - {{award.albumTitre}}</span>
+                        <span class="search_title">{{award.title}} - {{award.name}} - {{award.albumTitle}}</span>
                         <paper-ripple></paper-ripple>
                     </paper-card>
                 </a>

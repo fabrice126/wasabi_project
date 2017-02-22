@@ -27,15 +27,15 @@
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "titre",
-            "description": "<p>Album titre</p>"
+            "field": "title",
+            "description": "<p>Album title</p>"
           },
           {
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "dateSortie",
-            "description": "<p>Album dateSortie</p>"
+            "field": "publicationDate",
+            "description": "<p>Album publicationDate</p>"
           },
           {
             "group": "Success 200",
@@ -325,7 +325,7 @@
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "albumTitre",
+            "field": "albumTitle",
             "description": "<p>Album title</p>"
           },
           {
@@ -339,15 +339,15 @@
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "dateSortieAlbum",
+            "field": "publicationDateAlbum",
             "description": "<p>Album release</p>"
           },
           {
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "titre",
-            "description": "<p>Song titre</p>"
+            "field": "title",
+            "description": "<p>Song title</p>"
           },
           {
             "group": "Success 200",
@@ -610,7 +610,7 @@
       "examples": [
         {
           "title": "Success-Response for an artist:",
-          "content": "HTTP/1.1 200 OK\n{\n    \"_id\": \"5714debe25ac0d8aee36b664\",\n    \"name\": \"Metallica\",\n    \"titre\": \"Master Of Puppets\",\n    \"dateSortie\": \"1986\",\n    \"urlWikipedia\": \"http://en.wikipedia.org/wiki/Master_of_Puppets\",\n    \"genre\": \"Thrash Metal\",\n    \"length\": \"54:46\",\n    \"urlAlbum\": \"http://lyrics.wikia.com/Metallica:Master_Of_Puppets_%281986%29\",\n    \"id_artist\": \"56d93d84ce06f50c0fed8747\"\n}",
+          "content": "HTTP/1.1 200 OK\n{\n    \"_id\": \"5714debe25ac0d8aee36b664\",\n    \"name\": \"Metallica\",\n    \"title\": \"Master Of Puppets\",\n    \"publicationDate\": \"1986\",\n    \"urlWikipedia\": \"http://en.wikipedia.org/wiki/Master_of_Puppets\",\n    \"genre\": \"Thrash Metal\",\n    \"length\": \"54:46\",\n    \"urlAlbum\": \"http://lyrics.wikia.com/Metallica:Master_Of_Puppets_%281986%29\",\n    \"id_artist\": \"56d93d84ce06f50c0fed8747\"\n}",
           "type": "json"
         }
       ]
@@ -794,7 +794,7 @@
       "examples": [
         {
           "title": "Success-Response for an artist:",
-          "content": "HTTP/1.1 200 OK\n{\n    \"_id\": \"56d93d84ce06f50c0fed8747\",\n    \"name\": \"Metallica\",\n    \"urlWikipedia\": \"http://en.wikipedia.org/wiki/Metallica\",\n    \"urlOfficialWebsite\": \"http://www.metallica.com/\",\n    \"urlFacebook\": \"http://www.facebook.com/metallica\",\n    \"urlMySpace\": \"https://myspace.com/Metallica\",\n    \"urlTwitter\": \"http://twitter.com/metallica\",\n    \"locationInfo\": [\"United States\", \"California\", \"Los Angeles\"],\n    \"urlWikia\": \"Metallica\",\n    \"activeYears\": \"\",\n    \"genres\": [\"Heavy Metal\", \"Thrash Metal\"],\n    \"labels\": [\"Elektra\", \"Megaforce Records\", \"Mercury Records\", \"Warner Bros. Records\"],\n    \"members\": [{\n        \"name\": \" James Hetfield\",\n        \"instruments\": [\"lead vocals\", \" rhythm guitar \"],\n        \"activeYears\": [\"1981-present\\n\"]\n        }, {\n        \"name\": \" Kirk Hammett\",\n        \"instruments\": [\"lead guitar \"],\n        \"activeYears\": [\"1983-present\\n\"]\n    }],\n    \"formerMembers\": [{\n        \"name\": \" Dave Mustaine\",\n        \"instruments\": [\"lead guitar\", \" backing vocals \"],\n        \"activeYears\": [\"1981-1983\\n\"]\n        }, {\n        \"name\": \" Ron McGovney\",\n        \"instruments\": [\"bass \"],\n        \"activeYears\": [\"1981-1982\\n\"]\n    }],\n    \"albums\": [{\n        \"_id\": \"5714debe25ac0d8aee36b662\",\n        \"name\": \"Metallica\",\n        \"titre\": \"Kill 'Em All\",\n        \"dateSortie\": \"1983\",\n        \"urlWikipedia\": \"http://en.wikipedia.org/wiki/Kill_%27Em_All\",\n        \"genre\": \"Thrash Metal\",\n        \"length\": \"51:14\",\n        \"urlAlbum\": \"http://lyrics.wikia.com/Metallica:Kill_%27Em_All_%281983%29\",\n        \"id_artist\": \"56d93d84ce06f50c0fed8747\",\n        \"songs\": [{\n            \"_id\": \"5714dedb25ac0d8aee4ad800\",\n            \"position\": 0,\n            \"titre\": \"Hit The Lights\",\n            \"urlSong\": \"http://lyrics.wikia.com/Metallica:Hit_The_Lights\",\n            \"lyrics\": \"No life till leather, we&apos;re gonna kick some ass tonight We got the metal madness...\",\n            \"urlWikipedia\": \"\",\n            \"id_album\": \"5714debe25ac0d8aee36b662\",\n            \"urlYoutube\": \"\",\n            \"isClassic\": false,\n            \"multitrack_path\": \"M Multitracks/Metallica - Hit The Lights\",\n            \"urlITunes\": \"https://itunes.apple.com/us/album/id167352861?i=167352894\",\n            \"urlAmazon\": \"http://www.amazon.com/exec/obidos/redirect?link_code=ur2&tag=wikia-20&camp=1789&creative=9325&path=http%3A%2F%2Fwww.amazon.com%2Fgp%2Fproduct%2FB00122D6X8%2Fsr%3D8-1%2Fqid%3D1147400297%2Fref%3Dpd_bbs_1%3F%255Fencoding%3DUTF8\",\n            \"urlGoEar\": \"http://goear.com/listen.php?v=41b192c\",\n            \"urlSpotify\": \"https://play.spotify.com/track/4Pn6l1ZzsYFrx64h1gWTyy\",\n            \"urlAllmusic\": \"http://www.allmusic.com/song/mt0034723664\",\n            \"urlMusicBrainz\": \"http://musicbrainz.org/recording/8467f4e7-ef5b-458c-bbc5-6727d9f2252d\"\n        }, {\n            \"_id\": \"5714dedb25ac0d8aee4ad801\",\n            \"position\": 1,\n            \"titre\": \"The Four Horsemen\",\n            \"urlSong\": \"http://lyrics.wikia.com/Metallica:The_Four_Horsemen\",\n            \"lyrics\": \"By the last breath, the fourth winds blow Better raise your ears...\",\n            \"urlWikipedia\": \"http://en.wikipedia.org/wiki/The_Mechanix\",\n            \"id_album\": \"5714debe25ac0d8aee36b662\",\n            \"format\": [],\n            \"genre\": [\"Thrash metal\", \"Speed metal\"],\n            \"producer\": [\"Dave Mustaine\"],\n            \"recordLabel\": [\"Combat Records\"],\n            \"writer\": [],\n            \"recorded\": [\"December 1984 – January 1985 at Indigo Ranch Studios in Malibu, California\"],\n            \"abstract\": \"Killing Is My Business... and Business Is Good! is the debut studio album by American thrash metal band Megadeth. It was released on June 12, 1985...\",\n            \"releaseDate\": [\"1985-06-12\"],\n            \"runtime\": [\"1870.0\"],\n            \"award\": [],\n            \"subject\": [\"1985 debut albums\", \"Megadeth albums\", \"Combat Records albums\"],\n            \"urlYoutube\": \"\",\n            \"isClassic\": false,\n            \"urlITunes\": \"https://itunes.apple.com/us/album/id167352861?i=167352995\",\n            \"urlAmazon\": \"http://www.amazon.com/exec/obidos/redirect?link_code=ur2&tag=wikia-20&camp=1789&creative=9325&path=http%3A%2F%2Fwww.amazon.com%2Fgp%2Fproduct%2FB00122D6ZG%2Fsr%3D8-1%2Fqid%3D1147400297%2Fref%3Dpd_bbs_1%3F%255Fencoding%3DUTF8\",\n            \"urlGoEar\": \"http://goear.com/listen.php?v=2bc44cf\",\n            \"urlAllmusic\": \"http://www.allmusic.com/song/mt0010502640\",\n            \"urlMusicBrainz\": \"http://musicbrainz.org/recording/20826102-147b-4376-a1f3-72c25bfd43cd\"\n        }]\n    }]\n}",
+          "content": "HTTP/1.1 200 OK\n{\n    \"_id\": \"56d93d84ce06f50c0fed8747\",\n    \"name\": \"Metallica\",\n    \"urlWikipedia\": \"http://en.wikipedia.org/wiki/Metallica\",\n    \"urlOfficialWebsite\": \"http://www.metallica.com/\",\n    \"urlFacebook\": \"http://www.facebook.com/metallica\",\n    \"urlMySpace\": \"https://myspace.com/Metallica\",\n    \"urlTwitter\": \"http://twitter.com/metallica\",\n    \"locationInfo\": [\"United States\", \"California\", \"Los Angeles\"],\n    \"urlWikia\": \"Metallica\",\n    \"activeYears\": \"\",\n    \"genres\": [\"Heavy Metal\", \"Thrash Metal\"],\n    \"labels\": [\"Elektra\", \"Megaforce Records\", \"Mercury Records\", \"Warner Bros. Records\"],\n    \"members\": [{\n        \"name\": \" James Hetfield\",\n        \"instruments\": [\"lead vocals\", \" rhythm guitar \"],\n        \"activeYears\": [\"1981-present\\n\"]\n        }, {\n        \"name\": \" Kirk Hammett\",\n        \"instruments\": [\"lead guitar \"],\n        \"activeYears\": [\"1983-present\\n\"]\n    }],\n    \"formerMembers\": [{\n        \"name\": \" Dave Mustaine\",\n        \"instruments\": [\"lead guitar\", \" backing vocals \"],\n        \"activeYears\": [\"1981-1983\\n\"]\n        }, {\n        \"name\": \" Ron McGovney\",\n        \"instruments\": [\"bass \"],\n        \"activeYears\": [\"1981-1982\\n\"]\n    }],\n    \"albums\": [{\n        \"_id\": \"5714debe25ac0d8aee36b662\",\n        \"name\": \"Metallica\",\n        \"title\": \"Kill 'Em All\",\n        \"publicationDate\": \"1983\",\n        \"urlWikipedia\": \"http://en.wikipedia.org/wiki/Kill_%27Em_All\",\n        \"genre\": \"Thrash Metal\",\n        \"length\": \"51:14\",\n        \"urlAlbum\": \"http://lyrics.wikia.com/Metallica:Kill_%27Em_All_%281983%29\",\n        \"id_artist\": \"56d93d84ce06f50c0fed8747\",\n        \"songs\": [{\n            \"_id\": \"5714dedb25ac0d8aee4ad800\",\n            \"position\": 0,\n            \"title\": \"Hit The Lights\",\n            \"urlSong\": \"http://lyrics.wikia.com/Metallica:Hit_The_Lights\",\n            \"lyrics\": \"No life till leather, we&apos;re gonna kick some ass tonight We got the metal madness...\",\n            \"urlWikipedia\": \"\",\n            \"id_album\": \"5714debe25ac0d8aee36b662\",\n            \"urlYoutube\": \"\",\n            \"isClassic\": false,\n            \"multitrack_path\": \"M Multitracks/Metallica - Hit The Lights\",\n            \"urlITunes\": \"https://itunes.apple.com/us/album/id167352861?i=167352894\",\n            \"urlAmazon\": \"http://www.amazon.com/exec/obidos/redirect?link_code=ur2&tag=wikia-20&camp=1789&creative=9325&path=http%3A%2F%2Fwww.amazon.com%2Fgp%2Fproduct%2FB00122D6X8%2Fsr%3D8-1%2Fqid%3D1147400297%2Fref%3Dpd_bbs_1%3F%255Fencoding%3DUTF8\",\n            \"urlGoEar\": \"http://goear.com/listen.php?v=41b192c\",\n            \"urlSpotify\": \"https://play.spotify.com/track/4Pn6l1ZzsYFrx64h1gWTyy\",\n            \"urlAllmusic\": \"http://www.allmusic.com/song/mt0034723664\",\n            \"urlMusicBrainz\": \"http://musicbrainz.org/recording/8467f4e7-ef5b-458c-bbc5-6727d9f2252d\"\n        }, {\n            \"_id\": \"5714dedb25ac0d8aee4ad801\",\n            \"position\": 1,\n            \"title\": \"The Four Horsemen\",\n            \"urlSong\": \"http://lyrics.wikia.com/Metallica:The_Four_Horsemen\",\n            \"lyrics\": \"By the last breath, the fourth winds blow Better raise your ears...\",\n            \"urlWikipedia\": \"http://en.wikipedia.org/wiki/The_Mechanix\",\n            \"id_album\": \"5714debe25ac0d8aee36b662\",\n            \"format\": [],\n            \"genre\": [\"Thrash metal\", \"Speed metal\"],\n            \"producer\": [\"Dave Mustaine\"],\n            \"recordLabel\": [\"Combat Records\"],\n            \"writer\": [],\n            \"recorded\": [\"December 1984 – January 1985 at Indigo Ranch Studios in Malibu, California\"],\n            \"abstract\": \"Killing Is My Business... and Business Is Good! is the debut studio album by American thrash metal band Megadeth. It was released on June 12, 1985...\",\n            \"releaseDate\": [\"1985-06-12\"],\n            \"runtime\": [\"1870.0\"],\n            \"award\": [],\n            \"subject\": [\"1985 debut albums\", \"Megadeth albums\", \"Combat Records albums\"],\n            \"urlYoutube\": \"\",\n            \"isClassic\": false,\n            \"urlITunes\": \"https://itunes.apple.com/us/album/id167352861?i=167352995\",\n            \"urlAmazon\": \"http://www.amazon.com/exec/obidos/redirect?link_code=ur2&tag=wikia-20&camp=1789&creative=9325&path=http%3A%2F%2Fwww.amazon.com%2Fgp%2Fproduct%2FB00122D6ZG%2Fsr%3D8-1%2Fqid%3D1147400297%2Fref%3Dpd_bbs_1%3F%255Fencoding%3DUTF8\",\n            \"urlGoEar\": \"http://goear.com/listen.php?v=2bc44cf\",\n            \"urlAllmusic\": \"http://www.allmusic.com/song/mt0010502640\",\n            \"urlMusicBrainz\": \"http://musicbrainz.org/recording/20826102-147b-4376-a1f3-72c25bfd43cd\"\n        }]\n    }]\n}",
           "type": "json"
         }
       ]
@@ -828,17 +828,17 @@
   },
   {
     "type": "get",
-    "url": "api/v1/artist/name/:memberName",
+    "url": "api/v1/member/name/:memberName",
     "title": "Get an artist document by memberName",
     "examples": [
       {
         "title": "Example usage: ",
-        "content": "wasabi.i3s.unice.fr/api/v1/member/Bruce%20Dickinson",
+        "content": "wasabi.i3s.unice.fr/api/v1/member/name/Adrian%20Smith",
         "type": "json"
       }
     ],
     "version": "1.0.0",
-    "name": "GetArtistByMember",
+    "name": "GetArtistByMemberName",
     "group": "Api_v1",
     "parameter": {
       "fields": {
@@ -915,7 +915,7 @@
       "examples": [
         {
           "title": "Success-Response for an artist:",
-          "content": "HTTP/1.1 200 OK\n{\n    \"_id\": \"56d93d84ce06f50c0fed8747\",\n    \"name\": \"Metallica\",\n    \"urlWikipedia\": \"http://en.wikipedia.org/wiki/Metallica\",\n    \"urlOfficialWebsite\": \"http://www.metallica.com/\",\n    \"urlFacebook\": \"http://www.facebook.com/metallica\",\n    \"urlMySpace\": \"https://myspace.com/Metallica\",\n    \"urlTwitter\": \"http://twitter.com/metallica\",\n    \"locationInfo\": [\"United States\", \"California\", \"Los Angeles\"],\n    \"urlWikia\": \"Metallica\",\n    \"activeYears\": \"\",\n    \"genres\": [\"Heavy Metal\", \"Thrash Metal\"],\n    \"labels\": [\"Elektra\", \"Megaforce Records\", \"Mercury Records\", \"Warner Bros. Records\"],\n    \"members\": [{\n        \"name\": \" James Hetfield\",\n        \"instruments\": [\"lead vocals\", \" rhythm guitar \"],\n        \"activeYears\": [\"1981-present\\n\"]\n        }, {\n        \"name\": \" Kirk Hammett\",\n        \"instruments\": [\"lead guitar \"],\n        \"activeYears\": [\"1983-present\\n\"]\n    }],\n    \"formerMembers\": [{\n        \"name\": \" Dave Mustaine\",\n        \"instruments\": [\"lead guitar\", \" backing vocals \"],\n        \"activeYears\": [\"1981-1983\\n\"]\n        }, {\n        \"name\": \" Ron McGovney\",\n        \"instruments\": [\"bass \"],\n        \"activeYears\": [\"1981-1982\\n\"]\n    }],\n    \"albums\": [{\n        \"_id\": \"5714debe25ac0d8aee36b662\",\n        \"name\": \"Metallica\",\n        \"titre\": \"Kill 'Em All\",\n        \"dateSortie\": \"1983\",\n        \"urlWikipedia\": \"http://en.wikipedia.org/wiki/Kill_%27Em_All\",\n        \"genre\": \"Thrash Metal\",\n        \"length\": \"51:14\",\n        \"urlAlbum\": \"http://lyrics.wikia.com/Metallica:Kill_%27Em_All_%281983%29\",\n        \"id_artist\": \"56d93d84ce06f50c0fed8747\",\n        \"songs\": [{\n            \"_id\": \"5714dedb25ac0d8aee4ad800\",\n            \"position\": 0,\n            \"titre\": \"Hit The Lights\",\n            \"urlSong\": \"http://lyrics.wikia.com/Metallica:Hit_The_Lights\",\n            \"lyrics\": \"No life till leather, we&apos;re gonna kick some ass tonight We got the metal madness...\",\n            \"urlWikipedia\": \"\",\n            \"id_album\": \"5714debe25ac0d8aee36b662\",\n            \"urlYoutube\": \"\",\n            \"isClassic\": false,\n            \"multitrack_path\": \"M Multitracks/Metallica - Hit The Lights\",\n            \"urlITunes\": \"https://itunes.apple.com/us/album/id167352861?i=167352894\",\n            \"urlAmazon\": \"http://www.amazon.com/exec/obidos/redirect?link_code=ur2&tag=wikia-20&camp=1789&creative=9325&path=http%3A%2F%2Fwww.amazon.com%2Fgp%2Fproduct%2FB00122D6X8%2Fsr%3D8-1%2Fqid%3D1147400297%2Fref%3Dpd_bbs_1%3F%255Fencoding%3DUTF8\",\n            \"urlGoEar\": \"http://goear.com/listen.php?v=41b192c\",\n            \"urlSpotify\": \"https://play.spotify.com/track/4Pn6l1ZzsYFrx64h1gWTyy\",\n            \"urlAllmusic\": \"http://www.allmusic.com/song/mt0034723664\",\n            \"urlMusicBrainz\": \"http://musicbrainz.org/recording/8467f4e7-ef5b-458c-bbc5-6727d9f2252d\"\n        }, {\n            \"_id\": \"5714dedb25ac0d8aee4ad801\",\n            \"position\": 1,\n            \"titre\": \"The Four Horsemen\",\n            \"urlSong\": \"http://lyrics.wikia.com/Metallica:The_Four_Horsemen\",\n            \"lyrics\": \"By the last breath, the fourth winds blow Better raise your ears...\",\n            \"urlWikipedia\": \"http://en.wikipedia.org/wiki/The_Mechanix\",\n            \"id_album\": \"5714debe25ac0d8aee36b662\",\n            \"format\": [],\n            \"genre\": [\"Thrash metal\", \"Speed metal\"],\n            \"producer\": [\"Dave Mustaine\"],\n            \"recordLabel\": [\"Combat Records\"],\n            \"writer\": [],\n            \"recorded\": [\"December 1984 – January 1985 at Indigo Ranch Studios in Malibu, California\"],\n            \"abstract\": \"Killing Is My Business... and Business Is Good! is the debut studio album by American thrash metal band Megadeth. It was released on June 12, 1985...\",\n            \"releaseDate\": [\"1985-06-12\"],\n            \"runtime\": [\"1870.0\"],\n            \"award\": [],\n            \"subject\": [\"1985 debut albums\", \"Megadeth albums\", \"Combat Records albums\"],\n            \"urlYoutube\": \"\",\n            \"isClassic\": false,\n            \"urlITunes\": \"https://itunes.apple.com/us/album/id167352861?i=167352995\",\n            \"urlAmazon\": \"http://www.amazon.com/exec/obidos/redirect?link_code=ur2&tag=wikia-20&camp=1789&creative=9325&path=http%3A%2F%2Fwww.amazon.com%2Fgp%2Fproduct%2FB00122D6ZG%2Fsr%3D8-1%2Fqid%3D1147400297%2Fref%3Dpd_bbs_1%3F%255Fencoding%3DUTF8\",\n            \"urlGoEar\": \"http://goear.com/listen.php?v=2bc44cf\",\n            \"urlAllmusic\": \"http://www.allmusic.com/song/mt0010502640\",\n            \"urlMusicBrainz\": \"http://musicbrainz.org/recording/20826102-147b-4376-a1f3-72c25bfd43cd\"\n        }]\n    }]\n}",
+          "content": "HTTP/1.1 200 OK\n{\n    \"_id\": \"56d93d84ce06f50c0fed8747\",\n    \"name\": \"Metallica\",\n    \"urlWikipedia\": \"http://en.wikipedia.org/wiki/Metallica\",\n    \"urlOfficialWebsite\": \"http://www.metallica.com/\",\n    \"urlFacebook\": \"http://www.facebook.com/metallica\",\n    \"urlMySpace\": \"https://myspace.com/Metallica\",\n    \"urlTwitter\": \"http://twitter.com/metallica\",\n    \"locationInfo\": [\"United States\", \"California\", \"Los Angeles\"],\n    \"urlWikia\": \"Metallica\",\n    \"activeYears\": \"\",\n    \"genres\": [\"Heavy Metal\", \"Thrash Metal\"],\n    \"labels\": [\"Elektra\", \"Megaforce Records\", \"Mercury Records\", \"Warner Bros. Records\"],\n    \"members\": [{\n        \"name\": \" James Hetfield\",\n        \"instruments\": [\"lead vocals\", \" rhythm guitar \"],\n        \"activeYears\": [\"1981-present\\n\"]\n        }, {\n        \"name\": \" Kirk Hammett\",\n        \"instruments\": [\"lead guitar \"],\n        \"activeYears\": [\"1983-present\\n\"]\n    }],\n    \"formerMembers\": [{\n        \"name\": \" Dave Mustaine\",\n        \"instruments\": [\"lead guitar\", \" backing vocals \"],\n        \"activeYears\": [\"1981-1983\\n\"]\n        }, {\n        \"name\": \" Ron McGovney\",\n        \"instruments\": [\"bass \"],\n        \"activeYears\": [\"1981-1982\\n\"]\n    }],\n    \"albums\": [{\n        \"_id\": \"5714debe25ac0d8aee36b662\",\n        \"name\": \"Metallica\",\n        \"title\": \"Kill 'Em All\",\n        \"publicationDate\": \"1983\",\n        \"urlWikipedia\": \"http://en.wikipedia.org/wiki/Kill_%27Em_All\",\n        \"genre\": \"Thrash Metal\",\n        \"length\": \"51:14\",\n        \"urlAlbum\": \"http://lyrics.wikia.com/Metallica:Kill_%27Em_All_%281983%29\",\n        \"id_artist\": \"56d93d84ce06f50c0fed8747\",\n        \"songs\": [{\n            \"_id\": \"5714dedb25ac0d8aee4ad800\",\n            \"position\": 0,\n            \"title\": \"Hit The Lights\",\n            \"urlSong\": \"http://lyrics.wikia.com/Metallica:Hit_The_Lights\",\n            \"lyrics\": \"No life till leather, we&apos;re gonna kick some ass tonight We got the metal madness...\",\n            \"urlWikipedia\": \"\",\n            \"id_album\": \"5714debe25ac0d8aee36b662\",\n            \"urlYoutube\": \"\",\n            \"isClassic\": false,\n            \"multitrack_path\": \"M Multitracks/Metallica - Hit The Lights\",\n            \"urlITunes\": \"https://itunes.apple.com/us/album/id167352861?i=167352894\",\n            \"urlAmazon\": \"http://www.amazon.com/exec/obidos/redirect?link_code=ur2&tag=wikia-20&camp=1789&creative=9325&path=http%3A%2F%2Fwww.amazon.com%2Fgp%2Fproduct%2FB00122D6X8%2Fsr%3D8-1%2Fqid%3D1147400297%2Fref%3Dpd_bbs_1%3F%255Fencoding%3DUTF8\",\n            \"urlGoEar\": \"http://goear.com/listen.php?v=41b192c\",\n            \"urlSpotify\": \"https://play.spotify.com/track/4Pn6l1ZzsYFrx64h1gWTyy\",\n            \"urlAllmusic\": \"http://www.allmusic.com/song/mt0034723664\",\n            \"urlMusicBrainz\": \"http://musicbrainz.org/recording/8467f4e7-ef5b-458c-bbc5-6727d9f2252d\"\n        }, {\n            \"_id\": \"5714dedb25ac0d8aee4ad801\",\n            \"position\": 1,\n            \"title\": \"The Four Horsemen\",\n            \"urlSong\": \"http://lyrics.wikia.com/Metallica:The_Four_Horsemen\",\n            \"lyrics\": \"By the last breath, the fourth winds blow Better raise your ears...\",\n            \"urlWikipedia\": \"http://en.wikipedia.org/wiki/The_Mechanix\",\n            \"id_album\": \"5714debe25ac0d8aee36b662\",\n            \"format\": [],\n            \"genre\": [\"Thrash metal\", \"Speed metal\"],\n            \"producer\": [\"Dave Mustaine\"],\n            \"recordLabel\": [\"Combat Records\"],\n            \"writer\": [],\n            \"recorded\": [\"December 1984 – January 1985 at Indigo Ranch Studios in Malibu, California\"],\n            \"abstract\": \"Killing Is My Business... and Business Is Good! is the debut studio album by American thrash metal band Megadeth. It was released on June 12, 1985...\",\n            \"releaseDate\": [\"1985-06-12\"],\n            \"runtime\": [\"1870.0\"],\n            \"award\": [],\n            \"subject\": [\"1985 debut albums\", \"Megadeth albums\", \"Combat Records albums\"],\n            \"urlYoutube\": \"\",\n            \"isClassic\": false,\n            \"urlITunes\": \"https://itunes.apple.com/us/album/id167352861?i=167352995\",\n            \"urlAmazon\": \"http://www.amazon.com/exec/obidos/redirect?link_code=ur2&tag=wikia-20&camp=1789&creative=9325&path=http%3A%2F%2Fwww.amazon.com%2Fgp%2Fproduct%2FB00122D6ZG%2Fsr%3D8-1%2Fqid%3D1147400297%2Fref%3Dpd_bbs_1%3F%255Fencoding%3DUTF8\",\n            \"urlGoEar\": \"http://goear.com/listen.php?v=2bc44cf\",\n            \"urlAllmusic\": \"http://www.allmusic.com/song/mt0010502640\",\n            \"urlMusicBrainz\": \"http://musicbrainz.org/recording/20826102-147b-4376-a1f3-72c25bfd43cd\"\n        }]\n    }]\n}",
           "type": "json"
         }
       ]
@@ -979,7 +979,7 @@
       "examples": [
         {
           "title": "Success-Response for an artist:",
-          "content": "HTTP/1.1 200 OK\n[{\n    \"_id\": \"56d93d84ce06f50c0fed8747\",\n    \"name\": \"Metallica\",\n    \"urlWikipedia\": \"http://en.wikipedia.org/wiki/Metallica\",\n    \"urlOfficialWebsite\": \"http://www.metallica.com/\",\n    \"urlFacebook\": \"http://www.facebook.com/metallica\",\n    \"urlMySpace\": \"https://myspace.com/Metallica\",\n    \"urlTwitter\": \"http://twitter.com/metallica\",\n    \"locationInfo\": [\"United States\", \"California\", \"Los Angeles\"],\n    \"urlWikia\": \"Metallica\",\n    \"activeYears\": \"\",\n    \"genres\": [\"Heavy Metal\", \"Thrash Metal\"],\n    \"labels\": [\"Elektra\", \"Megaforce Records\", \"Mercury Records\", \"Warner Bros. Records\"],\n    \"members\": [{\n        \"name\": \" James Hetfield\",\n        \"instruments\": [\"lead vocals\", \" rhythm guitar \"],\n        \"activeYears\": [\"1981-present\\n\"]\n        }, {\n        \"name\": \" Kirk Hammett\",\n        \"instruments\": [\"lead guitar \"],\n        \"activeYears\": [\"1983-present\\n\"]\n    }],\n    \"formerMembers\": [{\n        \"name\": \" Dave Mustaine\",\n        \"instruments\": [\"lead guitar\", \" backing vocals \"],\n        \"activeYears\": [\"1981-1983\\n\"]\n        }, {\n        \"name\": \" Ron McGovney\",\n        \"instruments\": [\"bass \"],\n        \"activeYears\": [\"1981-1982\\n\"]\n    }],\n    \"albums\": [{\n        \"_id\": \"5714debe25ac0d8aee36b662\",\n        \"name\": \"Metallica\",\n        \"titre\": \"Kill 'Em All\",\n        \"dateSortie\": \"1983\",\n        \"urlWikipedia\": \"http://en.wikipedia.org/wiki/Kill_%27Em_All\",\n        \"genre\": \"Thrash Metal\",\n        \"length\": \"51:14\",\n        \"urlAlbum\": \"http://lyrics.wikia.com/Metallica:Kill_%27Em_All_%281983%29\",\n        \"id_artist\": \"56d93d84ce06f50c0fed8747\",\n        \"songs\": [{\n            \"_id\": \"5714dedb25ac0d8aee4ad800\",\n            \"position\": 0,\n            \"titre\": \"Hit The Lights\",\n            \"urlSong\": \"http://lyrics.wikia.com/Metallica:Hit_The_Lights\",\n            \"lyrics\": \"No life till leather, we&apos;re gonna kick some ass tonight We got the metal madness...\",\n            \"urlWikipedia\": \"\",\n            \"id_album\": \"5714debe25ac0d8aee36b662\",\n            \"urlYoutube\": \"\",\n            \"isClassic\": false,\n            \"multitrack_path\": \"M Multitracks/Metallica - Hit The Lights\",\n            \"urlITunes\": \"https://itunes.apple.com/us/album/id167352861?i=167352894\",\n            \"urlAmazon\": \"http://www.amazon.com/exec/obidos/redirect?link_code=ur2&tag=wikia-20&camp=1789&creative=9325&path=http%3A%2F%2Fwww.amazon.com%2Fgp%2Fproduct%2FB00122D6X8%2Fsr%3D8-1%2Fqid%3D1147400297%2Fref%3Dpd_bbs_1%3F%255Fencoding%3DUTF8\",\n            \"urlGoEar\": \"http://goear.com/listen.php?v=41b192c\",\n            \"urlSpotify\": \"https://play.spotify.com/track/4Pn6l1ZzsYFrx64h1gWTyy\",\n            \"urlAllmusic\": \"http://www.allmusic.com/song/mt0034723664\",\n            \"urlMusicBrainz\": \"http://musicbrainz.org/recording/8467f4e7-ef5b-458c-bbc5-6727d9f2252d\"\n        }, {\n            \"_id\": \"5714dedb25ac0d8aee4ad801\",\n            \"position\": 1,\n            \"titre\": \"The Four Horsemen\",\n            \"urlSong\": \"http://lyrics.wikia.com/Metallica:The_Four_Horsemen\",\n            \"lyrics\": \"By the last breath, the fourth winds blow Better raise your ears...\",\n            \"urlWikipedia\": \"http://en.wikipedia.org/wiki/The_Mechanix\",\n            \"id_album\": \"5714debe25ac0d8aee36b662\",\n            \"format\": [],\n            \"genre\": [\"Thrash metal\", \"Speed metal\"],\n            \"producer\": [\"Dave Mustaine\"],\n            \"recordLabel\": [\"Combat Records\"],\n            \"writer\": [],\n            \"recorded\": [\"December 1984 – January 1985 at Indigo Ranch Studios in Malibu, California\"],\n            \"abstract\": \"Killing Is My Business... and Business Is Good! is the debut studio album by American thrash metal band Megadeth. It was released on June 12, 1985...\",\n            \"releaseDate\": [\"1985-06-12\"],\n            \"runtime\": [\"1870.0\"],\n            \"award\": [],\n            \"subject\": [\"1985 debut albums\", \"Megadeth albums\", \"Combat Records albums\"],\n            \"urlYoutube\": \"\",\n            \"isClassic\": false,\n            \"urlITunes\": \"https://itunes.apple.com/us/album/id167352861?i=167352995\",\n            \"urlAmazon\": \"http://www.amazon.com/exec/obidos/redirect?link_code=ur2&tag=wikia-20&camp=1789&creative=9325&path=http%3A%2F%2Fwww.amazon.com%2Fgp%2Fproduct%2FB00122D6ZG%2Fsr%3D8-1%2Fqid%3D1147400297%2Fref%3Dpd_bbs_1%3F%255Fencoding%3DUTF8\",\n            \"urlGoEar\": \"http://goear.com/listen.php?v=2bc44cf\",\n            \"urlAllmusic\": \"http://www.allmusic.com/song/mt0010502640\",\n            \"urlMusicBrainz\": \"http://musicbrainz.org/recording/20826102-147b-4376-a1f3-72c25bfd43cd\"\n        }]\n    }]\n}]",
+          "content": "HTTP/1.1 200 OK\n[{\n    \"_id\": \"56d93d84ce06f50c0fed8747\",\n    \"name\": \"Metallica\",\n    \"urlWikipedia\": \"http://en.wikipedia.org/wiki/Metallica\",\n    \"urlOfficialWebsite\": \"http://www.metallica.com/\",\n    \"urlFacebook\": \"http://www.facebook.com/metallica\",\n    \"urlMySpace\": \"https://myspace.com/Metallica\",\n    \"urlTwitter\": \"http://twitter.com/metallica\",\n    \"locationInfo\": [\"United States\", \"California\", \"Los Angeles\"],\n    \"urlWikia\": \"Metallica\",\n    \"activeYears\": \"\",\n    \"genres\": [\"Heavy Metal\", \"Thrash Metal\"],\n    \"labels\": [\"Elektra\", \"Megaforce Records\", \"Mercury Records\", \"Warner Bros. Records\"],\n    \"members\": [{\n        \"name\": \" James Hetfield\",\n        \"instruments\": [\"lead vocals\", \" rhythm guitar \"],\n        \"activeYears\": [\"1981-present\\n\"]\n        }, {\n        \"name\": \" Kirk Hammett\",\n        \"instruments\": [\"lead guitar \"],\n        \"activeYears\": [\"1983-present\\n\"]\n    }],\n    \"formerMembers\": [{\n        \"name\": \" Dave Mustaine\",\n        \"instruments\": [\"lead guitar\", \" backing vocals \"],\n        \"activeYears\": [\"1981-1983\\n\"]\n        }, {\n        \"name\": \" Ron McGovney\",\n        \"instruments\": [\"bass \"],\n        \"activeYears\": [\"1981-1982\\n\"]\n    }],\n    \"albums\": [{\n        \"_id\": \"5714debe25ac0d8aee36b662\",\n        \"name\": \"Metallica\",\n        \"title\": \"Kill 'Em All\",\n        \"publicationDate\": \"1983\",\n        \"urlWikipedia\": \"http://en.wikipedia.org/wiki/Kill_%27Em_All\",\n        \"genre\": \"Thrash Metal\",\n        \"length\": \"51:14\",\n        \"urlAlbum\": \"http://lyrics.wikia.com/Metallica:Kill_%27Em_All_%281983%29\",\n        \"id_artist\": \"56d93d84ce06f50c0fed8747\",\n        \"songs\": [{\n            \"_id\": \"5714dedb25ac0d8aee4ad800\",\n            \"position\": 0,\n            \"title\": \"Hit The Lights\",\n            \"urlSong\": \"http://lyrics.wikia.com/Metallica:Hit_The_Lights\",\n            \"lyrics\": \"No life till leather, we&apos;re gonna kick some ass tonight We got the metal madness...\",\n            \"urlWikipedia\": \"\",\n            \"id_album\": \"5714debe25ac0d8aee36b662\",\n            \"urlYoutube\": \"\",\n            \"isClassic\": false,\n            \"multitrack_path\": \"M Multitracks/Metallica - Hit The Lights\",\n            \"urlITunes\": \"https://itunes.apple.com/us/album/id167352861?i=167352894\",\n            \"urlAmazon\": \"http://www.amazon.com/exec/obidos/redirect?link_code=ur2&tag=wikia-20&camp=1789&creative=9325&path=http%3A%2F%2Fwww.amazon.com%2Fgp%2Fproduct%2FB00122D6X8%2Fsr%3D8-1%2Fqid%3D1147400297%2Fref%3Dpd_bbs_1%3F%255Fencoding%3DUTF8\",\n            \"urlGoEar\": \"http://goear.com/listen.php?v=41b192c\",\n            \"urlSpotify\": \"https://play.spotify.com/track/4Pn6l1ZzsYFrx64h1gWTyy\",\n            \"urlAllmusic\": \"http://www.allmusic.com/song/mt0034723664\",\n            \"urlMusicBrainz\": \"http://musicbrainz.org/recording/8467f4e7-ef5b-458c-bbc5-6727d9f2252d\"\n        }, {\n            \"_id\": \"5714dedb25ac0d8aee4ad801\",\n            \"position\": 1,\n            \"title\": \"The Four Horsemen\",\n            \"urlSong\": \"http://lyrics.wikia.com/Metallica:The_Four_Horsemen\",\n            \"lyrics\": \"By the last breath, the fourth winds blow Better raise your ears...\",\n            \"urlWikipedia\": \"http://en.wikipedia.org/wiki/The_Mechanix\",\n            \"id_album\": \"5714debe25ac0d8aee36b662\",\n            \"format\": [],\n            \"genre\": [\"Thrash metal\", \"Speed metal\"],\n            \"producer\": [\"Dave Mustaine\"],\n            \"recordLabel\": [\"Combat Records\"],\n            \"writer\": [],\n            \"recorded\": [\"December 1984 – January 1985 at Indigo Ranch Studios in Malibu, California\"],\n            \"abstract\": \"Killing Is My Business... and Business Is Good! is the debut studio album by American thrash metal band Megadeth. It was released on June 12, 1985...\",\n            \"releaseDate\": [\"1985-06-12\"],\n            \"runtime\": [\"1870.0\"],\n            \"award\": [],\n            \"subject\": [\"1985 debut albums\", \"Megadeth albums\", \"Combat Records albums\"],\n            \"urlYoutube\": \"\",\n            \"isClassic\": false,\n            \"urlITunes\": \"https://itunes.apple.com/us/album/id167352861?i=167352995\",\n            \"urlAmazon\": \"http://www.amazon.com/exec/obidos/redirect?link_code=ur2&tag=wikia-20&camp=1789&creative=9325&path=http%3A%2F%2Fwww.amazon.com%2Fgp%2Fproduct%2FB00122D6ZG%2Fsr%3D8-1%2Fqid%3D1147400297%2Fref%3Dpd_bbs_1%3F%255Fencoding%3DUTF8\",\n            \"urlGoEar\": \"http://goear.com/listen.php?v=2bc44cf\",\n            \"urlAllmusic\": \"http://www.allmusic.com/song/mt0010502640\",\n            \"urlMusicBrainz\": \"http://musicbrainz.org/recording/20826102-147b-4376-a1f3-72c25bfd43cd\"\n        }]\n    }]\n}]",
           "type": "json"
         }
       ]
@@ -1042,7 +1042,7 @@
       "examples": [
         {
           "title": "Success-Response for an artist:",
-          "content": "HTTP/1.1 200 OK\n{\n    \"_id\": \"5714dedb25ac0d8aee4ad810\",\n    \"name\": \"Metallica\",\n    \"position\": 2,\n    \"albumTitre\": \"Ride The Lightning\",\n    \"lengthAlbum\": \"47:26\",\n    \"dateSortieAlbum\": \"1984\",\n    \"titre\": \"For Whom The Bell Tolls\",\n    \"urlSong\": \"http://lyrics.wikia.com/Metallica:For_Whom_The_Bell_Tolls\",\n    \"lyrics\": \"Make his fight on the hill in the early day Constant chill deep inside...\",\n    \"urlWikipedia\": \"http://en.wikipedia.org/wiki/For_Whom_the_Bell_Tolls_(Metallica_song)\",\n    \"id_album\": \"5714debe25ac0d8aee36b663\",\n    \"format\": [],\n    \"genre\": [\"Heavy metal music\"],\n    \"producer\": [\"Metallica\", \"Flemming Rasmussen\"],\n    \"recordLabel\": [\"Elektra Records\"],\n    \"writer\": [\"James Hetfield\", \"Lars Ulrich\", \"Cliff Burton\"],\n    \"recorded\": [\"--02-20\"],\n    \"abstract\": \"\\\"For Whom the Bell Tolls\\\" is a song by American thrash metal band Metallica...\", \n    \"releaseDate\": [\"1985-08-31\"],\n    \"runtime\": [\"310.0\"],\n    \"award\": [],\n    \"subject\": [\"Songs written by James Hetfield\", \"1985 singles\", \"Songs written by Lars Ulrich\", \"Elektra Records singles\", \"Metallica songs\", \"1984 songs\", \"Anti-war songs\", \"Songs written by Cliff Burton\"],\n    \"urlYoutube\": \"\",\n    \"isClassic\": false,\n    \"multitrack_path\": \"M Multitracks/Metallica - For Whom The Bell Tolls\",\n    \"urlITunes\": \"https://itunes.apple.com/us/album/id167353139?i=167353334\",\n    \"urlAmazon\": \"http://www.amazon.com/exec/obidos/redirect?link_code=ur2&tag=wikia-20&camp=1789&creative=9325&path=http%3A%2F%2Fwww.amazon.com%2Fgp%2Fproduct%2FB0012235Q6%2Fsr%3D8-1%2Fqid%3D1147400297%2Fref%3Dpd_bbs_1%3F%255Fencoding%3DUTF8\",\n    \"urlGoEar\": \"http://goear.com/listen.php?v=c6e3d05\",\n    \"urlSpotify\": \"https://play.spotify.com/track/4hOohf45f0JtxYKNsEAIOV\",\n    \"urlAllmusic\": \"http://www.allmusic.com/song/mt0031988990\",\n    \"urlMusicBrainz\": \"http://musicbrainz.org/recording/0f65985f-4ab2-4416-87eb-ccfd1ac4eb89\"\n}",
+          "content": "HTTP/1.1 200 OK\n{\n    \"_id\": \"5714dedb25ac0d8aee4ad810\",\n    \"name\": \"Metallica\",\n    \"position\": 2,\n    \"albumTitle\": \"Ride The Lightning\",\n    \"lengthAlbum\": \"47:26\",\n    \"publicationDateAlbum\": \"1984\",\n    \"title\": \"For Whom The Bell Tolls\",\n    \"urlSong\": \"http://lyrics.wikia.com/Metallica:For_Whom_The_Bell_Tolls\",\n    \"lyrics\": \"Make his fight on the hill in the early day Constant chill deep inside...\",\n    \"urlWikipedia\": \"http://en.wikipedia.org/wiki/For_Whom_the_Bell_Tolls_(Metallica_song)\",\n    \"id_album\": \"5714debe25ac0d8aee36b663\",\n    \"format\": [],\n    \"genre\": [\"Heavy metal music\"],\n    \"producer\": [\"Metallica\", \"Flemming Rasmussen\"],\n    \"recordLabel\": [\"Elektra Records\"],\n    \"writer\": [\"James Hetfield\", \"Lars Ulrich\", \"Cliff Burton\"],\n    \"recorded\": [\"--02-20\"],\n    \"abstract\": \"\\\"For Whom the Bell Tolls\\\" is a song by American thrash metal band Metallica...\", \n    \"releaseDate\": [\"1985-08-31\"],\n    \"runtime\": [\"310.0\"],\n    \"award\": [],\n    \"subject\": [\"Songs written by James Hetfield\", \"1985 singles\", \"Songs written by Lars Ulrich\", \"Elektra Records singles\", \"Metallica songs\", \"1984 songs\", \"Anti-war songs\", \"Songs written by Cliff Burton\"],\n    \"urlYoutube\": \"\",\n    \"isClassic\": false,\n    \"multitrack_path\": \"M Multitracks/Metallica - For Whom The Bell Tolls\",\n    \"urlITunes\": \"https://itunes.apple.com/us/album/id167353139?i=167353334\",\n    \"urlAmazon\": \"http://www.amazon.com/exec/obidos/redirect?link_code=ur2&tag=wikia-20&camp=1789&creative=9325&path=http%3A%2F%2Fwww.amazon.com%2Fgp%2Fproduct%2FB0012235Q6%2Fsr%3D8-1%2Fqid%3D1147400297%2Fref%3Dpd_bbs_1%3F%255Fencoding%3DUTF8\",\n    \"urlGoEar\": \"http://goear.com/listen.php?v=c6e3d05\",\n    \"urlSpotify\": \"https://play.spotify.com/track/4hOohf45f0JtxYKNsEAIOV\",\n    \"urlAllmusic\": \"http://www.allmusic.com/song/mt0031988990\",\n    \"urlMusicBrainz\": \"http://musicbrainz.org/recording/0f65985f-4ab2-4416-87eb-ccfd1ac4eb89\"\n}",
           "type": "json"
         }
       ]
@@ -1276,15 +1276,15 @@
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "albums.titre",
-            "description": "<p>Album titre</p>"
+            "field": "albums.title",
+            "description": "<p>Album title</p>"
           },
           {
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "albums.dateSortie",
-            "description": "<p>Album dateSortie</p>"
+            "field": "albums.publicationDate",
+            "description": "<p>Album publicationDate</p>"
           },
           {
             "group": "Success 200",
@@ -1339,15 +1339,15 @@
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "albums.songs.titre",
-            "description": "<p>Song titre</p>"
+            "field": "albums.songs.title",
+            "description": "<p>Song title</p>"
           }
         ]
       },
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "HTTP/1.1 200 OK\n{\n    \"_id\": \"56d93d84ce06f50c0fed8747\",\n    \"name\": \"Metallica\",\n    \"urlWikipedia\": \"http://en.wikipedia.org/wiki/Metallica\",\n    \"urlOfficialWebsite\": \"http://www.metallica.com/\",\n    \"urlFacebook\": \"http://www.facebook.com/metallica\",\n    \"urlMySpace\": \"https://myspace.com/Metallica\",\n    \"urlTwitter\": \"http://twitter.com/metallica\",\n    \"locationInfo\": [\"United States\", \"California\", \"Los Angeles\"],\n    \"activeYears\": \"\",\n    \"genres\": [\"Heavy Metal\", \"Thrash Metal\"],\n    \"labels\": [\"Elektra\", \"Megaforce Records\", \"Mercury Records\", \"Warner Bros. Records\"],\n    \"members\": [{\n        \"name\": \" James Hetfield\",\n        \"instruments\": [\"lead vocals\", \" rhythm guitar \"],\n        \"activeYears\": [\"1981-present\\n\"]\n    }, {\n        \"name\": \" Kirk Hammett\",\n        \"instruments\": [\"lead guitar \"],\n        \"activeYears\": [\"1983-present\\n\"]\n    }],\n    \"formerMembers\": [{\n        \"name\": \" Dave Mustaine\",\n        \"instruments\": [\"lead guitar\", \" backing vocals \"],\n        \"activeYears\": [\"1981-1983\\n\"]\n    }, {\n        \"name\": \" Ron McGovney\",\n        \"instruments\": [\"bass \"],\n        \"activeYears\": [\"1981-1982\\n\"]\n    }],\n    \"rdf\": \" 1963-03-04 Jason Curtis Newsted Bass, guitar ...\",\n    \"albums\": {\n        \"_id\": \"5714debe25ac0d8aee36b664\",\n        \"name\": \"Metallica\",\n        \"titre\": \"Master Of Puppets\",\n        \"dateSortie\": \"1986\",\n        \"urlWikipedia\": \"http://en.wikipedia.org/wiki/Master_of_Puppets\",\n        \"genre\": \"Thrash Metal\",\n        \"length\": \"54:46\",\n        \"id_artist\": \"56d93d84ce06f50c0fed8747\",\n        \"rdf\": \" Gold Platinum Master of Puppets is the third studio album by American heavy metal band Metallica... \",\n        \"songs\": [{\n            \"_id\": \"5714dedb25ac0d8aee4ad816\",\n            \"position\": 0,\n            \"titre\": \"Battery\"\n            }, {\n            \"_id\": \"5714dedb25ac0d8aee4ad817\",\n            \"position\": 1,\n            \"titre\": \"Master Of Puppets\"\n            }, {\n            \"_id\": \"5714dedb25ac0d8aee4ad818\",\n            \"position\": 2,\n            \"titre\": \"The Thing That Should Not Be\"\n            }, {\n            \"_id\": \"5714dedb25ac0d8aee4ad819\",\n            \"position\": 3,\n            \"titre\": \"Welcome Home (Sanitarium)\"\n        }]\n    }\n}",
+          "content": "HTTP/1.1 200 OK\n{\n    \"_id\": \"56d93d84ce06f50c0fed8747\",\n    \"name\": \"Metallica\",\n    \"urlWikipedia\": \"http://en.wikipedia.org/wiki/Metallica\",\n    \"urlOfficialWebsite\": \"http://www.metallica.com/\",\n    \"urlFacebook\": \"http://www.facebook.com/metallica\",\n    \"urlMySpace\": \"https://myspace.com/Metallica\",\n    \"urlTwitter\": \"http://twitter.com/metallica\",\n    \"locationInfo\": [\"United States\", \"California\", \"Los Angeles\"],\n    \"activeYears\": \"\",\n    \"genres\": [\"Heavy Metal\", \"Thrash Metal\"],\n    \"labels\": [\"Elektra\", \"Megaforce Records\", \"Mercury Records\", \"Warner Bros. Records\"],\n    \"members\": [{\n        \"name\": \" James Hetfield\",\n        \"instruments\": [\"lead vocals\", \" rhythm guitar \"],\n        \"activeYears\": [\"1981-present\\n\"]\n    }, {\n        \"name\": \" Kirk Hammett\",\n        \"instruments\": [\"lead guitar \"],\n        \"activeYears\": [\"1983-present\\n\"]\n    }],\n    \"formerMembers\": [{\n        \"name\": \" Dave Mustaine\",\n        \"instruments\": [\"lead guitar\", \" backing vocals \"],\n        \"activeYears\": [\"1981-1983\\n\"]\n    }, {\n        \"name\": \" Ron McGovney\",\n        \"instruments\": [\"bass \"],\n        \"activeYears\": [\"1981-1982\\n\"]\n    }],\n    \"rdf\": \" 1963-03-04 Jason Curtis Newsted Bass, guitar ...\",\n    \"albums\": {\n        \"_id\": \"5714debe25ac0d8aee36b664\",\n        \"name\": \"Metallica\",\n        \"title\": \"Master Of Puppets\",\n        \"publicationDate\": \"1986\",\n        \"urlWikipedia\": \"http://en.wikipedia.org/wiki/Master_of_Puppets\",\n        \"genre\": \"Thrash Metal\",\n        \"length\": \"54:46\",\n        \"id_artist\": \"56d93d84ce06f50c0fed8747\",\n        \"rdf\": \" Gold Platinum Master of Puppets is the third studio album by American heavy metal band Metallica... \",\n        \"songs\": [{\n            \"_id\": \"5714dedb25ac0d8aee4ad816\",\n            \"position\": 0,\n            \"title\": \"Battery\"\n            }, {\n            \"_id\": \"5714dedb25ac0d8aee4ad817\",\n            \"position\": 1,\n            \"title\": \"Master Of Puppets\"\n            }, {\n            \"_id\": \"5714dedb25ac0d8aee4ad818\",\n            \"position\": 2,\n            \"title\": \"The Thing That Should Not Be\"\n            }, {\n            \"_id\": \"5714dedb25ac0d8aee4ad819\",\n            \"position\": 3,\n            \"title\": \"Welcome Home (Sanitarium)\"\n        }]\n    }\n}",
           "type": "json"
         }
       ]
@@ -1586,15 +1586,15 @@
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "albums.titre",
-            "description": "<p>Album titre</p>"
+            "field": "albums.title",
+            "description": "<p>Album title</p>"
           },
           {
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "albums.dateSortie",
-            "description": "<p>Album dateSortie</p>"
+            "field": "albums.publicationDate",
+            "description": "<p>Album publicationDate</p>"
           },
           {
             "group": "Success 200",
@@ -1649,15 +1649,15 @@
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "albums.songs.titre",
-            "description": "<p>Song titre</p>"
+            "field": "albums.songs.title",
+            "description": "<p>Song title</p>"
           }
         ]
       },
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "HTTP/1.1 200 OK\n{\n    \"_id\": \"56d93d84ce06f50c0fed8747\",\n    \"name\": \"Metallica\",\n    \"urlWikipedia\": \"http://en.wikipedia.org/wiki/Metallica\",\n    \"urlOfficialWebsite\": \"http://www.metallica.com/\",\n    \"urlFacebook\": \"http://www.facebook.com/metallica\",\n    \"urlMySpace\": \"https://myspace.com/Metallica\",\n    \"urlTwitter\": \"http://twitter.com/metallica\",\n    \"locationInfo\": [\"United States\", \"California\", \"Los Angeles\"],\n    \"activeYears\": \"\",\n    \"genres\": [\"Heavy Metal\", \"Thrash Metal\"],\n    \"labels\": [\"Elektra\", \"Megaforce Records\", \"Mercury Records\", \"Warner Bros. Records\"],\n    \"members\": [{\n        \"name\": \" James Hetfield\",\n        \"instruments\": [\"lead vocals\", \" rhythm guitar \"],\n        \"activeYears\": [\"1981-present\\n\"]\n    }, {\n        \"name\": \" Kirk Hammett\",\n        \"instruments\": [\"lead guitar \"],\n        \"activeYears\": [\"1983-present\\n\"]\n    }],\n    \"formerMembers\": [{\n        \"name\": \" Dave Mustaine\",\n        \"instruments\": [\"lead guitar\", \" backing vocals \"],\n        \"activeYears\": [\"1981-1983\\n\"]\n    }, {\n        \"name\": \" Ron McGovney\",\n        \"instruments\": [\"bass \"],\n        \"activeYears\": [\"1981-1982\\n\"]\n    }],\n    \"rdf\": \" 1963-03-04 Jason Curtis Newsted Bass, guitar ...\",\n    \"albums\": {\n        \"_id\": \"5714debe25ac0d8aee36b664\",\n        \"name\": \"Metallica\",\n        \"titre\": \"Master Of Puppets\",\n        \"dateSortie\": \"1986\",\n        \"urlWikipedia\": \"http://en.wikipedia.org/wiki/Master_of_Puppets\",\n        \"genre\": \"Thrash Metal\",\n        \"length\": \"54:46\",\n        \"id_artist\": \"56d93d84ce06f50c0fed8747\",\n        \"rdf\": \" Gold Platinum Master of Puppets is the third studio album by American heavy metal band Metallica... \",\n        \"songs\": [{\n            \"_id\": \"5714dedb25ac0d8aee4ad816\",\n            \"position\": 0,\n            \"titre\": \"Battery\"\n            }, {\n            \"_id\": \"5714dedb25ac0d8aee4ad817\",\n            \"position\": 1,\n            \"titre\": \"Master Of Puppets\"\n            }, {\n            \"_id\": \"5714dedb25ac0d8aee4ad818\",\n            \"position\": 2,\n            \"titre\": \"The Thing That Should Not Be\"\n            }, {\n            \"_id\": \"5714dedb25ac0d8aee4ad819\",\n            \"position\": 3,\n            \"titre\": \"Welcome Home (Sanitarium)\"\n        }]\n    }\n}",
+          "content": "HTTP/1.1 200 OK\n{\n    \"_id\": \"56d93d84ce06f50c0fed8747\",\n    \"name\": \"Metallica\",\n    \"urlWikipedia\": \"http://en.wikipedia.org/wiki/Metallica\",\n    \"urlOfficialWebsite\": \"http://www.metallica.com/\",\n    \"urlFacebook\": \"http://www.facebook.com/metallica\",\n    \"urlMySpace\": \"https://myspace.com/Metallica\",\n    \"urlTwitter\": \"http://twitter.com/metallica\",\n    \"locationInfo\": [\"United States\", \"California\", \"Los Angeles\"],\n    \"activeYears\": \"\",\n    \"genres\": [\"Heavy Metal\", \"Thrash Metal\"],\n    \"labels\": [\"Elektra\", \"Megaforce Records\", \"Mercury Records\", \"Warner Bros. Records\"],\n    \"members\": [{\n        \"name\": \" James Hetfield\",\n        \"instruments\": [\"lead vocals\", \" rhythm guitar \"],\n        \"activeYears\": [\"1981-present\\n\"]\n    }, {\n        \"name\": \" Kirk Hammett\",\n        \"instruments\": [\"lead guitar \"],\n        \"activeYears\": [\"1983-present\\n\"]\n    }],\n    \"formerMembers\": [{\n        \"name\": \" Dave Mustaine\",\n        \"instruments\": [\"lead guitar\", \" backing vocals \"],\n        \"activeYears\": [\"1981-1983\\n\"]\n    }, {\n        \"name\": \" Ron McGovney\",\n        \"instruments\": [\"bass \"],\n        \"activeYears\": [\"1981-1982\\n\"]\n    }],\n    \"rdf\": \" 1963-03-04 Jason Curtis Newsted Bass, guitar ...\",\n    \"albums\": {\n        \"_id\": \"5714debe25ac0d8aee36b664\",\n        \"name\": \"Metallica\",\n        \"title\": \"Master Of Puppets\",\n        \"publicationDate\": \"1986\",\n        \"urlWikipedia\": \"http://en.wikipedia.org/wiki/Master_of_Puppets\",\n        \"genre\": \"Thrash Metal\",\n        \"length\": \"54:46\",\n        \"id_artist\": \"56d93d84ce06f50c0fed8747\",\n        \"rdf\": \" Gold Platinum Master of Puppets is the third studio album by American heavy metal band Metallica... \",\n        \"songs\": [{\n            \"_id\": \"5714dedb25ac0d8aee4ad816\",\n            \"position\": 0,\n            \"title\": \"Battery\"\n            }, {\n            \"_id\": \"5714dedb25ac0d8aee4ad817\",\n            \"position\": 1,\n            \"title\": \"Master Of Puppets\"\n            }, {\n            \"_id\": \"5714dedb25ac0d8aee4ad818\",\n            \"position\": 2,\n            \"title\": \"The Thing That Should Not Be\"\n            }, {\n            \"_id\": \"5714dedb25ac0d8aee4ad819\",\n            \"position\": 3,\n            \"title\": \"Welcome Home (Sanitarium)\"\n        }]\n    }\n}",
           "type": "json"
         }
       ]
@@ -1884,15 +1884,15 @@
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "albums.titre",
-            "description": "<p>Album titre</p>"
+            "field": "albums.title",
+            "description": "<p>Album title</p>"
           },
           {
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "albums.dateSortie",
-            "description": "<p>Album dateSortie</p>"
+            "field": "albums.publicationDate",
+            "description": "<p>Album publicationDate</p>"
           },
           {
             "group": "Success 200",
@@ -1940,15 +1940,15 @@
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "albums.songs.titre",
-            "description": "<p>Song titre</p>"
+            "field": "albums.songs.title",
+            "description": "<p>Song title</p>"
           }
         ]
       },
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "HTTP/1.1 200 OK\n{\n    \"_id\": \"56d93d84ce06f50c0fed8747\",\n    \"name\": \"Metallica\",\n    \"urlWikipedia\": \"http://en.wikipedia.org/wiki/Metallica\",\n    \"urlOfficialWebsite\": \"http://www.metallica.com/\",\n    \"urlFacebook\": \"http://www.facebook.com/metallica\",\n    \"urlMySpace\": \"https://myspace.com/Metallica\",\n    \"urlTwitter\": \"http://twitter.com/metallica\",\n    \"locationInfo\": [\"United States\", \"California\", \"Los Angeles\"],\n    \"activeYears\": \"\",\n    \"genres\": [\"Heavy Metal\", \"Thrash Metal\"],\n    \"labels\": [\"Elektra\", \"Megaforce Records\", \"Mercury Records\", \"Warner Bros. Records\"],\n    \"members\": [{\n        \"name\": \" James Hetfield\",\n        \"instruments\": [\"lead vocals\", \" rhythm guitar \"],\n        \"activeYears\": [\"1981-present\\n\"]\n    }],\n    \"formerMembers\": [{\n        \"name\": \" Dave Mustaine\",\n        \"instruments\": [\"lead guitar\", \" backing vocals \"],\n        \"activeYears\": [\"1981-1983\\n\"]\n    }],\n    \"rdf\": \" 1963-03-04 Jason Curtis Newsted Bass, guitar, drums, vocals Jason Newsted Jason Curtis Newsted (born March 4, 1963) is an American metal musician, known for playing bass guitar with the bands Metallica (in which he did occasional lead vocals) ...\",\n    \"albums\": [{\n        \"_id\": \"5714debe25ac0d8aee36b664\",\n        \"name\": \"Metallica\",\n        \"titre\": \"Master Of Puppets\",\n        \"dateSortie\": \"1986\",\n        \"genre\": \"Thrash Metal\",\n        \"length\": \"54:46\",\n        \"id_artist\": \"56d93d84ce06f50c0fed8747\",\n        \"songs\": [{\n            \"_id\": \"5714dedb25ac0d8aee4ad816\",\n            \"position\": 0,\n            \"titre\": \"Battery\"\n            }, {\n            \"_id\": \"5714dedb25ac0d8aee4ad817\",\n            \"position\": 1,\n            \"titre\": \"Master Of Puppets\"\n            }, {\n            \"_id\": \"5714dedb25ac0d8aee4ad81d\",\n            \"position\": 7,\n            \"titre\": \"Damage, Inc.\"\n        }]\n    }]\n}",
+          "content": "HTTP/1.1 200 OK\n{\n    \"_id\": \"56d93d84ce06f50c0fed8747\",\n    \"name\": \"Metallica\",\n    \"urlWikipedia\": \"http://en.wikipedia.org/wiki/Metallica\",\n    \"urlOfficialWebsite\": \"http://www.metallica.com/\",\n    \"urlFacebook\": \"http://www.facebook.com/metallica\",\n    \"urlMySpace\": \"https://myspace.com/Metallica\",\n    \"urlTwitter\": \"http://twitter.com/metallica\",\n    \"locationInfo\": [\"United States\", \"California\", \"Los Angeles\"],\n    \"activeYears\": \"\",\n    \"genres\": [\"Heavy Metal\", \"Thrash Metal\"],\n    \"labels\": [\"Elektra\", \"Megaforce Records\", \"Mercury Records\", \"Warner Bros. Records\"],\n    \"members\": [{\n        \"name\": \" James Hetfield\",\n        \"instruments\": [\"lead vocals\", \" rhythm guitar \"],\n        \"activeYears\": [\"1981-present\\n\"]\n    }],\n    \"formerMembers\": [{\n        \"name\": \" Dave Mustaine\",\n        \"instruments\": [\"lead guitar\", \" backing vocals \"],\n        \"activeYears\": [\"1981-1983\\n\"]\n    }],\n    \"rdf\": \" 1963-03-04 Jason Curtis Newsted Bass, guitar, drums, vocals Jason Newsted Jason Curtis Newsted (born March 4, 1963) is an American metal musician, known for playing bass guitar with the bands Metallica (in which he did occasional lead vocals) ...\",\n    \"albums\": [{\n        \"_id\": \"5714debe25ac0d8aee36b664\",\n        \"name\": \"Metallica\",\n        \"title\": \"Master Of Puppets\",\n        \"publicationDate\": \"1986\",\n        \"genre\": \"Thrash Metal\",\n        \"length\": \"54:46\",\n        \"id_artist\": \"56d93d84ce06f50c0fed8747\",\n        \"songs\": [{\n            \"_id\": \"5714dedb25ac0d8aee4ad816\",\n            \"position\": 0,\n            \"title\": \"Battery\"\n            }, {\n            \"_id\": \"5714dedb25ac0d8aee4ad817\",\n            \"position\": 1,\n            \"title\": \"Master Of Puppets\"\n            }, {\n            \"_id\": \"5714dedb25ac0d8aee4ad81d\",\n            \"position\": 7,\n            \"title\": \"Damage, Inc.\"\n        }]\n    }]\n}",
           "type": "json"
         }
       ]
@@ -2072,8 +2072,8 @@
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "albums.songs.albumTitre",
-            "description": "<p>Album titre</p>"
+            "field": "albums.songs.albumTitle",
+            "description": "<p>Album title</p>"
           },
           {
             "group": "Success 200",
@@ -2086,15 +2086,15 @@
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "albums.songs.dateSortieAlbum",
-            "description": "<p>Song dateSortieAlbum</p>"
+            "field": "albums.songs.publicationDateAlbum",
+            "description": "<p>Song publicationDateAlbum</p>"
           },
           {
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "albums.songs.titre",
-            "description": "<p>Song titre</p>"
+            "field": "albums.songs.title",
+            "description": "<p>Song title</p>"
           },
           {
             "group": "Success 200",
@@ -2297,7 +2297,7 @@
       "examples": [
         {
           "title": "Success-Response for an artist:",
-          "content": "HTTP/1.1 200 OK\n{\n    \"_id\": \"56d93d84ce06f50c0fed8747\",\n    \"name\": \"Metallica\",\n    \"albums\": {\n        \"_id\": \"5714debe25ac0d8aee36b664\",\n        \"titre\": \"Master Of Puppets\",\n        \"songs\": {\n            \"_id\": \"5714dedb25ac0d8aee4ad817\",\n            \"name\": \"Metallica\",\n            \"position\": 1,\n            \"albumTitre\": \"Master Of Puppets\",\n            \"lengthAlbum\": \"54:46\",\n            \"dateSortieAlbum\": \"1986\",\n            \"titre\": \"Master Of Puppets\",\n            \"lyrics\": \"End of passion play, crumbling away<br>I&apos;m your source of self-destruction...\",\n            \"urlWikipedia\": \"http://en.wikipedia.org/wiki/Master_of_Puppets_(song)\",\n            \"id_album\": \"5714debe25ac0d8aee36b664\",\n            \"rdf\": \"<?xml version='1.0' encoding='utf-8' ?><rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'  xmlns:rdfs='http://www.w3.org/2000/01/rdf-schema#' xmlns:dct='http://purl.org/dc/terms/' xmlns:dbp='http://dbpedia.org/property/' xmlns:dbo='http://dbpedia.org/ontology/' >   <rdf:Description rdf:about='http://dbpedia.org/resource/Master_of_Puppets_(song)'><dct:subject rdf:resource='http://dbpedia.org/resource/Category:Songs_written_by_Lars_Ulrich' />     <dct:subject rdf:resource='http://dbpedia.org/resource/Category:Metallica_songs' /><dct:subject rdf:resource='http://dbpedia.org/resource/Category:Elektra_Records_singles' /></rdf:Description> </rdf:RDF>\",\n            \"format\": [\"Gramophone record\", \"12-inch single\"],\n            \"genre\": [\"Thrash metal\", \"Progressive metal\"],\n            \"producer\": [\"Flemming Rasmussen\"],\n            \"recordLabel\": [\"Elektra Records\", \"Music for Nations\"],\n            \"writer\": [\"Cliff Burton\", \"Lars Ulrich\", \"James Hetfield\", \"Kirk Hammett\"],\n            \"recorded\": [\"1985\"],\n            \"abstract\": \"\\\"Master of Puppets\\\" is a song by the American heavy metal band Metallica...\",\n            \"releaseDate\": [\"1986-07-02\"],\n            \"runtime\": [\"516.0\"],\n            \"award\": [],\n            \"subject\": [\"Songs written by Lars Ulrich\", \"Metallica songs\", \"Elektra Records singles\", \"Songs written by Cliff Burton\", \"Songs about drugs\", \"Songs written by James Hetfield\", \"Songs written by Kirk Hammett\", \"1986 singles\"],\n            \"urlYoutube\": \"\",\n            \"isClassic\": false,\n            \"multitrack_path\": \"M Multitracks/Metallica - Master Of Puppets\",\n            \"urlITunes\": \"https://itunes.apple.com/us/album/id167353581?i=167353601\",\n            \"urlAmazon\": \"http://www.amazon.com/exec/obidos/redirect?link_code=ur2&tag=wikia-20&camp=1789&creative=9325&path=http%3A%2F%2Fwww.amazon.com%2Fgp%2Fproduct%2FB00122A546%2Fsr%3D8-1%2Fqid%3D1147400297%2Fref%3Dpd_bbs_1%3F%255Fencoding%3DUTF8\",\n            \"urlGoEar\": \"http://goear.com/listen.php?v=afd1e62\",\n            \"urlSpotify\": \"https://play.spotify.com/track/6NwbeybX6TDtXlpXvnUOZC\",\n            \"urlAllmusic\": \"http://www.allmusic.com/song/mt0002228132\",\n            \"urlMusicBrainz\": \"http://musicbrainz.org/recording/49b8371f-156a-41e8-92c9-8cd899235b90\"\n        }\n    }\n}",
+          "content": "HTTP/1.1 200 OK\n{\n    \"_id\": \"56d93d84ce06f50c0fed8747\",\n    \"name\": \"Metallica\",\n    \"albums\": {\n        \"_id\": \"5714debe25ac0d8aee36b664\",\n        \"title\": \"Master Of Puppets\",\n        \"songs\": {\n            \"_id\": \"5714dedb25ac0d8aee4ad817\",\n            \"name\": \"Metallica\",\n            \"position\": 1,\n            \"albumTitle\": \"Master Of Puppets\",\n            \"lengthAlbum\": \"54:46\",\n            \"publicationDateAlbum\": \"1986\",\n            \"title\": \"Master Of Puppets\",\n            \"lyrics\": \"End of passion play, crumbling away<br>I&apos;m your source of self-destruction...\",\n            \"urlWikipedia\": \"http://en.wikipedia.org/wiki/Master_of_Puppets_(song)\",\n            \"id_album\": \"5714debe25ac0d8aee36b664\",\n            \"rdf\": \"<?xml version='1.0' encoding='utf-8' ?><rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'  xmlns:rdfs='http://www.w3.org/2000/01/rdf-schema#' xmlns:dct='http://purl.org/dc/terms/' xmlns:dbp='http://dbpedia.org/property/' xmlns:dbo='http://dbpedia.org/ontology/' >   <rdf:Description rdf:about='http://dbpedia.org/resource/Master_of_Puppets_(song)'><dct:subject rdf:resource='http://dbpedia.org/resource/Category:Songs_written_by_Lars_Ulrich' />     <dct:subject rdf:resource='http://dbpedia.org/resource/Category:Metallica_songs' /><dct:subject rdf:resource='http://dbpedia.org/resource/Category:Elektra_Records_singles' /></rdf:Description> </rdf:RDF>\",\n            \"format\": [\"Gramophone record\", \"12-inch single\"],\n            \"genre\": [\"Thrash metal\", \"Progressive metal\"],\n            \"producer\": [\"Flemming Rasmussen\"],\n            \"recordLabel\": [\"Elektra Records\", \"Music for Nations\"],\n            \"writer\": [\"Cliff Burton\", \"Lars Ulrich\", \"James Hetfield\", \"Kirk Hammett\"],\n            \"recorded\": [\"1985\"],\n            \"abstract\": \"\\\"Master of Puppets\\\" is a song by the American heavy metal band Metallica...\",\n            \"releaseDate\": [\"1986-07-02\"],\n            \"runtime\": [\"516.0\"],\n            \"award\": [],\n            \"subject\": [\"Songs written by Lars Ulrich\", \"Metallica songs\", \"Elektra Records singles\", \"Songs written by Cliff Burton\", \"Songs about drugs\", \"Songs written by James Hetfield\", \"Songs written by Kirk Hammett\", \"1986 singles\"],\n            \"urlYoutube\": \"\",\n            \"isClassic\": false,\n            \"multitrack_path\": \"M Multitracks/Metallica - Master Of Puppets\",\n            \"urlITunes\": \"https://itunes.apple.com/us/album/id167353581?i=167353601\",\n            \"urlAmazon\": \"http://www.amazon.com/exec/obidos/redirect?link_code=ur2&tag=wikia-20&camp=1789&creative=9325&path=http%3A%2F%2Fwww.amazon.com%2Fgp%2Fproduct%2FB00122A546%2Fsr%3D8-1%2Fqid%3D1147400297%2Fref%3Dpd_bbs_1%3F%255Fencoding%3DUTF8\",\n            \"urlGoEar\": \"http://goear.com/listen.php?v=afd1e62\",\n            \"urlSpotify\": \"https://play.spotify.com/track/6NwbeybX6TDtXlpXvnUOZC\",\n            \"urlAllmusic\": \"http://www.allmusic.com/song/mt0002228132\",\n            \"urlMusicBrainz\": \"http://musicbrainz.org/recording/49b8371f-156a-41e8-92c9-8cd899235b90\"\n        }\n    }\n}",
           "type": "json"
         }
       ]
@@ -2504,7 +2504,7 @@
         },
         {
           "title": "Success-Response for a song:",
-          "content": "HTTP/1.1 200 OK\n{\n    \"limit\": 200,\n    \"songs\": [{\n            \"_id\": \"5714dec325ac0d8aee3859f9\",\n            \"name\": \"Addict\",\n            \"albumTitre\": \"Come On Sun\",\n            \"titleSong\": \"K\"\n        },\n        {\n            \"_id\": \"5714dec325ac0d8aee3804f5\",\n            \"name\": \"A\",\n            \"albumTitre\": \"A Vs. Monkey Kong\",\n            \"titleSong\": \"A\"\n        }\n    ]\n}",
+          "content": "HTTP/1.1 200 OK\n{\n    \"limit\": 200,\n    \"songs\": [{\n            \"_id\": \"5714dec325ac0d8aee3859f9\",\n            \"name\": \"Addict\",\n            \"albumTitle\": \"Come On Sun\",\n            \"titleSong\": \"K\"\n        },\n        {\n            \"_id\": \"5714dec325ac0d8aee3804f5\",\n            \"name\": \"A\",\n            \"albumTitle\": \"A Vs. Monkey Kong\",\n            \"titleSong\": \"A\"\n        }\n    ]\n}",
           "type": "json"
         }
       ]
@@ -2628,8 +2628,8 @@
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "albums.songs.albumTitre",
-            "description": "<p>Album titre</p>"
+            "field": "albums.songs.albumTitle",
+            "description": "<p>Album title</p>"
           },
           {
             "group": "Success 200",
@@ -2642,15 +2642,15 @@
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "albums.songs.dateSortieAlbum",
-            "description": "<p>Song dateSortieAlbum</p>"
+            "field": "albums.songs.publicationDateAlbum",
+            "description": "<p>Song publicationDateAlbum</p>"
           },
           {
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "albums.songs.titre",
-            "description": "<p>Song titre</p>"
+            "field": "albums.songs.title",
+            "description": "<p>Song title</p>"
           },
           {
             "group": "Success 200",
@@ -2853,7 +2853,7 @@
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "HTTP/1.1 200 OK\n{\n    \"_id\": \"56d93d84ce06f50c0fed8747\",\n    \"name\": \"Metallica\",\n    \"albums\": {\n    \"_id\": \"5714debe25ac0d8aee36b664\",\n    \"titre\": \"Master Of Puppets\",\n    \"songs\": {\n        \"_id\": \"5714dedb25ac0d8aee4ad817\",\n        \"name\": \"Metallica\",\n        \"position\": 1,\n        \"albumTitre\": \"Master Of Puppets\",\n        \"lengthAlbum\": \"54:46\",\n        \"dateSortieAlbum\": \"1986\",\n        \"titre\": \"Master Of Puppets\",\n        \"lyrics\": \"End of passion play, crumbling away I&apos;m your source ...\",\n        \"urlWikipedia\": \"http://en.wikipedia.org/wiki/Master_of_Puppets_(song)\",\n        \"id_album\": \"5714debe25ac0d8aee36b664\",\n        \"rdf\": \"Some RDF...\",\n        \"format\": [\"Gramophone record\", \"12-inch single\"],\n        \"genre\": [\"Thrash metal\", \"Progressive metal\"],\n        \"producer\": [\"Flemming Rasmussen\"],\n        \"recordLabel\": [\"Elektra Records\", \"Music for Nations\"],\n        \"writer\": [\"Cliff Burton\", \"Lars Ulrich\", \"James Hetfield\", \"Kirk Hammett\"],\n        \"recorded\": [\"1985\"],\n        \"abstract\": \"\\\"Master of Puppets\\\" is a song by the American heavy metal ...\",\n        \"releaseDate\": [\"1986-07-02\"],\n        \"runtime\": [\"516.0\"],\n        \"award\": [],\n        \"subject\": [\"Songs written by Lars Ulrich\", \"Metallica songs\", \"Elektra Records singles\", \"Songs written by Cliff Burton\", \"Songs about drugs\", \"Songs written by James Hetfield\", \"Songs written by Kirk Hammett\", \"1986 singles\"],\n        \"urlYoutube\": \"\",\n        \"isClassic\": false,\n        \"multitrack_path\": \"M Multitracks/Metallica - Master Of Puppets\",\n        \"urlITunes\": \"https://itunes.apple.com/us/album/id167353581?i=167353601\",\n        \"urlAmazon\": \"http://www.amazon.com/exec/obidos/redirect?link_code=ur2&tag=wikia-20&camp=1789&creative=9325&path=http%3A%2F%2Fwww.amazon.com%2Fgp%2Fproduct%2FB00122A546%2Fsr%3D8-1%2Fqid%3D1147400297%2Fref%3Dpd_bbs_1%3F%255Fencoding%3DUTF8\",\n        \"urlGoEar\": \"http://goear.com/listen.php?v=afd1e62\",\n        \"urlSpotify\": \"https://play.spotify.com/track/6NwbeybX6TDtXlpXvnUOZC\",\n        \"urlAllmusic\": \"http://www.allmusic.com/song/mt0002228132\",\n        \"urlMusicBrainz\": \"http://musicbrainz.org/recording/49b8371f-156a-41e8-92c9-8cd899235b90\"\n        }\n    }\n}",
+          "content": "HTTP/1.1 200 OK\n{\n    \"_id\": \"56d93d84ce06f50c0fed8747\",\n    \"name\": \"Metallica\",\n    \"albums\": {\n    \"_id\": \"5714debe25ac0d8aee36b664\",\n    \"title\": \"Master Of Puppets\",\n    \"songs\": {\n        \"_id\": \"5714dedb25ac0d8aee4ad817\",\n        \"name\": \"Metallica\",\n        \"position\": 1,\n        \"albumTitle\": \"Master Of Puppets\",\n        \"lengthAlbum\": \"54:46\",\n        \"publicationDateAlbum\": \"1986\",\n        \"title\": \"Master Of Puppets\",\n        \"lyrics\": \"End of passion play, crumbling away I&apos;m your source ...\",\n        \"urlWikipedia\": \"http://en.wikipedia.org/wiki/Master_of_Puppets_(song)\",\n        \"id_album\": \"5714debe25ac0d8aee36b664\",\n        \"rdf\": \"Some RDF...\",\n        \"format\": [\"Gramophone record\", \"12-inch single\"],\n        \"genre\": [\"Thrash metal\", \"Progressive metal\"],\n        \"producer\": [\"Flemming Rasmussen\"],\n        \"recordLabel\": [\"Elektra Records\", \"Music for Nations\"],\n        \"writer\": [\"Cliff Burton\", \"Lars Ulrich\", \"James Hetfield\", \"Kirk Hammett\"],\n        \"recorded\": [\"1985\"],\n        \"abstract\": \"\\\"Master of Puppets\\\" is a song by the American heavy metal ...\",\n        \"releaseDate\": [\"1986-07-02\"],\n        \"runtime\": [\"516.0\"],\n        \"award\": [],\n        \"subject\": [\"Songs written by Lars Ulrich\", \"Metallica songs\", \"Elektra Records singles\", \"Songs written by Cliff Burton\", \"Songs about drugs\", \"Songs written by James Hetfield\", \"Songs written by Kirk Hammett\", \"1986 singles\"],\n        \"urlYoutube\": \"\",\n        \"isClassic\": false,\n        \"multitrack_path\": \"M Multitracks/Metallica - Master Of Puppets\",\n        \"urlITunes\": \"https://itunes.apple.com/us/album/id167353581?i=167353601\",\n        \"urlAmazon\": \"http://www.amazon.com/exec/obidos/redirect?link_code=ur2&tag=wikia-20&camp=1789&creative=9325&path=http%3A%2F%2Fwww.amazon.com%2Fgp%2Fproduct%2FB00122A546%2Fsr%3D8-1%2Fqid%3D1147400297%2Fref%3Dpd_bbs_1%3F%255Fencoding%3DUTF8\",\n        \"urlGoEar\": \"http://goear.com/listen.php?v=afd1e62\",\n        \"urlSpotify\": \"https://play.spotify.com/track/6NwbeybX6TDtXlpXvnUOZC\",\n        \"urlAllmusic\": \"http://www.allmusic.com/song/mt0002228132\",\n        \"urlMusicBrainz\": \"http://musicbrainz.org/recording/49b8371f-156a-41e8-92c9-8cd899235b90\"\n        }\n    }\n}",
           "type": "json"
         }
       ]
@@ -2943,14 +2943,14 @@
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "albumTitre",
+            "field": "albumTitle",
             "description": "<p>Album title.</p>"
           },
           {
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "titre",
+            "field": "title",
             "description": "<p>Song title.</p>"
           }
         ]
@@ -2958,7 +2958,7 @@
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "HTTP/1.1 200 OK\n[{\n    \"_id\": \"5714ded425ac0d8aee459dfe\",\n    \"name\": \"Jay-Z\",\n    \"albumTitre\": \"The Blueprint²: The Gift & The Curse\",\n    \"titre\": \"'03 Bonnie & Clyde\"\n}, {\n    \"_id\": \"5714dee025ac0d8aee4ea2d5\",\n    \"name\": \"Queen\",\n    \"albumTitre\": \"A Night At The Opera\",\n    \"titre\": \"'39\"\n}]",
+          "content": "HTTP/1.1 200 OK\n[{\n    \"_id\": \"5714ded425ac0d8aee459dfe\",\n    \"name\": \"Jay-Z\",\n    \"albumTitle\": \"The Blueprint²: The Gift & The Curse\",\n    \"title\": \"'03 Bonnie & Clyde\"\n}, {\n    \"_id\": \"5714dee025ac0d8aee4ea2d5\",\n    \"name\": \"Queen\",\n    \"albumTitle\": \"A Night At The Opera\",\n    \"title\": \"'39\"\n}]",
           "type": "json"
         }
       ]
@@ -3021,14 +3021,14 @@
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "albumTitre",
+            "field": "albumTitle",
             "description": "<p>Album title.</p>"
           },
           {
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "titre",
+            "field": "title",
             "description": "<p>Song title.</p>"
           }
         ]
@@ -3036,7 +3036,7 @@
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "HTTP/1.1 200 OK\n[{\n    \"_id\": \"5714dece25ac0d8aee403c97\",\n    \"name\": \"Drowning Pool\",\n    \"albumTitre\": \"Other Releases\",\n    \"titre\": \"Creeping Death\"\n}, {\n    \"_id\": \"5714dedb25ac0d8aee4ad814\",\n    \"name\": \"Metallica\",\n    \"albumTitre\": \"Ride The Lightning\",\n    \"titre\": \"Creeping Death\"\n}]",
+          "content": "HTTP/1.1 200 OK\n[{\n    \"_id\": \"5714dece25ac0d8aee403c97\",\n    \"name\": \"Drowning Pool\",\n    \"albumTitle\": \"Other Releases\",\n    \"title\": \"Creeping Death\"\n}, {\n    \"_id\": \"5714dedb25ac0d8aee4ad814\",\n    \"name\": \"Metallica\",\n    \"albumTitle\": \"Ride The Lightning\",\n    \"title\": \"Creeping Death\"\n}]",
           "type": "json"
         }
       ]
@@ -3111,14 +3111,14 @@
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "albumTitre",
+            "field": "albumTitle",
             "description": "<p>Album title.</p>"
           },
           {
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "titre",
+            "field": "title",
             "description": "<p>Song title.</p>"
           }
         ]
@@ -3126,7 +3126,7 @@
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "HTTP/1.1 200 OK\n[{\n    \"_id\": \"5714dee725ac0d8aee54060e\",\n    \"name\": \"The Gaslight Anthem\",\n    \"albumTitre\": \"Handwritten\",\n    \"titre\": \"\\\"45\\\"\"\n}, {\n    \"_id\": \"5714decc25ac0d8aee3ed894\",\n    \"name\": \"David Bowie\",\n    \"albumTitre\": \"\\\"Heroes\\\"\",\n    \"titre\": \"\\\"Heroes\\\"\"\n}]",
+          "content": "HTTP/1.1 200 OK\n[{\n    \"_id\": \"5714dee725ac0d8aee54060e\",\n    \"name\": \"The Gaslight Anthem\",\n    \"albumTitle\": \"Handwritten\",\n    \"title\": \"\\\"45\\\"\"\n}, {\n    \"_id\": \"5714decc25ac0d8aee3ed894\",\n    \"name\": \"David Bowie\",\n    \"albumTitle\": \"\\\"Heroes\\\"\",\n    \"title\": \"\\\"Heroes\\\"\"\n}]",
           "type": "json"
         }
       ]
@@ -3182,14 +3182,14 @@
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "albumTitre",
+            "field": "albumTitle",
             "description": "<p>Album title.</p>"
           },
           {
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "titre",
+            "field": "title",
             "description": "<p>Song title.</p>"
           }
         ]
@@ -3197,7 +3197,7 @@
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "HTTP/1.1 200 OK\n[{\n    \"_id\": \"5714dedb25ac0d8aee4ad81f\",\n    \"name\": \"Metallica\",\n    \"albumTitre\": \"...And Justice For All\",\n    \"titre\": \"...And Justice For All\"\n}, {\n    \"_id\": \"5714dedb25ac0d8aee4aa923\",\n    \"name\": \"Megadeth\",\n    \"albumTitre\": \"Endgame\",\n    \"titre\": \"Dialectic Chaos\"\n}]",
+          "content": "HTTP/1.1 200 OK\n[{\n    \"_id\": \"5714dedb25ac0d8aee4ad81f\",\n    \"name\": \"Metallica\",\n    \"albumTitle\": \"...And Justice For All\",\n    \"title\": \"...And Justice For All\"\n}, {\n    \"_id\": \"5714dedb25ac0d8aee4aa923\",\n    \"name\": \"Megadeth\",\n    \"albumTitle\": \"Endgame\",\n    \"title\": \"Dialectic Chaos\"\n}]",
           "type": "json"
         }
       ]
@@ -3253,14 +3253,14 @@
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "albumTitre",
+            "field": "albumTitle",
             "description": "<p>Album title.</p>"
           },
           {
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "titre",
+            "field": "title",
             "description": "<p>Song title.</p>"
           }
         ]
@@ -3268,7 +3268,7 @@
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "HTTP/1.1 200 OK\n[{\n    \"_id\": \"5714dedb25ac0d8aee4ad81f\",\n    \"name\": \"Metallica\",\n    \"albumTitre\": \"...And Justice For All\",\n    \"titre\": \"...And Justice For All\"\n}, {\n    \"_id\": \"5714dedb25ac0d8aee4ad89d\",\n    \"name\": \"Metallica\",\n    \"albumTitre\": \"Singles\",\n    \"titre\": \"...And Justice For All\"\n}]",
+          "content": "HTTP/1.1 200 OK\n[{\n    \"_id\": \"5714dedb25ac0d8aee4ad81f\",\n    \"name\": \"Metallica\",\n    \"albumTitle\": \"...And Justice For All\",\n    \"title\": \"...And Justice For All\"\n}, {\n    \"_id\": \"5714dedb25ac0d8aee4ad89d\",\n    \"name\": \"Metallica\",\n    \"albumTitle\": \"Singles\",\n    \"title\": \"...And Justice For All\"\n}]",
           "type": "json"
         }
       ]
@@ -3324,14 +3324,14 @@
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "albumTitre",
+            "field": "albumTitle",
             "description": "<p>Album title.</p>"
           },
           {
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "titre",
+            "field": "title",
             "description": "<p>Song title.</p>"
           }
         ]
@@ -3339,7 +3339,7 @@
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "HTTP/1.1 200 OK\n[{\n    \"_id\": \"5714dee025ac0d8aee4ea2d5\",\n    \"name\": \"Queen\",\n    \"albumTitre\": \"A Night At The Opera\",\n    \"titre\": \"'39\"\n}, {\n    \"_id\": \"5714dee025ac0d8aee4ea30a\",\n    \"name\": \"Queen\",\n    \"albumTitre\": \"Live Killers\",\n    \"titre\": \"'39\"\n}]",
+          "content": "HTTP/1.1 200 OK\n[{\n    \"_id\": \"5714dee025ac0d8aee4ea2d5\",\n    \"name\": \"Queen\",\n    \"albumTitle\": \"A Night At The Opera\",\n    \"title\": \"'39\"\n}, {\n    \"_id\": \"5714dee025ac0d8aee4ea30a\",\n    \"name\": \"Queen\",\n    \"albumTitle\": \"Live Killers\",\n    \"title\": \"'39\"\n}]",
           "type": "json"
         }
       ]
@@ -3395,14 +3395,14 @@
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "albumTitre",
+            "field": "albumTitle",
             "description": "<p>Album title.</p>"
           },
           {
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "titre",
+            "field": "title",
             "description": "<p>Song title.</p>"
           }
         ]
@@ -3410,7 +3410,7 @@
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "HTTP/1.1 200 OK\n[{\n    \"_id\": \"5714dec325ac0d8aee388df2\",\n    \"name\": \"Aimee Mann\",\n    \"albumTitre\": \"Ultimate Collection\",\n    \"titre\": \"'Til Tuesday:Voices Carry\"\n}, {\n    \"_id\": \"5714decf25ac0d8aee41bd1c\",\n    \"name\": \"Feargal Sharkey\",\n    \"albumTitre\": \"Feargal Sharkey\",\n    \"titre\": \"A Good Heart\"\n}]",
+          "content": "HTTP/1.1 200 OK\n[{\n    \"_id\": \"5714dec325ac0d8aee388df2\",\n    \"name\": \"Aimee Mann\",\n    \"albumTitle\": \"Ultimate Collection\",\n    \"title\": \"'Til Tuesday:Voices Carry\"\n}, {\n    \"_id\": \"5714decf25ac0d8aee41bd1c\",\n    \"name\": \"Feargal Sharkey\",\n    \"albumTitle\": \"Feargal Sharkey\",\n    \"title\": \"A Good Heart\"\n}]",
           "type": "json"
         }
       ]
@@ -3466,14 +3466,14 @@
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "albumTitre",
+            "field": "albumTitle",
             "description": "<p>Album title.</p>"
           },
           {
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "titre",
+            "field": "title",
             "description": "<p>Song title.</p>"
           }
         ]
@@ -3481,7 +3481,7 @@
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "HTTP/1.1 200 OK\n[{\n    \"_id\": \"5714dedb25ac0d8aee4ad8ae\",\n    \"name\": \"Metallica\",\n    \"albumTitre\": \"Singles\",\n    \"titre\": \"Better Than You\"\n}, {\n    \"_id\": \"5714dedb25ac0d8aee4ad83c\",\n    \"name\": \"Metallica\",\n    \"albumTitre\": \"Load\",\n    \"titre\": \"Bleeding Me\"\n}]",
+          "content": "HTTP/1.1 200 OK\n[{\n    \"_id\": \"5714dedb25ac0d8aee4ad8ae\",\n    \"name\": \"Metallica\",\n    \"albumTitle\": \"Singles\",\n    \"title\": \"Better Than You\"\n}, {\n    \"_id\": \"5714dedb25ac0d8aee4ad83c\",\n    \"name\": \"Metallica\",\n    \"albumTitle\": \"Load\",\n    \"title\": \"Bleeding Me\"\n}]",
           "type": "json"
         }
       ]

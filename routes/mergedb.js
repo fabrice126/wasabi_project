@@ -36,7 +36,7 @@ router.get('/song/lyricsnotlicensed',function(req, res) {
                         isNotEq = isNotEq+1;
                         //On met a jour la db local
                         db.collection(COLLECTIONSONG).update({_id : new ObjectId(song._id)}, { $set: {"lyrics":songServer.lyrics} });
-                        console.log("Song updated = "+songServer.name+" - "+songServer.titre+" - "+songServer._id+" - "+songServer.lyrics.length+" <-> "+song.lyrics.length);
+                        console.log("Song updated = "+songServer.name+" - "+songServer.title+" - "+songServer._id+" - "+songServer.lyrics.length+" <-> "+song.lyrics.length);
                     }
                 });
                 if(i<songLength){
@@ -72,7 +72,7 @@ router.get('/song/lyrics',function(req, res) {
                             isNotEq = isNotEq+1;
                             //On met a jour la db local
                             db.collection(COLLECTIONSONG).update({_id : new ObjectId(song._id)}, { $set: {"lyrics":songServer.lyrics} });
-                            console.log("Song updated = "+songServer.name+" - "+songServer.titre+" - "+songServer._id+" - "+songServer.lyrics.length+" <-> "+song.lyrics.length);
+                            console.log("Song updated = "+songServer.name+" - "+songServer.title+" - "+songServer._id+" - "+songServer.lyrics.length+" <-> "+song.lyrics.length);
                         }
                     });
                     if(i<songLength){

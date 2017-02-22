@@ -101,10 +101,10 @@
                     </a>
                 </template>
                 <template is="dom-if" if="{{_isSong(result)}}">
-                   <a href="#/search/artist/{{_encodeUri(result.name)}}/album/{{_encodeUri(result.albumTitre)}}/song/{{_encodeUri(result.titre)}}" class="inherit">
+                   <a href="#/search/artist/{{_encodeUri(result.name)}}/album/{{_encodeUri(result.albumTitle)}}/song/{{_encodeUri(result.title)}}" class="inherit">
                         <paper-card elevation="0" >
                             <img class="song_search_bar" src="../img/song_search_bar.svg" alt="Song"> 
-                            <span class="search_title">{{result.titre}} - {{result.name}}<span class="search_album">(album: {{result.albumTitre}})</span>
+                            <span class="search_title">{{result.title}} - {{result.name}}<span class="search_album">(album: {{result.albumTitle}})</span>
                             </span>
                             <paper-ripple></paper-ripple>
                         </paper-card> 
@@ -127,14 +127,14 @@
     },    
     _isArtist : function(data){
         var isArtist = false;
-        if(typeof data.albumTitre == 'undefined') {
+        if(typeof data.albumTitle == 'undefined') {
             isArtist = true;
         }
         return isArtist;
     },
     _isSong : function(data){
         var isSong = false;
-        if(typeof data.albumTitre !== 'undefined') {
+        if(typeof data.albumTitle !== 'undefined') {
             isSong = true;
         }
         return isSong;

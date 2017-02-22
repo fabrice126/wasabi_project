@@ -99,15 +99,15 @@ var updateSongES = function (req, objSong, idSong) {
             // put the partial document under the `doc` key
             doc: {
                 "name": objSong.name,
-                "albumTitre": objSong.albumTitre,
-                "titre": objSong.titre
+                "albumTitle": objSong.albumTitle,
+                "title": objSong.title
             }
         }
     }, function (err) {
         if (err) throw err;
     });
 };
-//Si un titre de musique est modifié et qu'il comporte l'attribut multitrack_path (indiquant que cette musique possède du multipiste)
+//Si un title de musique est modifié et qu'il comporte l'attribut multitrack_path (indiquant que cette musique possède du multipiste)
 // alors on modifie le nom du dossier dans le filesystem et dans la bdd
 var updateDirMultitrack = function (objSong) {
 

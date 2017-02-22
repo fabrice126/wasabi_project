@@ -49,8 +49,8 @@ const router = express.Router();
  *
  * @apiSuccess {String} _id Album id
  * @apiSuccess {String} name Artist name
- * @apiSuccess {String} titre Album titre
- * @apiSuccess {String} dateSortie Album dateSortie
+ * @apiSuccess {String} title Album title
+ * @apiSuccess {String} publicationDate Album publicationDate
  * @apiSuccess {String} genre Album genre
  * @apiSuccess {String} length Album length
  * @apiSuccess {String} id_artist Artist id
@@ -73,10 +73,10 @@ const router = express.Router();
  * @apiSuccess {String} _id Song id
  * @apiSuccess {String} name Artist name
  * @apiSuccess {Number} position Track number
- * @apiSuccess {String} albumTitre Album title
+ * @apiSuccess {String} albumTitle Album title
  * @apiSuccess {String} lengthAlbum Album length
- * @apiSuccess {String} dateSortieAlbum Album release
- * @apiSuccess {String} titre Song titre
+ * @apiSuccess {String} publicationDateAlbum Album release
+ * @apiSuccess {String} title Song title
  * @apiSuccess {String} urlSong Url to lyricsWikia
  * @apiSuccess {String} lyrics Song lyrics
  * @apiSuccess {String} urlWikipedia Song urlWikipedia

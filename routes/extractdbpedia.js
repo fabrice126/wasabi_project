@@ -309,7 +309,7 @@ router.get('/createfields/album',function(req, res){
     //Propriété présent dans le RDF et dont nous avons besoin pour accèder a l'objet musique crée par parseString
     var rdfPropertiesAlbum = [   'abstract','artist','genre','producer','recordDate','recordLabel','releaseDate','runtime','subject','award','studio'];
     var rdfPropertiesProducer = ['abstract','associatedMusicalArtist','recordLabel','subject','artist','occupation'];
-    db.collection(COLLECTIONALBUM).find({$and:[{titre:"Help!"},{name:"The Beatles"},{$where:"this.rdf.length>200"}]},{wordCount:0}).toArray(function(err,tObjAlbum){
+    db.collection(COLLECTIONALBUM).find({$and:[{title:"Help!"},{name:"The Beatles"},{$where:"this.rdf.length>200"}]},{wordCount:0}).toArray(function(err,tObjAlbum){
     // db.collection(COLLECTIONALBUM).find({$and:[{rdf:{$ne:""}},{rdf:{$exists:true}},{$where:"this.rdf.length>200"}]},{wordCount:0, lyrics:0}).toArray(function(err,tObjAlbum){
         console.log('En cours de traitement ...');
         for(var i = 0; i<tObjAlbum.length;i++){

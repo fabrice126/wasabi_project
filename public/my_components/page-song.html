@@ -108,12 +108,12 @@
             <iron-pages selected="{{idxCurrentTab}}">
                 <div>
                     <template is="dom-if" if="{{artist.albums.songs.rdf.length}}">
-                        <show-dialog labeldialog="RDF {{artist.albums.songs.titre}} :" labelbutton="Show RDF" content="{{artist.albums.songs.rdf}}" labelexitdialog="Close"></show-dialog>
+                        <show-dialog labeldialog="RDF {{artist.albums.songs.title}} :" labelbutton="Show RDF" content="{{artist.albums.songs.rdf}}" labelexitdialog="Close"></show-dialog>
                     </template>
                     <section id="songName">
                         <div class="song inline">
-                            <a href="#/search/more/{{_concat(artist.name,artist.albums.songs.titre)}}"  tabindex="-1" class="inherit" > <!--hidden="{{editing}}"-->
-                                <paper-button tabindex="0" role="button" elevation="0">{{artist.albums.songs.titre}}</paper-button>
+                            <a href="#/search/more/{{_concat(artist.name,artist.albums.songs.title)}}"  tabindex="-1" class="inherit" > <!--hidden="{{editing}}"-->
+                                <paper-button tabindex="0" role="button" elevation="0">{{artist.albums.songs.title}}</paper-button>
                             </a>
                             <template is="dom-if" if="{{artist}}">
                                 <paper-icon-button on-tap="doIsClassic" class="isClassic" icon="star-border" hidden$="{{artist.albums.songs.isClassic}}" ></paper-icon-button>
@@ -127,8 +127,8 @@
                             </a>
                         </div>
                         <div>
-                            <a href="#/search/artist/{{_encodeUri(artist.name)}}/album/{{_encodeUri(artist.albums.titre)}}" tabindex="-1" class="inherit" >
-                                <paper-button tabindex="0" role="button" elevation="0" >Album: {{artist.albums.titre}}</paper-button>
+                            <a href="#/search/artist/{{_encodeUri(artist.name)}}/album/{{_encodeUri(artist.albums.title)}}" tabindex="-1" class="inherit" >
+                                <paper-button tabindex="0" role="button" elevation="0" >Album: {{artist.albums.title}}</paper-button>
                             </a>
                         </div>
                     </section>
@@ -283,7 +283,7 @@
                 return "/search/artist_id/"+this.artist._id+"/album_id/"+this.artist.albums._id+"/song_id/"+this.artist.albums.songs._id;
             },
             getURLSong: function(){
-                return "/search/artist/"+this._encodeUri(this.artist.name)+"/album/"+this._encodeUri(this.artist.albums.titre)+"/song/"+this._encodeUri(this.artist.albums.songs.titre);
+                return "/search/artist/"+this._encodeUri(this.artist.name)+"/album/"+this._encodeUri(this.artist.albums.title)+"/song/"+this._encodeUri(this.artist.albums.songs.title);
             },
             ready: function(){
                 this.$.songLyricsEditable.addEventListener("paste", function(e) {
@@ -294,8 +294,8 @@
                     this.innerHTML = cleanText;
                 });
             },
-            _encodeUri : function(titre){
-                return encodeURIComponent(titre);
+            _encodeUri : function(title){
+                return encodeURIComponent(title);
             },
             //Cette fonction est utilisé lorsque l'utilisateur charge la page et lorsqu'il clique sur le bouton de modification des lyrics
             handleResponse: function(request) {

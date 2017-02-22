@@ -54,10 +54,10 @@
             <iron-ajax id="get_count"   auto url="/search/count/song/format/{{_encodeUri(formatName)}}" last-response="{{countField}}" handleAs="json"> </iron-ajax>
             <p class="center searchText-info">Nous avons actuellement : {{countField.count}} musiques dans ayant le format {{formatName}}</p>
             <template class="flex-wrap" is="dom-repeat" items="{{formats}}" as="format" initial-count="1" >
-                <a href="#/search/artist/{{_encodeUri(format.name)}}/album/{{_encodeUri(format.albumTitre)}}/song/{{_encodeUri(format.titre)}}" class="inherit">
+                <a href="#/search/artist/{{_encodeUri(format.name)}}/album/{{_encodeUri(format.albumTitle)}}/song/{{_encodeUri(format.title)}}" class="inherit">
                     <paper-card elevation="0" >
                         <img class="song_search_bar" src="../../img/song_search_bar.svg" alt="Band">
-                        <span class="search_title">{{format.titre}} - {{format.name}} - {{format.albumTitre}}</span>
+                        <span class="search_title">{{format.title}} - {{format.name}} - {{format.albumTitle}}</span>
                         <paper-ripple></paper-ripple>
                     </paper-card>
                 </a>

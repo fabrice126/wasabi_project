@@ -75,7 +75,7 @@
 			<th>SUCCESS RESPONSE</th>
 			<td> 
 				Code : 200 <br>
-				Content GET:  [{"_id":"5714dedb25ac0d8aee4ad81f","name":"Metallica","albumTitre":"...And Justice For All","titre":"...And Justice For All"},{"_id":"5714dedb25ac0d8aee4ad89d","name":"Metallica","albumTitre":"Singles","titre":"...And Justice For All"},{"_id":"5714dedb25ac0d8aee4ad820","name":"Metallica","albumTitre":"...And Justice For All","titre":"Eye Of The Beholder"},{"_id":"5714dedb25ac0d8aee4ad89b","name":"Metallica","albumTitre":"Singles","titre":"Eye Of The Beholder"}]<br>
+				Content GET:  [{"_id":"5714dedb25ac0d8aee4ad81f","name":"Metallica","albumTitle":"...And Justice For All","title":"...And Justice For All"},{"_id":"5714dedb25ac0d8aee4ad89d","name":"Metallica","albumTitle":"Singles","title":"...And Justice For All"},{"_id":"5714dedb25ac0d8aee4ad820","name":"Metallica","albumTitle":"...And Justice For All","title":"Eye Of The Beholder"},{"_id":"5714dedb25ac0d8aee4ad89b","name":"Metallica","albumTitle":"Singles","title":"Eye Of The Beholder"}]<br>
 			</td>
 		</tr>
 		<tr>
@@ -116,7 +116,7 @@
 			<th>SUCCESS RESPONSE</th>
 			<td> 
 				Code : 200 <br>
-				Content GET : [{"_id":"5714dedb25ac0d8aee4ad81f","name":"Metallica","albumTitre":"...And Justice For All","titre":"...And Justice For All"},{"_id":"5714dedb25ac0d8aee4ad89d","name":"Metallica","albumTitre":"Singles","titre":"...And Justice For All"}]<br>
+				Content GET : [{"_id":"5714dedb25ac0d8aee4ad81f","name":"Metallica","albumTitle":"...And Justice For All","title":"...And Justice For All"},{"_id":"5714dedb25ac0d8aee4ad89d","name":"Metallica","albumTitle":"Singles","title":"...And Justice For All"}]<br>
 			</td>
 		</tr>
 		<tr>
@@ -157,7 +157,7 @@
 			<th>SUCCESS RESPONSE</th>
 			<td> 
 				Code : 200 <br>
-				Content GET : [{"_id":"5714dee025ac0d8aee4ea2d5","name":"Queen","albumTitre":"A Night At The Opera","titre":"'39"},{"_id":"5714dee025ac0d8aee4ea30a","name":"Queen","albumTitre":"Live Killers","titre":"'39"}]<br>
+				Content GET : [{"_id":"5714dee025ac0d8aee4ea2d5","name":"Queen","albumTitle":"A Night At The Opera","title":"'39"},{"_id":"5714dee025ac0d8aee4ea30a","name":"Queen","albumTitle":"Live Killers","title":"'39"}]<br>
 			</td>
 		</tr>
 		<tr>
@@ -198,7 +198,7 @@
 			<th>SUCCESS RESPONSE</th>
 			<td> 
 				Code : 200 <br>
-				Content GET : [{"_id":"5714dec825ac0d8aee3bc6d3","name":"Body Count","albumTitre":"Body Count","titre":"Cop Killer"},{"_id":"5714dece25ac0d8aee403c97","name":"Drowning Pool","albumTitre":"Other Releases","titre":"Creeping Death"}]<br>
+				Content GET : [{"_id":"5714dec825ac0d8aee3bc6d3","name":"Body Count","albumTitle":"Body Count","title":"Cop Killer"},{"_id":"5714dece25ac0d8aee403c97","name":"Drowning Pool","albumTitle":"Other Releases","title":"Creeping Death"}]<br>
 			</td>
 		</tr>
 		<tr>
@@ -239,7 +239,7 @@
 			<th>SUCCESS RESPONSE</th>
 			<td> 
 				Code : 200 <br>
-				Content GET : [{"_id":"5714dedb25ac0d8aee4ad81f","name":"Metallica","albumTitre":"...And Justice For All","titre":"...And Justice For All"}]<br>
+				Content GET : [{"_id":"5714dedb25ac0d8aee4ad81f","name":"Metallica","albumTitle":"...And Justice For All","title":"...And Justice For All"}]<br>
 			</td>
 		</tr>
 		<tr>
@@ -280,7 +280,7 @@
 			<th>SUCCESS RESPONSE</th>
 			<td> 
 				Code : 200 <br>
-				Content GET : [{"_id":"5714dedb25ac0d8aee4ad81f","name":"Metallica","albumTitre":"...And Justice For All","titre":"...And Justice For All"}]<br>
+				Content GET : [{"_id":"5714dedb25ac0d8aee4ad81f","name":"Metallica","albumTitle":"...And Justice For All","title":"...And Justice For All"}]<br>
 			</td>
 		</tr>
 		<tr>
@@ -320,7 +320,7 @@
 			<th>SUCCESS RESPONSE</th>
 			<td> 
 				Code : 200 <br>
-				Content GET : [{"_id":"5714dec625ac0d8aee3acc1a","name":"Bee Gees","albumTitre":"Still Waters","titre":"Alone"},{"_id":"5714dec625ac0d8aee3accbb","name":"Bee Gees","albumTitre":"Their Greatest Hits: The Record","titre":"Alone"}]<br>
+				Content GET : [{"_id":"5714dec625ac0d8aee3acc1a","name":"Bee Gees","albumTitle":"Still Waters","title":"Alone"},{"_id":"5714dec625ac0d8aee3accbb","name":"Bee Gees","albumTitle":"Their Greatest Hits: The Record","title":"Alone"}]<br>
 			</td>
 		</tr>
 		<tr>
@@ -362,7 +362,7 @@
 			<th>SUCCESS RESPONSE</th>
 			<td> 
 				Code : 200 <br>
-				Content GET : [{"_id":"5714dee725ac0d8aee54060e","name":"The Gaslight Anthem","albumTitre":"Handwritten","titre":"45"},{"_id":"5714decc25ac0d8aee3ed894","name":"David Bowie","albumTitre":"Heroes","titre":"Heroes"}]<br>
+				Content GET : [{"_id":"5714dee725ac0d8aee54060e","name":"The Gaslight Anthem","albumTitle":"Handwritten","title":"45"},{"_id":"5714decc25ac0d8aee3ed894","name":"David Bowie","albumTitle":"Heroes","title":"Heroes"}]<br>
 			</td>
 		</tr>
 		<tr>
@@ -521,7 +521,7 @@
 			<th>SUCCESS RESPONSE</th>
 			<td> 
 				Code : 200 <br>
-				Content GET :{"_id":"56d93d84ce06f50c0fed8747","name":"Metallica", "urlWikipedia":"http://en.wikipedia.org/wiki/Metallica", "urlOfficialWebsite":"http://www.metallica.com/", "urlFacebook":"http://www.facebook.com/metallica", "urlMySpace":"https://myspace.com/Metallica", "urlTwitter":"http://twitter.com/metallica", "locationInfo":["United States","California","Los Angeles"], "activeYears":"","genres":["Heavy Metal","Thrash Metal"],"labels":["Elektra","Megaforce Records","Mercury Records","Warner Bros. Records"], "members":[{"name":" James Hetfield","instruments":["lead vocals"," rhythm guitar "],"activeYears":["1981-present"]}, {"name":" Kirk Hammett","instruments":["lead guitar "],"activeYears":["1983-present"]},{"name":" Robert Trujillo","instruments":["bass "], "activeYears":["2003-present"]},{"name":" Lars Ulrich","instruments":["drums"," percussion "],"activeYears":["1981-present"]}],"formerMembers":[{"name":" Dave Mustaine","instruments":["lead guitar"," backing vocals "],"activeYears":["1981-1983"]},{"name":" Ron McGovney","instruments":["bass "],"activeYears":["1981-1982"]},{"name":" Cliff Burton (Deceased)","instruments":["bass"," backing vocals "], "activeYears":["1982-1986"]},{"name":" Jason Newsted","instruments":["bass"," backing vocals "],"activeYears":["1986-2001"]}], "albums":[{"_id":"5714debe25ac0d8aee36b66e", "name":"Metallica","titre":"Lulu", "dateSortie":"2011","genre":"", "length":"","id_artist":"56d93d84ce06f50c0fed8747","songs":[{"_id":"5714dedb25ac0d8aee4ad88d", "position":0,"titre":"Lou Reed & Metallica:Brandenburg Gate"}, {"_id":"5714dedb25ac0d8aee4ad88e","position":1,"titre":"Lou Reed & Metallica:The View"}]}]}<br>
+				Content GET :{"_id":"56d93d84ce06f50c0fed8747","name":"Metallica", "urlWikipedia":"http://en.wikipedia.org/wiki/Metallica", "urlOfficialWebsite":"http://www.metallica.com/", "urlFacebook":"http://www.facebook.com/metallica", "urlMySpace":"https://myspace.com/Metallica", "urlTwitter":"http://twitter.com/metallica", "locationInfo":["United States","California","Los Angeles"], "activeYears":"","genres":["Heavy Metal","Thrash Metal"],"labels":["Elektra","Megaforce Records","Mercury Records","Warner Bros. Records"], "members":[{"name":" James Hetfield","instruments":["lead vocals"," rhythm guitar "],"activeYears":["1981-present"]}, {"name":" Kirk Hammett","instruments":["lead guitar "],"activeYears":["1983-present"]},{"name":" Robert Trujillo","instruments":["bass "], "activeYears":["2003-present"]},{"name":" Lars Ulrich","instruments":["drums"," percussion "],"activeYears":["1981-present"]}],"formerMembers":[{"name":" Dave Mustaine","instruments":["lead guitar"," backing vocals "],"activeYears":["1981-1983"]},{"name":" Ron McGovney","instruments":["bass "],"activeYears":["1981-1982"]},{"name":" Cliff Burton (Deceased)","instruments":["bass"," backing vocals "], "activeYears":["1982-1986"]},{"name":" Jason Newsted","instruments":["bass"," backing vocals "],"activeYears":["1986-2001"]}], "albums":[{"_id":"5714debe25ac0d8aee36b66e", "name":"Metallica","title":"Lulu", "publicationDate":"2011","genre":"", "length":"","id_artist":"56d93d84ce06f50c0fed8747","songs":[{"_id":"5714dedb25ac0d8aee4ad88d", "position":0,"title":"Lou Reed & Metallica:Brandenburg Gate"}, {"_id":"5714dedb25ac0d8aee4ad88e","position":1,"title":"Lou Reed & Metallica:The View"}]}]}<br>
 			</td>
 		</tr>
 		<tr>
@@ -559,7 +559,7 @@
 			<th>SUCCESS RESPONSE</th>
 			<td> 
 				Code : 200 <br>
-				Content GET : {"_id":"56d93d84ce06f50c0fed8747","name":"Metallica", "urlWikipedia":"http://en.wikipedia.org/wiki/Metallica", "urlOfficialWebsite":"http://www.metallica.com/", "urlFacebook":"http://www.facebook.com/metallica", "urlMySpace":"https://myspace.com/Metallica" ,"urlTwitter":"http://twitter.com/metallica", "locationInfo":["United States","California","Los Angeles"],"urlWikia":"Metallica","activeYears":"", "genres":["Heavy Metal","Thrash Metal"], "labels":["Elektra","Megaforce Records", "Mercury Records","Warner Bros. Records"], "members":[{"name":" James Hetfield","instruments":["lead vocals"," rhythm guitar "],"activeYears":["1981-present\n"]},{"name":" Kirk Hammett","instruments":["lead guitar "],"activeYears":["1983-present\n"]},{"name":" Robert Trujillo","instruments":["bass "],"activeYears":["2003-present\n"]},{"name":" Lars Ulrich","instruments":["drums"," percussion "],"activeYears":["1981-present\n"]}],"formerMembers":[{"name":" Dave Mustaine","instruments":["lead guitar"," backing vocals "],"activeYears":["1981-1983\n"]},{"name":" Ron McGovney","instruments":["bass "],"activeYears":["1981-1982\n"]},{"name":" Cliff Burton (Deceased)","instruments":["bass"," backing vocals "],"activeYears":["1982-1986\n"]},{"name":" Jason Newsted","instruments":["bass"," backing vocals "],"activeYears":["1986-2001\n"]}] ,"songs":[{"_id":"5714dedb25ac0d8aee4ad81e","position":0,"titre":"Blackened"},{"_id":"5714dedb25ac0d8aee4ad81f","position":1,"titre":"...And Justice For All"},{"_id":"5714dedb25ac0d8aee4ad820","position":2,"titre":"Eye Of The Beholder"},{"_id":"5714dedb25ac0d8aee4ad821","position":3,"titre":"One"},{"_id":"5714dedb25ac0d8aee4ad822","position":4,"titre":"The Shortest Straw"},{"_id":"5714dedb25ac0d8aee4ad823","position":5,"titre":"Harvester Of Sorrow"},{"_id":"5714dedb25ac0d8aee4ad824","position":6,"titre":"The Frayed Ends Of Sanity"},{"_id":"5714dedb25ac0d8aee4ad825","position":7,"titre":"To Live Is To Die"},{"_id":"5714dedb25ac0d8aee4ad826","position":8,"titre":"Dyers Eve"}]}}<br>
+				Content GET : {"_id":"56d93d84ce06f50c0fed8747","name":"Metallica", "urlWikipedia":"http://en.wikipedia.org/wiki/Metallica", "urlOfficialWebsite":"http://www.metallica.com/", "urlFacebook":"http://www.facebook.com/metallica", "urlMySpace":"https://myspace.com/Metallica" ,"urlTwitter":"http://twitter.com/metallica", "locationInfo":["United States","California","Los Angeles"],"urlWikia":"Metallica","activeYears":"", "genres":["Heavy Metal","Thrash Metal"], "labels":["Elektra","Megaforce Records", "Mercury Records","Warner Bros. Records"], "members":[{"name":" James Hetfield","instruments":["lead vocals"," rhythm guitar "],"activeYears":["1981-present\n"]},{"name":" Kirk Hammett","instruments":["lead guitar "],"activeYears":["1983-present\n"]},{"name":" Robert Trujillo","instruments":["bass "],"activeYears":["2003-present\n"]},{"name":" Lars Ulrich","instruments":["drums"," percussion "],"activeYears":["1981-present\n"]}],"formerMembers":[{"name":" Dave Mustaine","instruments":["lead guitar"," backing vocals "],"activeYears":["1981-1983\n"]},{"name":" Ron McGovney","instruments":["bass "],"activeYears":["1981-1982\n"]},{"name":" Cliff Burton (Deceased)","instruments":["bass"," backing vocals "],"activeYears":["1982-1986\n"]},{"name":" Jason Newsted","instruments":["bass"," backing vocals "],"activeYears":["1986-2001\n"]}] ,"songs":[{"_id":"5714dedb25ac0d8aee4ad81e","position":0,"title":"Blackened"},{"_id":"5714dedb25ac0d8aee4ad81f","position":1,"title":"...And Justice For All"},{"_id":"5714dedb25ac0d8aee4ad820","position":2,"title":"Eye Of The Beholder"},{"_id":"5714dedb25ac0d8aee4ad821","position":3,"title":"One"},{"_id":"5714dedb25ac0d8aee4ad822","position":4,"title":"The Shortest Straw"},{"_id":"5714dedb25ac0d8aee4ad823","position":5,"title":"Harvester Of Sorrow"},{"_id":"5714dedb25ac0d8aee4ad824","position":6,"title":"The Frayed Ends Of Sanity"},{"_id":"5714dedb25ac0d8aee4ad825","position":7,"title":"To Live Is To Die"},{"_id":"5714dedb25ac0d8aee4ad826","position":8,"title":"Dyers Eve"}]}}<br>
 			</td>
 		</tr>
 		<tr>
@@ -607,15 +607,15 @@
                 "name": "Metallica",
                 "albums": {
                 "_id": "5714debe25ac0d8aee36b665",
-                "titre": "...And Justice For All",
+                "title": "...And Justice For All",
                 "songs": {
                 "_id": "5714dedb25ac0d8aee4ad81f",
                 "name": "Metallica",
                 "position": 1,
-                "albumTitre": "...And Justice For All",
+                "albumTitle": "...And Justice For All",
                 "lengthAlbum": "65:33",
-                "dateSortieAlbum": "1988",
-                "titre": "...And Justice For All",
+                "publicationDateAlbum": "1988",
+                "title": "...And Justice For All",
                 "lyrics": "Halls of justice painted green, money talking...",
                 "urlWikipedia ": "http : //en.wikipedia.org/wiki/...And_Justice_for_All_(song)",
                 "id_album": "5714debe25ac0d8aee36b665"
@@ -669,15 +669,15 @@
                 "name": "Metallica",
                 "albums": {
                 "_id": "5714debe25ac0d8aee36b665",
-                "titre": "...And Justice For All",
+                "title": "...And Justice For All",
                 "songs": {
                 "_id": "5714dedb25ac0d8aee4ad81f",
                 "name": "Metallica",
                 "position": 1,
-                "albumTitre": "...And Justice For All",
+                "albumTitle": "...And Justice For All",
                 "lengthAlbum": "65:33",
-                "dateSortieAlbum": "1988",
-                "titre": "...And Justice For All",
+                "publicationDateAlbum": "1988",
+                "title": "...And Justice For All",
                 "lyrics": "Halls of justice painted green, money talking...",
                 "urlWikipedia ": "http : //en.wikipedia.org/wiki/...And_Justice_for_All_(song)",
                 "id_album": "5714debe25ac0d8aee36b665"
@@ -724,7 +724,7 @@
 			<th>SUCCESS RESPONSE</th>
 			<td> 
 				Code : 200 <br>
-				Content GET : [{"name":"Metallica"},{"name":"Metallica","albumTitre":"Metallica","titre":"Enter Sandman","id":"5714dedb25ac0d8aee4ad827"},{"name":"Metallica","albumTitre":"Metallica","titre":"The Unforgiven","id":"5714dedb25ac0d8aee4ad82a"},{"name":"Metallica","albumTitre":"Metallica","titre":"Of Wolf And Man","id":"5714dedb25ac0d8aee4ad82f"},{"name":"Metallica","albumTitre":"Metallica","titre":"The God That Failed","id":"5714dedb25ac0d8aee4ad830"},{"name":"Metallica","albumTitre":"Metallica","titre":"Holier Than Thou","id":"5714dedb25ac0d8aee4ad829"},{"name":"Metallica","albumTitre":"Metallica","titre":"Wherever I May Roam","id":"5714dedb25ac0d8aee4ad82b"},{"name":"Metallica","albumTitre":"Metallica","titre":"Through The Never","id":"5714dedb25ac0d8aee4ad82d"},{"name":"Metallica","albumTitre":"Metallica","titre":"My Friend Of Misery","id":"5714dedb25ac0d8aee4ad831"},{"name":"Metallica","albumTitre":"Metallica","titre":"Sad But True","id":"5714dedb25ac0d8aee4ad828"},{"name":"Metallica","albumTitre":"Metallica","titre":"Don't Tread On Me","id":"5714dedb25ac0d8aee4ad82c"},{"name":"Metallica","albumTitre":"Metallica","titre":"Nothing Else Matters","id":"5714dedb25ac0d8aee4ad82e"}]<br>
+				Content GET : [{"name":"Metallica"},{"name":"Metallica","albumTitle":"Metallica","title":"Enter Sandman","id":"5714dedb25ac0d8aee4ad827"},{"name":"Metallica","albumTitle":"Metallica","title":"The Unforgiven","id":"5714dedb25ac0d8aee4ad82a"},{"name":"Metallica","albumTitle":"Metallica","title":"Of Wolf And Man","id":"5714dedb25ac0d8aee4ad82f"},{"name":"Metallica","albumTitle":"Metallica","title":"The God That Failed","id":"5714dedb25ac0d8aee4ad830"},{"name":"Metallica","albumTitle":"Metallica","title":"Holier Than Thou","id":"5714dedb25ac0d8aee4ad829"},{"name":"Metallica","albumTitle":"Metallica","title":"Wherever I May Roam","id":"5714dedb25ac0d8aee4ad82b"},{"name":"Metallica","albumTitle":"Metallica","title":"Through The Never","id":"5714dedb25ac0d8aee4ad82d"},{"name":"Metallica","albumTitle":"Metallica","title":"My Friend Of Misery","id":"5714dedb25ac0d8aee4ad831"},{"name":"Metallica","albumTitle":"Metallica","title":"Sad But True","id":"5714dedb25ac0d8aee4ad828"},{"name":"Metallica","albumTitle":"Metallica","title":"Don't Tread On Me","id":"5714dedb25ac0d8aee4ad82c"},{"name":"Metallica","albumTitle":"Metallica","title":"Nothing Else Matters","id":"5714dedb25ac0d8aee4ad82e"}]<br>
 			</td>
 		</tr>
 		<tr>
@@ -765,7 +765,7 @@
 			<th>SUCCESS RESPONSE</th>
 			<td> 
 				Code : 200 <br>
-				Content GET : [{"name":"Metallica"},{"name":"Metallica","albumTitre":"Metallica","titre":"Enter Sandman","id":"5714dedb25ac0d8aee4ad827"},{"name":"Metallica","albumTitre":"Metallica","titre":"The Unforgiven","id":"5714dedb25ac0d8aee4ad82a"},{"name":"Metallica","albumTitre":"Metallica","titre":"Of Wolf And Man","id":"5714dedb25ac0d8aee4ad82f"}, ... , ... , ... , ... , ... , ...]<br>
+				Content GET : [{"name":"Metallica"},{"name":"Metallica","albumTitle":"Metallica","title":"Enter Sandman","id":"5714dedb25ac0d8aee4ad827"},{"name":"Metallica","albumTitle":"Metallica","title":"The Unforgiven","id":"5714dedb25ac0d8aee4ad82a"},{"name":"Metallica","albumTitle":"Metallica","title":"Of Wolf And Man","id":"5714dedb25ac0d8aee4ad82f"}, ... , ... , ... , ... , ... , ...]<br>
 			</td>
 		</tr>
 		<tr>

@@ -50,12 +50,12 @@ router.get('/createdbelasticsearchsong', function(req, res){
     var urlElasticSearch = config.database.elasticsearch_url;
     var typeName = config.database.index_type_song;
     var indexName = config.database.index_song;
-    var projectObj = {"titre":1,"name":1,"albumTitre":1};//ce que nous voulons récupérer dans la base de données mongodb
+    var projectObj = {"title":1,"name":1,"albumTitle":1};//ce que nous voulons récupérer dans la base de données mongodb
     var urlIndex = urlElasticSearch+indexName;
     var mappingObj= {};
-    mappingObj[typeName] = {"properties": { "titre": {"type": "string", "analyzer": "folding"},
+    mappingObj[typeName] = {"properties": { "title": {"type": "string", "analyzer": "folding"},
                                             "name": {"type": "string", "analyzer": "folding"},
-                                            "albumTitre": {"type": "string", "analyzer": "folding"}}};
+                                            "albumTitle": {"type": "string", "analyzer": "folding"}}};
     //Suppression de l'index
     elasticSearchHandler.deleteElasticSearchIndex(urlIndex).then(function(resolve){
         console.log("Index "+typeName+" Supprimée");
@@ -100,7 +100,7 @@ router.get('/add/elasticsearch/artist/:_id', function(req, res){
 //Permet d'ajouter la musique dont l'id est passé en parametre
 router.get('/add/elasticsearch/song/:_id', function(req, res){
     var db = req.db, id = req.params._id, index_song = config.database.index_song, type_song = config.database.index_type_song;
-    db.collection(COLLECTIONSONG).findOne({_id:ObjectId(id)},{"name":1,"albumTitre":1,"titre":1}, function(err,song) {
+    db.collection(COLLECTIONSONG).findOne({_id:ObjectId(id)},{"name":1,"albumTitle":1,"title":1}, function(err,song) {
         if(song == null) {return res.status(404).send([{error:config.http.error.global_404}]); }
         delete song._id; // impossible de faire l'insertion si un _id est présent dans le document à insérer
         elasticSearchHandler.addDocumentToElasticSearch(req, index_song, type_song, song, id);

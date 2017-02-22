@@ -7,8 +7,8 @@ db.getCollection('artist').aggregate([
                     {
                         _id:0, 
                         "name":1,
-                        "titre":"$albums.titre",
-                        "dateSortie":"$albums.dateSortie",
+                        "title":"$albums.title",
+                        "publicationDate":"$albums.publicationDate",
                         "urlWikipedia":"$albums.urlWikipedia",
                         "genre":"$albums.genre",
                         "length":"$albums.length",
@@ -19,22 +19,22 @@ db.getCollection('artist').aggregate([
             ])
 //create index pour la collection album                
 db.getCollection('album').createIndex({ name: 1});    
-db.getCollection('album').createIndex({ titre: 1}); 
-db.getCollection('album').createIndex({ dateSortie: 1}); 
+db.getCollection('album').createIndex({ title: 1}); 
+db.getCollection('album').createIndex({ publicationDate: 1}); 
 db.getCollection('album').createIndex({ genre: 1}); 
 //Creation de la collection song
 db.getCollection('artist').aggregate([ 
-                {"$match": {"albums.songs.titre": {$exists : true}}},
+                {"$match": {"albums.songs.title": {$exists : true}}},
                 {"$unwind": "$albums"},
                 { "$unwind": { path: "$albums.songs", includeArrayIndex: "position" } },
                 {"$project" : 
                     {
                         _id:0, 
                         "name":1,
-                        "albumTitre":"$albums.titre",
+                        "albumTitle":"$albums.title",
                         "lengthAlbum":"$albums.length",
-                        "dateSortieAlbum":"$albums.dateSortie",
-                        "titre":"$albums.songs.titre",
+                        "publicationDateAlbum":"$albums.publicationDate",
+                        "title":"$albums.songs.title",
                         "urlSong":"$albums.songs.urlSong",
                         "lyrics":"$albums.songs.lyrics",
                         "urlWikipedia":"$albums.songs.urlWikipedia",
@@ -45,8 +45,8 @@ db.getCollection('artist').aggregate([
             ])
 //create index pour la collection song
 db.getCollection('song').createIndex({ name: 1});    
-db.getCollection('song').createIndex({ albumTitre: 1}); 
-db.getCollection('song').createIndex({ titre: 1}); 
+db.getCollection('song').createIndex({ albumTitle: 1}); 
+db.getCollection('song').createIndex({ title: 1}); 
 db.getCollection('song').createIndex({ position: 1}); 
 
          

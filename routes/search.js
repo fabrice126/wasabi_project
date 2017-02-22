@@ -64,13 +64,13 @@ const LIMIT = config.request.limit;
         "songs": [{
                 "_id": "5714dec325ac0d8aee3859f9",
                 "name": "Addict",
-                "albumTitre": "Come On Sun",
+                "albumTitle": "Come On Sun",
                 "titleSong": "K"
             },
             {
                 "_id": "5714dec325ac0d8aee3804f5",
                 "name": "A",
-                "albumTitre": "A Vs. Monkey Kong",
+                "albumTitle": "A Vs. Monkey Kong",
                 "titleSong": "A"
             }
         ]
@@ -116,7 +116,7 @@ router.get('/categorie/:nomCategorie/lettre/:lettre/page/:numPage', (req, res, n
             break;
         case "album":
         case "albums":
-            tObjectRequest = searchHandler.constructData("titre", tParamToFind);
+            tObjectRequest = searchHandler.constructData("title", tParamToFind);
             db.collection(COLLECTIONALBUM).aggregate([{
                 "$match": {
                     $or: tObjectRequest
@@ -127,7 +127,7 @@ router.get('/categorie/:nomCategorie/lettre/:lettre/page/:numPage', (req, res, n
                 "$limit": LIMIT
             }, {
                 $project: {
-                    "titleAlbum": "$titre",
+                    "titleAlbum": "$title",
                     "name": 1
                 }
             }], (err, albums) => {
@@ -138,7 +138,7 @@ router.get('/categorie/:nomCategorie/lettre/:lettre/page/:numPage', (req, res, n
             break;
         case "song":
         case "songs":
-            tObjectRequest = searchHandler.constructData("titre", tParamToFind);
+            tObjectRequest = searchHandler.constructData("title", tParamToFind);
             db.collection(COLLECTIONSONG).aggregate([{
                 "$match": {
                     $or: tObjectRequest
@@ -149,9 +149,9 @@ router.get('/categorie/:nomCategorie/lettre/:lettre/page/:numPage', (req, res, n
                 "$limit": LIMIT
             }, {
                 $project: {
-                    "albumTitre": 1,
+                    "albumTitle": 1,
                     "name": 1,
-                    "titleSong": "$titre"
+                    "titleSong": "$title"
                 }
             }], (err, songs) => {
                 if (err) throw err;
@@ -182,21 +182,21 @@ router.get('/categorie/:nomCategorie/lettre/:lettre/page/:numPage', (req, res, n
  * 
  * @apiSuccess {String} _id id of the song.
  * @apiSuccess {String} name Band name.
- * @apiSuccess {String} albumTitre  Album title.
- * @apiSuccess {String} titre Song title.
+ * @apiSuccess {String} albumTitle  Album title.
+ * @apiSuccess {String} title Song title.
  * 
  * @apiSuccessExample Success-Response:
     HTTP/1.1 200 OK
     [{
         "_id": "5714dece25ac0d8aee403c97",
         "name": "Drowning Pool",
-        "albumTitre": "Other Releases",
-        "titre": "Creeping Death"
+        "albumTitle": "Other Releases",
+        "title": "Creeping Death"
     }, {
         "_id": "5714dedb25ac0d8aee4ad814",
         "name": "Metallica",
-        "albumTitre": "Ride The Lightning",
-        "titre": "Creeping Death"
+        "albumTitle": "Ride The Lightning",
+        "title": "Creeping Death"
     }]
  *
  * @apiError error The collection was not found.
@@ -216,10 +216,10 @@ router.get('/category/:collection/:categoryName', (req, res) => {
         subject: categoryName
     }, {
         name: 1,
-        titre: 1,
-        albumTitre: 1
+        title: 1,
+        albumTitle: 1
     }).sort({
-        titre: 1
+        title: 1
     }).limit(LIMIT).toArray((err, objs) => {
         res.json(objs);
     })
@@ -242,21 +242,21 @@ router.get('/category/:collection/:categoryName', (req, res) => {
  * 
  * @apiSuccess {String} _id id of the song.
  * @apiSuccess {String} name Band name.
- * @apiSuccess {String} albumTitre  Album title.
- * @apiSuccess {String} titre Song title.
+ * @apiSuccess {String} albumTitle  Album title.
+ * @apiSuccess {String} title Song title.
  * 
  * @apiSuccessExample Success-Response:
     HTTP/1.1 200 OK
     [{
         "_id": "5714dedb25ac0d8aee4ad81f",
         "name": "Metallica",
-        "albumTitre": "...And Justice For All",
-        "titre": "...And Justice For All"
+        "albumTitle": "...And Justice For All",
+        "title": "...And Justice For All"
     }, {
         "_id": "5714dedb25ac0d8aee4ad89d",
         "name": "Metallica",
-        "albumTitre": "Singles",
-        "titre": "...And Justice For All"
+        "albumTitle": "Singles",
+        "title": "...And Justice For All"
     }]
  *
  */
@@ -266,10 +266,10 @@ router.get('/producer/:producerName', (req, res) => {
         producer: producerName
     }, {
         name: 1,
-        titre: 1,
-        albumTitre: 1
+        title: 1,
+        albumTitle: 1
     }).sort({
-        titre: 1
+        title: 1
     }).limit(LIMIT).toArray((err, objs) => {
         res.json(objs);
     })
@@ -292,21 +292,21 @@ router.get('/producer/:producerName', (req, res) => {
  * 
  * @apiSuccess {String} _id id of the song.
  * @apiSuccess {String} name Band name.
- * @apiSuccess {String} albumTitre  Album title.
- * @apiSuccess {String} titre Song title.
+ * @apiSuccess {String} albumTitle  Album title.
+ * @apiSuccess {String} title Song title.
  * 
  * @apiSuccessExample Success-Response:
     HTTP/1.1 200 OK
     [{
         "_id": "5714dee025ac0d8aee4ea2d5",
         "name": "Queen",
-        "albumTitre": "A Night At The Opera",
-        "titre": "'39"
+        "albumTitle": "A Night At The Opera",
+        "title": "'39"
     }, {
         "_id": "5714dee025ac0d8aee4ea30a",
         "name": "Queen",
-        "albumTitre": "Live Killers",
-        "titre": "'39"
+        "albumTitle": "Live Killers",
+        "title": "'39"
     }]
  *
  */
@@ -319,10 +319,10 @@ router.get('/recordlabel/:recordLabelName', (req, res) => {
         recordLabel: recordLabelName
     }, {
         name: 1,
-        titre: 1,
-        albumTitre: 1
+        title: 1,
+        albumTitle: 1
     }).sort({
-        titre: 1
+        title: 1
     }).limit(LIMIT).toArray((err, objs) => {
         res.json(objs);
     })
@@ -344,21 +344,21 @@ router.get('/recordlabel/:recordLabelName', (req, res) => {
  * 
  * @apiSuccess {String} _id id of the song.
  * @apiSuccess {String} name Band name.
- * @apiSuccess {String} albumTitre  Album title.
- * @apiSuccess {String} titre Song title.
+ * @apiSuccess {String} albumTitle  Album title.
+ * @apiSuccess {String} title Song title.
  * 
  * @apiSuccessExample Success-Response:
     HTTP/1.1 200 OK
     [{
         "_id": "5714dedb25ac0d8aee4ad81f",
         "name": "Metallica",
-        "albumTitre": "...And Justice For All",
-        "titre": "...And Justice For All"
+        "albumTitle": "...And Justice For All",
+        "title": "...And Justice For All"
     }, {
         "_id": "5714dedb25ac0d8aee4aa923",
         "name": "Megadeth",
-        "albumTitre": "Endgame",
-        "titre": "Dialectic Chaos"
+        "albumTitle": "Endgame",
+        "title": "Dialectic Chaos"
     }]
  */
 router.get('/genre/:genreName', (req, res) => {
@@ -367,10 +367,10 @@ router.get('/genre/:genreName', (req, res) => {
         genre: genreName
     }, {
         name: 1,
-        titre: 1,
-        albumTitre: 1
+        title: 1,
+        albumTitle: 1
     }).sort({
-        titre: 1
+        title: 1
     }).limit(LIMIT).toArray((err, objs) => {
         res.json(objs);
     })
@@ -392,21 +392,21 @@ router.get('/genre/:genreName', (req, res) => {
  *
  * @apiSuccess {String} _id id of the song.
  * @apiSuccess {String} name Band name.
- * @apiSuccess {String} albumTitre  Album title.
- * @apiSuccess {String} titre Song title.
+ * @apiSuccess {String} albumTitle  Album title.
+ * @apiSuccess {String} title Song title.
  *
  * @apiSuccessExample Success-Response:
     HTTP/1.1 200 OK
     [{
         "_id": "5714dec325ac0d8aee388df2",
         "name": "Aimee Mann",
-        "albumTitre": "Ultimate Collection",
-        "titre": "'Til Tuesday:Voices Carry"
+        "albumTitle": "Ultimate Collection",
+        "title": "'Til Tuesday:Voices Carry"
     }, {
         "_id": "5714decf25ac0d8aee41bd1c",
         "name": "Feargal Sharkey",
-        "albumTitre": "Feargal Sharkey",
-        "titre": "A Good Heart"
+        "albumTitle": "Feargal Sharkey",
+        "title": "A Good Heart"
     }]
  *
  */
@@ -416,10 +416,10 @@ router.get('/recorded/:recordedName', (req, res) => {
         recorded: recordedName
     }, {
         name: 1,
-        titre: 1,
-        albumTitre: 1
+        title: 1,
+        albumTitle: 1
     }).sort({
-        titre: 1
+        title: 1
     }).limit(LIMIT).toArray((err, objs) => {
         res.json(objs);
     })
@@ -444,21 +444,21 @@ router.get('/recorded/:recordedName', (req, res) => {
  *
  * @apiSuccess {String} _id id of the song.
  * @apiSuccess {String} name Band name.
- * @apiSuccess {String} albumTitre  Album title.
- * @apiSuccess {String} titre Song title.
+ * @apiSuccess {String} albumTitle  Album title.
+ * @apiSuccess {String} title Song title.
  *
  * @apiSuccessExample Success-Response:
     HTTP/1.1 200 OK
     [{
         "_id": "5714ded425ac0d8aee459dfe",
         "name": "Jay-Z",
-        "albumTitre": "The Blueprint²: The Gift & The Curse",
-        "titre": "'03 Bonnie & Clyde"
+        "albumTitle": "The Blueprint²: The Gift & The Curse",
+        "title": "'03 Bonnie & Clyde"
     }, {
         "_id": "5714dee025ac0d8aee4ea2d5",
         "name": "Queen",
-        "albumTitre": "A Night At The Opera",
-        "titre": "'39"
+        "albumTitle": "A Night At The Opera",
+        "title": "'39"
     }]
  *
  */
@@ -468,10 +468,10 @@ router.get('/award/:awardName', (req, res) => {
         award: awardName
     }, {
         name: 1,
-        titre: 1,
-        albumTitre: 1
+        title: 1,
+        albumTitle: 1
     }).sort({
-        titre: 1
+        title: 1
     }).limit(LIMIT).toArray((err, objs) => {
         res.json(objs);
     })
@@ -493,21 +493,21 @@ router.get('/award/:awardName', (req, res) => {
  *
  * @apiSuccess {String} _id id of the song.
  * @apiSuccess {String} name Band name.
- * @apiSuccess {String} albumTitre  Album title.
- * @apiSuccess {String} titre Song title.
+ * @apiSuccess {String} albumTitle  Album title.
+ * @apiSuccess {String} title Song title.
  *
  * @apiSuccessExample Success-Response:
     HTTP/1.1 200 OK
     [{
         "_id": "5714dedb25ac0d8aee4ad8ae",
         "name": "Metallica",
-        "albumTitre": "Singles",
-        "titre": "Better Than You"
+        "albumTitle": "Singles",
+        "title": "Better Than You"
     }, {
         "_id": "5714dedb25ac0d8aee4ad83c",
         "name": "Metallica",
-        "albumTitre": "Load",
-        "titre": "Bleeding Me"
+        "albumTitle": "Load",
+        "title": "Bleeding Me"
     }]
  *
  */
@@ -517,10 +517,10 @@ router.get('/writer/:writerName', (req, res) => {
         writer: writerName
     }, {
         name: 1,
-        titre: 1,
-        albumTitre: 1
+        title: 1,
+        albumTitle: 1
     }).sort({
-        titre: 1
+        title: 1
     }).limit(LIMIT).toArray((err, objs) => {
         res.json(objs);
     })
@@ -542,21 +542,21 @@ router.get('/writer/:writerName', (req, res) => {
  *
  * @apiSuccess {String} _id id of the song.
  * @apiSuccess {String} name Band name.
- * @apiSuccess {String} albumTitre  Album title.
- * @apiSuccess {String} titre Song title.
+ * @apiSuccess {String} albumTitle  Album title.
+ * @apiSuccess {String} title Song title.
  *
  * @apiSuccessExample Success-Response:
     HTTP/1.1 200 OK
     [{
         "_id": "5714dee725ac0d8aee54060e",
         "name": "The Gaslight Anthem",
-        "albumTitre": "Handwritten",
-        "titre": "\"45\""
+        "albumTitle": "Handwritten",
+        "title": "\"45\""
     }, {
         "_id": "5714decc25ac0d8aee3ed894",
         "name": "David Bowie",
-        "albumTitre": "\"Heroes\"",
-        "titre": "\"Heroes\""
+        "albumTitle": "\"Heroes\"",
+        "title": "\"Heroes\""
     }]
  *
  */
@@ -566,10 +566,10 @@ router.get('/format/:formatName', (req, res) => {
         format: formatName
     }, {
         name: 1,
-        titre: 1,
-        albumTitre: 1
+        title: 1,
+        albumTitle: 1
     }).sort({
-        titre: 1
+        title: 1
     }).limit(LIMIT).toArray((err, objs) => {
         res.json(objs);
     })
@@ -577,7 +577,7 @@ router.get('/format/:formatName', (req, res) => {
 //==========================================================================================================================\\
 //====================WEBSERVICE REST POUR COMPTER LE NOMBRE D'OCCURENCE DE DOCUMENT DANS UNE COLLECTION ===================\\
 //==========================================================================================================================\\
-// /!\/!\ Cette fonction fait exploser la RAM car elle compte le nombre d'occurence de chaque titre commençant par la lettre :lettre dans la collection song/!\/!\
+// /!\/!\ Cette fonction fait exploser la RAM car elle compte le nombre d'occurence de chaque title commençant par la lettre :lettre dans la collection song/!\/!\
 
 router.get('/count/:collection/:lettre', (req, res) => {
     // var db = req.db, collection= req.params.collection,lettre= req.params.lettre, tParamToFind, fieldCollection, tObjectRequest;
@@ -586,10 +586,10 @@ router.get('/count/:collection/:lettre', (req, res) => {
     //     fieldCollection = "name";
     // }else if(collection == "Albums"){
     //     collection = COLLECTIONALBUM;
-    //     fieldCollection = "titre";
+    //     fieldCollection = "title";
     // }else if(collection == "Songs"){
     //     collection = COLLECTIONSONG;
-    //     fieldCollection = "titre";
+    //     fieldCollection = "title";
     // }
     // if(collection !== COLLECTIONARTIST && collection !==COLLECTIONALBUM && collection !==COLLECTIONSONG || lettre.length>2){
     //     return res.status(404).json(config.http.error.global_404);
@@ -735,8 +735,8 @@ router.get('/dbinfo', (req, res) => {
  * @apiSuccess {Object[]} albums Album object
  *  @apiSuccess {String} albums._id Album id
  *  @apiSuccess {String} albums.name Artist name
- *  @apiSuccess {String} albums.titre Album titre
- *  @apiSuccess {String} albums.dateSortie Album dateSortie
+ *  @apiSuccess {String} albums.title Album title
+ *  @apiSuccess {String} albums.publicationDate Album publicationDate
  *  @apiSuccess {String} albums.genre Album genre
  *  @apiSuccess {String} albums.length Album length
  *  @apiSuccess {String} albums.id_artist Artist id
@@ -744,7 +744,7 @@ router.get('/dbinfo', (req, res) => {
  *  @apiSuccess {Object[]} albums.songs Song object
  *      @apiSuccess {String} albums.songs._id Song id
  *      @apiSuccess {Number} albums.songs.position Song position
- *      @apiSuccess {String} albums.songs.titre Song titre
+ *      @apiSuccess {String} albums.songs.title Song title
  * 
  * @apiSuccessExample Success-Response:
     HTTP/1.1 200 OK
@@ -774,23 +774,23 @@ router.get('/dbinfo', (req, res) => {
         "albums": [{
             "_id": "5714debe25ac0d8aee36b664",
             "name": "Metallica",
-            "titre": "Master Of Puppets",
-            "dateSortie": "1986",
+            "title": "Master Of Puppets",
+            "publicationDate": "1986",
             "genre": "Thrash Metal",
             "length": "54:46",
             "id_artist": "56d93d84ce06f50c0fed8747",
             "songs": [{
                 "_id": "5714dedb25ac0d8aee4ad816",
                 "position": 0,
-                "titre": "Battery"
+                "title": "Battery"
                 }, {
                 "_id": "5714dedb25ac0d8aee4ad817",
                 "position": 1,
-                "titre": "Master Of Puppets"
+                "title": "Master Of Puppets"
                 }, {
                 "_id": "5714dedb25ac0d8aee4ad81d",
                 "position": 7,
-                "titre": "Damage, Inc."
+                "title": "Damage, Inc."
             }]
         }]
     }
@@ -824,7 +824,7 @@ router.get('/artist/:artistName', (req, res) => {
             "wordCount": 0,
             "rdf": 0
         }).sort({
-            "dateSortie": -1
+            "publicationDate": -1
         }).toArray((err, albums) => {
             var nbAlbum = albums.length,
                 cnt = 0;
@@ -836,7 +836,7 @@ router.get('/artist/:artistName', (req, res) => {
                         "id_album": album._id
                     }, {
                         "position": 1,
-                        "titre": 1
+                        "title": 1
                     }).sort({
                         "position": 1
                     }).toArray((err, songs) => {
@@ -896,8 +896,8 @@ router.get('/artist/:artistName', (req, res) => {
  * @apiSuccess {Object[]} albums Album object
  *  @apiSuccess {String} albums._id Album id
  *  @apiSuccess {String} albums.name Artist name
- *  @apiSuccess {String} albums.titre Album titre
- *  @apiSuccess {String} albums.dateSortie Album dateSortie
+ *  @apiSuccess {String} albums.title Album title
+ *  @apiSuccess {String} albums.publicationDate Album publicationDate
  *  @apiSuccess {String} albums.genre Album genre
  *  @apiSuccess {String} albums.length Album length
  *  @apiSuccess {String} albums.id_artist Artist id
@@ -906,7 +906,7 @@ router.get('/artist/:artistName', (req, res) => {
  *  @apiSuccess {Object[]} albums.songs Song object
  *      @apiSuccess {String} albums.songs._id Song id
  *      @apiSuccess {Number} albums.songs.position Song position
- *      @apiSuccess {String} albums.songs.titre Song titre
+ *      @apiSuccess {String} albums.songs.title Song title
  *
  * @apiSuccessExample Success-Response:
     HTTP/1.1 200 OK
@@ -944,8 +944,8 @@ router.get('/artist/:artistName', (req, res) => {
         "albums": {
             "_id": "5714debe25ac0d8aee36b664",
             "name": "Metallica",
-            "titre": "Master Of Puppets",
-            "dateSortie": "1986",
+            "title": "Master Of Puppets",
+            "publicationDate": "1986",
             "urlWikipedia": "http://en.wikipedia.org/wiki/Master_of_Puppets",
             "genre": "Thrash Metal",
             "length": "54:46",
@@ -954,19 +954,19 @@ router.get('/artist/:artistName', (req, res) => {
             "songs": [{
                 "_id": "5714dedb25ac0d8aee4ad816",
                 "position": 0,
-                "titre": "Battery"
+                "title": "Battery"
                 }, {
                 "_id": "5714dedb25ac0d8aee4ad817",
                 "position": 1,
-                "titre": "Master Of Puppets"
+                "title": "Master Of Puppets"
                 }, {
                 "_id": "5714dedb25ac0d8aee4ad818",
                 "position": 2,
-                "titre": "The Thing That Should Not Be"
+                "title": "The Thing That Should Not Be"
                 }, {
                 "_id": "5714dedb25ac0d8aee4ad819",
                 "position": 3,
-                "titre": "Welcome Home (Sanitarium)"
+                "title": "Welcome Home (Sanitarium)"
             }]
         }
     }
@@ -999,7 +999,7 @@ router.get('/artist/:artistName/album/:albumName', (req, res) => {
         //!\ UN ARTIST PEUT AVOIR PLUSIEURS FOIS UN MEME TITRE D'ALBUM /!\ ERREUR A CORRIGER -> si on clique sur un album
         db.collection(COLLECTIONALBUM).findOne({
             $and: [{
-                "titre": albumName
+                "title": albumName
             }, {
                 "id_artist": artist._id
             }]
@@ -1014,7 +1014,7 @@ router.get('/artist/:artistName/album/:albumName', (req, res) => {
                 "id_album": album._id
             }, {
                 "position": 1,
-                "titre": 1
+                "title": 1
             }).toArray((err, songs) => {
                 if (songs == null) {
                     return res.status(404).json(config.http.error.song_404);
@@ -1066,8 +1066,8 @@ router.get('/artist/:artistName/album/:albumName', (req, res) => {
  * @apiSuccess {Object[]} albums Album object
  *  @apiSuccess {String} albums._id Album id
  *  @apiSuccess {String} albums.name Artist name
- *  @apiSuccess {String} albums.titre Album titre
- *  @apiSuccess {String} albums.dateSortie Album dateSortie
+ *  @apiSuccess {String} albums.title Album title
+ *  @apiSuccess {String} albums.publicationDate Album publicationDate
  *  @apiSuccess {String} albums.genre Album genre
  *  @apiSuccess {String} albums.length Album length
  *  @apiSuccess {String} albums.id_artist Artist id
@@ -1076,7 +1076,7 @@ router.get('/artist/:artistName/album/:albumName', (req, res) => {
  *  @apiSuccess {Object[]} albums.songs Song object
  *      @apiSuccess {String} albums.songs._id Song id
  *      @apiSuccess {Number} albums.songs.position Song position
- *      @apiSuccess {String} albums.songs.titre Song titre
+ *      @apiSuccess {String} albums.songs.title Song title
  *
  * @apiSuccessExample Success-Response:
     HTTP/1.1 200 OK
@@ -1114,8 +1114,8 @@ router.get('/artist/:artistName/album/:albumName', (req, res) => {
         "albums": {
             "_id": "5714debe25ac0d8aee36b664",
             "name": "Metallica",
-            "titre": "Master Of Puppets",
-            "dateSortie": "1986",
+            "title": "Master Of Puppets",
+            "publicationDate": "1986",
             "urlWikipedia": "http://en.wikipedia.org/wiki/Master_of_Puppets",
             "genre": "Thrash Metal",
             "length": "54:46",
@@ -1124,19 +1124,19 @@ router.get('/artist/:artistName/album/:albumName', (req, res) => {
             "songs": [{
                 "_id": "5714dedb25ac0d8aee4ad816",
                 "position": 0,
-                "titre": "Battery"
+                "title": "Battery"
                 }, {
                 "_id": "5714dedb25ac0d8aee4ad817",
                 "position": 1,
-                "titre": "Master Of Puppets"
+                "title": "Master Of Puppets"
                 }, {
                 "_id": "5714dedb25ac0d8aee4ad818",
                 "position": 2,
-                "titre": "The Thing That Should Not Be"
+                "title": "The Thing That Should Not Be"
                 }, {
                 "_id": "5714dedb25ac0d8aee4ad819",
                 "position": 3,
-                "titre": "Welcome Home (Sanitarium)"
+                "title": "Welcome Home (Sanitarium)"
             }]
         }
     }
@@ -1188,7 +1188,7 @@ router.get('/artist_id/:artistId/album_id/:albumId', (req, res) => {
                 "id_album": album._id
             }, {
                 "position": 1,
-                "titre": 1
+                "title": 1
             }).toArray((err, songs) => {
                 if (songs == null) {
                     return res.status(404).json(config.http.error.song_404);
@@ -1205,14 +1205,14 @@ router.get('/artist_id/:artistId/album_id/:albumId', (req, res) => {
 router.put('/artist/:artistName/album/:albumName', (req, res) => {
     var db = req.db,
         albumBody = req.body,
-        albumTitre = albumBody.titre.trim(),
+        albumTitle = albumBody.title.trim(),
         nbSongUpdated = 0;
     console.log(albumBody);
     //FUTURE Si un album n'a pas encore d'attribut songs. Peut se produire lors de l'ajout d'un album
     for (var j = 0; j < albumBody.songs.length; j++) {
-        //On change le titre de l'album contenu dans les documents musiques
-        albumBody.songs[j].albumTitre = albumTitre; //déja trim lors de l'initialisation
-        albumBody.songs[j].titre = albumBody.songs[j].titre.trim();
+        //On change le title de l'album contenu dans les documents musiques
+        albumBody.songs[j].albumTitle = albumTitle; //déja trim lors de l'initialisation
+        albumBody.songs[j].title = albumBody.songs[j].title.trim();
         var idSong = albumBody.songs[j]._id;
         // On supprime l'id car mongodb lance un avertissement si ce champ n'est pas supprimé (_id est immutable pas d'update possible)
         delete albumBody.songs[j]._id;
@@ -1270,10 +1270,10 @@ router.put('/artist/:artistName/album/:albumName', (req, res) => {
  *      @apiSuccess {String} albums.songs._id Song id
  *      @apiSuccess {String} albums.songs.name Artist name
  *      @apiSuccess {Number} albums.songs.position Song position
- *      @apiSuccess {String} albums.songs.albumTitre Album titre
+ *      @apiSuccess {String} albums.songs.albumTitle Album title
  *      @apiSuccess {String} albums.songs.lengthAlbum Album lengthAlbum
- *      @apiSuccess {String} albums.songs.dateSortieAlbum Song dateSortieAlbum
- *      @apiSuccess {String} albums.songs.titre Song titre
+ *      @apiSuccess {String} albums.songs.publicationDateAlbum Song publicationDateAlbum
+ *      @apiSuccess {String} albums.songs.title Song title
  *      @apiSuccess {String} albums.songs.lyrics Song lyrics
  *      @apiSuccess {String} albums.songs.urlWikipedia Song urlWikipedia
  *      @apiSuccess {String} albums.songs.id_album Song id_album
@@ -1310,15 +1310,15 @@ router.put('/artist/:artistName/album/:albumName', (req, res) => {
         "name": "Metallica",
         "albums": {
             "_id": "5714debe25ac0d8aee36b664",
-            "titre": "Master Of Puppets",
+            "title": "Master Of Puppets",
             "songs": {
                 "_id": "5714dedb25ac0d8aee4ad817",
                 "name": "Metallica",
                 "position": 1,
-                "albumTitre": "Master Of Puppets",
+                "albumTitle": "Master Of Puppets",
                 "lengthAlbum": "54:46",
-                "dateSortieAlbum": "1986",
-                "titre": "Master Of Puppets",
+                "publicationDateAlbum": "1986",
+                "title": "Master Of Puppets",
                 "lyrics": "End of passion play, crumbling away<br>I&apos;m your source of self-destruction...",
                 "urlWikipedia": "http://en.wikipedia.org/wiki/Master_of_Puppets_(song)",
                 "id_album": "5714debe25ac0d8aee36b664",
@@ -1383,11 +1383,11 @@ router.get('/artist/:artistName/album/:albumName/song/:songName', (req, res) => 
             $and: [{
                 "id_artist": artist._id
             }, {
-                "titre": albumName
+                "title": albumName
             }]
         }, {
             "_id": 1,
-            "titre": 1
+            "title": 1
         }, (err, album) => {
             if (album == null) {
                 return res.status(404).json(config.http.error.album_404);
@@ -1396,7 +1396,7 @@ router.get('/artist/:artistName/album/:albumName/song/:songName', (req, res) => 
                 $and: [{
                     "id_album": album._id
                 }, {
-                    "titre": songName
+                    "title": songName
                 }]
             }, {
                 "urlSong": 0,
@@ -1433,10 +1433,10 @@ router.get('/artist/:artistName/album/:albumName/song/:songName', (req, res) => 
  *      @apiSuccess {String} albums.songs._id Song id
  *      @apiSuccess {String} albums.songs.name Artist name
  *      @apiSuccess {Number} albums.songs.position Song position
- *      @apiSuccess {String} albums.songs.albumTitre Album titre
+ *      @apiSuccess {String} albums.songs.albumTitle Album title
  *      @apiSuccess {String} albums.songs.lengthAlbum Album lengthAlbum
- *      @apiSuccess {String} albums.songs.dateSortieAlbum Song dateSortieAlbum
- *      @apiSuccess {String} albums.songs.titre Song titre
+ *      @apiSuccess {String} albums.songs.publicationDateAlbum Song publicationDateAlbum
+ *      @apiSuccess {String} albums.songs.title Song title
  *      @apiSuccess {String} albums.songs.lyrics Song lyrics
  *      @apiSuccess {String} albums.songs.urlWikipedia Song urlWikipedia
  *      @apiSuccess {String} albums.songs.id_album Song id_album
@@ -1472,15 +1472,15 @@ router.get('/artist/:artistName/album/:albumName/song/:songName', (req, res) => 
         "name": "Metallica",
         "albums": {
         "_id": "5714debe25ac0d8aee36b664",
-        "titre": "Master Of Puppets",
+        "title": "Master Of Puppets",
         "songs": {
             "_id": "5714dedb25ac0d8aee4ad817",
             "name": "Metallica",
             "position": 1,
-            "albumTitre": "Master Of Puppets",
+            "albumTitle": "Master Of Puppets",
             "lengthAlbum": "54:46",
-            "dateSortieAlbum": "1986",
-            "titre": "Master Of Puppets",
+            "publicationDateAlbum": "1986",
+            "title": "Master Of Puppets",
             "lyrics": "End of passion play, crumbling away I&apos;m your source ...",
             "urlWikipedia": "http://en.wikipedia.org/wiki/Master_of_Puppets_(song)",
             "id_album": "5714debe25ac0d8aee36b664",
@@ -1555,7 +1555,7 @@ router.get('/artist_id/:artistId/album_id/:albumId/song_id/:songId', (req, res) 
             "_id": ObjectId(albumId)
         }, {
             "_id": 1,
-            "titre": 1
+            "title": 1
         }, (err, album) => {
             if (album == null) {
                 return res.status(404).json(config.http.error.album_404);
@@ -1593,7 +1593,7 @@ router.put('/artist/:artistName/album/:albumName/song/:songName', (req, res) => 
     }, {
         $set: songBody
     }, (err) => {
-        //On fait un POST sur elasticsearch afin de modifier le champs titre de la musique sur le BDD elasticsearch
+        //On fait un POST sur elasticsearch afin de modifier le champs title de la musique sur le BDD elasticsearch
         searchHandler.updateSongES(req, songBody, idSong)
     });
     res.json(config.http.valid.send_message_ok);
@@ -1621,7 +1621,7 @@ router.get('/fulltext/:searchText', (req, res) => {
         "query": {
             "query_string": {
                 "query": searchText,
-                "fields": ["titre^4", "name^2", "albumTitre"]
+                "fields": ["title^4", "name^2", "albumTitle"]
             }
         },
         "size": maxinfo
@@ -1650,7 +1650,7 @@ router.get('/more/:searchText', (req, res) => {
         "query": {
             "query_string": {
                 "query": searchText,
-                "fields": ["titre^4", "name^2", "albumTitre"]
+                "fields": ["title^4", "name^2", "albumTitle"]
             }
         },
         "size": LIMIT

@@ -212,7 +212,7 @@
                     <paper-material class="listData" elevation="1">
                         <div>Il y a actuellement {{_getNbCount(dbcount)}} musiques commençant par la lettre {{lettre}}</div>
                         <template class="flex-wrap" is="dom-repeat" items="{{data.songs}}" as="song">
-                            <paper-button on-tap='doLoadCategorie' id="#/search/artist/{{_encodeUri(song.name)}}/album/{{_encodeUri(song.albumTitre)}}/song/{{_encodeUri(song.titleSong)}}"
+                            <paper-button on-tap='doLoadCategorie' id="#/search/artist/{{_encodeUri(song.name)}}/album/{{_encodeUri(song.albumTitle)}}/song/{{_encodeUri(song.titleSong)}}"
                                 raised>
                                 {{song.titleSong}}<br> de: {{song.name}}
                                 </paper-button>

@@ -50,7 +50,7 @@ var getArtistFromCategorie = function (url) {
                     $ = cheerio.load(body);
                     var links = $(selectorArtists); //#mw-pages>.mw-content-ltr>table a[href]
                     //Pour itérer sur toutes les pages d'un artiste commençant par une lettre il faut avoir un url de type :
-                    //http://lyrics.wikia.com/wiki/Category:Artists_A?pagefrom=A+Pocket+Full+Of+Posers ou A+Pocket+Full+Of+Posers est le dernier titre d'artiste de la page analysé
+                    //http://lyrics.wikia.com/wiki/Category:Artists_A?pagefrom=A+Pocket+Full+Of+Posers ou A+Pocket+Full+Of+Posers est le dernier title d'artiste de la page analysé
                     var artistPageFrom = $(links)[$(links).length - 1].attribs.title;
                     var nextPage = false;
                     $(links).each(function (i, link) {
@@ -239,7 +239,7 @@ var getInfosFromPageAlbum = function (objArtist) {
                         objArtist.albums[i].urlWikipedia = $("#mw-content-text>.plainlinks div>i>b>a:contains('Wikipedia')").attr('href') != null ? $("#mw-content-text>.plainlinks div>i>b>a:contains('Wikipedia')").attr('href') : "";
                     } else {
                         if (err != null) {
-                            console.error('=====getInfosFromPageAlbum RELANCE DE LA REQUETE =====' + objArtist.albums[i].titre);
+                            console.error('=====getInfosFromPageAlbum RELANCE DE LA REQUETE =====' + objArtist.albums[i].title);
                             currNbAlbum--;
                             requestInfoAlbums(objArtist, i);
                         }
@@ -357,24 +357,24 @@ var getAlbumsAndSongsOfArtist = function (objArtist) {
                     var tElts = $(".albums>li");
                     $(tElts).each(function (i, eltAlbum) {
                         var album = $(eltAlbum).find($(".albums>li>a[href]:first-child")).text();
-                        var dateSortie = "";
+                        var publicationDate = "";
                         if (album.lastIndexOf('_(') !== -1) { //Si il existe une date :
-                            dateSortie = album.slice(album.lastIndexOf('_('), album.length);
-                            album = album.replace(dateSortie, '');
-                            dateSortie = dateSortie.substring(2, dateSortie.length - 1); //on passera de _(1995) à 1995 
+                            publicationDate = album.slice(album.lastIndexOf('_('), album.length);
+                            album = album.replace(publicationDate, '');
+                            publicationDate = publicationDate.substring(2, publicationDate.length - 1); //on passera de _(1995) à 1995 
                         }
                         var songs = []; //va contenir les objets objSong
                         $(eltAlbum).find($(".songs>li>a[href]")).each(function (ii, eltSong) {
                             //Création de l'objet song, il faudra modifier cette objet si de nouvelles propriétés doivent être ajoutées
                             var objSong = new Song();
-                            objSong.titre = $(eltSong).text();
+                            objSong.title = $(eltSong).text();
                             objSong.urlSong = $(eltSong).attr(attrAlbums);
                             songs.push(objSong); //On met l'objet song dans le tableau contenant les autres musiques de l'album
                         });
                         //Création de l'objet album, il faudra modifier cette objet si de nouvelles propriétés doivent être ajoutées
                         var objAlbum = new Album();
-                        objAlbum.titre = album;
-                        objAlbum.dateSortie = dateSortie;
+                        objAlbum.title = album;
+                        objAlbum.publicationDate = publicationDate;
                         objAlbum.urlAlbum = $(eltAlbum).find($(".albums>li>a[href]:first-child")).attr(attrAlbums);
                         objAlbum.songs = songs;
                         objArtist.albums.push(objAlbum); //on ajoute à l'ojet artiste l'objet album contenant le nom de l'album et ses musiques 
@@ -412,7 +412,7 @@ var getAllLyricsOfArtists = function (objArtist) {
                 if (nbAlbums < objArtist.albums.length) {
                     for (var nbLyrics = 0; nbLyrics < objArtist.albums[nbAlbums].songs.length; nbLyrics++) {
                         //on récupérer l'objet correspondant a la chanson 
-                        //exemple : {"titre" : "Heavy Mind","urlSong" : "http://lyrics.wikia.com/A_Dead_Silence:Heavy_Mind"}  
+                        //exemple : {"title" : "Heavy Mind","urlSong" : "http://lyrics.wikia.com/A_Dead_Silence:Heavy_Mind"}  
                         var currSong = objArtist.albums[nbAlbums].songs[nbLyrics];
                         var urlWikiaLyrics = currSong.urlSong;
 
@@ -487,7 +487,7 @@ var getArtistDiscography = function (newObjArtist, url, lettre, j) {
     //Seul facon de faire pour simuler une boucle avec un timeout a chaque tour (settimout ne fonctionne pas dans une boucle) on appel donc cette fonction récusivement
     //    setTimeout(function(){
     console.log("En cours : " + newObjArtist.tObjArtist[j].name);
-    //On envoie des requêtes sur l'API de Lyrics Wikia afin de récupérer le titre des albums et des musiques
+    //On envoie des requêtes sur l'API de Lyrics Wikia afin de récupérer le title des albums et des musiques
     self.getAlbumsAndSongsOfArtist(newObjArtist.tObjArtist[j]).then(function (objArtist) {
         //lorsque la requete ajax pour récupérer les artistes est terminé on obtient un objet
         //Nous allons maintenant ajouter dans objArtist les informations concernant l'artiste,
@@ -597,9 +597,9 @@ var embeddedToRelationalSchema = function (objArtist) {
                         artist.albums[i].songs[j].name = artist.name;
                         artist.albums[i].songs[j].id_album = artist.albums[i]._id;
                         artist.albums[i].songs[j].position = j;
-                        artist.albums[i].songs[j].albumTitre = artist.albums[i].titre;
+                        artist.albums[i].songs[j].albumTitle = artist.albums[i].title;
                         artist.albums[i].songs[j].lengthAlbum = artist.albums[i].length;
-                        artist.albums[i].songs[j].dateSortieAlbum = artist.albums[i].dateSortie;
+                        artist.albums[i].songs[j].publicationDateAlbum = artist.albums[i].publicationDate;
                         db.collection('song').insert(artist.albums[i].songs[j], function (err, song) {
                             totalInsertedSong += 1;
                             var song = song.ops[0];

@@ -7,13 +7,14 @@ var albumSchema = new mongoose.Schema({
         required: [true, 'You must type a name'],
         index: true
     },
-    titre: {
+    title: {
         type: String,
         trim: true,
         required: [true, 'You must type a title'],
         index: true
     },
-    dateSortie: {
+    //Anciennement publicationDate
+    publicationDate: {
         type: String,
         trim: true,
         default: ""
@@ -34,8 +35,7 @@ var albumSchema = new mongoose.Schema({
         trim: true,
         default: ""
     },
-    //Anciennement urlAlbum
-    urlAlbumLyricsWikia: {
+    urlAlbum: {
         type: String,
         trim: true,
         default: ""

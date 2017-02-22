@@ -1,7 +1,7 @@
 
 class Song  {
     constructor(){
-        this.titre = "";
+        this.title = "";
         this.urlSong = "";
         this.lyrics  = "" ;
         this.urlWikipedia = "";

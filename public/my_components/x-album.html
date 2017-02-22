@@ -63,13 +63,13 @@
         <iron-ajax id="put_content" method="PUT" content-type="application/json"></iron-ajax>
         <article id="container">
             <template is="dom-if" if="{{!moredata}}">
-                <span on-tap="doLoadAlbum" link="#/search/artist/{{_encodeUri(album.name)}}/album/{{_encodeUri(album.titre)}}"  hidden="{{editing}}" class="album">
-                    Album:  {{album.titre}} {{album.dateSortie}}
+                <span on-tap="doLoadAlbum" link="#/search/artist/{{_encodeUri(album.name)}}/album/{{_encodeUri(album.title)}}"  hidden="{{editing}}" class="album">
+                    Album:  {{album.title}} {{album.publicationDate}}
                 </span>
             </template>
             <template is="dom-if" if="{{moredata}}">
-                <span on-tap="doLoadAlbum" link="#/search/more/{{_concat(album.name,album.titre)}}"  hidden="{{editing}}" class="album">
-                    Album:  {{album.titre}} {{album.dateSortie}}
+                <span on-tap="doLoadAlbum" link="#/search/more/{{_concat(album.name,album.title)}}"  hidden="{{editing}}" class="album">
+                    Album:  {{album.title}} {{album.publicationDate}}
                 </span>
             </template>
             <paper-fab hidden="{{editing}}"  icon="icons:create" on-tap="doEdit" class="edit" mini></paper-fab>
@@ -113,7 +113,7 @@
                 window.location.href = e.target.link;
             },
             getURLAlbum: function(){
-                return "/search/artist/"+this._encodeUri(this.album.name)+"/album/"+this._encodeUri(this.album.titre);
+                return "/search/artist/"+this._encodeUri(this.album.name)+"/album/"+this._encodeUri(this.album.title);
             },
             getURLAlbumID: function(){
                 return "/search/artist_id/"+this.album.id_artist+"/album_id/"+this.album._id+"";
@@ -136,7 +136,7 @@
                 this.editing=!this.editing;
                 if(this.editing){
                     // on crée dans un premier temps les inputs contenant les infos potentiellement non mis a jour (la requête ajax étant généré juste après)
-                    // la mise a jour du titre ou de la date de sortie se feront dans onAlbumChanged
+                    // la mise a jour du title ou de la date de sortie se feront dans onAlbumChanged
                     this.checkIfInputExist();
                     this.$.get_content.url = this.getURLAlbumID();
                     console.log("URL DE L'ALBUM A MODIFIER :"+this.$.get_content.url);
@@ -155,7 +155,7 @@
                 }
             },
             /**
-             * Permet de mettre à jour sur l'IHM du titre de l'album que l'ont veut modifier, l'observer se déclenchera lorsque la requête ajax de this.responseHandler sera fini
+             * Permet de mettre à jour sur l'IHM du title de l'album que l'ont veut modifier, l'observer se déclenchera lorsque la requête ajax de this.responseHandler sera fini
              */
             onAlbumChanged : function(){
                 this.checkIfInputExist();
@@ -167,21 +167,21 @@
                     //si le paper input n'existe pas on le crée
                     if(!this.$.edit && !this.$.editDateSortie){
                         //On crée un paper input équivalent a celui ci-dessous
-                        //<paper-input id="edit" label="titre: {{song.titre}}" hidden="{{!editing}}" value="{{song.titre}}"></paper-input>
+                        //<paper-input id="edit" label="title: {{song.title}}" hidden="{{!editing}}" value="{{song.title}}"></paper-input>
                         paperInputTitre = document.createElement("paper-input");
                         paperInputTitre.id = "editTitre";
                         paperInputTitre.label = "Nom de l'album";
                         paperInputTitre.hidden= false;
-                        paperInputTitre.value=this.album.titre;
+                        paperInputTitre.value=this.album.title;
                         paperInputTitre.style.cssText = "padding:4%; height:24px; margin-left:2%; display:inline-block;";
                         this.$.editTitre = paperInputTitre;
                         //On crée un paper input équivalent a celui ci-dessous
-                        //<paper-input label="Date de sortie" id="editDateSortie" hidden="{{!editing}}" value="{{album.dateSortie}}"></paper-input>
+                        //<paper-input label="Date de sortie" id="editDateSortie" hidden="{{!editing}}" value="{{album.publicationDate}}"></paper-input>
                         paperInputDateSortie = document.createElement("paper-input");
                         paperInputDateSortie.id = "editDateSortie";
                         paperInputDateSortie.label = "Date de sortie";
                         paperInputDateSortie.hidden= false;
-                        paperInputDateSortie.value=this.album.dateSortie;
+                        paperInputDateSortie.value=this.album.publicationDate;
                         paperInputDateSortie.style.cssText = "padding:4%; height:24px; margin-left:2%; display:inline-block;";
 
                         this.$.editDateSortie = paperInputDateSortie;
@@ -193,11 +193,11 @@
                     // le paper input existe déja
                     else{
                         paperInputTitre = this.$.editTitre;
-                        paperInputTitre.value=this.album.titre;
+                        paperInputTitre.value=this.album.title;
                         paperInputTitre.hidden= false;
 
                         paperInputDateSortie = this.$.editDateSortie;
-                        paperInputDateSortie.value=this.album.dateSortie;
+                        paperInputDateSortie.value=this.album.publicationDate;
                         paperInputDateSortie.hidden= false;
                     }
                 }
@@ -206,14 +206,14 @@
                     if(this.$.editTitre && this.$.editDateSortie){
                         var paperInputTitre =  this.$.editTitre;
                         paperInputTitre.hidden = true;
-                        if(paperInputTitre.value == this.album.titre){
+                        if(paperInputTitre.value == this.album.title){
                             this.fire("onTitleAlbumChanged",{titleAlbum:paperInputTitre.value});
                         }
-                        this.set("album.titre",paperInputTitre.value);
+                        this.set("album.title",paperInputTitre.value);
 
                         var paperInputDateSortie =  this.$.editDateSortie;
                         paperInputDateSortie.hidden = true;
-                        this.set("album.dateSortie",paperInputDateSortie.value);
+                        this.set("album.publicationDate",paperInputDateSortie.value);
 
                     }
                 }
@@ -222,8 +222,8 @@
                 console.log("Requete fini");
                 this.album = response.detail.response.albums;
             },
-            _encodeUri : function(titre){
-                return encodeURIComponent(titre);
+            _encodeUri : function(title){
+                return encodeURIComponent(title);
             }
         });
 

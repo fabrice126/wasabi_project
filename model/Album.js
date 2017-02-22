@@ -1,9 +1,8 @@
-
-class Album  {
-    constructor(){
-        this.titre = "";
-        this.dateSortie = "";
-        this.urlWikipedia  = "" ;
+class Album {
+    constructor() {
+        this.title = "";
+        this.publicationDate = "";
+        this.urlWikipedia = "";
         this.genre = "";
         this.length = "";
         this.urlAlbum = "";

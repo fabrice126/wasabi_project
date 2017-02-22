@@ -64,8 +64,8 @@ const LIMIT = config.request.limit;
         "albums": [{
             "_id": "5714debe25ac0d8aee36b662",
             "name": "Metallica",
-            "titre": "Kill 'Em All",
-            "dateSortie": "1983",
+            "title": "Kill 'Em All",
+            "publicationDate": "1983",
             "urlWikipedia": "http://en.wikipedia.org/wiki/Kill_%27Em_All",
             "genre": "Thrash Metal",
             "length": "51:14",
@@ -74,7 +74,7 @@ const LIMIT = config.request.limit;
             "songs": [{
                 "_id": "5714dedb25ac0d8aee4ad800",
                 "position": 0,
-                "titre": "Hit The Lights",
+                "title": "Hit The Lights",
                 "urlSong": "http://lyrics.wikia.com/Metallica:Hit_The_Lights",
                 "lyrics": "No life till leather, we&apos;re gonna kick some ass tonight We got the metal madness...",
                 "urlWikipedia": "",
@@ -91,7 +91,7 @@ const LIMIT = config.request.limit;
             }, {
                 "_id": "5714dedb25ac0d8aee4ad801",
                 "position": 1,
-                "titre": "The Four Horsemen",
+                "title": "The Four Horsemen",
                 "urlSong": "http://lyrics.wikia.com/Metallica:The_Four_Horsemen",
                 "lyrics": "By the last breath, the fourth winds blow Better raise your ears...",
                 "urlWikipedia": "http://en.wikipedia.org/wiki/The_Mechanix",
@@ -139,7 +139,7 @@ router.get('/artist_all/:start', function (req, res, next) {
     db.collection(COLLECTIONARTIST).find({}, {
         wordCount: 0,
         rdf: 0
-    }).skip(start).limit(10).toArray((err, artists) => {
+    }).skip(start).limit(LIMIT).toArray((err, artists) => {
         if (err) {
             return res.status(404).json(config.http.error.internal_error_404);
         }
@@ -167,8 +167,8 @@ router.get('/artist_all/:start', function (req, res, next) {
                                 wordCount: 0,
                                 rdf: 0,
                                 name: 0,
-                                albumTitre: 0,
-                                dateSortieAlbum: 0,
+                                albumTitle: 0,
+                                publicationDateAlbum: 0,
                                 lengthAlbum: 0
                             }).toArray((err, songs) => {
                                 if (err) {
@@ -236,8 +236,8 @@ router.get('/artist_all/:start', function (req, res, next) {
         "albums": [{
             "_id": "5714debe25ac0d8aee36b662",
             "name": "Metallica",
-            "titre": "Kill 'Em All",
-            "dateSortie": "1983",
+            "title": "Kill 'Em All",
+            "publicationDate": "1983",
             "urlWikipedia": "http://en.wikipedia.org/wiki/Kill_%27Em_All",
             "genre": "Thrash Metal",
             "length": "51:14",
@@ -246,7 +246,7 @@ router.get('/artist_all/:start', function (req, res, next) {
             "songs": [{
                 "_id": "5714dedb25ac0d8aee4ad800",
                 "position": 0,
-                "titre": "Hit The Lights",
+                "title": "Hit The Lights",
                 "urlSong": "http://lyrics.wikia.com/Metallica:Hit_The_Lights",
                 "lyrics": "No life till leather, we&apos;re gonna kick some ass tonight We got the metal madness...",
                 "urlWikipedia": "",
@@ -263,7 +263,7 @@ router.get('/artist_all/:start', function (req, res, next) {
             }, {
                 "_id": "5714dedb25ac0d8aee4ad801",
                 "position": 1,
-                "titre": "The Four Horsemen",
+                "title": "The Four Horsemen",
                 "urlSong": "http://lyrics.wikia.com/Metallica:The_Four_Horsemen",
                 "lyrics": "By the last breath, the fourth winds blow Better raise your ears...",
                 "urlWikipedia": "http://en.wikipedia.org/wiki/The_Mechanix",
@@ -338,8 +338,8 @@ router.get('/artist_all/id/:id', function (req, res, next) {
                         wordCount: 0,
                         rdf: 0,
                         name: 0,
-                        albumTitre: 0,
-                        dateSortieAlbum: 0,
+                        albumTitle: 0,
+                        publicationDateAlbum: 0,
                         lengthAlbum: 0
                     }).toArray((err, songs) => {
                         if (err) {
@@ -404,8 +404,8 @@ router.get('/artist_all/id/:id', function (req, res, next) {
         "albums": [{
             "_id": "5714debe25ac0d8aee36b662",
             "name": "Metallica",
-            "titre": "Kill 'Em All",
-            "dateSortie": "1983",
+            "title": "Kill 'Em All",
+            "publicationDate": "1983",
             "urlWikipedia": "http://en.wikipedia.org/wiki/Kill_%27Em_All",
             "genre": "Thrash Metal",
             "length": "51:14",
@@ -414,7 +414,7 @@ router.get('/artist_all/id/:id', function (req, res, next) {
             "songs": [{
                 "_id": "5714dedb25ac0d8aee4ad800",
                 "position": 0,
-                "titre": "Hit The Lights",
+                "title": "Hit The Lights",
                 "urlSong": "http://lyrics.wikia.com/Metallica:Hit_The_Lights",
                 "lyrics": "No life till leather, we&apos;re gonna kick some ass tonight We got the metal madness...",
                 "urlWikipedia": "",
@@ -431,7 +431,7 @@ router.get('/artist_all/id/:id', function (req, res, next) {
             }, {
                 "_id": "5714dedb25ac0d8aee4ad801",
                 "position": 1,
-                "titre": "The Four Horsemen",
+                "title": "The Four Horsemen",
                 "urlSong": "http://lyrics.wikia.com/Metallica:The_Four_Horsemen",
                 "lyrics": "By the last breath, the fourth winds blow Better raise your ears...",
                 "urlWikipedia": "http://en.wikipedia.org/wiki/The_Mechanix",
@@ -505,8 +505,8 @@ router.get('/artist_all/name/:name', function (req, res, next) {
                         wordCount: 0,
                         rdf: 0,
                         name: 0,
-                        albumTitre: 0,
-                        dateSortieAlbum: 0,
+                        albumTitle: 0,
+                        publicationDateAlbum: 0,
                         lengthAlbum: 0
                     }).toArray((err, songs) => {
                         if (err) {
@@ -710,8 +710,8 @@ router.get('/artist/name/:artistName', function (req, res, next) {
     {
         "_id": "5714debe25ac0d8aee36b664",
         "name": "Metallica",
-        "titre": "Master Of Puppets",
-        "dateSortie": "1986",
+        "title": "Master Of Puppets",
+        "publicationDate": "1986",
         "urlWikipedia": "http://en.wikipedia.org/wiki/Master_of_Puppets",
         "genre": "Thrash Metal",
         "length": "54:46",
@@ -768,10 +768,10 @@ router.get('/album/id/:id', function (req, res, next) {
         "_id": "5714dedb25ac0d8aee4ad810",
         "name": "Metallica",
         "position": 2,
-        "albumTitre": "Ride The Lightning",
+        "albumTitle": "Ride The Lightning",
         "lengthAlbum": "47:26",
-        "dateSortieAlbum": "1984",
-        "titre": "For Whom The Bell Tolls",
+        "publicationDateAlbum": "1984",
+        "title": "For Whom The Bell Tolls",
         "urlSong": "http://lyrics.wikia.com/Metallica:For_Whom_The_Bell_Tolls",
         "lyrics": "Make his fight on the hill in the early day Constant chill deep inside...",
         "urlWikipedia": "http://en.wikipedia.org/wiki/For_Whom_the_Bell_Tolls_(Metallica_song)",

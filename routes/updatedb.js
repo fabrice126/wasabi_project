@@ -116,7 +116,7 @@ router.get('/song',function(req, res){
                                 db.collection(COLLECTIONSONG).update( { _id: new ObjectId(idSong) },{ $set: objSong }, function(err) {
                                     nbSongUpdated++;
                                     if (err) throw err;
-                                    console.log(i+" => Updated => "+objSong.name+" : "+objSong.titre+"       "+objSong.urlSong);
+                                    console.log(i+" => Updated => "+objSong.name+" : "+objSong.title+"       "+objSong.urlSong);
                                     if(nbSongUpdated == limit){
                                         skip += limit;
                                         console.log("\n\n\n\n !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! SKIP = "+skip+"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n\n\n\n");
@@ -151,7 +151,7 @@ router.get('/song',function(req, res){
 // router.get('/song/:songName',function(req, res){
 //     var db = req.db, songName = req.params.songName
 //     //on récupére :songName
-//     db.collection(COLLECTIONSONG).findOne({titre:songName}, function(err, result) {
+//     db.collection(COLLECTIONSONG).findOne({title:songName}, function(err, result) {
 //         //on appel la fonction permettant d'aller chercher des informations sur l'artiste sur lyrics wikia
 //         //on récupère l'objet artist passé en parametre (result) avec les propriétés mis à jour
 //         //cette fonction update uniquement les propriétés de result elle ne renvoie pas un nouvel objet
@@ -193,7 +193,7 @@ router.get('/multitrackspath',function(req, res){
                             //filedir est encodé on le decode :
                             filedir = utilHandler.decodePathWindows(filedir);
                             var countSepArtist_Title = (filedir.match(/(\s-\s)/g) || []).length;
-                            // nous devons avoir 1 seul ' - ' afin de bien délimiter l'artiste du titre de musique
+                            // nous devons avoir 1 seul ' - ' afin de bien délimiter l'artiste du title de musique
                             if(countSepArtist_Title!=1 ){
                                 console.log(countSepArtist_Title+" : "+filedir);
                             }else{
@@ -205,11 +205,11 @@ router.get('/multitrackspath',function(req, res){
                                     var tfiledirSplitted= filedir.split(' - ');// /(\s-\s)/g
                                     var tArtistName= tfiledirSplitted[0].split('_&_');
                                     for(var i=0, l = tArtistName.length ; i<l;i++){
-                                        tQuery.push({$and:[{ name: tArtistName[i].trim()}, {titre:musicTitle} ]});
+                                        tQuery.push({$and:[{ name: tArtistName[i].trim()}, {title:musicTitle} ]});
                                     }
                                 }
                                 else{
-                                    tQuery.push({$and:[{ name: artistName}, {titre:musicTitle} ]});
+                                    tQuery.push({$and:[{ name: artistName}, {title:musicTitle} ]});
                                 }
                                 totalFilesDirLength += tQuery.length;
                                 for(var i=0, l = tQuery.length ; i<l;i++) {
@@ -227,7 +227,7 @@ router.get('/multitrackspath',function(req, res){
                                             else{
                                                 addMultitrackpath = {multitrack_path:dir+"/"+utilHandler.encodePathWindows(filedir)} // correspond au chemin du dossier contenant des .ogg ou .mp3 dans le projet
                                             }
-                                            var query = {$and:[{name:tSongs[0].name},{titre:tSongs[0].titre}]};
+                                            var query = {$and:[{name:tSongs[0].name},{title:tSongs[0].title}]};
                                             db.collection(COLLECTIONSONG).update(query,{ $set: addMultitrackpath },{multi:true}, function(err) {
                                                 if (err) throw err;
                                             });

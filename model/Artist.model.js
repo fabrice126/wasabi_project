@@ -38,8 +38,7 @@ var artistSchema = new mongoose.Schema({
         type: [String],
         default: []
     },
-    //anciennement urlWikia
-    urlArtistLyricsWikia: {
+    urlWikia: {
         type: String,
         trim: true,
         default: ""

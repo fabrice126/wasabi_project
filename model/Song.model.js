@@ -19,16 +19,16 @@ var songSchema = new mongoose.Schema({
         required: [true, 'You must type a name'],
         index: true
     },
-    titre: {
+    title: {
         type: String,
         trim: true,
         required: [true, 'You must type a title'],
         index: true
     },
-    albumTitre: {
+    albumTitle: {
         type: String,
         trim: true,
-        required: [true, 'You must type an albumTitre'],
+        required: [true, 'You must type an albumTitle'],
         index: true
     },
     position: {
@@ -41,7 +41,7 @@ var songSchema = new mongoose.Schema({
         trim: true,
         default: ""
     },
-    dateSortieAlbum: {
+    publicationDateAlbum: {
         type: String,
         trim: true,
         default: ""
@@ -51,7 +51,6 @@ var songSchema = new mongoose.Schema({
         trim: true,
         default: ""
     },
-    //doit être changé en urlSongLyricsWikia
     urlSong: {
         type: String,
         trim: true,

@@ -54,10 +54,10 @@
             <iron-ajax id="get_count"   auto url="/search/count/song/recordLabel/{{_encodeUri(recordLabelName)}}" last-response="{{countField}}" handleAs="json"> </iron-ajax>
             <p class="center searchText-info">Nous avons actuellement : {{countField.count}} musiques appartenant au label: {{recordLabelName}}</p>
             <template class="flex-wrap" is="dom-repeat" items="{{recordLabels}}" as="recordLabel" initial-count="1" >
-                <a href="#/search/artist/{{_encodeUri(recordLabel.name)}}/album/{{_encodeUri(recordLabel.albumTitre)}}/song/{{_encodeUri(recordLabel.titre)}}" class="inherit">
+                <a href="#/search/artist/{{_encodeUri(recordLabel.name)}}/album/{{_encodeUri(recordLabel.albumTitle)}}/song/{{_encodeUri(recordLabel.title)}}" class="inherit">
                     <paper-card elevation="0" >
                         <img class="song_search_bar" src="../../img/song_search_bar.svg" alt="Band">
-                        <span class="search_title">{{recordLabel.titre}} - {{recordLabel.name}} - {{recordLabel.albumTitre}}</span>
+                        <span class="search_title">{{recordLabel.title}} - {{recordLabel.name}} - {{recordLabel.albumTitle}}</span>
                         <paper-ripple></paper-ripple>
                     </paper-card>
                 </a>
