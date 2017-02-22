@@ -1207,7 +1207,6 @@ router.put('/artist/:artistName/album/:albumName', (req, res) => {
         albumBody = req.body,
         albumTitle = albumBody.title.trim(),
         nbSongUpdated = 0;
-    console.log(albumBody);
     //FUTURE Si un album n'a pas encore d'attribut songs. Peut se produire lors de l'ajout d'un album
     for (var j = 0; j < albumBody.songs.length; j++) {
         //On change le title de l'album contenu dans les documents musiques
@@ -1534,7 +1533,6 @@ router.get('/artist/:artistName/album/:albumName/song/:songName', (req, res) => 
     }
  */
 router.get('/artist_id/:artistId/album_id/:albumId/song_id/:songId', (req, res) => {
-    console.log("test ===============");
     var db = req.db,
         artistId = req.params.artistId,
         albumId = req.params.albumId,
