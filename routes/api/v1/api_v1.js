@@ -132,14 +132,16 @@ const LIMIT = config.request.limit;
  */
 router.get('/artist_all/:start', function (req, res, next) {
     var db = req.db,
-        start = Number.parseInt(req.params.start);
+        start = Number.parseInt(req.params.start),
+        cntAlbum = 0,
+        nbAlbum = 0;
     if (!Number.isInteger(start) || start < 0) {
         return res.status(404).json(config.http.error.global_404);
     }
     db.collection(COLLECTIONARTIST).find({}, {
         wordCount: 0,
         rdf: 0
-    }).skip(start).limit(LIMIT).toArray((err, artists) => {
+    }).skip(start).limit(3).toArray((err, artists) => {
         if (err) {
             return res.status(404).json(config.http.error.internal_error_404);
         }
@@ -154,11 +156,10 @@ router.get('/artist_all/:start', function (req, res, next) {
                     if (err) {
                         return res.status(404).json(config.http.error.internal_error_404);
                     }
+                    nbAlbum += albums.length;
                     artists[i].albums = albums;
                     //Si le dernier artist ne possède pas d'album alors on retourne ici le resultat car il ne pourra pas entrer dans le callback de la collection song ci-dessous
-                    if (!artists[i].albums.length && i == (artists.length - 1)) {
-                        return res.json(artists);
-                    }
+
                     for (var j = 0, k = albums.length; j < k; j++) {
                         (function (j) {
                             db.collection(COLLECTIONSONG).find({
@@ -175,7 +176,8 @@ router.get('/artist_all/:start', function (req, res, next) {
                                     return res.status(404).json(config.http.error.internal_error_404);
                                 }
                                 artists[i].albums[j].songs = songs;
-                                if (i == (artists.length - 1) && j == (artists[i].albums.length - 1)) {
+                                cntAlbum++;
+                                if (cntAlbum == nbAlbum) {
                                     return res.json(artists);
                                 }
                             });
@@ -304,7 +306,8 @@ router.get('/artist_all/:start', function (req, res, next) {
  */
 router.get('/artist_all/id/:id', function (req, res, next) {
     var db = req.db,
-        id = req.params.id;
+        id = req.params.id,
+        cnt = 0;
     if (!ObjectId.isValid(id)) {
         return res.status(404).json(config.http.error.objectid_404);
     }
@@ -327,7 +330,9 @@ router.get('/artist_all/id/:id', function (req, res, next) {
                 return res.status(404).json(config.http.error.internal_error_404);
             }
             artist.albums = albums;
+            //si il n'y a aucun album on retourne l'artiste
             if (!artist.albums.length) {
+                console.log("RETOURNE JSON");
                 return res.json(artist);
             }
             for (var i = 0, l = albums.length; i < l; i++) {
@@ -346,8 +351,9 @@ router.get('/artist_all/id/:id', function (req, res, next) {
                             return res.status(404).json(config.http.error.internal_error_404);
                         }
                         artist.albums[i].songs = songs;
-                        if (i == (artist.albums.length - 1)) {
-                            return res.json(artist);
+                        cnt++;
+                        if (cnt == artist.albums.length) {
+                            return res.send(artist);
                         }
                     });
                 })(i);
@@ -472,7 +478,8 @@ router.get('/artist_all/id/:id', function (req, res, next) {
  */
 router.get('/artist_all/name/:name', function (req, res, next) {
     var db = req.db,
-        name = req.params.name;
+        name = req.params.name,
+        cnt = 0;
     db.collection(COLLECTIONARTIST).findOne({
         name: name
     }, {
@@ -513,8 +520,9 @@ router.get('/artist_all/name/:name', function (req, res, next) {
                             return res.status(404).json(config.http.error.internal_error_404);
                         }
                         artist.albums[i].songs = songs;
-                        if (i == (artist.albums.length - 1)) {
-                            return res.json(artist);
+                        cnt++;
+                        if (cnt == artist.albums.length) {
+                            return res.send(artist);
                         }
                     });
                 })(i);
