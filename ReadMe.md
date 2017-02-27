@@ -17,18 +17,19 @@ Il est conseillé de lire ce que fait chaque API avant de l'utiliser notamment c
 *4.1.* lancer elasticsearch, voir : *"<a href="#elasticsearch-sous-windows">Comment lancer les bases de données>Elasticsearch sous Windows</a>"*  
 5. Lancer le serveur node js  
 *5.1.* en ligne de commande : `cd C:/Users/user/Documents/wasabi_project`  
-*5.2.* taper la commande : `node bin/www` ou si installé : `nodemon bin/www`  
+*5.2.* taper la commande : `npm start`  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*5.2.1.* Si ça ne fonctionne pas : taper `npm install` en ligne commande dans le projet wasabi (voir 5.1.) cela installera les dépendances du projet  
 *5.3.* le serveur est maintenant lancé sur *http://localhost/* (dans le navigateur)  
 *5.4.* /!\ Par souci de sécurité le fichier contenant le login / mot de passe n'est pas sur le git vous devez donc ajouter `login.json` dans le répertoire `routes/conf`. Ce fichier contient le json suivant: `{"login": "ADemanderALAdmin","password": "ADemanderALAdmin"}`
-6. Remplir la base de données d'elasticsearch pour cela utiliser l'api REST pour indexer le nom des artistes `http://127.0.0.1/createdb/createdbelasticsearchartist` et `http://127.0.0.1/createdb/createdbelasticsearchsong` pour indexer le nom des musiques avec les noms des artistes et les noms des albums ainsi nous pourrons chercher une musique par son title + nom d'album + nom d'artiste.
+6. Remplir la base de données d'elasticsearch pour cela utiliser l'api REST pour indexer le nom des artistes `http://127.0.0.1/createdb/createdbelasticsearchartist` et `http://127.0.0.1/createdb/createdbelasticsearchsong` pour indexer le nom des musiques avec les noms d'artistes et les noms d'albums ainsi nous pourrons effectuer des recherches via la barre de recherche du site
+*6.1.* En cas de problème avec `http://127.0.0.1/createdb/createdbelasticsearchsong` vérifiez dans app.js que `app.set('env', 'development');` n'est pas commenté. Si c'est le cas, vous devez décommenter cette ligne et commentez `app.set('env', 'production');` 
 
 **Comment lancer l'application sous RedHat/Linux Centos 7 (serveur - uniquement en cas de ré-installation)**
 =======
 1. Récupérer l'application sur le GIT  
-*1.1.* taper la commande : `sudo yum install git` et vérifier qu'il s'est bien installé : `git --version`  
-*1.2.* taper la commande : `git clone https://github.com/fabrice126/wasabi_project.git`  
-*1.3.* /!\ les dumps de la base de données ne sont pas sur le git. Mettre les dumps de la base de données dans le dossier `backup_mongo`. Créer le dossier dans `wasabi_project/mongo/` pour cela rendez-vous dans le bon dossier `cd wasabi_project/mongo/` puis tapez la commande : `mkdir backup_mongo`. Placer les dumps à cet endroit (conseil :envoyer les dumps via filezilla)  
+*1.1.*  Taper la commande : `sudo yum install git` et vérifier qu'il s'est bien installé : `git --version`  
+*1.2.* Taper la commande : `git clone https://github.com/fabrice126/wasabi_project.git`  
+*1.3.* /!\ les dumps de la base de données ne sont pas sur le git. Mettre les dumps de la base de données dans le dossier `backup_mongo`. Créer le dossier dans `wasabi_project/mongo/` pour cela rendez-vous dans le bon dossier `cd wasabi_project/mongo/` puis tapez la commande : `mkdir backup_mongo`. Placer les dumps à cet endroit (conseil: envoyer les dumps via filezilla)  
 *1.4.* Dans le dossier `wasabi_project/mongo/` créer le répertoire backup_mongo_tmp. Taper la commande : `mkdir backup_mongo_tmp`  
 *1.5.* /!\ Par souci de sécurité le fichier contenant le login / mot de passe n'est pas sur le git vous devez donc ajouter `login.json` dans le répertoire `routes/conf`. Ce fichier contient le json suivant: `{"login": "ADemanderALAdmin","password": "ADemanderALAdmin"}`
 2. Installer node js : *<a href="https://nodejs.org/en/download/package-manager/#enterprise-linux-and-fedora" target="_blank">ici</a>*
