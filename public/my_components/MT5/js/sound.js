@@ -358,10 +358,10 @@ function loadSongList(pathSong) {
     // pathSong = re_encodePathWindows(pathSong);
     if(LOCALHOST == true){
         console.log("EN LOCAL");
-        xhr.open('GET', "http://127.0.0.1/MT5/track/"+pathSong, true);
+        xhr.open('GET', "https://127.0.0.1/MT5/track/"+pathSong, true);
     }else{
         console.log("SUR LE SERVEUR");
-        xhr.open('GET', "http://wasabi.i3s.unice.fr/MT5/track/"+pathSong, true);
+        xhr.open('GET', "https://wasabi.i3s.unice.fr/MT5/track/"+pathSong, true);
     }
     //Commenté par Fabrice
     // Menu for song selection
@@ -413,10 +413,10 @@ function loadSong(songName) {
     var xhr = new XMLHttpRequest();
     if(LOCALHOST == true){
         console.log("EN LOCAL");
-        xhr.open('GET', "http://127.0.0.1/"+currentSong.url, true);
+        xhr.open('GET', "https://127.0.0.1/"+currentSong.url, true);
     }else{
         console.log("SUR LE SERVEUR");
-        xhr.open('GET', "http://wasabi.i3s.unice.fr/"+currentSong.url, true);
+        xhr.open('GET', "https://wasabi.i3s.unice.fr/"+currentSong.url, true);
     }
 
     xhr.onload = function(e) {
