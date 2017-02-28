@@ -5,7 +5,9 @@
   "author": "Jauvat Fabrice",
   "main": "./app.js",
   "babel": {
-    "presets": ["env"]
+    "presets": [
+      "env"
+    ]
   },
   "scripts": {
     "start": "nodemon bin/www --exec babel-node --presets es2015",
@@ -23,6 +25,7 @@
     "express": "^4.13.4",
     "express-session": "^1.15.0",
     "helmet": "^2.1.0",
+    "https": "^1.0.0",
     "languagedetect": "^1.1.1",
     "mkdirp": "^0.5.1",
     "mongodb": "^2.1.0",
@@ -32,6 +35,7 @@
     "q": "^1.4.1",
     "request": "2.72.0",
     "serve-favicon": "~2.3.0",
+    "spdy": "^3.4.4",
     "xml2js": "^0.4.17"
   },
   "devDependencies": {

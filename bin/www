@@ -5,29 +5,47 @@
  */
 
 var app = require('../app');
+var config = require('../routes/conf/conf');
 var debug = require('debug')('wasabi:server');
 var http = require('http');
-
+var https = require('https');
+var spdy = require('spdy')
+const fs = require('fs')
 /**
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '80');
+var port = normalizePort('80');
+var portHttps = normalizePort(process.env.PORT || '443');
+
 app.set('port', port);
+app.set('portHttps', portHttps);
 
 /**
  * Create HTTP server.
  */
 
 var server = http.createServer(app);
+server.listen(port);
+server.on('error', onError);
+server.on('listening', onListening);
 
+/**
+ * Create HTTPS server.
+ */
+
+const options = {
+  key: fs.readFileSync('./' + config.https.wasabi_key),
+  cert: fs.readFileSync('./' + config.https.wasabi_crt)
+}
+var serverHttps = spdy.createServer(options, app);
+serverHttps.listen(portHttps);
+serverHttps.on('error', onError);
+serverHttps.on('listening', onListeningHttps);
 /**
  * Listen on provided port, on all network interfaces.
  */
 
-server.listen(port);
-server.on('error', onError);
-server.on('listening', onListening);
 
 /**
  * Normalize a port into a number, string, or false.
@@ -42,7 +60,7 @@ function normalizePort(val) {
   }
 
   if (port >= 0) {
-    console.log('Le serveur écoute sur le port '+port);
+    console.log('Le serveur écoute sur le port ' + port);
     return port;
   }
 
@@ -58,9 +76,7 @@ function onError(error) {
     throw error;
   }
 
-  var bind = typeof port === 'string'
-    ? 'Pipe ' + port
-    : 'Port ' + port;
+  var bind = typeof port === 'string' ? 'Pipe ' + port : 'Port ' + port;
 
   // handle specific listen errors with friendly messages
   switch (error.code) {
@@ -83,8 +99,16 @@ function onError(error) {
 
 function onListening() {
   var addr = server.address();
-  var bind = typeof addr === 'string'
-    ? 'pipe ' + addr
-    : 'port ' + addr.port;
+  var bind = typeof addr === 'string' ?
+    'pipe ' + addr :
+    'port ' + addr.port;
+  debug('Listening on ' + bind);
+}
+
+function onListeningHttps() {
+  var addr = serverHttps.address();
+  var bind = typeof addr === 'string' ?
+    'pipe ' + addr :
+    'port ' + addr.port;
   debug('Listening on ' + bind);
 }

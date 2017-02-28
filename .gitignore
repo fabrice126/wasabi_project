@@ -3,5 +3,6 @@ mongo/backup_mongo_tmp/*
 public/my_components/MT5/multitrack/*
 public/download/*
 node_modules/*
+cert_https/*
 routes/conf/login.json
 
