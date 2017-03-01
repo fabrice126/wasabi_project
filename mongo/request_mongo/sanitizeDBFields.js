@@ -1,10 +1,11 @@
-var artistCollection = "artist", albumCollection = "album", songCollection = "song";
+var collections = ["artist","album","song"];
 
 function sanitizeCollection(collection){
     var i = 0;
+    var count = db[collection].count();
     db[collection].find({},{rdf:0,wordCount:0}).forEach(function (obj) {
         if(i%5000 == 0){
-            print(collection+": "+i);
+            print(collection+": "+i+"/"+count);
         }
         i++;
         (function sanitizeProperties(obj) {
@@ -17,7 +18,7 @@ function sanitizeCollection(collection){
                         //On supprime les \n\r et les espaces de fin et de début
                         if(typeof obj[property] === "string" && obj[property] != ""){
                             obj[property] = obj[property].trim();
-                            //print("  "+property+"=>"+obj[property]);
+                            // print("  "+property+"=>"+obj[property]);
                         }
                     }
                 }
@@ -26,6 +27,9 @@ function sanitizeCollection(collection){
         db[collection].update({_id:obj._id},{ $set: obj } );
     });
 }
-sanitizeCollection(artistCollection);
-sanitizeCollection(albumCollection);
-sanitizeCollection(songCollection);
+collections.forEach(function(collectionName){
+    sanitizeCollection(collectionName);
+});
+
+
+

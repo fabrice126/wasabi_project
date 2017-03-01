@@ -103,7 +103,7 @@
                         <summary class="inherit">Voir les membres actuels:</summary>
                             <ul class="collapse-content">
                                 <template is="dom-repeat" items="{{artist.members}}" as="member" >
-                                    <li>{{member.name}}</li>
+                                    <li><a href="#/search/member/name/{{_encodeUri(member.name)}}">{{member.name}}</a></li>
                                     <ul>
                                         <li>Instrument:
                                             <template is="dom-repeat" items="{{member.instruments}}" as="instrument" >
@@ -125,7 +125,7 @@
                         <summary class="inherit">Voir les ancien(s) membre(s):</summary>
                                 <ul class="collapse-content">
                                     <template is="dom-repeat" items="{{artist.formerMembers}}" as="formerMember" >
-                                        <li>{{formerMember.name}}</li>
+                                        <li><a href="#/search/member/name/{{_encodeUri(formerMember.name)}}">{{formerMember.name}}</a></li>
                                         <ul>
                                             <li>Instrument:
                                                 <template is="dom-repeat" items="{{formerMember.instruments}}" as="instrument" >

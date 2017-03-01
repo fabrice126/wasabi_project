@@ -847,7 +847,7 @@ router.get('/song/id/:id', function (req, res, next) {
  * @apiName GetArtistByMemberName
  * @apiGroup Api/v1
  * 
- * @apiParam {String} memberName artist's name
+ * @apiParam {String} memberName member's name
  *
  * @apiSuccessExample Success-Response for an artist:
     HTTP/1.1 200 OK
@@ -888,14 +888,14 @@ router.get('/song/id/:id', function (req, res, next) {
  */
 router.get('/member/name/:memberName', function (req, res, next) {
     var db = req.db,
-        memberName = req.params.memberName,
-        regexMember = new RegExp(memberName, 'i');
+        memberName = req.params.memberName.trim();
+    console.log(memberName);
     db.collection(COLLECTIONARTIST).find({
         $or: [{
-                "members.name": regexMember
+                "members.name": memberName
             },
             {
-                "formerMembers.name": regexMember
+                "formerMembers.name": memberName
             }
         ]
     }, {

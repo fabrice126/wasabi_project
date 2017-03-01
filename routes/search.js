@@ -1596,7 +1596,52 @@ router.put('/artist/:artistName/album/:albumName/song/:songName', (req, res) => 
     });
     res.json(config.http.valid.send_message_ok);
 });
-
+//==========================================================================================================================\\
+//====================================API REST POUR RECUPERER UN ARTISTE PAR NOM DE MEMBRE==================================\\
+//==========================================================================================================================\\
+/**
+ * @api {get} api/v1/member/name/:memberName Get an artist document by memberName
+ * @apiExample Example usage: 
+ *      wasabi.i3s.unice.fr/search/member/name/Adrian%20Smith
+ * @apiVersion 1.0.0
+ * @apiName GetArtistByMemberName
+ * @apiGroup Search
+ * 
+ * @apiParam {String} memberName member's name
+ *
+ * @apiSuccessExample Success-Response for an artist:
+    HTTP/1.1 200 OK
+    {
+        "_id": "56d8432453a7ddfc01f96c1f",
+        "name": "Iron Maiden
+    }
+ * @apiError error the database does not respond.
+ * @apiErrorExample Error-Response internal error:
+    HTTP/1.1 404 Not Found
+    {
+        "error": "An internal error occurred"
+    }
+ */
+router.get('/member/name/:memberName', function (req, res, next) {
+    var db = req.db,
+        memberName = req.params.memberName;
+    db.collection(COLLECTIONARTIST).find({
+        $or: [{
+                "members.name": memberName
+            },
+            {
+                "formerMembers.name": memberName
+            }
+        ]
+    }, {
+        name: 1
+    }).toArray((err, artists) => {
+        if (err) {
+            return res.status(404).json(config.http.error.internal_error_404);
+        }
+        return res.json(artists);
+    });
+});
 //==========================================================================================================================\\
 //=============================================WEBSERVICE REST POUR LA RECHERCHE============================================\\
 //==========================================================================================================================\\
