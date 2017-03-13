@@ -852,6 +852,12 @@ router.get('/artist/name/:artistName', function (req, res, next) {
         "genre": "Thrash Metal",
         "length": "54:46",
         "urlAlbum": "http://lyrics.wikia.com/Metallica:Master_Of_Puppets_%281986%29",
+        "urlITunes": "https://itunes.apple.com/us/album/id167353139?i=167353334",
+        "urlAmazon": "http://www.amazon.com/exec/obidos/redirect?link_code=ur2&tag=wikia-20&camp=1789&creative=9325&path=http%3A%2F%2Fwww.amazon.com%2Fgp%2Fproduct%2FB0012235Q6%2Fsr%3D8-1%2Fqid%3D1147400297%2Fref%3Dpd_bbs_1%3F%255Fencoding%3DUTF8",
+        "urlGoEar": "http://goear.com/listen.php?v=c6e3d05",
+        "urlSpotify": "https://play.spotify.com/track/4hOohf45f0JtxYKNsEAIOV",
+        "urlAllmusic": "http://www.allmusic.com/song/mt0031988990",
+        "urlMusicBrainz": "http://musicbrainz.org/recording/0f65985f-4ab2-4416-87eb-ccfd1ac4eb89"
         "id_artist": "56d93d84ce06f50c0fed8747"
     }
  * @apiError error The id is not valid.
