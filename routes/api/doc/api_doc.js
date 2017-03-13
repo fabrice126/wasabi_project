@@ -83,12 +83,19 @@ const router = express.Router();
  * @apiSuccess {String} id_artist Artist id
  * @apiSuccess {String} urlAlbum url to lyricsWikia
  * @apiSuccess {String} urlWikipedia url to wikipedia
+ * @apiSuccess {String} urlITunes url to urlITunes
+ * @apiSuccess {String} urlAmazon url to urlAmazon
+ * @apiSuccess {String} urlSpotify url to urlSpotify
+ * @apiSuccess {String} urlAllmusic url to urlAllmusic
+ * @apiSuccess {String} urlMusicBrainz url to urlMusicBrainz
+ * @apiSuccess {String} urlDiscogs url to urlDiscogs
+ * 
  * @apiSuccess {Object[]} wordCount count all identical words for all musics of this album
  *  @apiSuccess {String} wordCount._id A word
  *  @apiSuccess {Number} wordCount.value Number of this word
+ * 
  * @apiSuccess {String} rdf Album rdf
  */
-
 
 /**
  * @api {get} apidoc/#api-Api_Fields-ALL_FIELDS_SONG All song's fields
@@ -125,8 +132,8 @@ const router = express.Router();
  *  @apiSuccess {String} wordCount._id A word
  *  @apiSuccess {Number} wordCount.value Number of this word
  * 
- * @apiSuccess {String} urlYoutube Song urlYoutube
  * @apiSuccess {Boolean} isClassic Song isClassic
+ * @apiSuccess {String} urlYoutube Song urlYoutube
  * @apiSuccess {String} multitrack_path Song multitrack_path
  * @apiSuccess {String} multitrack_file Song multitrack_file
  * @apiSuccess {String} urlITunes Song urlITunes
