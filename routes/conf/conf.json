@@ -29,6 +29,9 @@
             },
             "internal_error_404": {
                 "error": "An internal error occurred"
+            },
+            "musicbrainz_error_404": {
+                "error": "Resource unavaible on MusicBrainz"
             }
         },
         "valid": {

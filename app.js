@@ -26,7 +26,6 @@ const db = dbMongo(config.database.mongodb_connect);
 const elasticsearchClient = new elasticsearch.Client({
     host: config.database.elasticsearch_connect
 });
-
 // view cache
 app.set('view cache', true); // désactivation du cache express
 app.set('config', config);

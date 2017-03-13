@@ -10,6 +10,7 @@ import Artist from '../../model/Artist';
 import Album from '../../model/Album';
 import Song from '../../model/Song';
 import config from '../conf/conf.json';
+import util from './utilHandler'
 const db = dbConnect('mongodb://localhost:27017/wasabi');
 
 const COLLECTIONARTIST = config.database.collection_artist;
@@ -137,49 +138,61 @@ var getInfosFromPageArtist = function (objArtist) {
         var urlArtist = urlPageArtist + objArtist.urlWikia;
         request(urlArtist, function (err, resp, body) {
             if (!err && resp.statusCode == 200) {
-                $ = cheerio.load(body);
-                objArtist.urlWikipedia = $("table.plainlinks a:contains('Wikipedia article')").attr('href') != null ? $("table.plainlinks a:contains('Wikipedia article')").attr('href') : "";
-                objArtist.urlOfficialWebsite = $("table.plainlinks a:contains('Official Website')").attr('href') != null ? $("table.plainlinks a:contains('Official Website')").attr('href') : "";
-                objArtist.urlFacebook = $("table.plainlinks a:contains('Facebook Profile')").attr('href') != null ? $("table.plainlinks a:contains('Facebook Profile')").attr('href') : "";
-                objArtist.urlMySpace = $("table.plainlinks a:contains('MySpace Profile')").attr('href') != null ? $("table.plainlinks a:contains('MySpace Profile')").attr('href') : "";
-                objArtist.urlTwitter = $("table.plainlinks a:contains('Twitter Profile')").attr('href') != null ? $("table.plainlinks a:contains('Twitter Profile')").attr('href') : "";
-                objArtist.activeYears = $("#mw-content-text>table div:contains('Years active') + div") != null ? $("#mw-content-text>table div:contains('Years active') + div").text() : "";
+                var $ = cheerio.load(body);
+                objArtist.urlWikipedia = util.fillField($("table.plainlinks a:contains('Wikipedia article')").attr('href'));
+                objArtist.urlOfficialWebsite = util.fillField($("table.plainlinks a:contains('Official Website')").attr('href'));
+                objArtist.urlFacebook = util.fillField($("table.plainlinks a:contains('Facebook Profile')").attr('href'));
+                objArtist.urlMySpace = util.fillField($("table.plainlinks a:contains('MySpace Profile')").attr('href'));
+                objArtist.urlTwitter = util.fillField($("table.plainlinks a:contains('Twitter Profile')").attr('href'));
                 objArtist.genres = $("#mw-content-text>table div>ul>li>a[title^='Category:Genre/']").map(function () {
-                    return $(this).text() != "" ? $(this).text() : "";
+                    return util.fillField($(this).text());
                 }).get();
                 objArtist.labels = $("#mw-content-text>table div>ul>li>a[title^='Category:Label/']").map(function () {
-                    return $(this).text() != "" ? $(this).text() : "";
+                    return util.fillField($(this).text());
                 }).get();
                 objArtist.locationInfo = $("table.plainlinks a[title^='Category:Hometown/']").map(function () {
-                    return $(this).text() != "" ? $(this).text() : [];
+                    return $(this).text() != "" ? $(this).text().trim() : [];
                 }).get();
-                //Si memberName != "" alors c'est un artiste solo
-                var memberName = $("#mw-content-text>table div:contains('Real name') + div").text();
-                var members;
-                //Si c'est un groupe
-                if (memberName == "") {
-                    //                    console.log("C'EST UN GROUPE");
-                    members = $("#mw-content-text>table div:contains('Band members') + div>ul>li").map(function () {
-                        return extractMembersAndFormerMembers(this);
-                    }).get();
-                    var formerMembers = $("#mw-content-text>table div:contains('Former members') + div>ul>li").map(function () {
-                        return extractMembersAndFormerMembers(this);
-                    }).get();
-                    objArtist.members = members;
-                    objArtist.formerMembers = formerMembers;
-                } else {
-                    //                    console.log("C'EST UN ARTISTE SOLO");
-                    var objMember = {
-                        name: "",
-                        instruments: [],
-                        activeYears: []
-                    };
-                    members = $("#mw-content-text>table div:contains('Real name') + div").map(function () {
-                        objMember.name = $(this).text();
-                        return objMember;
-                    }).get();
-                    objArtist.members = members;
-                    objArtist.formerMembers = [];
+                var tSelector = ['iTunes', 'Amazon', 'Spotify', 'allmusic', 'MusicBrainz', 'Discogs', 'YouTube', 'PureVolume', 'RateYourMusic', 'SoundCloud'];
+                for (var i = 0; i < tSelector.length; i++) {
+                    var selector = ".plainlinks:contains(" + tSelector[i] + ") a";
+                    //Si la size est > 0 alors ce n'est pas un lien de recherche vers une page d'un des sites ci-dessous, si inférieur a 0, il n'y a pas de lien 
+                    var size = $(selector).length - 1;
+                    if (size == 0) {
+                        var field = util.fillField($(selector)[size].attribs.href);
+                        switch (tSelector[i]) {
+                            case "iTunes":
+                                objArtist.urlITunes = field;
+                                break;
+                            case "Amazon":
+                                objArtist.urlAmazon = field;
+                                break;
+                            case "Spotify":
+                                objArtist.urlSpotify = field;
+                                break;
+                            case "allmusic":
+                                objArtist.urlAllmusic = field;
+                                break;
+                            case "MusicBrainz":
+                                objArtist.urlMusicBrainz = field;
+                                break;
+                            case "Discogs":
+                                objArtist.urlDiscogs = field;
+                                break;
+                            case "YouTube":
+                                objArtist.urlYouTube = field;
+                                break;
+                            case "PureVolume":
+                                objArtist.urlPureVolume = field;
+                                break;
+                            case "RateYourMusic":
+                                objArtist.urlRateYourMusic = field;
+                                break;
+                            case "SoundCloud":
+                                objArtist.urlSoundCloud = field;
+                                break;
+                        }
+                    }
                 }
             }
             resolve(objArtist);
@@ -187,69 +200,25 @@ var getInfosFromPageArtist = function (objArtist) {
     });
     return promise;
 };
+
 /**
- * fonction utilisé dans getInfosFromPageArtist et permettant de créer un objet représentant les artistes ayant joué dans un groupe
- * @param membre
- * @returns {{name: string, instruments: Array, activeYears: Array}}
- */
-var extractMembersAndFormerMembers = function (membre) {
-    var objMember = {
-        name: "",
-        instruments: [],
-        activeYears: []
-    };
-    if ($(membre).text() != "") {
-        var text = $(membre).text();
-        if (new RegExp(" - ").test(text)) {
-            var memberTmp = text.split(' - ');
-            objMember.name = memberTmp[0];
-            if (new RegExp("([(])([0-9]+)").test(memberTmp[1])) {
-                var memberTmpInstruDate = memberTmp[1].split("(");
-                var memberTmpDate = memberTmpInstruDate[1].replace(')', '');
-                objMember.instruments = memberTmpInstruDate[0].split(',');
-                objMember.activeYears = memberTmpDate.split(',');
-            }
-        } else {
-            objMember.name = $(membre).text();
-        }
-        return objMember;
-    } else {
-        return objMember;
-    }
-};
-/**
- * Extraction des données sur les pages d'albums de lyrics wikia
- * @param objArtist
+ * Extraction des données sur les pages des albums de lyrics wikia
+ * Fonction utilisé que lors de l'update de la collection album
+ * @param objAlbum
  * @returns {Promise}
  */
-var getInfosFromPageAlbum = function (objArtist) {
+var getInfosFromPageAlbum = function (objAlbum) {
     var promise = new Promise(function (resolve, reject) {
-        var currNbAlbum = 0;
-        var nbAlbum = objArtist.albums.length;
-        for (var i = 0; i < nbAlbum; i++) {
-            (function requestInfoAlbums(objArtist, i) {
-                //On lance une requête sur la page de l'album afin de recupérer des informations
-                request(objArtist.albums[i].urlAlbum, function (err, resp, body) {
-                    currNbAlbum++;
-                    if (!err && resp.statusCode == 200) {
-                        var tAllInfoArtists = [];
-                        $ = cheerio.load(body);
-                        objArtist.albums[i].genre = $("#mw-content-text>.plainlinks table tr:contains('Genre') td>a:last-child").html() != null ? $("#mw-content-text>.plainlinks table tr:contains('Genre') td>a:last-child").html() : "";
-                        objArtist.albums[i].length = $("#mw-content-text>.plainlinks table tr:contains('Length:') td:last-child").html() != null ? $("#mw-content-text>.plainlinks table tr:contains('Length:') td:last-child").html() : "";
-                        objArtist.albums[i].urlWikipedia = $("#mw-content-text>.plainlinks div>i>b>a:contains('Wikipedia')").attr('href') != null ? $("#mw-content-text>.plainlinks div>i>b>a:contains('Wikipedia')").attr('href') : "";
-                    } else {
-                        if (err != null) {
-                            console.error('=====getInfosFromPageAlbum RELANCE DE LA REQUETE =====' + objArtist.albums[i].title);
-                            currNbAlbum--;
-                            requestInfoAlbums(objArtist, i);
-                        }
-                    }
-                    if (currNbAlbum == nbAlbum) {
-                        resolve(objArtist);
-                    }
-                });
-            })(objArtist, i);
-        }
+        request({
+            url: objAlbum.urlAlbum,
+            method: "GET",
+            timeout: 20000
+        }, function (err, resp, body) {
+            if (!err && resp.statusCode == 200) {
+                objAlbum = extractInfosAlbum(objAlbum, body);
+            }
+            resolve(objAlbum);
+        });
     });
     return promise;
 };
@@ -277,6 +246,49 @@ var getInfosFromPageSong = function (objSong) {
         });
     });
     return promise;
+};
+
+/**
+ * Permet d'extraire les informations intéressantes d'une page d'un album sur lyrics wikia
+ * @param objAlbum : l'objet album à remplir avec les informations du body de la page html d'une musique
+ * @param body : le body de la page HTML d'une page de musique sur lyrics wikia exemple :  http://lyrics.wikia.com/wiki/Linkin_Park:Hybrid_Theory_(2000)
+ * @returns {*}
+ */
+var extractInfosAlbum = function (objAlbum, body) {
+    var $ = cheerio.load(body);
+    objAlbum.genre = $("#mw-content-text>.plainlinks table tr:contains('Genre') td>a:last-child").html() != null ? $("#mw-content-text>.plainlinks table tr:contains('Genre') td>a:last-child").html() : "";
+    objAlbum.length = $("#mw-content-text>.plainlinks table tr:contains('Length:') td:last-child").html() != null ? $("#mw-content-text>.plainlinks table tr:contains('Length:') td:last-child").html() : "";
+    objAlbum.urlWikipedia = $("#mw-content-text>.plainlinks div>i>b>a:contains('Wikipedia')").attr('href') != null ? $("#mw-content-text>.plainlinks div>i>b>a:contains('Wikipedia')").attr('href') : "";
+    var tSelector = ['iTunes', 'Amazon', 'Spotify', 'allmusic', 'MusicBrainz', 'Discogs'];
+    for (var i = 0; i < tSelector.length; i++) {
+        var selector = ".plainlinks:contains(" + tSelector[i] + ") a";
+        //Si la taille est > 0 alors ce n'est pas un lien vers une page d'un des sites ci-dessous 
+        var size = $(selector).length - 1;
+        if (size == 0) {
+            var field = util.fillField($(selector)[size].attribs.href);
+            switch (tSelector[i]) {
+                case "iTunes":
+                    objAlbum.urlITunes = field;
+                    break;
+                case "Amazon":
+                    objAlbum.urlAmazon = field;
+                    break;
+                case "Spotify":
+                    objAlbum.urlSpotify = field;
+                    break;
+                case "allmusic":
+                    objAlbum.urlAllmusic = field;
+                    break;
+                case "MusicBrainz":
+                    objAlbum.urlMusicBrainz = field;
+                    break;
+                case "Discogs":
+                    objAlbum.urlDiscogs = field;
+                    break;
+            }
+        }
+    }
+    return objAlbum;
 };
 /**
  * Permet d'extraire les informations intéressantes d'une page musique de lyrics wikia
@@ -391,6 +403,39 @@ var getAlbumsAndSongsOfArtist = function (objArtist) {
     });
     return promise;
 };
+
+/**
+ * Extraction des données sur les pages d'albums de lyrics wikia
+ * @param objArtist
+ * @returns {Promise}
+ */
+var getAllInfosAlbum = function (objArtist) {
+    var promise = new Promise(function (resolve, reject) {
+        var currNbAlbum = 0;
+        var nbAlbum = objArtist.albums.length;
+        for (var i = 0; i < nbAlbum; i++) {
+            (function requestInfoAlbums(objArtist, i) {
+                //On lance une requête sur la page de l'album afin de recupérer des informations
+                request(objArtist.albums[i].urlAlbum, function (err, resp, body) {
+                    currNbAlbum++;
+                    if (!err && resp.statusCode == 200) {
+                        objArtist.albums[i] = extractInfosAlbum(objArtist.albums[i], body);
+                    } else {
+                        if (err != null) {
+                            console.error('=====getAllInfosAlbum RELANCE DE LA REQUETE =====' + objArtist.albums[i].title);
+                            currNbAlbum--;
+                            requestInfoAlbums(objArtist, i);
+                        }
+                    }
+                    if (currNbAlbum == nbAlbum) {
+                        resolve(objArtist);
+                    }
+                });
+            })(objArtist, i);
+        }
+    });
+    return promise;
+};
 /**
  * récupère le body des pages des musiques de lyrics wikia exemple :  http://lyrics.wikia.com/wiki/Linkin_Park:A_Place_For_My_Head
  * @param objArtist
@@ -490,10 +535,10 @@ var getArtistDiscography = function (newObjArtist, url, lettre, j) {
     //On envoie des requêtes sur l'API de Lyrics Wikia afin de récupérer le title des albums et des musiques
     self.getAlbumsAndSongsOfArtist(newObjArtist.tObjArtist[j]).then(function (objArtist) {
         //lorsque la requete ajax pour récupérer les artistes est terminé on obtient un objet
-        //Nous allons maintenant ajouter dans objArtist les informations concernant l'artiste,
+        //Nous allons maintenant ajouter dans objArtist les informations concernant l'artiste que nous allons récupérer sur la page de l'artiste
         self.getInfosFromPageArtist(objArtist).then(function (objArtist) {
             //Nous allons maintenant ajouter dans objArtist les informations concernant les albums de l'artiste,
-            self.getInfosFromPageAlbum(objArtist).then(function (objArtist) {
+            self.getAllInfosAlbum(objArtist).then(function (objArtist) {
                 self.getAllLyricsOfArtists(objArtist).then(function (objArtist) {
                     //Quand on a traiter complétement une page d'artiste => albums avec ses musiques insérés en base de données, on passe a la page suivante
                     db.collection('artist').insert(objArtist, function (err, result) {
@@ -540,7 +585,7 @@ var getArtistDiscography = function (newObjArtist, url, lettre, j) {
  * @param id d'un document artist, album, song
  * @param urlWikipedia d'un document artist, album, song
  */
-//!\POUR UTILISER CETTE FONCTION VOUS DEVEZ COMMENTER PERMETTRE L'ACCES AU API : COMMENTER DANS APP.JS : app.use(basicAuth(login.login, login.password));
+//!\POUR UTILISER CETTE FONCTION VOUS DEVEZ PERMETTRE L'ACCES AU API : COMMENTER DANS APP.JS : app.use(basicAuth(login.login, login.password));
 var checkAPI = function (id, collection, urlWikipedia) {
     //Lancer une requête vers l'API de elasticsearch afin d'y ajouter la musique /createdb/add/elasticsearch/song/id
     if (collection != COLLECTIONALBUM) {
@@ -573,6 +618,7 @@ var checkAPI = function (id, collection, urlWikipedia) {
  * Lorsqu'on veut ajouter un nouvel artiste a la base de données, il faut transformer le document à inserer sous une forme relationel
  * @param objArtist : Un objet artist contenant des albums et des musiques
  */
+//!\POUR UTILISER CETTE FONCTION VOUS DEVEZ PERMETTRE L'ACCES AU API : COMMENTER DANS APP.JS : app.use(basicAuth(login.login, login.password));
 var embeddedToRelationalSchema = function (objArtist) {
     //Creation de la collection album
     return new Promise(function (resolve, reject) {
@@ -636,6 +682,7 @@ exports.getAlbumsAndSongsOfArtist = getAlbumsAndSongsOfArtist;
 exports.getAllLyricsOfArtists = getAllLyricsOfArtists;
 exports.getInfosFromPageArtist = getInfosFromPageArtist;
 exports.getInfosFromPageAlbum = getInfosFromPageAlbum;
+exports.getAllInfosAlbum = getAllInfosAlbum;
 exports.fetchData = fetchData;
 exports.getArtistDiscography = getArtistDiscography;
 exports.getOneArtist = getOneArtist;

@@ -27,6 +27,7 @@ router.get('/',function(req, res){
 
 //Permet d'ajouter la discographie d'un artiste manquant dans notre base de données en allant la chercher sur lyrics wikia
 //exemple :urlArtist : createdb/add/3_Doors_Down pour la page http://lyrics.wikia.com/wiki/3_Doors_Down
+//!\POUR UTILISER CETTE FONCTION VOUS DEVEZ PERMETTRE L'ACCES AU API : COMMENTER DANS APP.JS : app.use(basicAuth(login.login, login.password));
 router.get('/add/:urlArtist',function(req, res){
     console.log("dedans /createdb/"+ req.params.urlArtist);
     var urlApiWikiaArtist = lyricsWikia.urlApiWikia + req.params.urlArtist;
@@ -34,8 +35,8 @@ router.get('/add/:urlArtist',function(req, res){
     var objArtist = new Artist();
     objArtist.urlWikia = req.params.urlArtist;
     lyricsWikia.idxAlphabet = lyricsWikia.alphabet.length;
+    //!\POUR UTILISER CETTE FONCTION VOUS DEVEZ PERMETTRE L'ACCES AU API : COMMENTER DANS APP.JS : app.use(basicAuth(login.login, login.password));
     lyricsWikia.getOneArtist(urlApiWikiaArtist, objArtist).then(function(objArtist) {
-        //objArtist.tObjArtist => tableau d'objet représentant les artists: [{ name: 'A Dying God', urlWikia: 'A_Dying_God', albums: [] }]
         console.log("objArtist.tObjArtist.length  ==="+objArtist.tObjArtist.length ); // doit être == 1
         lyricsWikia.getArtistDiscography(objArtist,"","",0);
         console.log("fin de GET createdb");

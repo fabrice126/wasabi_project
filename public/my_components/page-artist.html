@@ -16,7 +16,8 @@
                 @apply(--layout-horizontal);
                 @apply(--layout-wrap);
             }
-            .artistname{
+            
+            .artistname {
                 font-size: 34px;
                 line-height: 34px;
                 padding-top: 3%;
@@ -24,36 +25,45 @@
                 padding-bottom: 14px;
                 padding-left: 24px;
             }
-            paper-material{
+            
+            paper-material {
                 margin-bottom: 5%;
             }
-            #externalLink{
+            
+            #externalLink {
                 padding-right: 24px;
                 padding-bottom: 14px;
                 padding-left: 24px;
             }
-            summary:hover{
+            
+            summary:hover {
                 cursor: hand;
             }
-            .inherit:focus{
+            
+            .inherit:focus {
                 outline-width: 0px;
                 color: inherit;
                 background-color: inherit;
-                text-decoration:none;
+                text-decoration: none;
             }
+            
             .collapse-content {
                 padding: 15px;
             }
-            ul{
+            
+            ul {
                 padding: 15px;
                 margin-left: 24px;
             }
-            a{
+            
+            a {
                 text-decoration: blink;
             }
-            .infosArtist{
+            
+            .infosArtist {
                 margin-left: 24px;
             }
+            
             paper-icon-button {
                 /*permet de ne pas déformer les icones*/
                 font-size: 0;
@@ -62,32 +72,46 @@
         </style>
         <paper-material elevation="1">
 
-            <iron-ajax id="get_content" auto url="/search/artist/{{_encodeUri(nameArtist)}}" last-response="{{artist}}" handleAs="json"> </iron-ajax>
+            <iron-ajax id="get_content" auto url="/search/artist/{{_encodeUri(nameArtist)}}" last-response="{{artist}}" handleAs="json">
+            </iron-ajax>
             <template is="dom-if" if="{{artist.rdf.length}}">
                 <show-dialog labeldialog="RDF {{artist.name}} :" labelbutton="Show RDF" content="{{artist.rdf}}" labelexitdialog="Close"></show-dialog>
             </template>
             <div class="artistname">{{artist.name}}</div>
             <div id="externalLink">
                 <template is="dom-if" if="{{artist.urlWikipedia.length}}">
-                    <a href="{{artist.urlWikipedia}}" target="_blank" tabindex="-1"><paper-icon-button src="../img/wikipedia_icon.svg" ></paper-icon-button></a>
+                    <a href="{{artist.urlWikipedia}}" target="_blank" tabindex="-1">
+                        <paper-icon-button src="../img/wikipedia_icon.svg"></paper-icon-button>
+                    </a>
                 </template>
                 <template is="dom-if" if="{{artist.urlFacebook.length}}">
-                    <a href="{{artist.urlFacebook}}" target="_blank" tabindex="-1"><paper-icon-button  src="../img/facebook_icon.svg"></paper-icon-button></a>
+                    <a href="{{artist.urlFacebook}}" target="_blank" tabindex="-1">
+                        <paper-icon-button src="../img/facebook_icon.svg"></paper-icon-button>
+                    </a>
                 </template>
                 <template is="dom-if" if="{{artist.urlTwitter.length}}">
-                    <a href="{{artist.urlTwitter}}"  target="_blank"tabindex="-1"><paper-icon-button  src="../img/twitter_icon.svg"></paper-icon-button></a>
+                    <a href="{{artist.urlTwitter}}" target="_blank" tabindex="-1">
+                        <paper-icon-button src="../img/twitter_icon.svg"></paper-icon-button>
+                    </a>
                 </template>
                 <template is="dom-if" if="{{artist.urlMySpace.length}}">
-                    <a href="{{artist.urlMySpace}}" target="_blank" tabindex="-1"><paper-icon-button  src="../img/myspace_icon.svg"></paper-icon-button></a>
+                    <a href="{{artist.urlMySpace}}" target="_blank" tabindex="-1">
+                        <paper-icon-button src="../img/myspace_icon.svg"></paper-icon-button>
+                    </a>
                 </template>
                 <template is="dom-if" if="{{artist.urlOfficialWebsite.length}}">
-                    <a href="{{artist.urlOfficialWebsite}}" target="_blank" tabindex="-1"><paper-icon-button  src="../img/website_icon.svg"></paper-icon-button></a>
+                    <a href="{{artist.urlOfficialWebsite}}" target="_blank" tabindex="-1">
+                        <paper-icon-button src="../img/website_icon.svg"></paper-icon-button>
+                    </a>
                 </template>
             </div>
 
             <div class="infosArtist">
-                <template is="dom-if" if="{{artist.activeYears.length}}">
-                    <div><b>Années d'activité:</b> {{artist.activeYears}}</div>
+                <template is="dom-if" if="{{artist.lifeSpan.begin.length}}">
+                    <div><b>Début:</b> {{artist.lifeSpan.begin}}</div>
+                </template>
+                <template is="dom-if" if="{{artist.lifeSpan.end.length}}">
+                    <div><b>Fin:</b> {{artist.lifeSpan.end}}</div>
                 </template>
                 <template is="dom-if" if="{{artist.locationInfo.length}}">
                     <div><b>Localisation:</b> {{artist.locationInfo}}</div>
@@ -101,53 +125,50 @@
                 <template id="domIfMember" is="dom-if" if="{{artist.members.length}}" restamp>
                     <details>
                         <summary class="inherit">Voir les membres actuels:</summary>
-                            <ul class="collapse-content">
-                                <template is="dom-repeat" items="{{artist.members}}" as="member" >
+                        <ul class="collapse-content">
+                            <template is="dom-repeat" items="{{artist.members}}" as="member">
+                                <template is="dom-if" if="{{!member.ended}}">
                                     <li><a href="#/search/member/name/{{_encodeUri(member.name)}}">{{member.name}}</a></li>
                                     <ul>
-                                        <li>Instrument:
-                                            <template is="dom-repeat" items="{{member.instruments}}" as="instrument" >
-                                                {{instrument}}
-                                            </template>
-                                        </li>
-                                        <li>Années d'activités:
-                                            <template is="dom-repeat" items="{{member.activeYears}}" as="activeYears" >
-                                                {{activeYears}}
-                                            </template>
-                                        </li>
+                                        <template is="dom-if" if="{{member.instruments.length}}">
+                                            <li>Instrument: {{member.instruments}}</li>
+                                        </template>
+                                        <template is="dom-if" if="{{member.begin.length}}">
+                                            <li>Années d'activités: {{member.begin}}</li>
+                                        </template>
                                     </ul>
                                 </template>
-                            </ul>
+                            </template>
+                        </ul>
                     </details>
-                </template>
-                <template id="domIfFormerMember" is="dom-if" if="{{artist.formerMembers.length}}">
                     <details>
                         <summary class="inherit">Voir les ancien(s) membre(s):</summary>
-                                <ul class="collapse-content">
-                                    <template is="dom-repeat" items="{{artist.formerMembers}}" as="formerMember" >
-                                        <li><a href="#/search/member/name/{{_encodeUri(formerMember.name)}}">{{formerMember.name}}</a></li>
-                                        <ul>
-                                            <li>Instrument:
-                                                <template is="dom-repeat" items="{{formerMember.instruments}}" as="instrument" >
-                                                    {{instrument}}
-                                                </template>
-                                            </li>
-                                            <li>Années d'activités:
-                                                <template is="dom-repeat" items="{{formerMember.activeYears}}" as="activeYears" >
-                                                    {{activeYears}}
-                                                </template>
-                                            </li>
-                                        </ul>
-                                    </template>
-                                </ul>
-                        </summary>
+                        <ul class="collapse-content">
+                            <template is="dom-repeat" items="{{artist.members}}" as="formerMember">
+                                <template is="dom-if" if="{{formerMember.ended}}">
+                                    <li><a href="#/search/member/name/{{_encodeUri(formerMember.name)}}">{{formerMember.name}}</a></li>
+                                    <ul>
+                                        <template is="dom-if" if="{{formerMember.instruments.length}}">
+                                            <li>Instrument: {{formerMember.instruments}}</li>
+                                        </template>
+                                        <template is="dom-if" if="{{formerMember.begin.length}}">
+                                            <li>Début: {{formerMember.begin}}</li>
+                                        </template>
+                                        <template is="dom-if" if="{{formerMember.end.length}}">
+                                            <li>Fin: {{formerMember.end}}</li>
+                                        </template>
+                                    </ul>
+                                </template>
+                            </template>
+                        </ul>
                     </details>
                 </template>
             </div>
 
 
 
-            <template class="flex-wrap" is="dom-repeat" items="{{artist.albums}}" as="album" initial-count="1" ><!-- -->
+            <template class="flex-wrap" is="dom-repeat" items="{{artist.albums}}" as="album" initial-count="1">
+                <!-- -->
                 <x-album album={{album}}></x-album>
             </template>
 
@@ -160,20 +181,18 @@
             is: "page-artist",
             // add properties and methods on the element's prototype
             properties: {
-                artist:{
+                artist: {
                     type: Object,
                     value: {}
                 },
             },
-            ready: function(e){
-            },
-            _stringify: function(obj){
+            ready: function (e) {},
+            _stringify: function (obj) {
                 return JSON.stringify(obj);
             },
-            _encodeUri : function(nameArtist){
+            _encodeUri: function (nameArtist) {
                 return encodeURIComponent(nameArtist);
             },
         });
-
     </script>
 </dom-module>

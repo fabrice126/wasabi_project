@@ -214,15 +214,7 @@ var getCountryOfEndpoint = function(country){
 };
 
 var mergeRDFAndDBProperties = function(objArtist){
-//    objArtist.activeYears = objArtist.activeYears.;
     
-    console.log(objArtist.activeYears.length);
-    //Si activeYears est vide ou est de forme "89" "89' " on la modifie si notre activeYearsStartYear du RDF n'est pas aussi de cette forme
-    if(objArtist.activeYears.length<4 && objArtist.activeYearsStartYear[0].length>=4){
-        //Contrairement a un bandMember ou formerBandMember a qui peut avoir rejoint et quitté un groupe plusieurs fois
-        //un artiste/groupe n'a qu'une seule date de début(activeYearsStartYear)
-        objArtist.activeYears = objArtist.activeYearsStartYear[0]; 
-    }
     if(objArtist.labels.length==0){
         objArtist.labels = objArtist.recordLabel; 
     }

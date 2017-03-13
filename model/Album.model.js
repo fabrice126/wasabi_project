@@ -40,6 +40,36 @@ var albumSchema = new mongoose.Schema({
         trim: true,
         default: ""
     },
+    urlITunes: {
+        type: String,
+        trim: true,
+        default: ""
+    },
+    urlAmazon: {
+        type: String,
+        trim: true,
+        default: ""
+    },
+    urlSpotify: {
+        type: String,
+        trim: true,
+        default: ""
+    },
+    urlAllmusic: {
+        type: String,
+        trim: true,
+        default: ""
+    },
+    urlMusicBrainz: {
+        type: String,
+        trim: true,
+        default: ""
+    },
+    urlDiscogs: {
+        type: String,
+        trim: true,
+        default: ""
+    },
     id_artist: {
         type: mongoose.Schema.ObjectId,
         ref: "Artist",

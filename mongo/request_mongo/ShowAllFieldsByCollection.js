@@ -1,4 +1,4 @@
-var collection = "artist";
+var collection = "song";
 
 mr = db.runCommand({
     "mapreduce": collection,

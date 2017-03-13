@@ -180,10 +180,6 @@ router.get('/categorie/:nomCategorie/lettre/:lettre/page/:numPage', (req, res, n
  * @apiParam {Number} collection {artists,albums,songs}.
  * @apiParam {Number} categoryName category is the subject field in the database.
  * 
- * @apiSuccess {String} _id id of the song.
- * @apiSuccess {String} name Band name.
- * @apiSuccess {String} albumTitle  Album title.
- * @apiSuccess {String} title Song title.
  * 
  * @apiSuccessExample Success-Response:
     HTTP/1.1 200 OK
@@ -240,10 +236,6 @@ router.get('/category/:collection/:categoryName', (req, res) => {
  *
  * @apiParam {Number} producerName producer name.
  * 
- * @apiSuccess {String} _id id of the song.
- * @apiSuccess {String} name Band name.
- * @apiSuccess {String} albumTitle  Album title.
- * @apiSuccess {String} title Song title.
  * 
  * @apiSuccessExample Success-Response:
     HTTP/1.1 200 OK
@@ -290,10 +282,6 @@ router.get('/producer/:producerName', (req, res) => {
  *
  * @apiParam {Number} recordLabelName a record label name.
  * 
- * @apiSuccess {String} _id id of the song.
- * @apiSuccess {String} name Band name.
- * @apiSuccess {String} albumTitle  Album title.
- * @apiSuccess {String} title Song title.
  * 
  * @apiSuccessExample Success-Response:
     HTTP/1.1 200 OK
@@ -342,11 +330,6 @@ router.get('/recordlabel/:recordLabelName', (req, res) => {
  *
  * @apiParam {String} genreName songs having this genre.
  * 
- * @apiSuccess {String} _id id of the song.
- * @apiSuccess {String} name Band name.
- * @apiSuccess {String} albumTitle  Album title.
- * @apiSuccess {String} title Song title.
- * 
  * @apiSuccessExample Success-Response:
     HTTP/1.1 200 OK
     [{
@@ -390,10 +373,6 @@ router.get('/genre/:genreName', (req, res) => {
  *
  * @apiParam {String} recordedName The field may assume different values.
  *
- * @apiSuccess {String} _id id of the song.
- * @apiSuccess {String} name Band name.
- * @apiSuccess {String} albumTitle  Album title.
- * @apiSuccess {String} title Song title.
  *
  * @apiSuccessExample Success-Response:
     HTTP/1.1 200 OK
@@ -442,10 +421,6 @@ router.get('/recorded/:recordedName', (req, res) => {
     Platinum+Platinum","Platinumref|The Platinum award for \"Summertime Sadness\" in the United States represents sales of both the original version and the Cedric Gervais remix.|group=\"note\"|name=RIAA,
     Silver,platinum,—,−}.
  *
- * @apiSuccess {String} _id id of the song.
- * @apiSuccess {String} name Band name.
- * @apiSuccess {String} albumTitle  Album title.
- * @apiSuccess {String} title Song title.
  *
  * @apiSuccessExample Success-Response:
     HTTP/1.1 200 OK
@@ -491,10 +466,6 @@ router.get('/award/:awardName', (req, res) => {
  *
  * @apiParam {String} writerName a writer name 
  *
- * @apiSuccess {String} _id id of the song.
- * @apiSuccess {String} name Band name.
- * @apiSuccess {String} albumTitle  Album title.
- * @apiSuccess {String} title Song title.
  *
  * @apiSuccessExample Success-Response:
     HTTP/1.1 200 OK
@@ -540,10 +511,6 @@ router.get('/writer/:writerName', (req, res) => {
  *
  * @apiParam {String} formatName a writer name 
  *
- * @apiSuccess {String} _id id of the song.
- * @apiSuccess {String} name Band name.
- * @apiSuccess {String} albumTitle  Album title.
- * @apiSuccess {String} title Song title.
  *
  * @apiSuccessExample Success-Response:
     HTTP/1.1 200 OK
@@ -625,7 +592,6 @@ router.get('/count/:collection/:lettre', (req, res) => {
  * @apiParam {String} fieldName a field name in the database
  * @apiParam {String} fieldValue a value of a field in the database 
  * 
- * @apiSuccess {Number} count The number of occurrences found
  *
  * @apiSuccessExample Success-Response:
     HTTP/1.1 200 OK
@@ -667,9 +633,6 @@ router.get('/count/:collection/:fieldName/:fieldValue', (req, res) => {
  * @apiName GetNumberOfArtistAlbumSong
  * @apiGroup Search
  * 
- * @apiSuccess {Number} nbArtist The number of occurrences found
- * @apiSuccess {Number} nbAlbum The number of occurrences found
- * @apiSuccess {Number} nbSong The number of occurrences found
  *
  * @apiSuccessExample Success-Response:
     HTTP/1.1 200 OK
@@ -708,44 +671,6 @@ router.get('/dbinfo', (req, res) => {
  *
  * @apiParam {String} artistName An artist name.
  *
- * @apiSuccess {String} _id Artist id
- * @apiSuccess {String} name Artist name
- * @apiSuccess {String} urlWikipedia Artist urlWikipedia
- * @apiSuccess {String} urlOfficialWebsite Artist urlOfficialWebsite
- * @apiSuccess {String} urlFacebook Artist urlFacebook
- * @apiSuccess {String} urlMySpace Artist urlMySpace
- * @apiSuccess {String} urlTwitter Artist urlTwitter
- * @apiSuccess {String[]} locationInfo Artist locationInfo
- * @apiSuccess {String} activeYears Artist activeYears
- * @apiSuccess {String[]} genres Artist genres
- * @apiSuccess {String[]} labels Artist labels
- * 
- * @apiSuccess {Object[]} members Members object
- *  @apiSuccess {String} members.name Members name
- *  @apiSuccess {String[]} members.instruments Members instruments
- *  @apiSuccess {String[]} members.activeYears Members activeYears
- * 
- * @apiSuccess {Object[]} formerMembers FormerMembers object
- *  @apiSuccess {String} formerMembers.name FormerMembers name
- *  @apiSuccess {String[]} formerMembers.instruments FormerMembers instruments
- *  @apiSuccess {String[]} formerMembers.activeYears FormerMembers activeYears
- *
- * @apiSuccess {String} rdf Artist rdf
- * 
- * @apiSuccess {Object[]} albums Album object
- *  @apiSuccess {String} albums._id Album id
- *  @apiSuccess {String} albums.name Artist name
- *  @apiSuccess {String} albums.title Album title
- *  @apiSuccess {String} albums.publicationDate Album publicationDate
- *  @apiSuccess {String} albums.genre Album genre
- *  @apiSuccess {String} albums.length Album length
- *  @apiSuccess {String} albums.id_artist Artist id
- * 
- *  @apiSuccess {Object[]} albums.songs Song object
- *      @apiSuccess {String} albums.songs._id Song id
- *      @apiSuccess {Number} albums.songs.position Song position
- *      @apiSuccess {String} albums.songs.title Song title
- * 
  * @apiSuccessExample Success-Response:
     HTTP/1.1 200 OK
     {
@@ -757,19 +682,49 @@ router.get('/dbinfo', (req, res) => {
         "urlMySpace": "https://myspace.com/Metallica",
         "urlTwitter": "http://twitter.com/metallica",
         "locationInfo": ["United States", "California", "Los Angeles"],
-        "activeYears": "",
         "genres": ["Heavy Metal", "Thrash Metal"],
         "labels": ["Elektra", "Megaforce Records", "Mercury Records", "Warner Bros. Records"],
         "members": [{
-            "name": " James Hetfield",
-            "instruments": ["lead vocals", " rhythm guitar "],
-            "activeYears": ["1981-present\n"]
+            "id_member_musicbrainz": "118ba687-ad7f-4c28-9355-67e14b18baeb",
+            "name": "Ron McGovney",
+            "instruments": [
+                "bass guitar"
+            ],
+            "begin": "1982",
+            "end": "1982",
+            "ended": true,
+            "disambiguation": "",
+            "type": "member of band"
         }],
-        "formerMembers": [{
-            "name": " Dave Mustaine",
-            "instruments": ["lead guitar", " backing vocals "],
-            "activeYears": ["1981-1983\n"]
-        }],
+        "urlAmazon": "http://www.amazon.com/asdf/e/B000APEBQY?tag=wikia-20",
+        "urlITunes": "https://itunes.apple.com/us/artist/id3996865",
+        "urlAllmusic": "http://www.allmusic.com/artist/mn0000446509",
+        "urlDiscogs": "http://www.discogs.com/artist/18839",
+        "urlMusicBrainz": "http://musicbrainz.org/artist/65f4f0c5-ef9e-490c-aee3-909e7ae6b2ab",
+        "urlYouTube": "https://www.youtube.com/user/MetallicaTV",
+        "urlSpotify": "https://play.spotify.com/artist/2ye2Wgw4gimLv2eAKyk1NB",
+        "urlPureVolume": "http://www.purevolume.com/metallica",
+        "urlRateYourMusic": "http://rateyourmusic.com/artist/metallica",
+        "urlSoundCloud": "http://soundcloud.com/loureedmetallica",
+        "id_artist_musicbrainz": "65f4f0c5-ef9e-490c-aee3-909e7ae6b2ab",
+        "disambiguation": "",
+        "type": "Group",
+        "lifeSpan": {
+            "ended": false,
+            "begin": "1981-10",
+            "end": ""
+        },
+        "location": {
+            "id_city_musicbrainz": "1f40c6e1-47ba-4e35-996f-fe6ee5840e62",
+            "country": "United States",
+            "city": "Los Angeles"
+        },
+        "gender": "",
+        "endArea": {
+            "id": "",
+            "name": "",
+            "disambiguation": ""
+        },
         "rdf": " 1963-03-04 Jason Curtis Newsted Bass, guitar, drums, vocals Jason Newsted Jason Curtis Newsted (born March 4, 1963) is an American metal musician, known for playing bass guitar with the bands Metallica (in which he did occasional lead vocals) ...",
         "albums": [{
             "_id": "5714debe25ac0d8aee36b664",
@@ -869,45 +824,6 @@ router.get('/artist/:artistName', (req, res) => {
  * @apiParam {String} artistName An artist name.
  * @apiParam {String} albumName An album title of artistName.
  * 
- * @apiSuccess {String} _id Artist id
- * @apiSuccess {String} name Artist name
- * @apiSuccess {String} urlWikipedia Artist urlWikipedia
- * @apiSuccess {String} urlOfficialWebsite Artist urlOfficialWebsite
- * @apiSuccess {String} urlFacebook Artist urlFacebook
- * @apiSuccess {String} urlMySpace Artist urlMySpace
- * @apiSuccess {String} urlTwitter Artist urlTwitter
- * @apiSuccess {String[]} locationInfo Artist locationInfo
- * @apiSuccess {String} activeYears Artist activeYears
- * @apiSuccess {String[]} genres Artist genres
- * @apiSuccess {String[]} labels Artist labels
- * 
- * @apiSuccess {Object[]} members Members object
- *  @apiSuccess {String} members.name Members name
- *  @apiSuccess {String[]} members.instruments Members instruments
- *  @apiSuccess {String[]} members.activeYears Members activeYears
- * 
- * @apiSuccess {Object[]} formerMembers FormerMembers object
- *  @apiSuccess {String} formerMembers.name FormerMembers name
- *  @apiSuccess {String[]} formerMembers.instruments FormerMembers instruments
- *  @apiSuccess {String[]} formerMembers.activeYears FormerMembers activeYears
- *
- * @apiSuccess {String} rdf Artist rdf
- * 
- * @apiSuccess {Object[]} albums Album object
- *  @apiSuccess {String} albums._id Album id
- *  @apiSuccess {String} albums.name Artist name
- *  @apiSuccess {String} albums.title Album title
- *  @apiSuccess {String} albums.publicationDate Album publicationDate
- *  @apiSuccess {String} albums.genre Album genre
- *  @apiSuccess {String} albums.length Album length
- *  @apiSuccess {String} albums.id_artist Artist id
- *  @apiSuccess {String} albums.rdf Album rdf
-
- *  @apiSuccess {Object[]} albums.songs Song object
- *      @apiSuccess {String} albums.songs._id Song id
- *      @apiSuccess {Number} albums.songs.position Song position
- *      @apiSuccess {String} albums.songs.title Song title
- *
  * @apiSuccessExample Success-Response:
     HTTP/1.1 200 OK
     {
@@ -919,27 +835,49 @@ router.get('/artist/:artistName', (req, res) => {
         "urlMySpace": "https://myspace.com/Metallica",
         "urlTwitter": "http://twitter.com/metallica",
         "locationInfo": ["United States", "California", "Los Angeles"],
-        "activeYears": "",
         "genres": ["Heavy Metal", "Thrash Metal"],
         "labels": ["Elektra", "Megaforce Records", "Mercury Records", "Warner Bros. Records"],
         "members": [{
-            "name": " James Hetfield",
-            "instruments": ["lead vocals", " rhythm guitar "],
-            "activeYears": ["1981-present\n"]
-        }, {
-            "name": " Kirk Hammett",
-            "instruments": ["lead guitar "],
-            "activeYears": ["1983-present\n"]
+            "id_member_musicbrainz": "118ba687-ad7f-4c28-9355-67e14b18baeb",
+            "name": "Ron McGovney",
+            "instruments": [
+                "bass guitar"
+            ],
+            "begin": "1982",
+            "end": "1982",
+            "ended": true,
+            "disambiguation": "",
+            "type": "member of band"
         }],
-        "formerMembers": [{
-            "name": " Dave Mustaine",
-            "instruments": ["lead guitar", " backing vocals "],
-            "activeYears": ["1981-1983\n"]
-        }, {
-            "name": " Ron McGovney",
-            "instruments": ["bass "],
-            "activeYears": ["1981-1982\n"]
-        }],
+        "urlAmazon": "http://www.amazon.com/asdf/e/B000APEBQY?tag=wikia-20",
+        "urlITunes": "https://itunes.apple.com/us/artist/id3996865",
+        "urlAllmusic": "http://www.allmusic.com/artist/mn0000446509",
+        "urlDiscogs": "http://www.discogs.com/artist/18839",
+        "urlMusicBrainz": "http://musicbrainz.org/artist/65f4f0c5-ef9e-490c-aee3-909e7ae6b2ab",
+        "urlYouTube": "https://www.youtube.com/user/MetallicaTV",
+        "urlSpotify": "https://play.spotify.com/artist/2ye2Wgw4gimLv2eAKyk1NB",
+        "urlPureVolume": "http://www.purevolume.com/metallica",
+        "urlRateYourMusic": "http://rateyourmusic.com/artist/metallica",
+        "urlSoundCloud": "http://soundcloud.com/loureedmetallica",
+        "id_artist_musicbrainz": "65f4f0c5-ef9e-490c-aee3-909e7ae6b2ab",
+        "disambiguation": "",
+        "type": "Group",
+        "lifeSpan": {
+            "ended": false,
+            "begin": "1981-10",
+            "end": ""
+        },
+        "location": {
+            "id_city_musicbrainz": "1f40c6e1-47ba-4e35-996f-fe6ee5840e62",
+            "country": "United States",
+            "city": "Los Angeles"
+        },
+        "gender": "",
+        "endArea": {
+            "id": "",
+            "name": "",
+            "disambiguation": ""
+        },
         "rdf": " 1963-03-04 Jason Curtis Newsted Bass, guitar ...",
         "albums": {
             "_id": "5714debe25ac0d8aee36b664",
@@ -1039,45 +977,7 @@ router.get('/artist/:artistName/album/:albumName', (req, res) => {
  * @apiParam {String} artistId An artist name.
  * @apiParam {String} albumId An album title of artistName.
  * 
- * @apiSuccess {String} _id Artist id
- * @apiSuccess {String} name Artist name
- * @apiSuccess {String} urlWikipedia Artist urlWikipedia
- * @apiSuccess {String} urlOfficialWebsite Artist urlOfficialWebsite
- * @apiSuccess {String} urlFacebook Artist urlFacebook
- * @apiSuccess {String} urlMySpace Artist urlMySpace
- * @apiSuccess {String} urlTwitter Artist urlTwitter
- * @apiSuccess {String[]} locationInfo Artist locationInfo
- * @apiSuccess {String} activeYears Artist activeYears
- * @apiSuccess {String[]} genres Artist genres
- * @apiSuccess {String[]} labels Artist labels
- * 
- * @apiSuccess {Object[]} members Members object
- *  @apiSuccess {String} members.name Members name
- *  @apiSuccess {String[]} members.instruments Members instruments
- *  @apiSuccess {String[]} members.activeYears Members activeYears
- * 
- * @apiSuccess {Object[]} formerMembers FormerMembers object
- *  @apiSuccess {String} formerMembers.name FormerMembers name
- *  @apiSuccess {String[]} formerMembers.instruments FormerMembers instruments
- *  @apiSuccess {String[]} formerMembers.activeYears FormerMembers activeYears
- *
- * @apiSuccess {String} rdf Artist rdf
- * 
- * @apiSuccess {Object[]} albums Album object
- *  @apiSuccess {String} albums._id Album id
- *  @apiSuccess {String} albums.name Artist name
- *  @apiSuccess {String} albums.title Album title
- *  @apiSuccess {String} albums.publicationDate Album publicationDate
- *  @apiSuccess {String} albums.genre Album genre
- *  @apiSuccess {String} albums.length Album length
- *  @apiSuccess {String} albums.id_artist Artist id
- *  @apiSuccess {String} albums.rdf Album rdf
- * 
- *  @apiSuccess {Object[]} albums.songs Song object
- *      @apiSuccess {String} albums.songs._id Song id
- *      @apiSuccess {Number} albums.songs.position Song position
- *      @apiSuccess {String} albums.songs.title Song title
- *
+ *  
  * @apiSuccessExample Success-Response:
     HTTP/1.1 200 OK
     {
@@ -1089,27 +989,49 @@ router.get('/artist/:artistName/album/:albumName', (req, res) => {
         "urlMySpace": "https://myspace.com/Metallica",
         "urlTwitter": "http://twitter.com/metallica",
         "locationInfo": ["United States", "California", "Los Angeles"],
-        "activeYears": "",
         "genres": ["Heavy Metal", "Thrash Metal"],
         "labels": ["Elektra", "Megaforce Records", "Mercury Records", "Warner Bros. Records"],
         "members": [{
-            "name": " James Hetfield",
-            "instruments": ["lead vocals", " rhythm guitar "],
-            "activeYears": ["1981-present\n"]
-        }, {
-            "name": " Kirk Hammett",
-            "instruments": ["lead guitar "],
-            "activeYears": ["1983-present\n"]
+            "id_member_musicbrainz": "118ba687-ad7f-4c28-9355-67e14b18baeb",
+            "name": "Ron McGovney",
+            "instruments": [
+                "bass guitar"
+            ],
+            "begin": "1982",
+            "end": "1982",
+            "ended": true,
+            "disambiguation": "",
+            "type": "member of band"
         }],
-        "formerMembers": [{
-            "name": " Dave Mustaine",
-            "instruments": ["lead guitar", " backing vocals "],
-            "activeYears": ["1981-1983\n"]
-        }, {
-            "name": " Ron McGovney",
-            "instruments": ["bass "],
-            "activeYears": ["1981-1982\n"]
-        }],
+        "urlAmazon": "http://www.amazon.com/asdf/e/B000APEBQY?tag=wikia-20",
+        "urlITunes": "https://itunes.apple.com/us/artist/id3996865",
+        "urlAllmusic": "http://www.allmusic.com/artist/mn0000446509",
+        "urlDiscogs": "http://www.discogs.com/artist/18839",
+        "urlMusicBrainz": "http://musicbrainz.org/artist/65f4f0c5-ef9e-490c-aee3-909e7ae6b2ab",
+        "urlYouTube": "https://www.youtube.com/user/MetallicaTV",
+        "urlSpotify": "https://play.spotify.com/artist/2ye2Wgw4gimLv2eAKyk1NB",
+        "urlPureVolume": "http://www.purevolume.com/metallica",
+        "urlRateYourMusic": "http://rateyourmusic.com/artist/metallica",
+        "urlSoundCloud": "http://soundcloud.com/loureedmetallica",
+        "id_artist_musicbrainz": "65f4f0c5-ef9e-490c-aee3-909e7ae6b2ab",
+        "disambiguation": "",
+        "type": "Group",
+        "lifeSpan": {
+            "ended": false,
+            "begin": "1981-10",
+            "end": ""
+        },
+        "location": {
+            "id_city_musicbrainz": "1f40c6e1-47ba-4e35-996f-fe6ee5840e62",
+            "country": "United States",
+            "city": "Los Angeles"
+        },
+        "gender": "",
+        "endArea": {
+            "id": "",
+            "name": "",
+            "disambiguation": ""
+        },
         "rdf": " 1963-03-04 Jason Curtis Newsted Bass, guitar ...",
         "albums": {
             "_id": "5714debe25ac0d8aee36b664",
@@ -1261,46 +1183,6 @@ router.put('/artist/:artistName/album/:albumName', (req, res) => {
  * @apiParam {String} albumName An album title of artistName.
  * @apiParam {String} songName A song title of songName.
  * 
- * @apiSuccess {String} _id Artist id
- * 
- * @apiSuccess {Object[]} albums Album object
- *  @apiSuccess {String} albums._id Album id
- *  @apiSuccess {Object[]} albums.songs Song object
- *      @apiSuccess {String} albums.songs._id Song id
- *      @apiSuccess {String} albums.songs.name Artist name
- *      @apiSuccess {Number} albums.songs.position Song position
- *      @apiSuccess {String} albums.songs.albumTitle Album title
- *      @apiSuccess {String} albums.songs.lengthAlbum Album lengthAlbum
- *      @apiSuccess {String} albums.songs.publicationDateAlbum Song publicationDateAlbum
- *      @apiSuccess {String} albums.songs.title Song title
- *      @apiSuccess {String} albums.songs.lyrics Song lyrics
- *      @apiSuccess {String} albums.songs.urlWikipedia Song urlWikipedia
- *      @apiSuccess {String} albums.songs.id_album Song id_album
- *      @apiSuccess {String} albums.songs.rdf Song rdf
- *      @apiSuccess {String[]} albums.songs.format Song format
- *      @apiSuccess {String[]} albums.songs.genre Song genre
- *      @apiSuccess {String[]} albums.songs.producer Song producer
- *      @apiSuccess {String[]} albums.songs.recordLabel Song recordLabel
- *      @apiSuccess {String[]} albums.songs.writer Song writer
- *      @apiSuccess {String[]} albums.songs.recorded Song recorded
- *      @apiSuccess {String} albums.songs.abstract Song abstract
- *      @apiSuccess {String[]} albums.songs.releaseDate Song releaseDate
- *      @apiSuccess {String[]} albums.songs.runtime Song runtime
- *      @apiSuccess {String[]} albums.songs.award Song award
- *      @apiSuccess {String[]} albums.songs.subject Song subject
- *      @apiSuccess {Boolean} albums.songs.isClassic Song isClassic
- *      @apiSuccess {String} albums.songs.urlYoutube Song urlYoutube
- *      @apiSuccess {String} albums.songs.multitrack_path Song multitrack_path
- *      @apiSuccess {String} albums.songs.multitrack_file Song multitrack_file
- *      @apiSuccess {String} albums.songs.urlITunes Song urlITunes
- *      @apiSuccess {String} albums.songs.urlAmazon Song urlAmazon
- *      @apiSuccess {String} albums.songs.urlGoEar Song urlGoEar
- *      @apiSuccess {String} albums.songs.urlSpotify Song urlSpotify
- *      @apiSuccess {String} albums.songs.urlAllmusic Song urlAllmusic
- *      @apiSuccess {String} albums.songs.urlMusicBrainz Song urlMusicBrainz
- *      @apiSuccess {String} albums.songs.urlHypeMachine Song urlHypeMachine
- *      @apiSuccess {String} albums.songs.urlLastFm Song urlLastFm
- *      @apiSuccess {String} albums.songs.urlPandora Song urlPandora
  * 
  * @apiSuccessExample Success-Response for an artist:
     HTTP/1.1 200 OK
@@ -1318,7 +1200,7 @@ router.put('/artist/:artistName/album/:albumName', (req, res) => {
                 "lengthAlbum": "54:46",
                 "publicationDateAlbum": "1986",
                 "title": "Master Of Puppets",
-                "lyrics": "End of passion play, crumbling away<br>I&apos;m your source of self-destruction...",
+                "lyrics": "End of passion play, crumbling away I&apos;m your source of self-destruction...",
                 "urlWikipedia": "http://en.wikipedia.org/wiki/Master_of_Puppets_(song)",
                 "id_album": "5714debe25ac0d8aee36b664",
                 "rdf": "<?xml version='1.0' encoding='utf-8' ?><rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'  xmlns:rdfs='http://www.w3.org/2000/01/rdf-schema#' xmlns:dct='http://purl.org/dc/terms/' xmlns:dbp='http://dbpedia.org/property/' xmlns:dbo='http://dbpedia.org/ontology/' >   <rdf:Description rdf:about='http://dbpedia.org/resource/Master_of_Puppets_(song)'><dct:subject rdf:resource='http://dbpedia.org/resource/Category:Songs_written_by_Lars_Ulrich' />     <dct:subject rdf:resource='http://dbpedia.org/resource/Category:Metallica_songs' /><dct:subject rdf:resource='http://dbpedia.org/resource/Category:Elektra_Records_singles' /></rdf:Description> </rdf:RDF>",
@@ -1424,46 +1306,6 @@ router.get('/artist/:artistName/album/:albumName/song/:songName', (req, res) => 
  * @apiParam {String} albumId Album's id.
  * @apiParam {String} songId Song's id.
  * 
- * @apiSuccess {String} _id Artist id
- * 
- * @apiSuccess {Object[]} albums Album object
- *  @apiSuccess {String} albums._id Album id
- *  @apiSuccess {Object[]} albums.songs Song object
- *      @apiSuccess {String} albums.songs._id Song id
- *      @apiSuccess {String} albums.songs.name Artist name
- *      @apiSuccess {Number} albums.songs.position Song position
- *      @apiSuccess {String} albums.songs.albumTitle Album title
- *      @apiSuccess {String} albums.songs.lengthAlbum Album lengthAlbum
- *      @apiSuccess {String} albums.songs.publicationDateAlbum Song publicationDateAlbum
- *      @apiSuccess {String} albums.songs.title Song title
- *      @apiSuccess {String} albums.songs.lyrics Song lyrics
- *      @apiSuccess {String} albums.songs.urlWikipedia Song urlWikipedia
- *      @apiSuccess {String} albums.songs.id_album Song id_album
- *      @apiSuccess {String} albums.songs.rdf Song rdf
- *      @apiSuccess {String[]} albums.songs.format Song format
- *      @apiSuccess {String[]} albums.songs.genre Song genre
- *      @apiSuccess {String[]} albums.songs.producer Song producer
- *      @apiSuccess {String[]} albums.songs.recordLabel Song recordLabel
- *      @apiSuccess {String[]} albums.songs.writer Song writer
- *      @apiSuccess {String[]} albums.songs.recorded Song recorded
- *      @apiSuccess {String} albums.songs.abstract Song abstract
- *      @apiSuccess {String[]} albums.songs.releaseDate Song releaseDate
- *      @apiSuccess {String[]} albums.songs.runtime Song runtime
- *      @apiSuccess {String[]} albums.songs.award Song award
- *      @apiSuccess {String[]} albums.songs.subject Song subject
- *      @apiSuccess {Boolean} albums.songs.isClassic Song isClassic
- *      @apiSuccess {String} albums.songs.urlYoutube Song urlYoutube
- *      @apiSuccess {String} albums.songs.multitrack_path Song multitrack_path
- *      @apiSuccess {String} albums.songs.multitrack_file Song multitrack_file
- *      @apiSuccess {String} albums.songs.urlITunes Song urlITunes
- *      @apiSuccess {String} albums.songs.urlAmazon Song urlAmazon
- *      @apiSuccess {String} albums.songs.urlGoEar Song urlGoEar
- *      @apiSuccess {String} albums.songs.urlSpotify Song urlSpotify
- *      @apiSuccess {String} albums.songs.urlAllmusic Song urlAllmusic
- *      @apiSuccess {String} albums.songs.urlMusicBrainz Song urlMusicBrainz
- *      @apiSuccess {String} albums.songs.urlHypeMachine Song urlHypeMachine
- *      @apiSuccess {String} albums.songs.urlLastFm Song urlLastFm
- *      @apiSuccess {String} albums.songs.urlPandora Song urlPandora
  * @apiSuccessExample Success-Response:
     HTTP/1.1 200 OK
     {
@@ -1626,13 +1468,7 @@ router.get('/member/name/:memberName', function (req, res, next) {
     var db = req.db,
         memberName = req.params.memberName;
     db.collection(COLLECTIONARTIST).find({
-        $or: [{
-                "members.name": memberName
-            },
-            {
-                "formerMembers.name": memberName
-            }
-        ]
+        "members.name": memberName
     }, {
         name: 1
     }).toArray((err, artists) => {

@@ -17,28 +17,55 @@ const router = express.Router();
  * @apiSuccess {String} urlMySpace Artist urlMySpace
  * @apiSuccess {String} urlTwitter Artist urlTwitter
  * @apiSuccess {String[]} locationInfo Artist locationInfo
- * @apiSuccess {String} activeYears Artist activeYears
  * @apiSuccess {String[]} genres Artist genres
  * @apiSuccess {String[]} labels Artist labels
  * 
- * @apiSuccess {Object[]} members Members object
- *  @apiSuccess {String} members.name Members name
- *  @apiSuccess {String[]} members.instruments Members instruments
- *  @apiSuccess {String[]} members.activeYears Members activeYears
+ * @apiSuccess {Object[]} members Member object
+ *  @apiSuccess {String} members.id_member_musicbrainz MusicBrainz ID
+ *  @apiSuccess {String} members.name Member name
+ *  @apiSuccess {String[]} members.instruments Member's instruments
+ *  @apiSuccess {String} members.begin Member's begin
+ *  @apiSuccess {String} members.end Member's end
+ *  @apiSuccess {Boolean} members.ended Member's ended
+ *  @apiSuccess {String} members.disambiguation Member's disambiguation
+ *  @apiSuccess {String} members.type Member's type
  * 
- * @apiSuccess {Object[]} formerMembers FormerMembers object
- *  @apiSuccess {String} formerMembers.name FormerMembers name
- *  @apiSuccess {String[]} formerMembers.instruments FormerMembers instruments
- *  @apiSuccess {String[]} formerMembers.activeYears FormerMembers activeYears
- * 
- *
  * @apiSuccess {Object[]} wordCount count all identical words for all musics of this artist
  *  @apiSuccess {String} wordCount._id A word
  *  @apiSuccess {Number} wordCount.value Number of this word
  * 
+ * @apiSuccess {String} urlAmazon Artist urlAmazon
+ * @apiSuccess {String} urlITunes Artist urlITunes
+ * @apiSuccess {String} urlAllmusic Artist urlAllmusic
+ * @apiSuccess {String} urlDiscogs Artist urlDiscogs
+ * @apiSuccess {String} urlMusicBrainz Artist urlMusicBrainz
+ * @apiSuccess {String} urlYouTube Artist urlYouTube
+ * @apiSuccess {String} urlSpotify Artist urlSpotify
+ * @apiSuccess {String} urlPureVolume Artist urlPureVolume
+ * @apiSuccess {String} urlRateYourMusic Artist urlRateYourMusic
+ * @apiSuccess {String} urlSoundCloud Artist urlSoundCloud
+ * @apiSuccess {String} id_artist_musicbrainz Artist id_artist_musicbrainz
+ * @apiSuccess {String} disambiguation Artist disambiguation
+ * @apiSuccess {String} type Artist type : {Person, Orchestra, Group, Choir, Character, Other, ""}
+ * @apiSuccess {String} gender Artist gender : {Male, Female, Other, ""}
+ * 
+ * @apiSuccess {Object} lifeSpan Object lifeSpan
+ *  @apiSuccess {Boolean} lifeSpan.ended lifeSpan ended
+ *  @apiSuccess {String} lifeSpan.begin lifeSpan begin
+ *  @apiSuccess {String} lifeSpan.end lifeSpan end
+ * 
+ * @apiSuccess {Object} location Object location
+ *  @apiSuccess {String} location.id_city_musicbrainz location id_city_musicbrainz
+ *  @apiSuccess {String} location.country location country
+ *  @apiSuccess {String} location.city location city
+ * 
+ * @apiSuccess {Object} endArea Object endArea
+ *  @apiSuccess {String} endArea.id endArea id
+ *  @apiSuccess {String} endArea.name endArea name
+ *  @apiSuccess {String} endArea.disambiguation endArea disambiguation
+ * 
  * @apiSuccess {String} rdf Artist rdf
  */
-
 
 /**
  * @api {get} apidoc/#api-Api_Fields-ALL_FIELDS_ALBUM All album's fields

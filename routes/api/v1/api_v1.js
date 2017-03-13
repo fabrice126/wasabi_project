@@ -40,27 +40,49 @@ const LIMIT = config.request.limit;
         "urlTwitter": "http://twitter.com/metallica",
         "locationInfo": ["United States", "California", "Los Angeles"],
         "urlWikia": "Metallica",
-        "activeYears": "",
         "genres": ["Heavy Metal", "Thrash Metal"],
         "labels": ["Elektra", "Megaforce Records", "Mercury Records", "Warner Bros. Records"],
         "members": [{
-            "name": " James Hetfield",
-            "instruments": ["lead vocals", " rhythm guitar "],
-            "activeYears": ["1981-present\n"]
-            }, {
-            "name": " Kirk Hammett",
-            "instruments": ["lead guitar "],
-            "activeYears": ["1983-present\n"]
+            "id_member_musicbrainz": "118ba687-ad7f-4c28-9355-67e14b18baeb",
+            "name": "Ron McGovney",
+            "instruments": [
+                "bass guitar"
+            ],
+            "begin": "1982",
+            "end": "1982",
+            "ended": true,
+            "disambiguation": "",
+            "type": "member of band"
         }],
-        "formerMembers": [{
-            "name": " Dave Mustaine",
-            "instruments": ["lead guitar", " backing vocals "],
-            "activeYears": ["1981-1983\n"]
-            }, {
-            "name": " Ron McGovney",
-            "instruments": ["bass "],
-            "activeYears": ["1981-1982\n"]
-        }],
+        "urlAmazon": "http://www.amazon.com/asdf/e/B000APEBQY?tag=wikia-20",
+        "urlITunes": "https://itunes.apple.com/us/artist/id3996865",
+        "urlAllmusic": "http://www.allmusic.com/artist/mn0000446509",
+        "urlDiscogs": "http://www.discogs.com/artist/18839",
+        "urlMusicBrainz": "http://musicbrainz.org/artist/65f4f0c5-ef9e-490c-aee3-909e7ae6b2ab",
+        "urlYouTube": "https://www.youtube.com/user/MetallicaTV",
+        "urlSpotify": "https://play.spotify.com/artist/2ye2Wgw4gimLv2eAKyk1NB",
+        "urlPureVolume": "http://www.purevolume.com/metallica",
+        "urlRateYourMusic": "http://rateyourmusic.com/artist/metallica",
+        "urlSoundCloud": "http://soundcloud.com/loureedmetallica",
+        "id_artist_musicbrainz": "65f4f0c5-ef9e-490c-aee3-909e7ae6b2ab",
+        "disambiguation": "",
+        "type": "Group",
+        "lifeSpan": {
+            "ended": false,
+            "begin": "1981-10",
+            "end": ""
+        },
+        "location": {
+            "id_city_musicbrainz": "1f40c6e1-47ba-4e35-996f-fe6ee5840e62",
+            "country": "United States",
+            "city": "Los Angeles"
+        },
+        "gender": "",
+        "endArea": {
+            "id": "",
+            "name": "",
+            "disambiguation": ""
+        },
         "albums": [{
             "_id": "5714debe25ac0d8aee36b662",
             "name": "Metallica",
@@ -214,27 +236,49 @@ router.get('/artist_all/:start', function (req, res, next) {
         "urlTwitter": "http://twitter.com/metallica",
         "locationInfo": ["United States", "California", "Los Angeles"],
         "urlWikia": "Metallica",
-        "activeYears": "",
         "genres": ["Heavy Metal", "Thrash Metal"],
         "labels": ["Elektra", "Megaforce Records", "Mercury Records", "Warner Bros. Records"],
         "members": [{
-            "name": " James Hetfield",
-            "instruments": ["lead vocals", " rhythm guitar "],
-            "activeYears": ["1981-present\n"]
-            }, {
-            "name": " Kirk Hammett",
-            "instruments": ["lead guitar "],
-            "activeYears": ["1983-present\n"]
+            "id_member_musicbrainz": "118ba687-ad7f-4c28-9355-67e14b18baeb",
+            "name": "Ron McGovney",
+            "instruments": [
+                "bass guitar"
+            ],
+            "begin": "1982",
+            "end": "1982",
+            "ended": true,
+            "disambiguation": "",
+            "type": "member of band"
         }],
-        "formerMembers": [{
-            "name": " Dave Mustaine",
-            "instruments": ["lead guitar", " backing vocals "],
-            "activeYears": ["1981-1983\n"]
-            }, {
-            "name": " Ron McGovney",
-            "instruments": ["bass "],
-            "activeYears": ["1981-1982\n"]
-        }],
+        "urlAmazon": "http://www.amazon.com/asdf/e/B000APEBQY?tag=wikia-20",
+        "urlITunes": "https://itunes.apple.com/us/artist/id3996865",
+        "urlAllmusic": "http://www.allmusic.com/artist/mn0000446509",
+        "urlDiscogs": "http://www.discogs.com/artist/18839",
+        "urlMusicBrainz": "http://musicbrainz.org/artist/65f4f0c5-ef9e-490c-aee3-909e7ae6b2ab",
+        "urlYouTube": "https://www.youtube.com/user/MetallicaTV",
+        "urlSpotify": "https://play.spotify.com/artist/2ye2Wgw4gimLv2eAKyk1NB",
+        "urlPureVolume": "http://www.purevolume.com/metallica",
+        "urlRateYourMusic": "http://rateyourmusic.com/artist/metallica",
+        "urlSoundCloud": "http://soundcloud.com/loureedmetallica",
+        "id_artist_musicbrainz": "65f4f0c5-ef9e-490c-aee3-909e7ae6b2ab",
+        "disambiguation": "",
+        "type": "Group",
+        "lifeSpan": {
+            "ended": false,
+            "begin": "1981-10",
+            "end": ""
+        },
+        "location": {
+            "id_city_musicbrainz": "1f40c6e1-47ba-4e35-996f-fe6ee5840e62",
+            "country": "United States",
+            "city": "Los Angeles"
+        },
+        "gender": "",
+        "endArea": {
+            "id": "",
+            "name": "",
+            "disambiguation": ""
+        },
         "albums": [{
             "_id": "5714debe25ac0d8aee36b662",
             "name": "Metallica",
@@ -386,27 +430,49 @@ router.get('/artist_all/id/:id', function (req, res, next) {
         "urlTwitter": "http://twitter.com/metallica",
         "locationInfo": ["United States", "California", "Los Angeles"],
         "urlWikia": "Metallica",
-        "activeYears": "",
         "genres": ["Heavy Metal", "Thrash Metal"],
         "labels": ["Elektra", "Megaforce Records", "Mercury Records", "Warner Bros. Records"],
         "members": [{
-            "name": " James Hetfield",
-            "instruments": ["lead vocals", " rhythm guitar "],
-            "activeYears": ["1981-present\n"]
-            }, {
-            "name": " Kirk Hammett",
-            "instruments": ["lead guitar "],
-            "activeYears": ["1983-present\n"]
+            "id_member_musicbrainz": "118ba687-ad7f-4c28-9355-67e14b18baeb",
+            "name": "Ron McGovney",
+            "instruments": [
+                "bass guitar"
+            ],
+            "begin": "1982",
+            "end": "1982",
+            "ended": true,
+            "disambiguation": "",
+            "type": "member of band"
         }],
-        "formerMembers": [{
-            "name": " Dave Mustaine",
-            "instruments": ["lead guitar", " backing vocals "],
-            "activeYears": ["1981-1983\n"]
-            }, {
-            "name": " Ron McGovney",
-            "instruments": ["bass "],
-            "activeYears": ["1981-1982\n"]
-        }],
+        "urlAmazon": "http://www.amazon.com/asdf/e/B000APEBQY?tag=wikia-20",
+        "urlITunes": "https://itunes.apple.com/us/artist/id3996865",
+        "urlAllmusic": "http://www.allmusic.com/artist/mn0000446509",
+        "urlDiscogs": "http://www.discogs.com/artist/18839",
+        "urlMusicBrainz": "http://musicbrainz.org/artist/65f4f0c5-ef9e-490c-aee3-909e7ae6b2ab",
+        "urlYouTube": "https://www.youtube.com/user/MetallicaTV",
+        "urlSpotify": "https://play.spotify.com/artist/2ye2Wgw4gimLv2eAKyk1NB",
+        "urlPureVolume": "http://www.purevolume.com/metallica",
+        "urlRateYourMusic": "http://rateyourmusic.com/artist/metallica",
+        "urlSoundCloud": "http://soundcloud.com/loureedmetallica",
+        "id_artist_musicbrainz": "65f4f0c5-ef9e-490c-aee3-909e7ae6b2ab",
+        "disambiguation": "",
+        "type": "Group",
+        "lifeSpan": {
+            "ended": false,
+            "begin": "1981-10",
+            "end": ""
+        },
+        "location": {
+            "id_city_musicbrainz": "1f40c6e1-47ba-4e35-996f-fe6ee5840e62",
+            "country": "United States",
+            "city": "Los Angeles"
+        },
+        "gender": "",
+        "endArea": {
+            "id": "",
+            "name": "",
+            "disambiguation": ""
+        },
         "albums": [{
             "_id": "5714debe25ac0d8aee36b662",
             "name": "Metallica",
@@ -578,27 +644,49 @@ router.get('/api_test/artist_all', (req, res) => {
         "urlTwitter": "http://twitter.com/metallica",
         "locationInfo": ["United States", "California", "Los Angeles"],
         "urlWikia": "Metallica",
-        "activeYears": "",
         "genres": ["Heavy Metal", "Thrash Metal"],
         "labels": ["Elektra", "Megaforce Records", "Mercury Records", "Warner Bros. Records"],
         "members": [{
-            "name": " James Hetfield",
-            "instruments": ["lead vocals", " rhythm guitar "],
-            "activeYears": ["1981-present\n"]
-            }, {
-            "name": " Kirk Hammett",
-            "instruments": ["lead guitar "],
-            "activeYears": ["1983-present\n"]
+            "id_member_musicbrainz": "118ba687-ad7f-4c28-9355-67e14b18baeb",
+            "name": "Ron McGovney",
+            "instruments": [
+                "bass guitar"
+            ],
+            "begin": "1982",
+            "end": "1982",
+            "ended": true,
+            "disambiguation": "",
+            "type": "member of band"
         }],
-        "formerMembers": [{
-            "name": " Dave Mustaine",
-            "instruments": ["lead guitar", " backing vocals "],
-            "activeYears": ["1981-1983\n"]
-            }, {
-            "name": " Ron McGovney",
-            "instruments": ["bass "],
-            "activeYears": ["1981-1982\n"]
-        }]
+        "urlAmazon": "http://www.amazon.com/asdf/e/B000APEBQY?tag=wikia-20",
+        "urlITunes": "https://itunes.apple.com/us/artist/id3996865",
+        "urlAllmusic": "http://www.allmusic.com/artist/mn0000446509",
+        "urlDiscogs": "http://www.discogs.com/artist/18839",
+        "urlMusicBrainz": "http://musicbrainz.org/artist/65f4f0c5-ef9e-490c-aee3-909e7ae6b2ab",
+        "urlYouTube": "https://www.youtube.com/user/MetallicaTV",
+        "urlSpotify": "https://play.spotify.com/artist/2ye2Wgw4gimLv2eAKyk1NB",
+        "urlPureVolume": "http://www.purevolume.com/metallica",
+        "urlRateYourMusic": "http://rateyourmusic.com/artist/metallica",
+        "urlSoundCloud": "http://soundcloud.com/loureedmetallica",
+        "id_artist_musicbrainz": "65f4f0c5-ef9e-490c-aee3-909e7ae6b2ab",
+        "disambiguation": "",
+        "type": "Group",
+        "lifeSpan": {
+            "ended": false,
+            "begin": "1981-10",
+            "end": ""
+        },
+        "location": {
+            "id_city_musicbrainz": "1f40c6e1-47ba-4e35-996f-fe6ee5840e62",
+            "country": "United States",
+            "city": "Los Angeles"
+        },
+        "gender": "",
+        "endArea": {
+            "id": "",
+            "name": "",
+            "disambiguation": ""
+        }
     }
  * @apiError error The id is not valid.
  * @apiErrorExample Error-Response invalid ObjectId:
@@ -656,27 +744,49 @@ router.get('/artist/id/:id', function (req, res, next) {
         "urlTwitter": "http://twitter.com/metallica",
         "locationInfo": ["United States", "California", "Los Angeles"],
         "urlWikia": "Metallica",
-        "activeYears": "",
         "genres": ["Heavy Metal", "Thrash Metal"],
         "labels": ["Elektra", "Megaforce Records", "Mercury Records", "Warner Bros. Records"],
         "members": [{
-            "name": " James Hetfield",
-            "instruments": ["lead vocals", " rhythm guitar "],
-            "activeYears": ["1981-present\n"]
-            }, {
-            "name": " Kirk Hammett",
-            "instruments": ["lead guitar "],
-            "activeYears": ["1983-present\n"]
+            "id_member_musicbrainz": "118ba687-ad7f-4c28-9355-67e14b18baeb",
+            "name": "Ron McGovney",
+            "instruments": [
+                "bass guitar"
+            ],
+            "begin": "1982",
+            "end": "1982",
+            "ended": true,
+            "disambiguation": "",
+            "type": "member of band"
         }],
-        "formerMembers": [{
-            "name": " Dave Mustaine",
-            "instruments": ["lead guitar", " backing vocals "],
-            "activeYears": ["1981-1983\n"]
-            }, {
-            "name": " Ron McGovney",
-            "instruments": ["bass "],
-            "activeYears": ["1981-1982\n"]
-        }]
+        "urlAmazon": "http://www.amazon.com/asdf/e/B000APEBQY?tag=wikia-20",
+        "urlITunes": "https://itunes.apple.com/us/artist/id3996865",
+        "urlAllmusic": "http://www.allmusic.com/artist/mn0000446509",
+        "urlDiscogs": "http://www.discogs.com/artist/18839",
+        "urlMusicBrainz": "http://musicbrainz.org/artist/65f4f0c5-ef9e-490c-aee3-909e7ae6b2ab",
+        "urlYouTube": "https://www.youtube.com/user/MetallicaTV",
+        "urlSpotify": "https://play.spotify.com/artist/2ye2Wgw4gimLv2eAKyk1NB",
+        "urlPureVolume": "http://www.purevolume.com/metallica",
+        "urlRateYourMusic": "http://rateyourmusic.com/artist/metallica",
+        "urlSoundCloud": "http://soundcloud.com/loureedmetallica",
+        "id_artist_musicbrainz": "65f4f0c5-ef9e-490c-aee3-909e7ae6b2ab",
+        "disambiguation": "",
+        "type": "Group",
+        "lifeSpan": {
+            "ended": false,
+            "begin": "1981-10",
+            "end": ""
+        },
+        "location": {
+            "id_city_musicbrainz": "1f40c6e1-47ba-4e35-996f-fe6ee5840e62",
+            "country": "United States",
+            "city": "Los Angeles"
+        },
+        "gender": "",
+        "endArea": {
+            "id": "",
+            "name": "",
+            "disambiguation": ""
+        }
     }
  * @apiError error the database does not respond.
  * @apiErrorExample Error-Response internal error:
@@ -861,23 +971,49 @@ router.get('/song/id/:id', function (req, res, next) {
         "urlTwitter": "https://twitter.com/ironmaiden",
         "locationInfo": ["England", "London"],
         "urlWikia": "Iron_Maiden",
-        "activeYears": "",
         "genres": ["Heavy Metal"],
         "labels": ["Atlantic Records", "EMI", "Elektra", "Epic Records"],
         "members": [{
-            "name": "Bruce Dickinson",
-            "instruments": ["lead vocals "],
-            "activeYears": ["1982-1993", " 1999-present\n"]
+            "id_member_musicbrainz": "118ba687-ad7f-4c28-9355-67e14b18baeb",
+            "name": "Ron McGovney",
+            "instruments": [
+                "bass guitar"
+            ],
+            "begin": "1982",
+            "end": "1982",
+            "ended": true,
+            "disambiguation": "",
+            "type": "member of band"
         }],
-        "formerMembers": [{
-            "name": "Paul Day",
-            "instruments": ["lead vocals "],
-            "activeYears": ["1975-1976\n"]
-        }, {
-            "name": "Denis Wilcock",
-            "instruments": ["lead vocals "],
-            "activeYears": ["1976-1977\n"]
-        }]
+        "urlAmazon": "http://www.amazon.com/asdf/e/B000APEBQY?tag=wikia-20",
+        "urlITunes": "https://itunes.apple.com/us/artist/id3996865",
+        "urlAllmusic": "http://www.allmusic.com/artist/mn0000446509",
+        "urlDiscogs": "http://www.discogs.com/artist/18839",
+        "urlMusicBrainz": "http://musicbrainz.org/artist/65f4f0c5-ef9e-490c-aee3-909e7ae6b2ab",
+        "urlYouTube": "https://www.youtube.com/user/MetallicaTV",
+        "urlSpotify": "https://play.spotify.com/artist/2ye2Wgw4gimLv2eAKyk1NB",
+        "urlPureVolume": "http://www.purevolume.com/metallica",
+        "urlRateYourMusic": "http://rateyourmusic.com/artist/metallica",
+        "urlSoundCloud": "http://soundcloud.com/loureedmetallica",
+        "id_artist_musicbrainz": "65f4f0c5-ef9e-490c-aee3-909e7ae6b2ab",
+        "disambiguation": "",
+        "type": "Group",
+        "lifeSpan": {
+            "ended": false,
+            "begin": "1981-10",
+            "end": ""
+        },
+        "location": {
+            "id_city_musicbrainz": "1f40c6e1-47ba-4e35-996f-fe6ee5840e62",
+            "country": "United States",
+            "city": "Los Angeles"
+        },
+        "gender": "",
+        "endArea": {
+            "id": "",
+            "name": "",
+            "disambiguation": ""
+        }
     }
  * @apiError error the database does not respond.
  * @apiErrorExample Error-Response internal error:
@@ -891,13 +1027,7 @@ router.get('/member/name/:memberName', function (req, res, next) {
         memberName = req.params.memberName.trim();
     console.log(memberName);
     db.collection(COLLECTIONARTIST).find({
-        $or: [{
-                "members.name": memberName
-            },
-            {
-                "formerMembers.name": memberName
-            }
-        ]
+        "members.name": memberName
     }, {
         wordCount: 0,
         rdf: 0
