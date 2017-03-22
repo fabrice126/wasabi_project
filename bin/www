@@ -40,7 +40,7 @@ const options = {
 }
 var serverHttps = spdy.createServer(options, app);
 serverHttps.listen(portHttps);
-serverHttps.on('error', onError);
+serverHttps.on('error', onErrorHttps);
 serverHttps.on('listening', onListeningHttps);
 /**
  * Listen on provided port, on all network interfaces.
@@ -92,7 +92,31 @@ function onError(error) {
       throw error;
   }
 }
+/**
+ * Event listener for HTTP server "error" event.
+ */
 
+function onErrorHttps(error) {
+  if (error.syscall !== 'listen') {
+    throw error;
+  }
+
+  var bind = typeof port === 'string' ? 'Pipe ' + portHttps : 'Port ' + portHttps;
+
+  // handle specific listen errors with friendly messages
+  switch (error.code) {
+    case 'EACCES':
+      console.error(bind + ' requires elevated privileges');
+      process.exit(1);
+      break;
+    case 'EADDRINUSE':
+      console.error(bind + ' is already in use');
+      process.exit(1);
+      break;
+    default:
+      throw error;
+  }
+}
 /**
  * Event listener for HTTP server "listening" event.
  */

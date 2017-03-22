@@ -22,15 +22,22 @@ import mergedb from './routes/mergedb';
 import createdb from './routes/createdb';
 import extractdbpedia from './routes/extractdbpedia';
 const app = express();
-const db = dbMongo(config.database.mongodb_connect);
+// app.set('env', 'development');
+app.set('env', 'production'); //Utiliser ce mode avant d'envoyer sur le serveur
+const server = app.get('env') === 'development' ? {
+    server: {
+        socketOptions: {
+            socketTimeoutMS: 160000
+        }
+    }
+} : {};
+const db = dbMongo(config.database.mongodb_connect, server);
 const elasticsearchClient = new elasticsearch.Client({
     host: config.database.elasticsearch_connect
 });
 // view cache
 app.set('view cache', true); // désactivation du cache express
 app.set('config', config);
-// app.set('env', 'development');
-app.set('env', 'production'); //Utiliser ce mode avant d'envoyer sur le serveur
 app.use(helmet());
 const expiryDate = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
 app.use(session({

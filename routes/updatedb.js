@@ -4,6 +4,8 @@ import lyricsWikia from './handler/lyricsWikia.js';
 import utilHandler from './handler/utilHandler.js';
 import wordCountHandler from './handler/wordCountHandler.js';
 import musicBrainzHandler from './handler/musicBrainzHandler';
+import deezerHandler from './handler/deezerHandler';
+import animuxHandler from './handler/animuxHandler';
 import {
     ObjectId
 } from 'mongoskin';
@@ -13,10 +15,7 @@ const router = express.Router();
 const COLLECTIONARTIST = config.database.collection_artist;
 const COLLECTIONALBUM = config.database.collection_album;
 const COLLECTIONSONG = config.database.collection_song;
-const URL_TO_REPLACE = "http://musicbrainz.org";
-const URL_LOCAL = "http://127.0.0.1:5000/ws/2";
-const URL_MUSICBRAINZ = "http://musicbrainz.org/ws/2";
-const URL_PARAMS = "?inc=artist-rels&fmt=json";
+
 
 
 //Cette fonction met à jour les informations existantes dans la collection artist
@@ -197,7 +196,7 @@ router.get('/song', function (req, res) {
                         //on récupère l'objet musique passé en parametre (result[i]) avec les propriétés mis à jour
                         //cette fonction update uniquement les propriétés de result[i] elle ne renvoie pas un nouvel objet
                         if (i < result.length) {
-                            //on traite uniquement les chansons sans urlYoutube
+                            //on traite uniquement les chansons sans urlYouTube
                             lyricsWikia.getInfosFromPageSong(result[i]).then(function (objSong) {
                                 var idSong = objSong._id;
                                 //si _id n'est pas supprimé avant l'update, mongo lance un avertissement car un _id ne peut être modifié
@@ -483,147 +482,53 @@ router.get('/song/isclassic/:_id', function (req, res) {
 /**
  * /!\ Pour utiliser cette API il faut que la VM musicbrainz soit active sur:  http://127.0.0.1:5000/ /!\
  */
-router.get('/musicbrainz/artist', (req, res) => {
-    var db = req.db,
-        id = req.params._id,
-        skip = 0,
-        query = {
-            urlMusicBrainz: {
-                $ne: ""
-            }
-        },
-        limit = 1000;
-    db.collection(COLLECTIONARTIST).count(query, function (err, nbArtist) {
-        (function fetchArtist(skip) {
-            var nb = 0;
-            if (skip < nbArtist) {
-                db.collection(COLLECTIONARTIST).find(query, {
-                    rdf: 0,
-                    wordCount: 0
-                }).skip(skip).limit(limit).toArray(function (err, tArtists) {
-                    var i = 0;
-                    (function loop(i) {
-                        let url = tArtists[i].urlMusicBrainz.replace(URL_TO_REPLACE, URL_LOCAL) + URL_PARAMS;
-                        musicBrainzHandler.getArtistInfosFromMusicBrainz(url).then((oMB) => {
-                            updateFieldsMusicBrainz(tArtists[i], oMB);
-                            db.collection(COLLECTIONARTIST).update({
-                                _id: new ObjectId(tArtists[i]._id)
-                            }, {
-                                $set: tArtists[i]
-                            }, function (err) {
-                                if (err) throw err;
-                                nb++;
-                                if (nb == tArtists.length) {
-                                    skip += limit;
-                                    console.log("SKIP = " + skip);
-                                    fetchArtist(skip);
-                                } else {
-                                    i++;
-                                    loop(i);
-                                }
-                            });
-                        }).catch((error) => {
-                            console.log("FAIL = " + tArtists[i].name);
-                            nb++;
-                            if (nb == tArtists.length) {
-                                skip += limit;
-                                console.log("SKIP = " + skip);
-                                fetchArtist(skip);
-                            } else {
-                                i++;
-                                loop(i);
-                            }
-                        });
-                    })(i);
-                });
-            } else {
-                console.log("TRAITEMENT TERMINE");
-            }
-        })(skip);
-    });
-    res.json("OK");
-});
+router.get('/musicbrainz/artist', musicBrainzHandler.getAllArtists);
 /**
  * /!\ Pour utiliser cette API il faut que la VM musicbrainz soit active sur:  http://127.0.0.1:5000/ /!\
  */
-router.get('/musicbrainz/artist/:_id', (req, res) => {
-    var db = req.db,
-        id = req.params._id;
-    if (!ObjectId.isValid(id)) {
-        return res.status(404).json(config.http.error.objectid_404);
-    }
-    db.collection(COLLECTIONARTIST).findOne({
-        _id: ObjectId(id)
-    }, {
-        rdf: 0,
-        wordCount: 0
-    }, (err, objArtist) => {
-        let url = objArtist.urlMusicBrainz.replace(URL_TO_REPLACE, URL_MUSICBRAINZ) + URL_PARAMS;
-        musicBrainzHandler.getArtistInfosFromMusicBrainz(url).then((oMB) => {
-            updateFieldsMusicBrainz(objArtist, oMB);
-            db.collection(COLLECTIONARTIST).update({
-                _id: new ObjectId(objArtist._id)
-            }, {
-                $set: objArtist
-            }, function (err) {
-                if (err) throw err;
-                console.log("AJOUT TERMINEE: " + objArtist.name);
-            });
-        }).catch((error) => {
-            console.log(error);
-            return res.status(404).json(config.http.error.musicbrainz_error_404);
-        });;
-    });
-    res.json("OK");
-});
+router.get('/musicbrainz/artist/:_id', musicBrainzHandler.getArtist);
+/**
+ * /!\ Pour utiliser cette API il faut que la VM musicbrainz soit active sur:  http://127.0.0.1:5000/ /!\
+ */
+router.get('/musicbrainz/album', musicBrainzHandler.getAllAlbums);
+/**
+ * /!\ Pour utiliser cette API il faut que la VM musicbrainz soit active sur:  http://127.0.0.1:5000/ /!\
+ */
+router.get('/musicbrainz/album/:_id', musicBrainzHandler.getAlbum);
+/**
+ * /!\ Pour utiliser cette API il faut que la VM musicbrainz soit active sur:  http://127.0.0.1:5000/ /!\
+ */
+router.get('/musicbrainz/song', musicBrainzHandler.getAllSongs);
+/**
+ * /!\ Pour utiliser cette API il faut que la VM musicbrainz soit active sur:  http://127.0.0.1:5000/ /!\
+ */
+router.get('/musicbrainz/song/:_id', musicBrainzHandler.getSong);
+
+
+
 
 
 /**
- * Permet d'ajouter des champs à l'objet objArtist de notre base de données en les récupérant de l'objet oMB venant de l'api de musicbrainz 
- * @param {*} objArtist objet artiste représente un document d'un artiste dans la base de données 
- * @param {*} oMB objet musicbrainz représente un document d'un artiste récupéré via l'api de musicbrainz 
+ * API permettant d'ajouter en base de données id des musiques de wasabi avec les id des musiques de deezer
  */
-var updateFieldsMusicBrainz = function (objArtist, oMB) {
-    objArtist.id_artist_musicbrainz = oMB.id;
-    objArtist.disambiguation = oMB.disambiguation;
-    objArtist.type = oMB.type ? oMB.type : "";
-    objArtist.lifeSpan = {
-        "ended": oMB["life-span"].ended,
-        "begin": oMB["life-span"].begin ? oMB["life-span"].begin : "",
-        "end": oMB["life-span"].end ? oMB["life-span"].end : ""
-    };
-    //Information sur les lieux du début du groupe
-    objArtist.location = {
-        "id_city_musicbrainz": oMB.begin_area ? oMB.begin_area.id : "",
-        "country": oMB.area ? oMB.area.name : "",
-        "city": oMB.begin_area ? oMB.begin_area.name : ""
-    };
-    //Zone ou le groupe s'est séparé
-    objArtist.endArea = {
-        "id": oMB.end_area ? oMB.end_area.id : "",
-        "name": oMB.end_area ? oMB.end_area.name : "",
-        "disambiguation": oMB.end_area ? oMB.end_area.disambiguation : ""
-    };
-    objArtist.gender = oMB.gender ? oMB.gender : "";
-    //On supprime l'existant en base de données pour faire la mise a jour
-    objArtist.members = [];
-    for (var i = 0, l = oMB.relations.length; i < l; i++) {
-        var member = oMB.relations[i];
-        if (member.type == "member of band") {
-            //On crée un objet membre contenant les propriétés du membre du groupe
-            var objMember = {
-                id_member_musicbrainz: member.artist.id,
-                name: member.artist.name ? member.artist.name : "",
-                instruments: member.attributes ? member.attributes : [],
-                begin: member.begin ? member.begin : "",
-                end: member.end ? member.end : "",
-                ended: member.ended,
-                disambiguation: member.disambiguation ? member.disambiguation : "",
-                type: member.type ? member.type : ""
-            }
-            //On ajoute aux membres le nouveau membre 
-            objArtist.members.push(objMember);
-        }
-    }
-}
+router.get('/deezer/create_mapping', deezerHandler.doMappingWasabiDeezer);
+/**
+ * API permettant de recupérer des informations des musiques sur l'API de deezer
+ */
+router.get('/deezer/song', deezerHandler.getAllSongs);
+/**
+ * API permettant de recupérer des informations de la musique sur l'API de deezer
+ */
+router.get('/deezer/song/:_id', deezerHandler.getSong);
+
+
+/**
+ * API permettant de faire le matching entre les dossiers contenant le nom d'un artiste/groupe
+ */
+router.get('/animux/create_mapping/artist', animuxHandler.getDirArtist);
+/**
+ * API permettant de faire le matching entre les fichiers animux contenant la synchronisation des paroles et nos musique en base de données
+ */
+router.get('/animux/create_mapping/song', animuxHandler.getFileSong);
+
 export default router;

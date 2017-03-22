@@ -1,11 +1,10 @@
-
-class Song  {
-    constructor(){
+class Song {
+    constructor() {
         this.title = "";
         this.urlSong = "";
-        this.lyrics  = "" ;
+        this.lyrics = "";
         this.urlWikipedia = "";
-        this.urlYoutube = "";
+        this.urlYouTube = "";
         this.urlITunes = "";
         this.urlAmazon = "";
         this.urlGoEar = "";
@@ -16,6 +15,17 @@ class Song  {
         this.urlHypeMachine = "";
         this.urlPandora = "";
         this.isClassic = false;
+
+        this.id_song_deezer = "";
+        this.isrc = "";
+        this.length = "";
+        this.explicitLyrics = false;
+        this.rank = "";
+        this.bpm = "";
+        this.publicationDate = "";
+        this.gain = "";
+        this.preview = "";
+        this.availableCountries = [];
     }
 }
 module.exports = Song;

@@ -61,7 +61,7 @@ var songSchema = new mongoose.Schema({
         trim: true,
         default: ""
     },
-    urlYoutube: {
+    urlYouTube: {
         type: String,
         trim: true,
         default: ""
@@ -69,41 +69,52 @@ var songSchema = new mongoose.Schema({
     urlITunes: {
         type: String,
         trim: true,
+        default: ""
     },
     urlAmazon: {
         type: String,
         trim: true,
+        default: ""
     },
     urlGoEar: {
         type: String,
         trim: true,
+        default: ""
     },
     urlSpotify: {
         type: String,
         trim: true,
+        default: ""
     },
     urlAllmusic: {
         type: String,
         trim: true,
+        default: ""
     },
     urlMusicBrainz: {
         type: String,
         trim: true,
+        default: ""
     },
     urlLastFm: {
         type: String,
         trim: true,
+        default: ""
     },
     urlHypeMachine: {
         type: String,
         trim: true,
+        default: ""
     },
     urlPandora: {
         type: String,
         trim: true,
+        default: ""
     },
     rdf: {
         type: String,
+        trim: true,
+        default: ""
     },
     format: {
         type: [String],
@@ -125,9 +136,13 @@ var songSchema = new mongoose.Schema({
     },
     abstract: {
         type: String,
+        trim: true,
+        default: ""
     },
     releaseDate: {
         type: String,
+        trim: true,
+        default: ""
     },
     runtime: {
         type: [String],
@@ -144,15 +159,66 @@ var songSchema = new mongoose.Schema({
     },
     multitrack_file: {
         type: String,
+        trim: true,
+        default: ""
     },
     multitrack_path: {
         type: String,
+        trim: true,
+        default: ""
     },
     wordCount: {
         type: [],
+        default: []
     },
 
-
+    id_song_deezer: {
+        type: String,
+        trim: true,
+        default: ""
+    },
+    isrc: {
+        type: String,
+        trim: true,
+        default: ""
+    },
+    length: {
+        type: String,
+        trim: true,
+        default: ""
+    },
+    explicitLyrics: {
+        type: Boolean,
+        default: false
+    },
+    rank: {
+        type: String,
+        trim: true,
+        default: ""
+    },
+    bpm: {
+        type: String,
+        trim: true,
+        default: ""
+    },
+    gain: {
+        type: String,
+        trim: true,
+        default: ""
+    },
+    publicationDate: {
+        type: String,
+        trim: true,
+        default: ""
+    },
+    preview: {
+        type: String,
+        trim: true,
+        default: ""
+    },
+    availableCountries: {
+        type: [String],
+    },
 
     //liste des champs pouvant ne pas exister dans un document album
 }, {

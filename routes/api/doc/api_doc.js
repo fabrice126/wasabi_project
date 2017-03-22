@@ -133,7 +133,7 @@ const router = express.Router();
  *  @apiSuccess {Number} wordCount.value Number of this word
  * 
  * @apiSuccess {Boolean} isClassic Song isClassic
- * @apiSuccess {String} urlYoutube Song urlYoutube
+ * @apiSuccess {String} urlYouTube Song urlYouTube
  * @apiSuccess {String} multitrack_path Song multitrack_path
  * @apiSuccess {String} multitrack_file Song multitrack_file
  * @apiSuccess {String} urlITunes Song urlITunes

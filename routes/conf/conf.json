@@ -31,7 +31,10 @@
                 "error": "An internal error occurred"
             },
             "musicbrainz_error_404": {
-                "error": "Resource unavaible on MusicBrainz"
+                "error": "Resource unavailable on MusicBrainz"
+            },
+            "deezer_error_404": {
+                "error": "Resource unavailable on Deezer"
             }
         },
         "valid": {

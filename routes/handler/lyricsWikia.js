@@ -174,7 +174,7 @@ var getInfosFromPageArtist = function (objArtist) {
                                 objArtist.urlAllmusic = field;
                                 break;
                             case "MusicBrainz":
-                                objArtist.urlMusicBrainz = field;
+                                objArtist.urlMusicBrainz = new RegExp("artist").test(field) ? field : "";
                                 break;
                             case "Discogs":
                                 objArtist.urlDiscogs = field;
@@ -306,7 +306,7 @@ var extractInfosSong = function (objSong, body) {
     }).remove();
     objSong.lyrics = $(lyrics).html() != null ? $(lyrics).html() : "";
     var srcYoutube = $("#mw-content-text .youtube").text();
-    objSong.urlYoutube = srcYoutube != null ? srcYoutube.split('|')[0] : ""; // srcYoutube sera de ce style : wG5ilt3Hrt4|209|252
+    objSong.urlYouTube = srcYoutube != null ? srcYoutube.split('|')[0] : ""; // srcYoutube sera de ce style : wG5ilt3Hrt4|209|252
     objSong.urlWikipedia = $("#mw-content-text div:contains('Wikipedia') div>i>b>a.extiw").attr('href') != null ? $("#mw-content-text div:contains('Wikipedia') div>i>b>a.extiw").attr('href') : "";
     var tSelector = ['iTunes', 'Amazon', 'GoEar', 'Spotify', 'allmusic', 'MusicBrainz', 'Last.fm', 'Hype Machine', 'Pandora'];
     for (var i = 0; i < tSelector.length; i++) {
@@ -314,33 +314,35 @@ var extractInfosSong = function (objSong, body) {
         //Si la taille est > 0 alors ce n'est pas un lien vers une page d'un des sites ci-dessous 
         var size = $(selector).length - 1;
         if (size == 0) {
+            var field = util.fillField($(selector)[size].attribs.href);
+
             switch (tSelector[i]) {
                 case "iTunes":
-                    objSong.urlITunes = $(selector)[size].attribs.href;
+                    objSong.urlITunes = field;
                     break;
                 case "Amazon":
-                    objSong.urlAmazon = $(selector)[size].attribs.href;
+                    objSong.urlAmazon = field;
                     break;
                 case "GoEar":
-                    objSong.urlGoEar = $(selector)[size].attribs.href;
+                    objSong.urlGoEar = field;
                     break;
                 case "Spotify":
-                    objSong.urlSpotify = $(selector)[size].attribs.href;
+                    objSong.urlSpotify = field;
                     break;
                 case "allmusic":
-                    objSong.urlAllmusic = $(selector)[size].attribs.href;
+                    objSong.urlAllmusic = field;
                     break;
                 case "MusicBrainz":
-                    objSong.urlMusicBrainz = $(selector)[size].attribs.href;
+                    objSong.urlMusicBrainz = new RegExp("recording").test(field) ? field : "";
                     break;
                 case "Last.fm":
-                    objSong.urlLastFm = $(selector)[size].attribs.href;
+                    objSong.urlLastFm = field;
                     break;
                 case "Hype Machine":
-                    objSong.urlHypeMachine = $(selector)[size].attribs.href;
+                    objSong.urlHypeMachine = field;
                     break;
                 case "Pandora":
-                    objSong.urlPandora = $(selector)[size].attribs.href;
+                    objSong.urlPandora = field;
                     break;
             }
         }
