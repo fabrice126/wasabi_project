@@ -78,6 +78,10 @@ Il est conseillé de lire ce que fait chaque API avant de l'utiliser notamment c
 
 - Lancer le fichier `elasticsearch.bat` dans le dossier `bin` de  votre répertoire elasticsearch ou chercher via la barre de recherche windows `elasticsearch.bat`
 
+## Musicbrainz en local
+
+- **voir : **https://musicbrainz.org/doc/MusicBrainz_Server/Setup, lorsque bin/reindex est exécuté, vous pouvez lancer des requêtes via l'API Musicbrainz local
+
 **Architecture du code:**
 =======
 ## bin/
@@ -153,8 +157,18 @@ Une collection artist contenant des documents représentant un artiste avec ses 
  15.  [doit être exécuté après 14.] le fichier `CreateIndexAfterDBpediaExtraction` ce fichier permet de créer les index des nouveaux champs insérés dans la base de données
  
  16.  [doit être exécuté après 15.] le fichier `Create_IsClassic_Field` permettant grâce aux subjects des musiques récupérées du rdf de savoir si la musique est un classique
+ 
  17. [doit être exécuté après 6 et en mode `development`.] le web service `updatedb/multitrackspath` ajoute la propriété multitrackspath dans notre base de données. Ce web service a besoin des musiques multitrack sur la machine ou est lancé cette API
-
+ 
+ 18. [doit être exécuté après 6 et en mode `development` **avec le serveur MusicBrainz local actif**.] Le web service `updatedb/musicbrainz/artist` 
+ 
+ 19. [doit être exécuté après 6 et en mode `development` **avec le serveur MusicBrainz local actif**.] Le web service `updatedb/musicbrainz/album` 
+ 
+ 20. [doit être exécuté après 6 et en mode `development` **avec le serveur MusicBrainz local actif**.] Le web service `updatedb/musicbrainz/song` 
+ 
+ 21. [doit être exécuté après 6 et en mode `development`.] Vous devez avoir le fichier `mongo/deezer/track_dz_wasabi_viaproduct.csv`  contenant le mapping entre les IDs de nos musiques et les IDs des musiques chez Deezer. Le web service `updatedb/deezer/create_mapping` permettra de créer un champ `deezer_mapping`  dans la collection song.  
+ 
+ 22. [doit être exécuté après 21 et en mode `development`.] Le web service `updatedb/deezer/song` permet de récupérer des informations sur les musiques ayant un champs deezer_mapping non vide via l'API de Deezer.
 
 #### mongo/sparql/
 **Contient les requêtes sparql utilisées par l'application pour l'extraction du RDF pour les :**  
@@ -206,8 +220,5 @@ Une collection artist contenant des documents représentant un artiste avec ses 
 ## package.json
 	Fichier décrivant l'application, c'est aussi le gestionnaire de dépendance de node js. 
 	
-**Installer la base de données Musicbrainz en local**
-=======
 
-**voir : **https://musicbrainz.org/doc/MusicBrainz_Server/Setup, lorsque bin/reindex est exécuté, vous pouvez lancer des requêtes via l'API Musicbrainz local
 
