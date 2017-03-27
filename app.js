@@ -6,6 +6,7 @@ import {
 } from 'mongoskin';
 import querystring from 'querystring';
 import path from 'path';
+import mongoose from 'mongoose';
 import favicon from 'serve-favicon';
 import logger from 'morgan';
 import session from 'express-session';
@@ -13,7 +14,11 @@ import bodyParser from 'body-parser';
 import helmet from 'helmet';
 import errorHandler from 'errorhandler';
 import basicAuth from 'basic-auth-connect';
+import jwt from 'jsonwebtoken';
+import passport from 'passport';
+import bcrypt from 'bcrypt';
 import elasticsearch from 'elasticsearch';
+import confPassport from './routes/conf/passport';
 import search from './routes/search';
 import api_v1 from './routes/api/v1/api_v1';
 import MT5 from './routes/MT5';
@@ -21,46 +26,74 @@ import updatedb from './routes/updatedb';
 import mergedb from './routes/mergedb';
 import createdb from './routes/createdb';
 import extractdbpedia from './routes/extractdbpedia';
+import jwt_api from './routes/jwt';
 const app = express();
-// app.set('env', 'development');
-app.set('env', 'production'); //Utiliser ce mode avant d'envoyer sur le serveur
-const server = app.get('env') === 'development' ? {
+/**
+ * -------------------------------------------------------------------------------------------------------
+ * ----------------------------------OPTION DE L'ENVIRONNEMENT NODE JS------------------------------------
+ * -------------------------------------------------------------------------------------------------------
+ */
+config.launch.env.dev_mode ? app.set('env', config.launch.env.dev) : app.set('env', config.launch.env.prod);
+/**
+ * -------------------------------------------------------------------------------------------------------
+ * -----------------------CONNEXION A LA BASE DE DONNEES MONGODB ET ELASTICSEARCH-------------------------
+ * -------------------------------------------------------------------------------------------------------
+ */
+const server = app.get('env') === config.launch.env.dev ? {
     server: {
         socketOptions: {
             socketTimeoutMS: 160000
         }
     }
 } : {};
+mongoose.Promise = global.Promise;
+const dbMongoose = mongoose.connect(config.database.mongodb_connect);
 const db = dbMongo(config.database.mongodb_connect, server);
 const elasticsearchClient = new elasticsearch.Client({
     host: config.database.elasticsearch_connect
 });
+
+/**
+ * -------------------------------------------------------------------------------------------------------
+ * ----------------------------------INITIALISATION DE CERTAINS CHAMPS------------------------------------
+ * -------------------------------------------------------------------------------------------------------
+ */
 // view cache
-app.set('view cache', true); // désactivation du cache express
+app.set('view cache', app.get('env') === config.launch.env.dev ? true : false); // désactivation du cache express
 app.set('config', config);
 app.use(helmet());
-const expiryDate = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
-app.use(session({
-    secret: '2C44-4D44-WppQ38S',
-    resave: true,
-    cookie: {
-        secure: true,
-        expires: expiryDate
-    },
-    saveUninitialized: true
-}));
-// uncomment after placing your favicon in /public
+// const expiryDate = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+// app.use(session({
+//     secret: '2C44-4D44-WppQ38S',
+//     resave: true,
+//     cookie: {
+//         secure: true,
+//         expires: expiryDate
+//     },
+//     saveUninitialized: true
+// }));
+
+String.prototype.endsWith = function (suffix) {
+    return this.indexOf(suffix, this.length - suffix.length) !== -1;
+};
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: true
-})); //false
-//<start> MT5
-String.prototype.endsWith = function (suffix) {
-    return this.indexOf(suffix, this.length - suffix.length) !== -1;
-};
+}));
+//initialisation de passport permettant la connexion via JWT
+confPassport(passport);
+app.use(passport.initialize());
 app.use((req, res, next) => {
+    req.db = db;
+    req.dbMongoose = dbMongoose;
+    req.jwt = jwt;
+    req.COLLECTIONARTIST = config.database.collection_artist;
+    req.COLLECTIONALBUM = config.database.collection_album;
+    req.COLLECTIONSONG = config.database.collection_song;
+    req.elasticsearchClient = elasticsearchClient;
+    //<start> pour MT5
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     // For Microsoft browsers
@@ -68,17 +101,15 @@ app.use((req, res, next) => {
     if (url.endsWith("vtt")) {
         res.header("Content-Type", "text/vtt");
     }
+    //</start> pour MT5
     next();
 });
-//<end> MT5
-app.use((req, res, next) => {
-    req.db = db;
-    req.COLLECTIONARTIST = config.database.collection_artist;
-    req.COLLECTIONALBUM = config.database.collection_album;
-    req.COLLECTIONSONG = config.database.collection_song;
-    req.elasticsearchClient = elasticsearchClient;
-    next();
-});
+/**
+ * -------------------------------------------------------------------------------------------------------
+ * --------------------------------------DEFINITION DES ROUTES D'API--------------------------------------
+ * -------------------------------------------------------------------------------------------------------
+ */
+app.use('/jwt', jwt_api);
 app.use('/api/v1', api_v1);
 //permet de s'authentifier, personne ne doit pouvoir accèder au site
 app.use(basicAuth(login.login, login.password));
@@ -86,8 +117,11 @@ app.use('/', express.static(path.join(__dirname, 'public')));
 app.use('/apidoc', express.static(path.join(__dirname, 'apidoc')));
 app.use('/search', search);
 app.use('/MT5', MT5);
-if (app.get('env') === 'development') {
-    console.log("Projet executé en mode: " + app.get('env'));
+//Placer ici les routes utile uniquement pour le développement
+if (app.get('env') === config.launch.env.dev) {
+    console.error("/!\\-----------------------------------------------------------------------------------------------------------------/!\\");
+    console.error("/!\\ Projet executé en mode: " + app.get('env') + " veuillez le mettre en mode production avant de push sur le git (dans app.js)/!\\");
+    console.error("/!\\-----------------------------------------------------------------------------------------------------------------/!\\");
     app.use('/updatedb', updatedb);
     app.use('/mergedb', mergedb);
     app.use('/createdb', createdb);
@@ -107,11 +141,11 @@ app.use((req, res, next) => {
 });
 // development error handler
 // will print stacktrace
-if (app.get('env') === 'development') {
+if (app.get('env') === config.launch.env.dev) {
     app.use(errorHandler());
 }
-//// production error handler
-//// no stacktraces leaked to user
+// production error handler
+// no stacktraces leaked to user
 app.use((err, req, res, next) => {
     res.status(err.status || 500);
     res.render('error test', {

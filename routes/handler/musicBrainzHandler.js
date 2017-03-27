@@ -6,12 +6,12 @@ import config from '../conf/conf.json';
 const COLLECTIONARTIST = config.database.collection_artist;
 const COLLECTIONALBUM = config.database.collection_album;
 const COLLECTIONSONG = config.database.collection_song;
-const USE_MUSICBRAINZ_URL_LOCAL = false;
 const URL_TO_REPLACE = "http://musicbrainz.org";
+const USE_MUSICBRAINZ_URL_LOCAL = true;
 const URL_MUSICBRAINZ = USE_MUSICBRAINZ_URL_LOCAL ? "http://127.0.0.1:5000/ws/2" : "http://musicbrainz.org/ws/2";
 const URL_PARAMS_ARTIST = "?inc=artist-rels&fmt=json";
 const URL_PARAMS_ALBUM = "?inc=artist-rels&fmt=json";
-const URL_PARAMS_SONG = "?inc=artist-rels&fmt=json";
+const URL_PARAMS_SONG = "?inc=work-rels&fmt=json";
 
 /**
  * Permet de mettre a jour les documents artistes de la base de données ayant une URL vers musicbrainz
@@ -56,8 +56,7 @@ var getAlbum = (req, res) => {
         return res.status(404).json(config.http.error.objectid_404);
     }
     getAndUpdateOne(req.db, res, id, COLLECTIONALBUM, URL_PARAMS_ALBUM, updateFieldsAlbumMusicBrainz);
-    //      res.json(config.http.valid.send_message_ok);
-
+    // res.json(config.http.valid.send_message_ok);
 }
 /**
  * Permet de mettre a jour les documents musiques de la base de données ayant une URL vers musicbrainz
@@ -66,7 +65,7 @@ var getAlbum = (req, res) => {
  */
 var getAllSongs = (req, res) => {
     getAndUpdateAll(req.db, COLLECTIONSONG, URL_PARAMS_SONG, updateFieldsSongMusicBrainz);
-     res.json(config.http.valid.send_message_ok);
+    res.json(config.http.valid.send_message_ok);
 }
 /**
  * Permet de mettre a jour le document musique de la base de données dont l'id est passé en parametre
@@ -79,7 +78,7 @@ var getSong = (req, res) => {
         return res.status(404).json(config.http.error.objectid_404);
     }
     getAndUpdateOne(req.db, res, id, COLLECTIONSONG, URL_PARAMS_SONG, updateFieldsSongMusicBrainz);
-    //      res.json(config.http.valid.send_message_ok);
+    // res.json(config.http.valid.send_message_ok);
 
 }
 
@@ -92,8 +91,8 @@ var getSong = (req, res) => {
  * @param {*} updateFieldsCollectionMusicBrainz 
  */
 var getAndUpdateAll = (db, collection, urlParams, updateFieldsCollectionMusicBrainz) => {
-    var skip = 0,
-        limit = 100,
+    var skip = 28000,
+        limit = 10000,
         query = {
             urlMusicBrainz: {
                 $ne: ""
@@ -104,6 +103,7 @@ var getAndUpdateAll = (db, collection, urlParams, updateFieldsCollectionMusicBra
             wordCount: 0
         };
     db.collection(collection).count(query, function (err, nbObj) {
+        console.log("There are " + nbObj + " songs with an id musicbrainz");
         (function fetchObj(skip) {
             var nb = 0;
             if (skip < nbObj) {
@@ -130,7 +130,13 @@ var getAndUpdateAll = (db, collection, urlParams, updateFieldsCollectionMusicBra
                                 }
                             });
                         }).catch((error) => {
-                            console.log("FAIL = " + tObj[i].name);
+                            if (collection == COLLECTIONARTIST) {
+                                console.log("FAIL = " + tObj[i].urlMusicBrainz + " / " + collection);
+                            } else if (collection == COLLECTIONALBUM) {
+                                console.log("FAIL = " + tObj[i].urlMusicBrainz + " / " + collection);
+                            } else if (collection == COLLECTIONSONG) {
+                                console.log("FAIL = " + tObj[i].urlMusicBrainz + " / " + collection);
+                            }
                             nb++;
                             if (nb == tObj.length) {
                                 skip += limit;
@@ -171,19 +177,19 @@ var getAndUpdateOne = (db, res, id, collection, urlParams, updateFieldsCollectio
         let url = obj.urlMusicBrainz.replace(URL_TO_REPLACE, URL_MUSICBRAINZ) + urlParams;
         requestMusicBrainz(url).then((oMB) => {
             updateFieldsCollectionMusicBrainz(obj, oMB);
-            // db.collection(collection).update(query, {
-            //     $set: obj
-            // }, function (err) {
-            //     if (err) throw err;
-            //     if (collection == COLLECTIONARTIST) {
-            //         console.log("AJOUT TERMINEE: " + obj.name);
-            //     } else if (collection == COLLECTIONALBUM) {
-            //         console.log("AJOUT TERMINEE: " + obj._id + " / " + collection);
-            //     } else if (collection == COLLECTIONSONG) {
-            //         console.log("AJOUT TERMINEE: " + obj._id + " / " + collection);
-            //     }
-            // });
-            res.json(oMB);
+            db.collection(collection).update(query, {
+                $set: obj
+            }, function (err) {
+                if (err) throw err;
+                if (collection == COLLECTIONARTIST) {
+                    console.log("AJOUT TERMINEE: " + obj.name);
+                } else if (collection == COLLECTIONALBUM) {
+                    console.log("AJOUT TERMINEE: " + obj._id + " / " + collection);
+                } else if (collection == COLLECTIONSONG) {
+                    console.log("AJOUT TERMINEE: " + obj._id + " / " + collection);
+                }
+            });
+            res.json(obj);
         }).catch((error) => {
             console.log(error);
             return res.status(404).json(config.http.error.musicbrainz_error_404);
@@ -277,7 +283,24 @@ var updateFieldsAlbumMusicBrainz = function (objAlbum, oMB) {
  * @param {*} oMB objet musicbrainz représente un document d'une musique récupéré via l'api de musicbrainz 
  */
 var updateFieldsSongMusicBrainz = function (objSong, oMB) {
-    console.log("update SONG fields");
+    objSong = {
+        "id_song_musicbrainz": oMB.id,
+        "video": oMB.video,
+        "disambiguation": oMB.disambiguation ? oMB.disambiguation : "",
+        "language": "",
+        "begin": "",
+        "end": "",
+        "ended": true,
+    };
+    if (oMB.relations.length > 1) {
+        console.log(objSong.urlMusicBrainz);
+    }
+    if (typeof oMB.relations[0] != "undefined") {
+        objSong.language = oMB.relations[0].work ? oMB.relations[0].work.language : "";
+        objSong.begin = oMB.relations[0].begin ? oMB.relations[0].begin : "";
+        objSong.end = oMB.relations[0].end ? oMB.relations[0].end : "";
+        objSong.ended = oMB.relations[0].ended;
+    }
 }
 
 

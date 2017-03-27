@@ -7,4 +7,5 @@ public/download/*
 node_modules/*
 cert_https/*
 routes/conf/login.json
+routes/conf/confJwt.json
 

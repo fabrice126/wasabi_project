@@ -74,32 +74,32 @@
 
             <iron-ajax id="get_content" auto url="/search/artist/{{_encodeUri(nameArtist)}}" last-response="{{artist}}" handleAs="json">
             </iron-ajax>
-            <template is="dom-if" if="{{artist.rdf.length}}">
+            <template is="dom-if" if="{{artist.rdf}}">
                 <show-dialog labeldialog="RDF {{artist.name}} :" labelbutton="Show RDF" content="{{artist.rdf}}" labelexitdialog="Close"></show-dialog>
             </template>
             <div class="artistname">{{artist.name}}</div>
             <div id="externalLink">
-                <template is="dom-if" if="{{artist.urlWikipedia.length}}">
+                <template is="dom-if" if="{{artist.urlWikipedia}}">
                     <a href="{{artist.urlWikipedia}}" target="_blank" tabindex="-1">
                         <paper-icon-button src="../img/wikipedia_icon.svg"></paper-icon-button>
                     </a>
                 </template>
-                <template is="dom-if" if="{{artist.urlFacebook.length}}">
+                <template is="dom-if" if="{{artist.urlFacebook}}">
                     <a href="{{artist.urlFacebook}}" target="_blank" tabindex="-1">
                         <paper-icon-button src="../img/facebook_icon.svg"></paper-icon-button>
                     </a>
                 </template>
-                <template is="dom-if" if="{{artist.urlTwitter.length}}">
+                <template is="dom-if" if="{{artist.urlTwitter}}">
                     <a href="{{artist.urlTwitter}}" target="_blank" tabindex="-1">
                         <paper-icon-button src="../img/twitter_icon.svg"></paper-icon-button>
                     </a>
                 </template>
-                <template is="dom-if" if="{{artist.urlMySpace.length}}">
+                <template is="dom-if" if="{{artist.urlMySpace}}">
                     <a href="{{artist.urlMySpace}}" target="_blank" tabindex="-1">
                         <paper-icon-button src="../img/myspace_icon.svg"></paper-icon-button>
                     </a>
                 </template>
-                <template is="dom-if" if="{{artist.urlOfficialWebsite.length}}">
+                <template is="dom-if" if="{{artist.urlOfficialWebsite}}">
                     <a href="{{artist.urlOfficialWebsite}}" target="_blank" tabindex="-1">
                         <paper-icon-button src="../img/website_icon.svg"></paper-icon-button>
                     </a>
@@ -107,22 +107,22 @@
             </div>
 
             <div class="infosArtist">
-                <template is="dom-if" if="{{artist.lifeSpan.begin.length}}">
+                <template is="dom-if" if="{{artist.lifeSpan.begin}}">
                     <div><b>Début:</b> {{artist.lifeSpan.begin}}</div>
                 </template>
-                <template is="dom-if" if="{{artist.lifeSpan.end.length}}">
+                <template is="dom-if" if="{{artist.lifeSpan.end}}">
                     <div><b>Fin:</b> {{artist.lifeSpan.end}}</div>
                 </template>
-                <template is="dom-if" if="{{artist.locationInfo.length}}">
+                <template is="dom-if" if="{{artist.locationInfo}}">
                     <div><b>Localisation:</b> {{artist.locationInfo}}</div>
                 </template>
-                <template is="dom-if" if="{{artist.genres.length}}">
+                <template is="dom-if" if="{{artist.genres}}">
                     <div><b>Genre:</b> {{artist.genres}}</div>
                 </template>
-                <template is="dom-if" if="{{artist.labels.length}}">
+                <template is="dom-if" if="{{artist.labels}}">
                     <div><b>Label:</b> {{artist.labels}}</div>
                 </template>
-                <template id="domIfMember" is="dom-if" if="{{artist.members.length}}" restamp>
+                <template id="domIfMember" is="dom-if" if="{{artist.members}}" restamp>
                     <details>
                         <summary class="inherit">Voir les membres actuels:</summary>
                         <ul class="collapse-content">
@@ -130,10 +130,10 @@
                                 <template is="dom-if" if="{{!member.ended}}">
                                     <li><a href="#/search/member/name/{{_encodeUri(member.name)}}">{{member.name}}</a></li>
                                     <ul>
-                                        <template is="dom-if" if="{{member.instruments.length}}">
+                                        <template is="dom-if" if="{{member.instruments}}">
                                             <li>Instrument: {{member.instruments}}</li>
                                         </template>
-                                        <template is="dom-if" if="{{member.begin.length}}">
+                                        <template is="dom-if" if="{{member.begin}}">
                                             <li>Années d'activités: {{member.begin}}</li>
                                         </template>
                                     </ul>
@@ -148,13 +148,13 @@
                                 <template is="dom-if" if="{{formerMember.ended}}">
                                     <li><a href="#/search/member/name/{{_encodeUri(formerMember.name)}}">{{formerMember.name}}</a></li>
                                     <ul>
-                                        <template is="dom-if" if="{{formerMember.instruments.length}}">
+                                        <template is="dom-if" if="{{formerMember.instruments}}">
                                             <li>Instrument: {{formerMember.instruments}}</li>
                                         </template>
-                                        <template is="dom-if" if="{{formerMember.begin.length}}">
+                                        <template is="dom-if" if="{{formerMember.begin}}">
                                             <li>Début: {{formerMember.begin}}</li>
                                         </template>
-                                        <template is="dom-if" if="{{formerMember.end.length}}">
+                                        <template is="dom-if" if="{{formerMember.end}}">
                                             <li>Fin: {{formerMember.end}}</li>
                                         </template>
                                     </ul>

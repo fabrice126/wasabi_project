@@ -35,11 +35,35 @@
             },
             "deezer_error_404": {
                 "error": "Resource unavailable on Deezer"
+            },
+            "user": {
+                "authentication": {
+                    "success": false,
+                    "error": "Authentication failed. User not found."
+                },
+                "login": {
+                    "success": false,
+                    "message": "Please enter email and password."
+                },
+                "mail_exist": {
+                    "success": false,
+                    "message": "That email address already exists."
+                },
+                "password": {
+                    "success": false,
+                    "message": "Authentication failed. Passwords did not match."
+                }
             }
         },
         "valid": {
             "send_message_ok": {
                 "message": "OK"
+            },
+            "user": {
+                "user_created": {
+                    "success": true,
+                    "message": "Successfully created new user."
+                }
             }
         }
     },
@@ -73,5 +97,12 @@
     "request": {
         "limit": 200,
         "limit_search_bar": 12
+    },
+    "launch": {
+        "env": {
+            "prod": "production",
+            "dev": "development",
+            "dev_mode": false
+        }
     }
 }
