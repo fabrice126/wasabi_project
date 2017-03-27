@@ -16,7 +16,7 @@ import errorHandler from 'errorhandler';
 import basicAuth from 'basic-auth-connect';
 import jwt from 'jsonwebtoken';
 import passport from 'passport';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcrypt-nodejs';
 import elasticsearch from 'elasticsearch';
 import confPassport from './routes/conf/passport';
 import search from './routes/search';
