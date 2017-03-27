@@ -122,7 +122,7 @@
                 <template is="dom-if" if="{{artist.labels}}">
                     <div><b>Label:</b> {{artist.labels}}</div>
                 </template>
-                <template id="domIfMember" is="dom-if" if="{{artist.members}}" restamp>
+                <template id="domIfMember" is="dom-if" if="{{artist.members.length}}" restamp>
                     <details>
                         <summary class="inherit">Voir les membres actuels:</summary>
                         <ul class="collapse-content">
