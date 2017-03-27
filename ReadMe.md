@@ -1,7 +1,7 @@
 
 **Conseils**
 =======
-Au cours du développement de wasabi, des champs récupérés de lyrics wikia seront peut-être ajoutés. Si tel est le cas veillez à ajouter ces champs dans les objets correspondant au modèle : objArtist (createdb.js et lyricsWikia.js), objAlbum (lyricsWikia.js), objSong (lyricsWikia.js).
+Au cours du développement de wasabi, des champs récupérés de lyrics wikia seront peut-être ajoutés. Si tel est le cas veillez à ajouter ces champs dans les objets correspondant aux modèles.
 
 Il est conseillé de lire ce que fait chaque API avant de l'utiliser notamment celle concernant updatedb et createdb.
 
@@ -12,7 +12,7 @@ Il est conseillé de lire ce que fait chaque API avant de l'utiliser notamment c
 3. Installer mongodb : version >= 3.2 : *<a href="https://www.mongodb.com/" target="_blank">ici</a>*  
 *3.1.* lancer mongodb, voir : *"<a href="#mongodb--sous-windows">Comment lancer les bases de données>MongoDB sous Windows</a>"*  
 *3.2.*  Importer la base de données wasabi : `cd wasabi_project/mongo/backup_mongo` et taper la commande `mongorestore dump_X` ou X est le nombre le plus grand (chaque dump possède un README)  
-*3.3.* (facultatif mais conseillé) Installer robomongo : *<a href="https://robomongo.org/" target="_blank">ici</a>*  
+*3.3.* (facultatif mais conseillé) Installer mongobooster : *<a href="https://mongobooster.com/" target="_blank">ici</a>*  
 4. Installer elasticsearch: version >= 2.3 : *<a href="https://www.elastic.co/fr/products/elasticsearch" target="_blank">ici</a>*  
 *4.1.* lancer elasticsearch, voir : *"<a href="#elasticsearch-sous-windows">Comment lancer les bases de données>Elasticsearch sous Windows</a>"*  
 5. Lancer le serveur node js  
@@ -20,8 +20,8 @@ Il est conseillé de lire ce que fait chaque API avant de l'utiliser notamment c
 *5.2.* taper la commande : `npm start`  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*5.2.1.* Si ça ne fonctionne pas : taper `npm install` en ligne commande dans le projet wasabi (voir 5.1.) cela installera les dépendances du projet  
 *5.3.* le serveur est maintenant lancé sur *http://localhost/* (dans le navigateur)  
-*5.4.* /!\ Par souci de sécurité le fichier contenant le login / mot de passe n'est pas sur le git vous devez donc ajouter `login.json` dans le répertoire `routes/conf`. Ce fichier contient le json suivant: `{"login": "ADemanderALAdmin","password": "ADemanderALAdmin"}`
-6. Remplir la base de données d'elasticsearch pour cela utiliser l'api REST pour indexer le nom des artistes `http://127.0.0.1/createdb/createdbelasticsearchartist` et `http://127.0.0.1/createdb/createdbelasticsearchsong` pour indexer le nom des musiques avec les noms d'artistes et les noms d'albums ainsi nous pourrons effectuer des recherches via la barre de recherche du site
+*5.4.* /!\ Par souci de sécurité le fichier contenant le login / mot de passe n'est pas sur le git vous devez donc ajouter `routes/conf/login.json` . Ce fichier contient le json suivant: `{"login": "ADemanderALAdmin","password": "ADemanderALAdmin"}`. Idem pour le fichier routes/conf/confJwt.json contenant la clé des Tokens JWT ce fichier contient le json suivant :  `{"secretOrKey": "ADemanderALAdmin"}`
+6. Remplir la base de données d'elasticsearch : pour cela utilisez l'api REST pour indexer le nom des artistes `http://127.0.0.1/createdb/createdbelasticsearchartist` et `http://127.0.0.1/createdb/createdbelasticsearchsong` pour indexer les noms des musiques avec les noms d'artistes et les noms d'albums ainsi nous pourrons effectuer des recherches via la barre de recherche du site
 *6.1.* En cas de problème avec `http://127.0.0.1/createdb/createdbelasticsearchsong` vérifiez dans app.js que `app.set('env', 'development');` n'est pas commenté. Si c'est le cas, vous devez décommenter cette ligne et commentez `app.set('env', 'production');` 
 
 **Comment lancer l'application sous RedHat/Linux Centos 7 (serveur - uniquement en cas de ré-installation)**
@@ -31,7 +31,7 @@ Il est conseillé de lire ce que fait chaque API avant de l'utiliser notamment c
 *1.2.* Taper la commande : `git clone https://github.com/fabrice126/wasabi_project.git`  
 *1.3.* /!\ les dumps de la base de données ne sont pas sur le git. Mettre les dumps de la base de données dans le dossier `backup_mongo`. Créer le dossier dans `wasabi_project/mongo/` pour cela rendez-vous dans le bon dossier `cd wasabi_project/mongo/` puis tapez la commande : `mkdir backup_mongo`. Placer les dumps à cet endroit (conseil: envoyer les dumps via filezilla)  
 *1.4.* Dans le dossier `wasabi_project/mongo/` créer le répertoire backup_mongo_tmp. Taper la commande : `mkdir backup_mongo_tmp`  
-*1.5.* /!\ Par souci de sécurité le fichier contenant le login / mot de passe n'est pas sur le git vous devez donc ajouter `login.json` dans le répertoire `routes/conf`. Ce fichier contient le json suivant: `{"login": "ADemanderALAdmin","password": "ADemanderALAdmin"}`
+*1.5.* /!\ Par souci de sécurité le fichier contenant le login / mot de passe n'est pas sur le git vous devez donc ajouter `routes/conf/login.json` . Ce fichier contient le json suivant: `{"login": "ADemanderALAdmin","password": "ADemanderALAdmin"}`. Idem pour le fichier routes/conf/confJwt.json contenant la clé des Tokens JWT ce fichier contient le json suivant :  `{"secretOrKey": "ADemanderALAdmin"}`
 2. Installer node js : *<a href="https://nodejs.org/en/download/package-manager/#enterprise-linux-and-fedora" target="_blank">ici</a>*
 3. Installer mongodb : version >= 3.2 : *<a href="https://docs.mongodb.com/manual/tutorial/install-mongodb-on-red-hat/" target="_blank">ici</a>*  
 *3.1.* lancer mongodb, voir : *"<a href="#mongodb-sous-linux-redhatcentos-7">Comment lancer les bases de données>MongoDB sous Linux RedHat/Centos 7</a>"*
@@ -41,21 +41,22 @@ Il est conseillé de lire ce que fait chaque API avant de l'utiliser notamment c
 *5.1.* infos utiles sur PM2: log, start, restart, associer un compte pm2 à un serveur ... : *<a href="http://pm2.keymetrics.io/docs/usage/quick-start/">ici</a>* 
 6. Lancer le serveur  
 *6.1.* en ligne de commande : `cd C:/Users/user/Documents/wasabi_project`  
-*6.2.* taper la commande : `pm2 start bin/www`  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*6.2.1.* Si ça ne fonctionne pas : taper `npm install` en ligne commande dans le projet wasabi (voir 6.1.)  
-*6.3.* le serveur est maintenant lancé et accessible via l'URL à demander au chef du projet
-7. Remplir la base de données d'elasticsearch pour cela utiliser l'api REST pour indexer les noms des artistes http://urldusite/createdb/createdbelasticsearchartist et http://urldusite/createdb/createdbelasticsearchsong pour indexer le nom des musiques avec les noms des artistes et les noms des albums ainsi nous pourrons chercher une musique par son title + nom d'album + nom d'artiste.
+*6.2.* taper la commande : `pm2 start --interpreter babel-node bin/www --watch --log-date-format="YYYY-MM-DD HH:mm Z"`  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*6.2.1.* Si ça ne fonctionne pas : taper `npm install` en ligne commande dans le projet wasabi afin d'installer les dépendances (voir 6.1.)  
+*6.3.* le serveur est maintenant lancé et accessible via l'URL du projet wasabi (à demander au chef du projet)
+7. Remplir la base de données d'elasticsearch: pour cela utiliser l'api REST pour indexer les noms des artistes http://urldusite/createdb/createdbelasticsearchartist et http://urldusite/createdb/createdbelasticsearchsong pour indexer les noms des musiques avec les noms des artistes et les noms des albums ainsi nous pourrons chercher une musique par son title + nom d'album + nom d'artiste.
 
 **Connexion et gestion du serveur wasabi**
 =======
 
-- Vous pouvez vous connecter sur le serveur via putty :  *<a href="http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html ">ici</a>* 
-- Une fois connecté au serveur entrez votre login / mot de passe à demander à l'admin
+- Vous pouvez vous connecter sur le serveur via putty :  *<a href="http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html ">ici</a>* ou par SSH 
+- Une fois connecté au serveur entrez votre login / mot de passe (à demander à l'admin)
 - Une fois connecté sur le compte taper : `sudo su` et `screen -r` (*<a href="https://doc.ubuntu-fr.org/screen" target="_blank">documentation de screen</a>*) afin de restaurer les diverses sessions de ligne de commande
 - Vous pouvez naviguer entre ces sessions via `ctrl + a + n`
 - Le logiciel `htop` sera lancé (l'équivalent du gestionnaire de tâche windows)
 - Les logs du serveur seront aussi lancé dans une autre session (LOGS obtenus via PM2)
-- Mongodb sera lancé. 
+- Mongodb sera lancé.
+- La commande `pm2 start --interpreter babel-node bin/www --watch --log-date-format="YYYY-MM-DD HH:mm Z"` sera aussi lancé 
 - D'autres sessions peuvent aussi être lancés mais n'ont pas de réelle importance
 
 **Comment lancer les bases de données**
@@ -95,7 +96,7 @@ Il est conseillé de lire ce que fait chaque API avant de l'utiliser notamment c
  
  2. Rendez-vous dans le répertoire des dumps `(mongo/backup_mongo/)` en ligne de commande
  
- 3. Lancer la commande `mongodump --out dump_x+1` par exemple: si le dernier dump a pour nom `dump_5` lancer la commande `mongodump --out dump_6` pour créer un nouveau dump, un dossier `dump_6` sera crée. Vous pouvez aussi lancer la commande `mongodump` pour créer un dump nommé `dump`.
+ 3. Lancer la commande `mongodump --out dump_x+1` par exemple: si le dernier dump a pour nom `dump_5` lancez la commande `mongodump --out dump_6` pour créer un nouveau dump. Un dossier `dump_6` sera crée. Vous pouvez aussi lancer la commande `mongodump` pour créer un dump nommé `dump` et ensuite le renommer.
  
  **Restaurer la base de données via un dump :**
  1. Rendez-vous dans le répertoire des dumps `(mongo/backup_mongo/)` en ligne de commande
@@ -104,7 +105,7 @@ Il est conseillé de lire ce que fait chaque API avant de l'utiliser notamment c
  *2.1.* Taper en ligne de commande `mongo wasabi` pour avoir accès a la base de données wasabi  
  *2.2.* Taper en ligne de commande `db.dropDatabase()` afin de supprimer la base de données wasabi  
  
- 3. Lancer la commande `mongorestore dump_6` pour restaurer la base de données wasabi (données + index)  
+ 3. Lancer la commande `mongorestore dump_6` pour restaurer la base de données wasabi
 
 
 
@@ -117,15 +118,15 @@ Une collection artist contenant des documents représentant un artiste avec ses 
  	*1.1.* Assurez-vous que mongodb est lancé avec la commande `mongod`  
  	*1.2.* Aller dans votre répertoire `mongo/request_mongo` en ligne commande et tapez la commande `mongo wasabi`, vous devriez être connecté à la base de données  
  	*1.3.* Lancer la commande `load("MonFichier.js");` exemple `load("FindSameDocument.js");`  
- 	*1.4.* Vous pouvez aussi lancer ces scripts via une interface graphique tel que robomongo: *<a href="https://robomongo.org" target="_blank">ici</a>*  
+ 	*1.4.* Vous pouvez aussi lancer ces scripts via une interface graphique tel que mongobooster : *<a href="https://mongobooster.com/" target="_blank">ici</a>*  
  
- 2.  Le fichier `FindSameDocument.js` dans mongo afin de trouver les documents en double (ayant le même nom d'artiste car un nom d'artiste est unique en base de données, cf : comme dans lyrics wikia) dans la base de 	données
+ 2.  Le fichier `FindSameDocument.js` dans mongo afin de trouver les documents en double (ayant le même nom d'artiste car un nom d'artiste est unique en base de données, cf : comme dans lyrics wikia) dans la base de	données
 
  3.  [doit être exécuté après 2.] Le fichier `ConstructBDAfterCreate.js` dans mongodb afin de créer :  
- 	*3.1.* Une collection artist contenant uniquement les informations relatives à l'artiste (sans le champ album)  
-	*3.2.* Une collection album contenant les informations relatives à l'album (sans le champ song)  
- 	*3.3.* Une collection song contenant les informations relatives à la musique  
- 	*3.4.* Les index des collections artist, album et song  
+ 	*3.1.* Une collection `artist` contenant uniquement les informations relatives à l'artiste
+	*3.2.* Une collection `album` contenant les informations relatives à l'album  
+ 	*3.3.* Une collection `song` contenant les informations relatives à la musique  
+ 	*3.4.* Les index des collections `artist`, `album` et `song`  
  
  4.  [doit être exécuté après 3.] Le fichier `RefArtistInAlbum.js` permettant d'ajouter une référence d'artiste dans un document album(~2 minutes) et de créer l'index sur ce champ
  
@@ -137,22 +138,23 @@ Une collection artist contenant des documents représentant un artiste avec ses 
  
  8.  [doit être exécuté après 5.] Le fichier `WordCount_Song.js` faisant le word count des lyrics pour chaque song (afin de voir les termes les plus utilisés dans une musique)
 
- 9.  [doit être exécuté après 5.] Le web service `extractdbpedia/artist` permettant d'extraire le RDF des artistes ayant un lien vers Wikipédia. Ce web service envoie des requêtes SPARQL sur DBpédia afin d'obtenir le RDF de l'artiste. Un champ rdf contenant le RDF de l'artiste est ensuite ajouté en base de données (durée: plusieurs heures)
+ 9.  [doit être exécuté après 5 et en mode `development`.] Le web service `extractdbpedia/artist` permettant d'extraire le RDF des artistes ayant un lien vers Wikipédia. Ce web service envoie des requêtes SPARQL sur DBpédia afin d'obtenir le RDF de l'artiste. Un champ rdf contenant le RDF de l'artiste est ensuite ajouté en base de données (durée: plusieurs heures)
  
- 10.  [doit être exécuté après 5.] Le web service `extractdbpedia/album` permettant d'extraire le RDF des musiques ayant un lien vers Wikipédia. Ce web service envoie des requêtes sparql sur DBpédia afin d'obtenir le RDF de la musique. Un champ rdf contenant le RDF de la musique est ensuite ajouté en base de données (durée: plusieurs heures)
+ 10.  [doit être exécuté après 5 et en mode `development`.] Le web service `extractdbpedia/album` permettant d'extraire le RDF des musiques ayant un lien vers Wikipédia. Ce web service envoie des requêtes sparql sur DBpédia afin d'obtenir le RDF de la musique. Un champ rdf contenant le RDF de la musique est ensuite ajouté en base de données (durée: plusieurs heures)
  
- 11.  [doit être exécuté après 5.] Le web service `extractdbpedia/song` permettant d'extraire le RDF des albums ayant un lien vers wikipédia. Ce web service envoie des requêtes sparql sur DBpédia afin d'obtenir le RDF de l'album. Un champ rdf contenant le RDF de l'album est ensuite ajouté en base de données (durée: plusieurs heures)
+ 11.  [doit être exécuté après 5 et en mode `development`.] Le web service `extractdbpedia/song` permettant d'extraire le RDF des albums ayant un lien vers wikipédia. Ce web service envoie des requêtes sparql sur DBpédia afin d'obtenir le RDF de l'album. Un champ rdf contenant le RDF de l'album est ensuite ajouté en base de données (durée: plusieurs heures)
  
- 12.  [doit être exécuté après 9.] le web service `extractdbpedia/createfields/artist` transforme les propriétés de notre champ RDF en propriétés dans notre base de données
+ 12.  [doit être exécuté après 9 et en mode `development`.] le web service `extractdbpedia/createfields/artist` transforme les propriétés de notre champ RDF en propriétés dans notre base de données
  
- 13.  [doit être exécuté après 10.] le web service `extractdbpedia/createfields/album` transforme les propriétés de notre champ RDF en propriétés dans notre base de données
+ 13.  [doit être exécuté après 10 et en mode `development`.] le web service `extractdbpedia/createfields/album` transforme les propriétés de notre champ RDF en propriétés dans notre base de données
  
- 14.  [doit être exécuté après 11.] le web service `extractdbpedia/createfields/song` transforme les propriétés de notre champ RDF en propriétés dans notre base de données
+ 14.  [doit être exécuté après 11 et en mode `development`.] le web service `extractdbpedia/createfields/song` transforme les propriétés de notre champ RDF en propriétés dans notre base de données
  
- 15.  [doit être exécuté après 14.]le fichier `CreateIndexAfterDBpediaExtraction` ce fichier permet de créer les index des nouveaux champs insérés dans la base de données
+ 15.  [doit être exécuté après 14.] le fichier `CreateIndexAfterDBpediaExtraction` ce fichier permet de créer les index des nouveaux champs insérés dans la base de données
  
  16.  [doit être exécuté après 15.] le fichier `Create_IsClassic_Field` permettant grâce aux subjects des musiques récupérées du rdf de savoir si la musique est un classique
- 
+ 17. [doit être exécuté après 6 et en mode `development`.] le web service `updatedb/multitrackspath` ajoute la propriété multitrackspath dans notre base de données. Ce web service a besoin des musiques multitrack sur la machine ou est lancé cette API
+
 
 #### mongo/sparql/
 **Contient les requêtes sparql utilisées par l'application pour l'extraction du RDF pour les :**  
@@ -208,5 +210,4 @@ Une collection artist contenant des documents représentant un artiste avec ses 
 =======
 
 **voir : **https://musicbrainz.org/doc/MusicBrainz_Server/Setup, lorsque bin/reindex est exécuté, vous pouvez lancer des requêtes via l'API Musicbrainz local
-
 
