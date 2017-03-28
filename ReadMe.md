@@ -38,7 +38,7 @@ Il est conseillé de lire ce que fait chaque API avant de l'utiliser notamment c
 4. Installer elasticsearch: version >= 2.3 : *<a href="https://www.elastic.co/guide/en/elasticsearch/reference/master/rpm.html" target="_blank">ici</a>*  
 *4.1.* lancer elasticsearch, voir : *"<a href="#elasticsearch-sous-linux-redhatcentos-7">Comment lancer les bases de données>Elasticsearch sous Linux RedHat/Centos 7</a>"*
 5. Installer le module node js PM2 dans le répertoire wasabi_project : `npm install pm2 -g`  
-*5.1.* infos utiles sur PM2: log, start, restart, associer un compte pm2 à un serveur ... : *<a href="http://pm2.keymetrics.io/docs/usage/quick-start/">ici</a>* 
+*5.1.* infos utiles sur PM2: log, start, restart, associer un compte pm2 à un serveur ... : *<a href="http://pm2.keymetrics.io/docs/usage/quick-start/" target="_blank">ici</a>* 
 6. Lancer le serveur  
 *6.1.* en ligne de commande : `cd C:/Users/user/Documents/wasabi_project`  
 *6.2.* taper la commande : `pm2 start --interpreter babel-node bin/www --watch --log-date-format="YYYY-MM-DD HH:mm Z"`  
@@ -49,7 +49,7 @@ Il est conseillé de lire ce que fait chaque API avant de l'utiliser notamment c
 **Connexion et gestion du serveur wasabi**
 =======
 
-- Vous pouvez vous connecter sur le serveur via putty :  *<a href="http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html ">ici</a>* ou par SSH 
+- Vous pouvez vous connecter sur le serveur via putty :  *<a href="http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html" target="_blank">ici</a>* ou par SSH 
 - Une fois connecté au serveur entrez votre login / mot de passe (à demander à l'admin)
 - Une fois connecté sur le compte taper : `sudo su` et `screen -r` (*<a href="https://doc.ubuntu-fr.org/screen" target="_blank">documentation de screen</a>*) afin de restaurer les diverses sessions de ligne de commande
 - Vous pouvez naviguer entre ces sessions via `ctrl + a + n`
@@ -81,6 +81,22 @@ Il est conseillé de lire ce que fait chaque API avant de l'utiliser notamment c
 ## Musicbrainz en local
 
 - **voir : **https://musicbrainz.org/doc/MusicBrainz_Server/Setup, lorsque bin/reindex est exécuté, vous pouvez lancer des requêtes via l'API Musicbrainz local
+
+**Comment générer la documentation des APIs**
+=======
+Nous utilisons http://apidocjs.com/ pour décrire nos APIs et générer leurs documentations. Pour cela: 
+
+- rendez-vous sur le répertoire racine du projet: `wasabi_project`
+- lancez la commande: `apidoc -i routes/ -o apidoc/` plus d'informations: <a href="http://apidocjs.com/#run" target="_blank">ici</a> 
+cela générera la documentation des APIs contenu dans le dossier `wasabi_project/routes` dans le dossier `wasabi_project/apidoc` 
+
+**Comment installer le certificat HTTPS**
+=======
+Un dossier `wasabi_project/cert_https` doit être créé afin d'y ajouter les certificats fournis par le projet. Ces certificats seront utilisés dans le fichier `bin/www` 
+`const options = {
+key: fs.readFileSync('./' + config.https.wasabi_key),
+cert: fs.readFileSync('./' + config.https.wasabi_crt)
+}`
 
 **Architecture du code:**
 =======
@@ -220,5 +236,4 @@ Une collection artist contenant des documents représentant un artiste avec ses 
 ## package.json
 	Fichier décrivant l'application, c'est aussi le gestionnaire de dépendance de node js. 
 	
-
 

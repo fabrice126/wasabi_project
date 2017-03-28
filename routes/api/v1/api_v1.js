@@ -162,6 +162,7 @@ router.get('/artist_all/:start', function (req, res, next) {
     var db = req.db,
         start = Number.parseInt(req.params.start),
         cntAlbum = 0,
+        cntArtist = 0,
         nbAlbum = 0;
     if (!Number.isInteger(start) || start < 0) {
         return res.status(404).json(config.http.error.global_404);
@@ -169,7 +170,7 @@ router.get('/artist_all/:start', function (req, res, next) {
     db.collection(COLLECTIONARTIST).find({}, {
         wordCount: 0,
         rdf: 0
-    }).skip(start).limit(3).toArray((err, artists) => {
+    }).skip(start).limit(LIMIT).toArray((err, artists) => {
         if (err) {
             return res.status(404).json(config.http.error.internal_error_404);
         }
@@ -184,10 +185,10 @@ router.get('/artist_all/:start', function (req, res, next) {
                     if (err) {
                         return res.status(404).json(config.http.error.internal_error_404);
                     }
+                    cntArtist++;
                     nbAlbum += albums.length;
                     artists[i].albums = albums;
                     //Si le dernier artist ne possède pas d'album alors on retourne ici le resultat car il ne pourra pas entrer dans le callback de la collection song ci-dessous
-
                     for (var j = 0, k = albums.length; j < k; j++) {
                         (function (j) {
                             db.collection(COLLECTIONSONG).find({
@@ -205,7 +206,7 @@ router.get('/artist_all/:start', function (req, res, next) {
                                 }
                                 artists[i].albums[j].songs = songs;
                                 cntAlbum++;
-                                if (cntAlbum == nbAlbum) {
+                                if (cntArtist == artists.length && cntAlbum == nbAlbum) {
                                     return res.json(artists);
                                 }
                             });

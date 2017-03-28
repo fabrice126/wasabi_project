@@ -113,13 +113,13 @@
                 <template is="dom-if" if="{{artist.lifeSpan.end}}">
                     <div><b>Fin:</b> {{artist.lifeSpan.end}}</div>
                 </template>
-                <template is="dom-if" if="{{artist.locationInfo}}">
+                <template is="dom-if" if="{{artist.locationInfo.length}}">
                     <div><b>Localisation:</b> {{artist.locationInfo}}</div>
                 </template>
-                <template is="dom-if" if="{{artist.genres}}">
+                <template is="dom-if" if="{{artist.genres.length}}">
                     <div><b>Genre:</b> {{artist.genres}}</div>
                 </template>
-                <template is="dom-if" if="{{artist.labels}}">
+                <template is="dom-if" if="{{artist.labels.length}}">
                     <div><b>Label:</b> {{artist.labels}}</div>
                 </template>
                 <template id="domIfMember" is="dom-if" if="{{artist.members.length}}" restamp>
