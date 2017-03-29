@@ -1,4 +1,4 @@
-import config from '../conf/conf.json';
+import config from '../conf/conf';
 
 /**
  *

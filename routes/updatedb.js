@@ -1,5 +1,5 @@
 import express from 'express';
-import config from './conf/conf.json';
+import config from './conf/conf';
 import lyricsWikia from './handler/lyricsWikia.js';
 import utilHandler from './handler/utilHandler.js';
 import wordCountHandler from './handler/wordCountHandler.js';

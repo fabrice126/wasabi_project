@@ -1,4 +1,4 @@
-{
+module.exports = {
     "http": {
         "public": "/../public/",
         "mime": {
@@ -10,6 +10,13 @@
             "ttf": "font/ttf",
             "png": "image/png",
             "html": "text/html"
+        },
+        "limit_request": {
+            "api": {
+                "windowMs": 60000, // 60 secondes 
+                "max": 10, // limit each IP to 100 requests per windowMs 
+                "delayMs": 10 // disable delaying - full speed until the max limit is reached 
+            }
         },
         "error": {
             "global_404": {
@@ -105,4 +112,4 @@
             "dev_mode": false
         }
     }
-}
+};

@@ -2,7 +2,7 @@ import express from 'express';
 import request from 'request';
 import searchHandler from './handler/searchHandler.js';
 import elasticSearchHandler from './handler/elasticSearchHandler.js';
-import config from './conf/conf.json';
+import config from './conf/conf';
 import {
     ObjectId
 } from 'mongoskin';

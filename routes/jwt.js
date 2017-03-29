@@ -1,5 +1,5 @@
 import express from 'express';
-import config from './conf/conf.json';
+import config from './conf/conf';
 import passport from 'passport';
 import User from '../model/User.model';
 import confJwt from '../routes/conf/confJwt';

@@ -1,6 +1,6 @@
 import express from 'express';
 import request from 'request';
-import config from './conf/conf.json';
+import config from './conf/conf';
 import fs from "fs";
 import path from 'path';
 import utilHandler from './handler/utilHandler.js';

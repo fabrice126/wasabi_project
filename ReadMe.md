@@ -219,7 +219,7 @@ Une collection artist contenant des documents représentant un artiste avec ses 
 ## routes/
 	Contient la définition des routes supportées par l'application. C'est ici que se situe l'API REST  
 #### routes/conf/  
-	conf.json : Fichier de configuration permettant  de ne pas réécrire les données redondantes dans l'application  
+	conf.js : Fichier de configuration permettant  de ne pas réécrire les données redondantes dans l'application  
 #### routes/handler/  
 	xxxx.js : Contient la logique applicative à appliquer lors de requêtes sur les routes.   
 	

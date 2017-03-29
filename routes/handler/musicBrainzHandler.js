@@ -2,7 +2,7 @@ import request from 'request';
 import {
     ObjectId
 } from 'mongoskin';
-import config from '../conf/conf.json';
+import config from '../conf/conf';
 const COLLECTIONARTIST = config.database.collection_artist;
 const COLLECTIONALBUM = config.database.collection_album;
 const COLLECTIONSONG = config.database.collection_song;

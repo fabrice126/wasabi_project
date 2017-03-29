@@ -4,7 +4,7 @@ import utilHandler from './handler/utilHandler.js';
 import construct_endpoint from './sparql_request/construct_endpoint.js';
 import redirect_request from './sparql_request/redirect_request.js';
 import same_as_request from './sparql_request/same_as_request.js';
-import config from './conf/conf.json';
+import config from './conf/conf';
 import {ObjectId} from 'mongoskin';
 import {parseString} from 'xml2js';
 

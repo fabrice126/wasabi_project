@@ -9,7 +9,7 @@ import {
 import Artist from '../../model/Artist';
 import Album from '../../model/Album';
 import Song from '../../model/Song';
-import config from '../conf/conf.json';
+import config from '../conf/conf';
 import util from './utilHandler'
 const db = dbConnect('mongodb://localhost:27017/wasabi');
 

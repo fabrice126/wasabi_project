@@ -1,5 +1,5 @@
  import express from 'express';
- import config from '../conf/conf.json';
+ import config from '../conf/conf';
  import fs from 'fs';
  import utilHandler from './utilHandler';
  const PATH_MAPPING_ANIMUX = "./mongo/animux";

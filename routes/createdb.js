@@ -2,7 +2,7 @@ import express from 'express';
 import request from 'request';
 import lyricsWikia from './handler/lyricsWikia.js';
 import utilHandler from './handler/utilHandler.js';
-import config from './conf/conf.json';
+import config from './conf/conf';
 import elasticSearchHandler from './handler/elasticSearchHandler.js';
 import fs from 'fs';
 import mkdirp from 'mkdirp';

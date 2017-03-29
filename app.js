@@ -1,23 +1,29 @@
-import config from './routes/conf/conf.json';
+import config from './routes/conf/conf';
 import login from './routes/conf/login.json';
+//Import express
 import express from 'express';
+import RateLimit from 'express-rate-limit';
+import session from 'express-session';
+import helmet from 'helmet';
+//Import DB
+import elasticsearch from 'elasticsearch';
+import mongoose from 'mongoose';
 import {
     db as dbMongo
 } from 'mongoskin';
+//Import server
 import querystring from 'querystring';
 import path from 'path';
-import mongoose from 'mongoose';
 import favicon from 'serve-favicon';
 import logger from 'morgan';
-import session from 'express-session';
 import bodyParser from 'body-parser';
-import helmet from 'helmet';
 import errorHandler from 'errorhandler';
+//Import JWT
 import basicAuth from 'basic-auth-connect';
 import jwt from 'jsonwebtoken';
 import passport from 'passport';
 import bcrypt from 'bcrypt-nodejs';
-import elasticsearch from 'elasticsearch';
+//Import routes
 import confPassport from './routes/conf/passport';
 import search from './routes/search';
 import api_v1 from './routes/api/v1/api_v1';
@@ -26,7 +32,7 @@ import updatedb from './routes/updatedb';
 import mergedb from './routes/mergedb';
 import createdb from './routes/createdb';
 import extractdbpedia from './routes/extractdbpedia';
-import jwt_api from './routes/jwt';
+import jwt_api from './routes/jwt'; //a supprimer après les tests JWT
 const app = express();
 /**
  * -------------------------------------------------------------------------------------------------------
@@ -72,7 +78,6 @@ app.use(helmet());
 //     },
 //     saveUninitialized: true
 // }));
-
 String.prototype.endsWith = function (suffix) {
     return this.indexOf(suffix, this.length - suffix.length) !== -1;
 };
@@ -104,13 +109,15 @@ app.use((req, res, next) => {
     //</start> pour MT5
     next();
 });
+
 /**
  * -------------------------------------------------------------------------------------------------------
  * --------------------------------------DEFINITION DES ROUTES D'API--------------------------------------
  * -------------------------------------------------------------------------------------------------------
  */
 app.use('/jwt', jwt_api);
-app.use('/api/v1', api_v1);
+console.log(config.http.limit_request.api);
+app.use('/api/v1', new RateLimit(config.http.limit_request.api), api_v1);
 //permet de s'authentifier, personne ne doit pouvoir accèder au site
 app.use(basicAuth(login.login, login.password));
 app.use('/', express.static(path.join(__dirname, 'public')));

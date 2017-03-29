@@ -1,6 +1,6 @@
 import request from 'request';
 import express from 'express';
-import config from '../conf/conf.json';
+import config from '../conf/conf';
 import {
     ObjectId
 } from 'mongoskin';
