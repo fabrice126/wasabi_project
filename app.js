@@ -116,7 +116,6 @@ app.use((req, res, next) => {
  * -------------------------------------------------------------------------------------------------------
  */
 app.use('/jwt', jwt_api);
-console.log(config.http.limit_request.api);
 app.use('/api/v1', new RateLimit(config.http.limit_request.api), api_v1);
 //permet de s'authentifier, personne ne doit pouvoir accèder au site
 app.use(basicAuth(login.login, login.password));
