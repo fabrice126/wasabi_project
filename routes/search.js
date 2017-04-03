@@ -1,5 +1,6 @@
 import express from 'express';
 import request from 'request';
+import RateLimit from 'express-rate-limit';
 import searchHandler from './handler/searchHandler.js';
 import elasticSearchHandler from './handler/elasticSearchHandler.js';
 import config from './conf/conf';
@@ -82,8 +83,7 @@ const LIMIT = config.request.limit;
         "error": "Page not found"
     }
  */
-
-router.get('/categorie/:nomCategorie/lettre/:lettre/page/:numPage', (req, res, next) => {
+router.get('/categorie/:nomCategorie/lettre/:lettre/page/:numPage', new RateLimit(config.http.limit_request.search), (req, res, next) => {
     var tObjectRequest, skip, tParamToFind;
     var nomCategorie = req.params.nomCategorie.toLowerCase(),
         lettre = req.params.lettre,
@@ -202,7 +202,7 @@ router.get('/categorie/:nomCategorie/lettre/:lettre/page/:numPage', (req, res, n
         "error": "Page not found"
     }
  */
-router.get('/category/:collection/:categoryName', (req, res) => {
+router.get('/category/:collection/:categoryName', new RateLimit(config.http.limit_request.search), (req, res) => {
     var collection = req.params.collection;
     if (collection !== COLLECTIONARTIST && collection !== COLLECTIONALBUM && collection !== COLLECTIONSONG) {
         return res.status(404).json(config.http.error.global_404);
@@ -252,7 +252,7 @@ router.get('/category/:collection/:categoryName', (req, res) => {
     }]
  *
  */
-router.get('/producer/:producerName', (req, res) => {
+router.get('/producer/:producerName', new RateLimit(config.http.limit_request.search), (req, res) => {
     var producerName = req.params.producerName;
     req.db.collection(COLLECTIONSONG).find({
         producer: producerName
@@ -300,7 +300,7 @@ router.get('/producer/:producerName', (req, res) => {
  */
 
 
-router.get('/recordlabel/:recordLabelName', (req, res) => {
+router.get('/recordlabel/:recordLabelName', new RateLimit(config.http.limit_request.search), (req, res) => {
     var db = req.db;
     var recordLabelName = req.params.recordLabelName;
     db.collection(COLLECTIONSONG).find({
@@ -344,7 +344,7 @@ router.get('/recordlabel/:recordLabelName', (req, res) => {
         "title": "Dialectic Chaos"
     }]
  */
-router.get('/genre/:genreName', (req, res) => {
+router.get('/genre/:genreName', new RateLimit(config.http.limit_request.search), (req, res) => {
     var genreName = req.params.genreName;
     req.db.collection(COLLECTIONSONG).find({
         genre: genreName
@@ -389,7 +389,7 @@ router.get('/genre/:genreName', (req, res) => {
     }]
  *
  */
-router.get('/recorded/:recordedName', (req, res) => {
+router.get('/recorded/:recordedName', new RateLimit(config.http.limit_request.search), (req, res) => {
     var recordedName = req.params.recordedName;
     req.db.collection(COLLECTIONSONG).find({
         recorded: recordedName
@@ -437,7 +437,7 @@ router.get('/recorded/:recordedName', (req, res) => {
     }]
  *
  */
-router.get('/award/:awardName', (req, res) => {
+router.get('/award/:awardName', new RateLimit(config.http.limit_request.search), (req, res) => {
     var awardName = req.params.awardName;
     req.db.collection(COLLECTIONSONG).find({
         award: awardName
@@ -482,7 +482,7 @@ router.get('/award/:awardName', (req, res) => {
     }]
  *
  */
-router.get('/writer/:writerName', (req, res) => {
+router.get('/writer/:writerName', new RateLimit(config.http.limit_request.search), (req, res) => {
     var writerName = req.params.writerName;
     req.db.collection(COLLECTIONSONG).find({
         writer: writerName
@@ -527,7 +527,7 @@ router.get('/writer/:writerName', (req, res) => {
     }]
  *
  */
-router.get('/format/:formatName', (req, res) => {
+router.get('/format/:formatName', new RateLimit(config.http.limit_request.search), (req, res) => {
     var formatName = req.params.formatName;
     req.db.collection(COLLECTIONSONG).find({
         format: formatName
@@ -601,7 +601,7 @@ router.get('/count/:collection/:lettre', (req, res) => {
  *
  */
 
-router.get('/count/:collection/:fieldName/:fieldValue', (req, res) => {
+router.get('/count/:collection/:fieldName/:fieldValue', new RateLimit(config.http.limit_request.search), (req, res) => {
     var collection = req.params.collection,
         fieldName = req.params.fieldName,
         fieldValue = req.params.fieldValue;
@@ -764,7 +764,11 @@ router.get('/dbinfo', (req, res) => {
  */
 
 
-router.get('/artist/:artistName', (req, res) => {
+router.get('/artist/:artistName', new RateLimit({
+    "windowMs": 60000, // 60 secondes 
+    "max": 5, // limit each IP to 100 requests per windowMs 
+    "delayMs": 0 // disable delaying - full speed until the max limit is reached
+}), (req, res) => {
     var db = req.db,
         artistName = req.params.artistName;
     db.collection(COLLECTIONARTIST).findOne({
@@ -933,7 +937,11 @@ router.get('/artist/:artistName', (req, res) => {
         "error": "Artist not found"
     }
  */
-router.get('/artist/:artistName/album/:albumName', (req, res) => {
+router.get('/artist/:artistName/album/:albumName', new RateLimit({
+    "windowMs": 60000, // 60 secondes 
+    "max": 5, // limit each IP to 100 requests per windowMs 
+    "delayMs": 0 // disable delaying - full speed until the max limit is reached
+}), (req, res) => {
     var db = req.db,
         albumName = req.params.albumName,
         artistName = req.params.artistName;
@@ -1099,7 +1107,7 @@ router.get('/artist/:artistName/album/:albumName', (req, res) => {
         "error": "Artist not found"
     }
  */
-router.get('/artist_id/:artistId/album_id/:albumId', (req, res) => {
+router.get('/artist_id/:artistId/album_id/:albumId', new RateLimit(config.http.limit_request.search), (req, res) => {
     var db = req.db,
         artistId = req.params.artistId,
         albumId = req.params.albumId;
@@ -1142,7 +1150,7 @@ router.get('/artist_id/:artistId/album_id/:albumId', (req, res) => {
 });
 
 //PUT ALBUM PAR NOM D'ALBUM
-router.put('/artist/:artistName/album/:albumName', (req, res) => {
+router.put('/artist/:artistName/album/:albumName', new RateLimit(config.http.limit_request.search), (req, res) => {
     var db = req.db,
         albumBody = req.body,
         albumTitle = albumBody.title.trim(),
@@ -1264,7 +1272,11 @@ router.put('/artist/:artistName/album/:albumName', (req, res) => {
         "error": "Song not found"
     }
  */
-router.get('/artist/:artistName/album/:albumName/song/:songName', (req, res) => {
+router.get('/artist/:artistName/album/:albumName/song/:songName', new RateLimit({
+    "windowMs": 60000, // 60 secondes 
+    "max": 5, // limit each IP to 100 requests per windowMs 
+    "delayMs": 0 // disable delaying - full speed until the max limit is reached
+}), (req, res) => {
     var db = req.db,
         artistName = req.params.artistName,
         albumName = req.params.albumName,
@@ -1392,7 +1404,7 @@ router.get('/artist/:artistName/album/:albumName/song/:songName', (req, res) => 
         "error": "Song not found"
     }
  */
-router.get('/artist_id/:artistId/album_id/:albumId/song_id/:songId', (req, res) => {
+router.get('/artist_id/:artistId/album_id/:albumId/song_id/:songId', new RateLimit(config.http.limit_request.search), (req, res) => {
     var db = req.db,
         artistId = req.params.artistId,
         albumId = req.params.albumId,
@@ -1435,7 +1447,7 @@ router.get('/artist_id/:artistId/album_id/:albumId/song_id/:songId', (req, res) 
     });
 });
 //PUT SONG OBJECT
-router.put('/artist/:artistName/album/:albumName/song/:songName', (req, res) => {
+router.put('/artist/:artistName/album/:albumName/song/:songName', new RateLimit(config.http.limit_request.search), (req, res) => {
     var db = req.db,
         songBody = req.body;
     //On récupére l'id de la musique afin de modifier l'objet en base de données
@@ -1531,7 +1543,7 @@ router.get('/fulltext/:searchText', (req, res) => {
     });
 });
 
-router.get('/more/:searchText', (req, res) => {
+router.get('/more/:searchText', new RateLimit(config.http.limit_request.search), (req, res) => {
     var searchText = elasticSearchHandler.escapeElasticSearch(req.params.searchText);
     var maxinfoselected = LIMIT / 2;
     var queryArtist = {
@@ -1552,7 +1564,6 @@ router.get('/more/:searchText', (req, res) => {
         },
         "size": LIMIT
     };
-    var start = Date.now();
     searchHandler.fullTextQuery(req, LIMIT, queryArtist, querySong, maxinfoselected).then((resp) => {
         //Ne pas renvoyer avec res.json
         res.send(resp);

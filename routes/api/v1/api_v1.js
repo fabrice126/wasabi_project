@@ -1050,7 +1050,6 @@ router.get('/song/id/:id', function (req, res, next) {
 router.get('/member/name/:memberName', function (req, res, next) {
     var db = req.db,
         memberName = req.params.memberName.trim();
-    console.log(memberName);
     db.collection(COLLECTIONARTIST).find({
         "members.name": memberName
     }, {

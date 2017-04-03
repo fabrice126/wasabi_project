@@ -11,16 +11,17 @@ Il est conseillé de lire ce que fait chaque API avant de l'utiliser notamment c
 2. Installer node js : *<a href="https://nodejs.org/en/" target="_blank">ici</a>*
 3. Installer mongodb : version >= 3.2 : *<a href="https://www.mongodb.com/" target="_blank">ici</a>*  
 *3.1.* lancer mongodb, voir : *"<a href="#mongodb--sous-windows">Comment lancer les bases de données>MongoDB sous Windows</a>"*  
-*3.2.*  Importer la base de données wasabi : `cd wasabi_project/mongo/backup_mongo` et taper la commande `mongorestore dump_X` ou X est le nombre le plus grand (chaque dump possède un README)  
+*3.2.*  Importer la base de données wasabi : `cd wasabi_project/mongo/backup_mongo` et taper la commande `mongorestore dump_X` ou X est le nombre le plus grand (chaque dump possède un README). Vous devez demander le dossier `wasabi_project/mongo/backup_mongo` à l'admin du projet.
 *3.3.* (facultatif mais conseillé) Installer mongobooster : *<a href="https://mongobooster.com/" target="_blank">ici</a>*  
 4. Installer elasticsearch: version >= 2.3 : *<a href="https://www.elastic.co/fr/products/elasticsearch" target="_blank">ici</a>*  
 *4.1.* lancer elasticsearch, voir : *"<a href="#elasticsearch-sous-windows">Comment lancer les bases de données>Elasticsearch sous Windows</a>"*  
 5. Lancer le serveur node js  
-*5.1.* en ligne de commande : `cd C:/Users/user/Documents/wasabi_project`  
-*5.2.* taper la commande : `npm start`  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*5.2.1.* Si ça ne fonctionne pas : taper `npm install` en ligne commande dans le projet wasabi (voir 5.1.) cela installera les dépendances du projet  
-*5.3.* le serveur est maintenant lancé sur *http://localhost/* (dans le navigateur)  
-*5.4.* /!\ Par souci de sécurité le fichier contenant le login / mot de passe n'est pas sur le git vous devez donc ajouter `routes/conf/login.json` . Ce fichier contient le json suivant: `{"login": "ADemanderALAdmin","password": "ADemanderALAdmin"}`. Idem pour le fichier routes/conf/confJwt.json contenant la clé des Tokens JWT ce fichier contient le json suivant :  `{"secretOrKey": "ADemanderALAdmin"}`
+*5.1.* En ligne de commande : `cd C:/Users/user/Documents/wasabi_project`  
+*5.2.* /!\ Par souci de sécurité le fichier contenant le login / mot de passe n'est pas sur le git vous devez donc ajouter `routes/conf/login.json` . Ce fichier contient le json suivant: `{"login": "ADemanderALAdmin","password": "ADemanderALAdmin"}`. Idem pour le fichier `routes/conf/confJwt.json`  contenant la clé des Tokens JWT ce fichier contient le json suivant :  `{"secretOrKey": "ADemanderALAdmin"}`
+*5.3.* Voir la partie: *"<a href="#comment-installer-le-certificat-https">Comment installer un certificat https</a>"*
+*5.4.* taper la commande: `npm install`  cela installera les dépendances du projet
+*5.5.* taper la commande: `npm start` 
+*5.6.* le serveur est maintenant lancé sur *http://localhost/* (dans le navigateur)  
 6. Remplir la base de données d'elasticsearch : pour cela utilisez l'api REST pour indexer le nom des artistes `http://127.0.0.1/createdb/createdbelasticsearchartist` et `http://127.0.0.1/createdb/createdbelasticsearchsong` pour indexer les noms des musiques avec les noms d'artistes et les noms d'albums ainsi nous pourrons effectuer des recherches via la barre de recherche du site
 *6.1.* En cas de problème avec `http://127.0.0.1/createdb/createdbelasticsearchsong` vérifiez dans app.js que `app.set('env', 'development');` n'est pas commenté. Si c'est le cas, vous devez décommenter cette ligne et commentez `app.set('env', 'production');` 
 

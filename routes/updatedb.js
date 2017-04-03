@@ -522,6 +522,9 @@ router.get('/deezer/song', deezerHandler.getAllSongs);
 router.get('/deezer/song/:_id', deezerHandler.getSong);
 
 
+
+
+
 /**
  * API permettant de faire le matching entre les dossiers contenant le nom d'un artiste/groupe
  */

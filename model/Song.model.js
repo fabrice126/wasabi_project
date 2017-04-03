@@ -219,7 +219,31 @@ var songSchema = new mongoose.Schema({
     availableCountries: {
         type: [String],
     },
-
+    id_song_musicbrainz: {
+        type: String,
+        trim: true,
+        default: ""
+    },
+    disambiguation: {
+        type: String,
+        trim: true,
+        default: ""
+    },
+    language: {
+        type: String,
+        trim: true,
+        default: ""
+    },
+    begin: {
+        type: String,
+        trim: true,
+        default: ""
+    },
+    end: {
+        type: String,
+        trim: true,
+        default: ""
+    },
     //liste des champs pouvant ne pas exister dans un document album
 }, {
     collection: 'song'

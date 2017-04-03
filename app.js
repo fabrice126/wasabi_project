@@ -9,6 +9,10 @@ import helmet from 'helmet';
 import elasticsearch from 'elasticsearch';
 import mongoose from 'mongoose';
 import {
+    buildSchema
+} from 'graphql';
+import graphqlHTTP from 'express-graphql';
+import {
     db as dbMongo
 } from 'mongoskin';
 //Import server
@@ -115,9 +119,52 @@ app.use((req, res, next) => {
  * --------------------------------------DEFINITION DES ROUTES D'API--------------------------------------
  * -------------------------------------------------------------------------------------------------------
  */
+// Construct a schema, using GraphQL schema language
+var schema = buildSchema(`
+  type RandomDie {
+    numSides: Int!
+    rollOnce: Int!
+    roll(numRolls: Int!): [Int]
+  }
+
+  type Query {
+    getDie(numSides: Int): RandomDie
+  }
+`);
+
+// This class implements the RandomDie GraphQL type
+class RandomDie {
+    constructor(numSides) {
+        this.numSides = numSides;
+    }
+    rollOnce() {
+        return 1 + Math.floor(Math.random() * this.numSides);
+    }
+    roll({
+        numRolls
+    }) {
+        var output = [];
+        for (var i = 0; i < numRolls; i++) {
+            output.push(this.rollOnce());
+        }
+        return output;
+    }
+}
+var root = {
+  getDie: function ({numSides}) {
+    return new RandomDie(numSides || 6);
+  }
+}
+
 app.use('/jwt', jwt_api);
 app.use('/api/v1', new RateLimit(config.http.limit_request.api), api_v1);
+app.use('/graphql', graphqlHTTP({
+    schema: schema,
+    rootValue: root,
+    graphiql: true,
+}));
 //permet de s'authentifier, personne ne doit pouvoir accèder au site
+app.use('/AmpSim3', express.static(path.join(__dirname, 'public/AmpSim3')));
 app.use(basicAuth(login.login, login.password));
 app.use('/', express.static(path.join(__dirname, 'public')));
 app.use('/apidoc', express.static(path.join(__dirname, 'apidoc')));

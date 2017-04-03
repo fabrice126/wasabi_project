@@ -91,7 +91,7 @@ var getSong = (req, res) => {
  * @param {*} updateFieldsCollectionMusicBrainz 
  */
 var getAndUpdateAll = (db, collection, urlParams, updateFieldsCollectionMusicBrainz) => {
-    var skip = 28000,
+    var skip = 0,
         limit = 10000,
         query = {
             urlMusicBrainz: {
@@ -283,23 +283,15 @@ var updateFieldsAlbumMusicBrainz = function (objAlbum, oMB) {
  * @param {*} oMB objet musicbrainz représente un document d'une musique récupéré via l'api de musicbrainz 
  */
 var updateFieldsSongMusicBrainz = function (objSong, oMB) {
-    objSong = {
-        "id_song_musicbrainz": oMB.id,
-        "video": oMB.video,
-        "disambiguation": oMB.disambiguation ? oMB.disambiguation : "",
-        "language": "",
-        "begin": "",
-        "end": "",
-        "ended": true,
-    };
-    if (oMB.relations.length > 1) {
-        console.log(objSong.urlMusicBrainz);
-    }
+    objSong.id_song_musicbrainz = oMB.id;
+    objSong.disambiguation = oMB.disambiguation ? oMB.disambiguation : "";
+    objSong.language = "";
+    objSong.begin = "";
+    objSong.end = "";
     if (typeof oMB.relations[0] != "undefined") {
-        objSong.language = oMB.relations[0].work ? oMB.relations[0].work.language : "";
+        objSong.language = oMB.relations[0].work.language ? oMB.relations[0].work.language : "";
         objSong.begin = oMB.relations[0].begin ? oMB.relations[0].begin : "";
         objSong.end = oMB.relations[0].end ? oMB.relations[0].end : "";
-        objSong.ended = oMB.relations[0].ended;
     }
 }
 

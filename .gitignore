@@ -4,6 +4,7 @@ mongo/deezer/*
 mongo/animux/*
 public/my_components/MT5/multitrack/*
 public/download/*
+/public/AmpSim3/*
 node_modules/*
 cert_https/*
 routes/conf/login.json

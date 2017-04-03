@@ -16,6 +16,11 @@ module.exports = {
                 "windowMs": 60000, // 60 secondes 
                 "max": 30, // limit each IP to 100 requests per windowMs 
                 "delayMs": 0 // disable delaying - full speed until the max limit is reached
+            },
+            "search": {
+                "windowMs": 60000, // 60 secondes 
+                "max": 30, // limit each IP to 100 requests per windowMs 
+                "delayMs": 0 // disable delaying - full speed until the max limit is reached
             }
         },
         "error": {

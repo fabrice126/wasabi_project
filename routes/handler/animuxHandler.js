@@ -14,7 +14,14 @@
   * @param {*} res 
   */
  var getDirArtist = (req, res) => {
-     var dirArray = [];
+     var dirArray = [],
+         options = {
+             flags: 'w',
+             autoClose: true
+         },
+         loggerNotFound = fs.createWriteStream('animux_artist_not_found_log.txt', options),
+         loggerFound = fs.createWriteStream('animux_artist_found_log.txt', options);
+     //récupération des noms d'artistes dans les dossiers : exemple dirArray[i] = '/M/Metallica'
      (function loop(path) {
          var dirs = fs.readdirSync(path);
          let l = dirs.length,
@@ -31,12 +38,16 @@
      let l = dirArray.length,
          i = 0,
          nbMatch = 0;
+     //on chercher si les noms d'artistes du tableau dirArray match avec des noms d'artistes de notre base
      (function loopArray(i) {
          var pathName = dirArray[i];
          var escapePath = utilHandler.escapeRegExp(PATH_MAPPING_ANIMUX),
              re = new RegExp(escapePath + "\/[A-Z]\/");
          if (re.test(pathName)) {
              var artistName = pathName.replace(re, "");
+             //Des caracteres n'ont pas le bon encodage. Il faut donc les remplacer par les bons caracteres
+             artistName = artistName.replace(/é/gi, "é").replace(/á/gi, "á").replace(/í/gi, "í").replace(/ó/gi, "ó").replace(/ú/gi, "ú");
+             artistName = decodeURIComponent(artistName);
              req.db.collection(COLLECTIONARTIST).findOne({
                  name: new RegExp("^" + utilHandler.escapeRegExp(artistName) + "$", "i")
              }, (err, artist) => {
@@ -44,7 +55,14 @@
                      return res.status(404).json(config.http.error.artist_404);
                  }
                  if (artist != null) {
-                     console.log(artist.name + " == " + artistName + "  nbMatch = " + nbMatch++);
+                     let pathToArtist = PATH_MAPPING_ANIMUX + '/' + artist.name[0].toUpperCase() + '/' + artist.name;
+                     nbMatch++;
+                     if (i % 100 == 0) {
+                         console.log(nbMatch + "/" + i + '     ' + pathToArtist);
+                     }
+                     loggerFound.write(pathToArtist + "\n");
+                 } else {
+                     loggerNotFound.write(artistName + "\n");
                  }
                  if (i < l) {
                      i++;
