@@ -1062,4 +1062,145 @@ router.get('/member/name/:memberName', function (req, res, next) {
         return res.json(artists);
     });
 });
+
+/**
+ * @api {get} api/v1/animux_all/:start Get songs with an animux field
+ * @apiExample Example usage: 
+ *      wasabi.i3s.unice.fr/api/v1/animux_all/340
+ * @apiVersion 1.0.0
+ * @apiName GetSongsWithAnAnimuxField
+ * @apiGroup Api/v1
+ * @apiDescription This api return the first 200 songs documents 
+ *                 for instance wasabi.i3s.unice.fr/api/v1/animux_all/120 will return all songs between [120 and 320[ 
+ *
+ * @apiParam {Number} start Where we want to start the extraction.
+ *
+ * @apiSuccessExample Success-Response for an artist:
+    HTTP/1.1 200 OK
+[{
+    "_id": "5714dec325ac0d8aee38270d",
+    "name": "ABBA",
+    "position": 5,
+    "lengthAlbum": "41:33",
+    "urlSong": "http://lyrics.wikia.com/ABBA:Does_Your_Mother_Know",
+    "lyrics": "You&apos;re so hot, teasing me So you&apos;re blue but I can&apos;t take a...",
+    "urlWikipedia": "http://en.wikipedia.org/wiki/Does_Your_Mother_Know",
+    "id_album": "5714debb25ac0d8aee34d9a0",
+    "format": [
+        "Single (music)"
+    ],
+    "genre": [
+        "Disco",
+        "Pop music",
+        "Rock music"
+    ],
+    "producer": [
+        "Benny Andersson",
+        "Björn Ulvaeus"
+    ],
+    "recordLabel": [
+        "Polar Music",
+        "Epic Records"
+    ],
+    "writer": [
+        "Björn Ulvaeus",
+        "Benny Andersson"
+    ],
+    "recorded": [
+        "--02-06"
+    ],
+    "abstract": "\"Does Your Mother Know\", (working title: \"I Can Do It\"), is a s",
+    "releaseDate": [],
+    "runtime": [
+        "195.0"
+    ],
+    "award": [],
+    "subject": [
+        "European Hot 100 Singles number-one singles",
+        "Polar Music singles"
+    ],
+    "isClassic": false,
+    "title": "Does Your Mother Know",
+    "publicationDateAlbum": "1979",
+    "albumTitle": "Voulez-Vous",
+    "deezer_mapping": [
+        [
+            1108951,
+            "search-exact"
+        ],
+        [
+            1108951,
+            "youtubefgpt"
+        ],
+        [
+            1113425,
+            "youtubefgpt"
+        ]
+    ],
+    "id_song_deezer": "1108951",
+    "isrc": "SEAYD7901060",
+    "length": "195",
+    "explicitLyrics": false,
+    "rank": "24",
+    "bpm": "",
+    "gain": "",
+    "preview": "http://cdn-preview-a.deezer.com/stream/a28567a82ea0ad7668f138bdade4917c-7.mp3",
+    "availableCountries": [],
+    "publicationDate": "2008-12-08",
+    "urlMusicBrainz": "",
+    "urlPandora": "",
+    "urlITunes": "",
+    "urlSpotify": "",
+    "urlYouTube": "WkL7Fkigfn8",
+    "urlAmazon": "",
+    "urlHypeMachine": "",
+    "urlAllmusic": "",
+    "urlGoEar": "",
+    "urlLastFm": "",
+    "multitrack_path": "",
+    "multitrack_file": "",
+    "language": "",
+    "begin": "",
+    "disambiguation": "",
+    "end": "",
+    "id_song_musicbrainz": "",
+    "animux_path": "./mongo/animux/A/ABBA/Does Your Mother Know_Animux.txt",
+    "animux_content": "#ARTIST:ABBA\n#TITLE:Does Your Mother Know\n#MP3:ABBA - Does Your Mother K..."
+},{
+    ANOTHER SONG OBJECT
+}]
+ * @apiError error isn't a number or is negative.
+ * @apiErrorExample Error-Response:
+    HTTP/1.1 404 Not Found
+    {
+        "error": "Page not found"
+    }
+ * @apiError error the database does not respond.
+ * @apiErrorExample Error-Response internal error:
+    HTTP/1.1 404 Not Found
+    {
+        "error": "An internal error occurred"
+    }
+ */
+
+router.get('/animux_all/:start', function (req, res, next) {
+    var db = req.db,
+        start = Number.parseInt(req.params.start);
+    if (!Number.isInteger(start) || start < 0) {
+        return res.status(404).json(config.http.error.global_404);
+    }
+    db.collection(COLLECTIONSONG).find({
+        animux_path: {
+            $exists: 1
+        }
+    }, {
+        wordCount: 0,
+        rdf: 0,
+    }).skip(start).limit(LIMIT).toArray((err, songs) => {
+        if (err) {
+            return res.status(404).json(config.http.error.internal_error_404);
+        }
+        return res.json(songs);
+    });
+});
 export default router;

@@ -8,10 +8,8 @@ import helmet from 'helmet';
 //Import DB
 import elasticsearch from 'elasticsearch';
 import mongoose from 'mongoose';
-import {
-    buildSchema
-} from 'graphql';
 import graphqlHTTP from 'express-graphql';
+import schema from './graphql';
 import {
     db as dbMongo
 } from 'mongoskin';
@@ -72,16 +70,6 @@ const elasticsearchClient = new elasticsearch.Client({
 app.set('view cache', app.get('env') === config.launch.env.dev ? true : false); // désactivation du cache express
 app.set('config', config);
 app.use(helmet());
-// const expiryDate = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
-// app.use(session({
-//     secret: '2C44-4D44-WppQ38S',
-//     resave: true,
-//     cookie: {
-//         secure: true,
-//         expires: expiryDate
-//     },
-//     saveUninitialized: true
-// }));
 String.prototype.endsWith = function (suffix) {
     return this.indexOf(suffix, this.length - suffix.length) !== -1;
 };
@@ -119,50 +107,8 @@ app.use((req, res, next) => {
  * --------------------------------------DEFINITION DES ROUTES D'API--------------------------------------
  * -------------------------------------------------------------------------------------------------------
  */
-// Construct a schema, using GraphQL schema language
-var schema = buildSchema(`
-  type RandomDie {
-    numSides: Int!
-    rollOnce: Int!
-    roll(numRolls: Int!): [Int]
-  }
-
-  type Query {
-    getDie(numSides: Int): RandomDie
-  }
-`);
-
-// This class implements the RandomDie GraphQL type
-class RandomDie {
-    constructor(numSides) {
-        this.numSides = numSides;
-    }
-    rollOnce() {
-        return 1 + Math.floor(Math.random() * this.numSides);
-    }
-    roll({
-        numRolls
-    }) {
-        var output = [];
-        for (var i = 0; i < numRolls; i++) {
-            output.push(this.rollOnce());
-        }
-        return output;
-    }
-}
-var root = {
-  getDie: function ({numSides}) {
-    return new RandomDie(numSides || 6);
-  }
-}
-
 app.use('/jwt', jwt_api);
 app.use('/api/v1', new RateLimit(config.http.limit_request.api), api_v1);
-app.use('/graphql', graphqlHTTP({
-    schema: schema,
-    rootValue: root,
-    graphiql: true,
-}));
 //permet de s'authentifier, personne ne doit pouvoir accèder au site
 app.use('/AmpSim3', express.static(path.join(__dirname, 'public/AmpSim3')));
 app.use(basicAuth(login.login, login.password));
@@ -175,6 +121,11 @@ if (app.get('env') === config.launch.env.dev) {
     console.error("/!\\-----------------------------------------------------------------------------------------------------------------/!\\");
     console.error("/!\\ Projet executé en mode: " + app.get('env') + " veuillez le mettre en mode production avant de push sur le git (dans app.js)/!\\");
     console.error("/!\\-----------------------------------------------------------------------------------------------------------------/!\\");
+    app.use('/graphql', graphqlHTTP({
+        schema: schema,
+        rootValue: root,
+        graphiql: true,
+    }));
     app.use('/updatedb', updatedb);
     app.use('/mergedb', mergedb);
     app.use('/createdb', createdb);

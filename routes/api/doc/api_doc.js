@@ -63,7 +63,8 @@ const router = express.Router();
  *  @apiSuccess {String} endArea.id endArea id
  *  @apiSuccess {String} endArea.name endArea name
  *  @apiSuccess {String} endArea.disambiguation endArea disambiguation
- * 
+ *
+ * @apiSuccess {String} animux_path Artist animux path
  * @apiSuccess {String} rdf Artist rdf
  */
 
@@ -145,7 +146,8 @@ const router = express.Router();
  * @apiSuccess {String} urlHypeMachine Song urlHypeMachine
  * @apiSuccess {String} urlLastFm Song urlLastFm
  * @apiSuccess {String} urlPandora Song urlPandora
- * 
+ * @apiSuccess {String} animux_path Song animux path
+ * @apiSuccess {String} animux_content Song animux content
  */
 
 export default router;

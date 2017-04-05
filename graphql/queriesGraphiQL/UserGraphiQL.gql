@@ -1,0 +1,119 @@
+
+#############################
+###### FIND BY ID USER ######
+#############################
+## PARAM
+# {
+#   "id": "587cc766c45c91272460554a"
+# }
+query findUserById($id: ID!) {
+  user(id: $id) {
+    _id,
+    title,
+    description
+  }
+}
+###########################
+###### FIND ALL USER ######
+###########################
+
+query findAllUser {
+  users{
+    _id,
+    title,
+    description
+  }
+}
+#########################
+###### INSERT USER ######
+#########################
+mutation insertUser1 {
+  addUser(
+    data:{
+      username:"aUserName1",
+      firstname:"aFirstName1",
+      lastname:"aLastName1",
+      email:"1email@gmail.com",
+      password:"aPassword",
+      sex:"Female",
+      hometown: "New-York",
+      status: Offline
+    }
+  )
+}
+mutation insertUser2 {
+  addUser(
+    data:{
+      username:"aUserName2",
+      firstname:"aFirstName2",
+      lastname:"aLastName2",
+      email:"2email@gmail.com",
+      password:"aPassword",
+      sex:"Male",
+      hometown: "Monaco"
+    }
+  )
+}
+mutation insertUser3 {
+  addUser(
+    data:{
+      username:"aUserName3",
+      firstname:"aFirstName3",
+      lastname:"aLastName3",
+      email:"3email@gmail.com",
+      password:"aPassword",
+      sex:"Female",
+      hometown: "Nice"
+    }
+  )
+}
+mutation insertUser4 {
+  addUser(
+    data:{
+      username:"aUserName4",
+      firstname:"aFirstName4",
+      lastname:"aLastName4",
+      email:"4email@gmail.com",
+      password:"aPassword",
+      sex: "Male",
+      hometown:"Nice",
+      birthday:"28/04/1991"
+      description:"voici une description de aUserName4",
+      status:Online,
+      securityQuestion:"Ou êtes vous né ?",
+      securityAnswer:"Nice"
+      image:"../../img/aUserName4/1.png",
+      phoneNumbers:["0493556735","0659667991"],
+      websites:["http://google.fr"],
+      interests:["avion", "les bateaux"],
+      hobbies:["lire"],
+      favoriteQuotes:["Exige beaucoup de toi-même et attends peu des autres. Ainsi beaucoup d'ennuis te seront épargnés.","Dans la vie on ne fait pas ce que l'on veut mais on est responsable de ce que l'on est."],
+      favoriteBooks:["chanson douce","le seigneur des anneaux","petit pays"],
+      favoriteMovies: ["spider Man"],
+      favoriteTVShows: ["A tv show"],
+      favoriteMusics:["Rock songs","No Money, Galantis", "David Guetta"],
+      activities:["Basket","Football","Shopping"],
+    }
+  )
+}
+
+###############################
+###### DELETE BY ID USER ######
+###############################
+## PARAM
+# {
+#   "id": "587cc766c45c91272460554a"
+# }
+mutation removeUser($id: ID!) {
+  removeUser(_id:$id){
+    _id,
+    username,
+    email
+  }
+}
+#############################
+###### DELETE ALL USER ######
+#############################
+mutation removeAllUser{
+  removeAllUsers
+}

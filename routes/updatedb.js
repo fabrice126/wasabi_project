@@ -530,6 +530,12 @@ router.get('/deezer/song/:_id', deezerHandler.getSong);
  */
 router.get('/animux/create_mapping/artist', animuxHandler.getDirArtist);
 /**
+ * API permettant de rename les noms d'artistes animux avec les noms d'artistes wasabi afin d'utiliser 
+ * dans /animux/create_mapping/artist un find sans regex pour améliorer les performances
+ */
+router.get('/animux/sanitize_rename/artist', animuxHandler.sanitizeAndRenameDirArtist);
+
+/**
  * API permettant de faire le matching entre les fichiers animux contenant la synchronisation des paroles et nos musique en base de données
  */
 router.get('/animux/create_mapping/song', animuxHandler.getFileSong);
