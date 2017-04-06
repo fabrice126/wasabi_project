@@ -11,18 +11,18 @@ Il est conseillé de lire ce que fait chaque API avant de l'utiliser notamment c
 2. Installer node js : *<a href="https://nodejs.org/en/" target="_blank">ici</a>*
 3. Installer mongodb : version >= 3.2 : *<a href="https://www.mongodb.com/" target="_blank">ici</a>*  
 *3.1.* lancer mongodb, voir : *"<a href="#mongodb--sous-windows">Comment lancer les bases de données>MongoDB sous Windows</a>"*  
-*3.2.*  Importer la base de données wasabi : `cd wasabi_project/mongo/backup_mongo` et taper la commande `mongorestore dump_X` ou X est le nombre le plus grand (chaque dump possède un README). Vous devez demander le dossier `wasabi_project/mongo/backup_mongo` à l'admin du projet.
+*3.2.*  Importer la base de données wasabi : `cd wasabi_project/mongo/backup_mongo` et taper la commande `mongorestore dump_X` ou X est le nombre le plus grand (chaque dump possède un README). Vous devez demander le dossier `wasabi_project/mongo/backup_mongo` à l'admin du projet.  
 *3.3.* (facultatif mais conseillé) Installer mongobooster : *<a href="https://mongobooster.com/" target="_blank">ici</a>*  
 4. Installer elasticsearch: version >= 2.3 : *<a href="https://www.elastic.co/fr/products/elasticsearch" target="_blank">ici</a>*  
 *4.1.* lancer elasticsearch, voir : *"<a href="#elasticsearch-sous-windows">Comment lancer les bases de données>Elasticsearch sous Windows</a>"*  
 5. Lancer le serveur node js  
 *5.1.* En ligne de commande : `cd C:/Users/user/Documents/wasabi_project`  
-*5.2.* /!\ Par souci de sécurité le fichier contenant le login / mot de passe n'est pas sur le git vous devez donc ajouter `routes/conf/login.json` . Ce fichier contient le json suivant: `{"login": "ADemanderALAdmin","password": "ADemanderALAdmin"}`. Idem pour le fichier `routes/conf/confJwt.json`  contenant la clé des Tokens JWT ce fichier contient le json suivant :  `{"secretOrKey": "ADemanderALAdmin"}`
-*5.3.* Voir la partie: *"<a href="#comment-installer-le-certificat-https">Comment installer un certificat https</a>"*
-*5.4.* taper la commande: `npm install`  cela installera les dépendances du projet
-*5.5.* taper la commande: `npm start` 
+*5.2.* /!\ Par souci de sécurité le fichier contenant le login / mot de passe n'est pas sur le git vous devez donc ajouter `routes/conf/login.json` . Ce fichier contient le json suivant: `{"login": "ADemanderALAdmin","password": "ADemanderALAdmin"}`. Idem pour le fichier `routes/conf/confJwt.json`  contenant la clé des Tokens JWT ce fichier contient le json suivant :  `{"secretOrKey": "ADemanderALAdmin"}`  
+*5.3.* Voir la partie: *"<a href="#comment-installer-le-certificat-https">Comment installer un certificat https</a>"*  
+*5.4.* taper la commande: `npm install`  cela installera les dépendances du projet  
+*5.5.* taper la commande: `npm start`  
 *5.6.* le serveur est maintenant lancé sur *http://localhost/* (dans le navigateur)  
-6. Remplir la base de données d'elasticsearch : pour cela utilisez l'api REST pour indexer le nom des artistes `http://127.0.0.1/createdb/createdbelasticsearchartist` et `http://127.0.0.1/createdb/createdbelasticsearchsong` pour indexer les noms des musiques avec les noms d'artistes et les noms d'albums ainsi nous pourrons effectuer des recherches via la barre de recherche du site
+6. Remplir la base de données d'elasticsearch : pour cela utilisez l'api REST pour indexer le nom des artistes `http://127.0.0.1/createdb/createdbelasticsearchartist` et `http://127.0.0.1/createdb/createdbelasticsearchsong` pour indexer les noms des musiques avec les noms d'artistes et les noms d'albums ainsi nous pourrons effectuer des recherches via la barre de recherche du site  
 *6.1.* En cas de problème avec `http://127.0.0.1/createdb/createdbelasticsearchsong` vérifiez dans app.js que `app.set('env', 'development');` n'est pas commenté. Si c'est le cas, vous devez décommenter cette ligne et commentez `app.set('env', 'production');` 
 
 **Comment lancer l'application sous RedHat/Linux Centos 7 (serveur - uniquement en cas de ré-installation)**
@@ -144,7 +144,7 @@ Une collection artist contenant des documents représentant un artiste avec ses 
  2.  Le fichier `FindSameDocument.js` dans mongo afin de trouver les documents en double (ayant le même nom d'artiste car un nom d'artiste est unique en base de données, cf : comme dans lyrics wikia) dans la base de	données
 
  3.  [doit être exécuté après 2.] Le fichier `ConstructBDAfterCreate.js` dans mongodb afin de créer :  
- 	*3.1.* Une collection `artist` contenant uniquement les informations relatives à l'artiste
+ 	*3.1.* Une collection `artist` contenant uniquement les informations relatives à l'artiste  
 	*3.2.* Une collection `album` contenant les informations relatives à l'album  
  	*3.3.* Une collection `song` contenant les informations relatives à la musique  
  	*3.4.* Les index des collections `artist`, `album` et `song`  

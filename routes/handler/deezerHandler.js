@@ -7,6 +7,8 @@ import {
 import fs from 'fs';
 import parse from 'csv-parse';
 const PATH_MAPPING_DEEZER = "./mongo/deezer/track_dz_wasabi_viaproduct.csv";
+const COLLECTIONARTIST = config.database.collection_artist;
+const COLLECTIONALBUM = config.database.collection_album;
 const COLLECTIONSONG = config.database.collection_song;
 const URL_SONG_DEEZER = "http://api.deezer.com/track/";
 
@@ -48,6 +50,9 @@ var doMappingWasabiDeezer = (req, res) => {
     res.json(config.http.valid.send_message_ok);
 };
 
+//==========================================================================================================================\\
+//=========================WEBSERVICE REST POUR EXTRAIRE LES DONNEES DES MUSIQUES DE L'API DE DEEZER========================\\
+//==========================================================================================================================\\
 /**
  * 
  * @param {*} req 
@@ -106,7 +111,7 @@ var getAllSongs = (req, res) => {
                                         }, timeout * 10);
                                     }
                                 } else {
-                                    updateFieldsDeezer(objSong, oDeezer);
+                                    updateFieldsSongsDeezer(objSong, oDeezer);
                                     db.collection(COLLECTIONSONG).update({
                                         _id: new ObjectId(objSong._id)
                                     }, {
@@ -182,7 +187,7 @@ var getSong = (req, res) => {
         console.log("length: " + objSong.deezer_mapping.length);
         var url = URL_SONG_DEEZER + objSong.deezer_mapping[0][0];
         requestDeezer(url).then((oDeezer) => {
-            updateFieldsDeezer(objSong, oDeezer);
+            updateFieldsSongsDeezer(objSong, oDeezer);
             db.collection(COLLECTIONSONG).update({
                 _id: ObjectId(objSong._id)
             }, {
@@ -198,6 +203,33 @@ var getSong = (req, res) => {
     });
     res.json(config.http.valid.send_message_ok);
 };
+
+//==========================================================================================================================\\
+//=========================WEBSERVICE REST POUR EXTRAIRE LES DONNEES DES ARTISTES DE L'API DE DEEZER========================\\
+//==========================================================================================================================\\
+/**
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ */
+var getAllArtists = (req, res) => {
+
+    res.json(config.http.valid.send_message_ok);
+};
+//==========================================================================================================================\\
+//==========================WEBSERVICE REST POUR EXTRAIRE LES DONNEES DES ALBUMS DE L'API DE DEEZER=========================\\
+//==========================================================================================================================\\
+/**
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ */
+var getAllAlbums = (req, res) => {
+
+    res.json(config.http.valid.send_message_ok);
+};
+
+
 
 /**
  * Envoie une requête sur l'API deezer passé en parametre
@@ -220,38 +252,73 @@ var requestDeezer = (urlDeezer) => {
 };
 
 /**
-/ * On construit l'objet song a enreigstrer dans la base de données. Les données récupérées sur l'API de deezer seront ajoutées 
+/ * On construit l'objet song a enregistrer dans la base de données. Les données récupérées sur l'API de deezer seront ajoutées 
 / * @param {*} oSong objet song a enregister dans notre base de données
 / * @param {*} oDeezer objet de deezer, nous allons prendre les données de cet objet
 / */
-var updateFieldsDeezer = (oSong, oDeezer) => {
+var updateFieldsSongsDeezer = (oSong, oDeezer) => {
     oSong.id_song_deezer = oDeezer.id.toString();
+    oSong.id_artist_deezer = oDeezer.artist.id.toString();
+    oSong.id_album_deezer = oDeezer.album.id.toString();
     oSong.isrc = oDeezer.isrc ? oDeezer.isrc : "";
+    oSong.urlDeezer = oDeezer.link ? oDeezer.link : "";
     oSong.publicationDate = oDeezer.release_date ? oDeezer.release_date : "";
-    oSong.length = oDeezer.duration ? oDeezer.duration.toString() : "";
     oSong.explicitLyrics = oDeezer.explicit_lyrics;
-    oSong.rank = oDeezer.rank ? oDeezer.rank.toString() : ""; // /!\ a voir si c'est mieux avec oDeezer.alternative.rank
-    oSong.bpm = oDeezer.bpm ? oDeezer.bpm.toString() : ""; // /!\ a voir si c'est mieux avec oDeezer.alternative.bpm
-    oSong.gain = oDeezer.gain ? oDeezer.gain.toString() : ""; // /!\ a voir si c'est mieux avec oDeezer.alternative.gain
-
-    if (oDeezer.preview != "") {
-        oSong.preview = oDeezer.preview;
-    } else if (typeof oDeezer.alternative != "undefined") {
-        oSong.preview = oDeezer.alternative.preview
-    } else {
-        oSong.preview = "";
-    }
-
-    if (oDeezer.available_countries != "") {
-        oSong.availableCountries = oDeezer.available_countries;
-    } else if (typeof oDeezer.alternative != "undefined") {
-        oSong.availableCountries = oDeezer.alternative.available_countries
-    } else {
-        oSong.availableCountries = [];
+    oSong.preview = oDeezer.preview ? oDeezer.preview : "";
+    oSong.length = oDeezer.duration ? oDeezer.duration.toString() : "";
+    oSong.rank = oDeezer.rank ? oDeezer.rank.toString() : "";
+    oSong.bpm = oDeezer.bpm ? oDeezer.bpm.toString() : "";
+    oSong.gain = oDeezer.gain ? oDeezer.gain.toString() : "";
+    oSong.availableCountries = oDeezer.available_countries.length ? oDeezer.available_countries : [];
+    if (typeof oDeezer.alternative != "undefined") {
+        oSong.id_artist_deezer = oDeezer.alternative.artist.id ? oDeezer.alternative.artist.id.toString() : oSong.id_artist_deezer;
+        oSong.id_album_deezer = oDeezer.alternative.album.id ? oDeezer.alternative.album.id.toString() : oSong.id_album_deezer;
+        oSong.isrc = oDeezer.alternative.isrc ? oDeezer.alternative.isrc : oSong.isrc;
+        oSong.urlDeezer = oDeezer.alternative.link ? oDeezer.alternative.link : oSong.urlDeezer;
+        oSong.preview = oDeezer.alternative.preview ? oDeezer.alternative.preview : oSong.preview;
+        oSong.length = oDeezer.alternative.duration ? oDeezer.alternative.duration.toString() : oSong.length;
+        oSong.rank = oDeezer.alternative.rank ? oDeezer.alternative.rank.toString() : oSong.rank;
+        oSong.bpm = oDeezer.alternative.bpm ? oDeezer.alternative.bpm.toString() : oSong.bpm;
+        oSong.gain = oDeezer.alternative.gain ? oDeezer.alternative.gain.toString() : oSong.gain;
+        oSong.availableCountries = oDeezer.alternative.available_countries ? oDeezer.alternative.available_countries : oSong.availableCountries;
     }
 };
-
-
+/**
+/ * On construit l'objet artist a enregistrer dans la base de données. Les données récupérées sur l'API de deezer seront ajoutées 
+/ * @param {*} oArtist objet artist a enregister dans notre base de données
+/ * @param {*} oDeezer objet de deezer, nous allons prendre les données de cet objet
+/ */
+var updateFieldsArtistsDeezer = (oArtist, oDeezer) => {
+    oArtist.picture = {
+        standard: oDeezer.picture ? oDeezer.picture : "",
+        small: oDeezer.picture_small ? oDeezer.picture_small : "",
+        medium: oDeezer.picture_medium ? oDeezer.picture_medium : "",
+        big: oDeezer.picture_big ? oDeezer.picture_big : "",
+        xl: oDeezer.picture_xl ? oDeezer.picture_xl : "",
+    };
+    oArtist.id_artist_deezer = oDeezer.id;
+    oArtist.urlDeezer = oDeezer.link ? oDeezer.link : "";
+    oArtist.deezerFans = oDeezer.nb_fan ? oDeezer.nb_fan : 0;
+};
+/**
+/ * On construit l'objet album a enregistrer dans la base de données. Les données récupérées sur l'API de deezer seront ajoutées 
+/ * @param {*} oAlbum objet album a enregister dans notre base de données
+/ * @param {*} oDeezer objet de deezer, nous allons prendre les données de cet objet
+/ */
+var updateFieldsAlbumsDeezer = (oAlbum, oDeezer) => {
+    oAlbum.cover = {
+        standard: oDeezer.cover ? oDeezer.cover : "",
+        small: oDeezer.cover_small ? oDeezer.cover_small : "",
+        medium: oDeezer.cover_medium ? oDeezer.cover_medium : "",
+        big: oDeezer.cover_big ? oDeezer.cover_big : "",
+        xl: oDeezer.cover_xl ? oDeezer.cover_xl : "",
+    };
+    oArtist.id_album_deezer = oDeezer.id;
+    oAlbum.urlDeezer = oDeezer.link ? oDeezer.link : "";
+    oAlbum.deezerFans = oDeezer.fans ? oDeezer.fans : 0;
+};
 exports.doMappingWasabiDeezer = doMappingWasabiDeezer;
 exports.getAllSongs = getAllSongs;
 exports.getSong = getSong;
+exports.getAllArtists = getAllArtists;
+exports.getAllAlbums = getAllAlbums;

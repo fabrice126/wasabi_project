@@ -513,15 +513,21 @@ router.get('/musicbrainz/song/:_id', musicBrainzHandler.getSong);
  */
 router.get('/deezer/create_mapping', deezerHandler.doMappingWasabiDeezer);
 /**
- * API permettant de recupérer des informations des musiques sur l'API de deezer
+ * API permettant de recupérer des informations sur les musiques présent sur l'API de deezer
  */
 router.get('/deezer/song', deezerHandler.getAllSongs);
 /**
  * API permettant de recupérer des informations de la musique sur l'API de deezer
  */
 router.get('/deezer/song/:_id', deezerHandler.getSong);
-
-
+/**
+ * API permettant de recupérer des informations sur les artistes présent sur l'API de deezer
+ */
+router.get('/deezer/artist', deezerHandler.getAllArtists);
+/**
+ * API permettant de recupérer des informations sur les albums présent sur l'API de deezer
+ */
+router.get('/deezer/album', deezerHandler.getAllAlbums);
 
 
 
@@ -534,7 +540,6 @@ router.get('/animux/create_mapping/artist', animuxHandler.getDirArtist);
  * dans /animux/create_mapping/artist un find sans regex pour améliorer les performances
  */
 router.get('/animux/sanitize_rename/artist', animuxHandler.sanitizeAndRenameDirArtist);
-
 /**
  * API permettant de faire le matching entre les fichiers animux contenant la synchronisation des paroles et nos musique en base de données
  */

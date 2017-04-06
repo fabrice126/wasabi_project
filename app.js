@@ -110,6 +110,7 @@ app.use((req, res, next) => {
 app.use('/jwt', jwt_api);
 app.use('/api/v1', new RateLimit(config.http.limit_request.api), api_v1);
 //permet de s'authentifier, personne ne doit pouvoir accèder au site
+app.use('/AmpSimFA', express.static(path.join(__dirname, 'public/AmpSimFA')));
 app.use('/AmpSim3', express.static(path.join(__dirname, 'public/AmpSim3')));
 app.use(basicAuth(login.login, login.password));
 app.use('/', express.static(path.join(__dirname, 'public')));
@@ -118,9 +119,13 @@ app.use('/search', search);
 app.use('/MT5', MT5);
 //Placer ici les routes utile uniquement pour le développement
 if (app.get('env') === config.launch.env.dev) {
-    console.error("/!\\-----------------------------------------------------------------------------------------------------------------/!\\");
+    console.error("/!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\\");
     console.error("/!\\ Projet executé en mode: " + app.get('env') + " veuillez le mettre en mode production avant de push sur le git (dans app.js)/!\\");
-    console.error("/!\\-----------------------------------------------------------------------------------------------------------------/!\\");
+    if (config.http.limit_request.search.max < 30) {
+        console.error("/!\\-------------------------------LE QUOTA DE REQUETE PAR MINUTE N'EST PAS ASSEZ ELEVE------------------------------/!\\");
+    }
+    console.error("/!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\\");
+
     app.use('/graphql', graphqlHTTP({
         schema: schema,
         rootValue: root,
