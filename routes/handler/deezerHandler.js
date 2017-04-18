@@ -10,8 +10,11 @@ const PATH_MAPPING_DEEZER = "./mongo/deezer/track_dz_wasabi_viaproduct.csv";
 const COLLECTIONARTIST = config.database.collection_artist;
 const COLLECTIONALBUM = config.database.collection_album;
 const COLLECTIONSONG = config.database.collection_song;
+const URL_ARTIST_DEEZER = "http://api.deezer.com/artist/";
+const URL_ALBUM_DEEZER = "http://api.deezer.com/album/";
 const URL_SONG_DEEZER = "http://api.deezer.com/track/";
-
+const FILE_TITLE_ALBUM = "deezerHandler_getAllAlbums.txt";
+const FILE_TITLE_SONG = "deezerHandler_getAllSongs.txt";
 
 var doMappingWasabiDeezer = (req, res) => {
     var db = req.db;
@@ -38,9 +41,7 @@ var doMappingWasabiDeezer = (req, res) => {
                     if (err) throw err;
                     if (i < rows.length - 1) {
                         i++;
-                        if (i % 1000 == 0) {
-                            console.log(i + " documents updated");
-                        }
+                        if (i % 1000 == 0) console.log(i + " documents updated");
                         loop(i);
                     }
                 });
@@ -70,7 +71,7 @@ var getAllSongs = (req, res) => {
             rdf: 0,
             wordCount: 0
         },
-        timeout = 10,
+        timeout = 50,
         limit = 10000;
     db.collection(COLLECTIONSONG).count(query, function (err, nbSong) {
         console.log("Nombre total de musique : " + nbSong);
@@ -79,7 +80,6 @@ var getAllSongs = (req, res) => {
             if (skip < nbSong) {
                 db.collection(COLLECTIONSONG).find(query, projection).maxTimeMS(160000).skip(skip).limit(limit).toArray(function (err, tSongs) {
                     var i = 0;
-                    console.log(tSongs.length);
                     (function loop(i) {
                         var objSong = tSongs[i],
                             deezerId = objSong.deezer_mapping[0][0];
@@ -89,11 +89,13 @@ var getAllSongs = (req, res) => {
                             if (nb == tSongs.length) {
                                 skip += limit;
                                 console.log("SKIP = " + skip);
+                                writeSkipInFile(skip, FILE_TITLE_SONG);
                                 fetchSong(skip);
                             } else {
                                 i++;
                                 if (!(i % 500)) {
-                                    console.log(i + ", skip = " + skip);
+                                    console.log("SKIP = " + (skip + i));
+                                    writeSkipInFile(skip + i, FILE_TITLE_SONG);
                                 }
                                 loop(i);
                             }
@@ -122,16 +124,14 @@ var getAllSongs = (req, res) => {
                                         if (nb == tSongs.length) {
                                             skip += limit;
                                             console.log("SKIP = " + skip);
-                                            fs.writeFile('deezerHandler_getAllSongs.txt', skip, (err) => {
-                                                if (err) throw err;
-                                                console.log('It\'s saved!');
-                                            });
+                                            writeSkipInFile(skip, FILE_TITLE_SONG);
                                             fetchSong(skip);
                                         } else {
                                             i++;
                                             setTimeout(() => {
                                                 if (!(i % 500)) {
-                                                    console.log(i + ", skip = " + skip);
+                                                    console.log("SKIP = " + (skip + i));
+                                                    writeSkipInFile(skip + i, FILE_TITLE_SONG);
                                                 }
                                                 loop(i);
                                             }, timeout);
@@ -139,21 +139,29 @@ var getAllSongs = (req, res) => {
                                     });
                                 }
                             }).catch((error) => {
-                                console.log("FAIL = " + objSong._id + " id_song_deezer = " + deezerId + " -> " + i + ", skip = " + skip);
-                                console.log(error);
-                                nb++;
-                                if (nb == tSongs.length) {
-                                    skip += limit;
-                                    console.log("SKIP = " + skip);
-                                    fetchSong(skip);
-                                } else {
-                                    i++;
+                                if (error.message && (error.message == "ETIMEDOUT" || error.message == "ESOCKETTIMEDOUT")) {
+                                    console.log(deezerId + " ERROR DE TIMEOUT = " + error.message);
                                     setTimeout(() => {
-                                        if (!(i % 500)) {
-                                            console.log(i + ", skip = " + skip);
-                                        }
                                         loop(i);
-                                    }, timeout);
+                                    }, timeout * 10);
+                                } else {
+                                    console.log("FAIL = " + objSong._id + " id_song_deezer = " + deezerId + " -> " + i + ", skip = " + skip, error);
+                                    nb++;
+                                    if (nb == tSongs.length) {
+                                        skip += limit;
+                                        console.log("SKIP = " + skip);
+                                        writeSkipInFile(skip, FILE_TITLE_SONG);
+                                        fetchSong(skip);
+                                    } else {
+                                        i++;
+                                        setTimeout(() => {
+                                            if (!(i % 500)) {
+                                                console.log("SKIP = " + (skip + i));
+                                                writeSkipInFile(skip + i, FILE_TITLE_SONG);
+                                            }
+                                            loop(i);
+                                        }, timeout);
+                                    }
                                 }
                             });
                         }
@@ -208,12 +216,184 @@ var getSong = (req, res) => {
 //=========================WEBSERVICE REST POUR EXTRAIRE LES DONNEES DES ARTISTES DE L'API DE DEEZER========================\\
 //==========================================================================================================================\\
 /**
- * 
+ * We extract artist from Deezer API
  * @param {*} req 
  * @param {*} res 
  */
 var getAllArtists = (req, res) => {
+    var db = req.db,
+        skip = 18060,
+        query = {
+            id_artist_deezer: {
+                $exists: 1
+            }
+        },
+        projection = {
+            _id: 1,
+            id_artist_deezer: 1
+        },
+        timeout = 50,
+        limit = 10000;
+    db.collection(COLLECTIONARTIST).count(query, function (err, nbArtist) {
+        console.log("Nombre total de musique : " + nbArtist);
+        (function fetch(skip) {
+            var nb = 0;
+            if (skip < nbArtist) {
+                db.collection(COLLECTIONARTIST).find(query, projection).maxTimeMS(160000).skip(skip).limit(limit).toArray(function (err, tArtists) {
+                    var i = 0;
+                    (function loop(i) {
+                        var objArtist = tArtists[i],
+                            url = URL_ARTIST_DEEZER + objArtist.id_artist_deezer;
+                        requestDeezer(url).then((oDeezer) => {
+                            if (typeof oDeezer.error != "undefined") {
+                                if (oDeezer.error.code == 800) { //le document de chez deezer n'a pas de données
+                                    throw oDeezer.error.message;
+                                }
+                                if (oDeezer.error.code == 4) { // On a été bloqué par l'API de deezer, on renvoie la requête
+                                    console.log("relance requete = " + objArtist.id_artist_deezer + " -> " + i + ", skip = " + skip);
+                                    setTimeout(() => {
+                                        loop(i);
+                                    }, timeout * 10);
+                                }
+                            } else {
+                                updateFieldsArtistsDeezer(objArtist, oDeezer);
+                                db.collection(COLLECTIONARTIST).update({
+                                    _id: new ObjectId(objArtist._id)
+                                }, {
+                                    $set: objArtist
+                                }, function (err) {
+                                    if (err) throw err;
+                                    nb++;
+                                    if (nb == tArtists.length) {
+                                        skip += limit;
+                                        fetch(skip);
+                                    } else {
+                                        i++;
+                                        setTimeout(() => {
+                                            if (!(i % 20)) console.log("SKIP = " + (skip + i));
+                                            loop(i);
+                                        }, timeout);
+                                    }
+                                });
+                            }
+                        }).catch((error) => {
+                            if (error.message && (error.message == "ETIMEDOUT" || error.message == "ESOCKETTIMEDOUT")) {
+                                console.log(objArtist.id_artist_deezer + " ERROR DE TIMEOUT = " + error.message);
+                                setTimeout(() => {
+                                    loop(i);
+                                }, timeout * 10);
+                            } else {
+                                console.log("FAIL = " + objArtist._id + " id_artist_deezer = " + objArtist.id_artist_deezer + " -> " + i + ", skip = " + skip, error);
+                                nb++;
+                                if (nb == tArtists.length) {
+                                    skip += limit;
+                                    fetch(skip);
+                                } else {
+                                    i++;
+                                    setTimeout(() => {
+                                        loop(i);
+                                    }, timeout);
+                                }
+                            }
+                        });
+                    })(i);
+                });
+            } else {
+                console.log("TRAITEMENT TERMINE");
+            }
+        })(skip);
+    });
+    res.json(config.http.valid.send_message_ok);
+};
 
+/**
+ * API vérifiant que les musiques d'un artiste ont le même id_artist_deezer
+ * @param {*} req 
+ * @param {*} res 
+ */
+var checkAndUpdateIdArtist = (req, res) => {
+    var skip = 0,
+        limit = 10000,
+        projection = {
+            "name": 1
+        },
+        projectionSong = {
+            "name": 1,
+            "id_artist_deezer": 1
+        };
+    req.db.collection(COLLECTIONARTIST).count({}, function (err, nbArtist) {
+        (function loop(skip) {
+            req.db.collection(COLLECTIONARTIST).find({}, projection).maxTimeMS(160000).skip(skip).limit(limit).toArray(function (err, tArtists) {
+                //Nombre d'artiste traité
+                var nbEnd = 0;
+                for (var i = 0, l = tArtists.length; i < l; i++) {
+                    ((oArtist) => {
+                        var subquery = {
+                                "name": oArtist.name
+                            },
+                            querySong = {
+                                $and: [subquery, {
+                                    "id_artist_deezer": {
+                                        $exists: 1
+                                    }
+                                }]
+                            };
+                        req.db.collection(COLLECTIONSONG).find(querySong, projectionSong).toArray(function (err, tSongs) {
+                            //tSongs contient les musiques possedant le champ id_artist_deezer
+                            if (tSongs.length > 0) {
+                                var tIdArtist = {},
+                                    main_id_artist_deezer,
+                                    urlDeezer;
+                                //Beaucoup de musique ne pointe pas vers le bon artiste nous compterons donc le nombre de fois ou un ID est le plus présent
+                                //On considérera que l'id le plus présent est l'ID du vrai artiste
+                                for (var j = 0, lj = tSongs.length; j < lj; j++) {
+                                    if (tIdArtist.hasOwnProperty(tSongs[j].id_artist_deezer)) {
+                                        tIdArtist[tSongs[j].id_artist_deezer].push(tSongs[j].id_artist_deezer);
+                                    } else {
+                                        tIdArtist[tSongs[j].id_artist_deezer] = [];
+                                        tIdArtist[tSongs[j].id_artist_deezer].push(tSongs[j].id_artist_deezer);
+                                    }
+                                }
+                                //si tIdArtist a plus d'une propriété (que ses id_artist_deezer de la collection song pointes vers des artistes différents)
+                                if (Object.keys(tIdArtist).length > 1) {
+                                    var maxLength = 0;
+                                    //On va voir quelle propriété à le plus de valeur
+                                    for (var it in tIdArtist) {
+                                        //pour chaque propriété de tIdArtist
+                                        if (maxLength < tIdArtist[it].length) {
+                                            maxLength = tIdArtist[it].length;
+                                            main_id_artist_deezer = it;
+                                        }
+                                    }
+                                } else {
+                                    //Dans ce cas peut importe la musique choisi pour remplir main_id_artist_deezer car les musiques pointes tous sur le même artiste
+                                    main_id_artist_deezer = tSongs[0].id_artist_deezer;
+                                }
+                                urlDeezer = "http://www.deezer.com/artist/" + main_id_artist_deezer;
+                                //faire update des musiques qui n'ont pas les bon IDs
+                                req.db.collection(COLLECTIONARTIST).updateOne(subquery, {
+                                    $set: {
+                                        "id_artist_deezer": main_id_artist_deezer,
+                                        "urlDeezer": urlDeezer
+                                    }
+                                });
+                            }
+                            nbEnd++
+                            if (nbEnd == tArtists.length) {
+                                skip += tArtists.length;
+                                if (skip == nbArtist) {
+                                    console.log("traitement terminé");
+                                } else {
+                                    console.log("Un autre tour de boucle = " + skip);
+                                    loop(skip);
+                                }
+                            }
+                        });
+                    })(tArtists[i]);
+                }
+            });
+        })(skip);
+    });
     res.json(config.http.valid.send_message_ok);
 };
 //==========================================================================================================================\\
@@ -225,12 +405,203 @@ var getAllArtists = (req, res) => {
  * @param {*} res 
  */
 var getAllAlbums = (req, res) => {
-
+    var db = req.db,
+        skip = 0,
+        query = {
+            id_album_deezer: {
+                $exists: 1
+            }
+        },
+        projection = {
+            _id: 1,
+            id_album_deezer: 1
+        },
+        timeout = 50,
+        limit = 10000;
+    db.collection(COLLECTIONALBUM).count(query, function (err, nbAlbum) {
+        console.log("Nombre total de musique : " + nbAlbum);
+        (function fetch(skip) {
+            var nb = 0;
+            if (skip < nbAlbum) {
+                db.collection(COLLECTIONALBUM).find(query, projection).maxTimeMS(160000).skip(skip).limit(limit).toArray(function (err, tAlbums) {
+                    var i = 0;
+                    (function loop(i) {
+                        var objAlbum = tAlbums[i],
+                            url = URL_ALBUM_DEEZER + objAlbum.id_album_deezer;
+                        requestDeezer(url).then((oDeezer) => {
+                            if (typeof oDeezer.error != "undefined") {
+                                if (oDeezer.error.code == 800) { //le document de chez deezer n'a pas de données
+                                    throw oDeezer.error.message;
+                                }
+                                if (oDeezer.error.code == 4) { // On a été bloqué par l'API de deezer, on renvoie la requête
+                                    console.log("relance requete = " + objAlbum.id_album_deezer + " -> " + i + ", skip = " + skip);
+                                    setTimeout(() => {
+                                        loop(i);
+                                    }, timeout * 10);
+                                }
+                            } else {
+                                updateFieldsAlbumsDeezer(objAlbum, oDeezer);
+                                db.collection(COLLECTIONALBUM).update({
+                                    _id: new ObjectId(objAlbum._id)
+                                }, {
+                                    $set: objAlbum
+                                }, function (err) {
+                                    if (err) throw err;
+                                    nb++;
+                                    if (nb == tAlbums.length) {
+                                        skip += limit;
+                                        console.log("SKIP = " + skip);
+                                        writeSkipInFile(skip, FILE_TITLE_ALBUM);
+                                        fetch(skip);
+                                    } else {
+                                        i++;
+                                        setTimeout(() => {
+                                            if (!(i % 500)) {
+                                                console.log("SKIP = " + (skip + i));
+                                                writeSkipInFile(skip + i, FILE_TITLE_ALBUM);
+                                            }
+                                            loop(i);
+                                        }, timeout);
+                                    }
+                                });
+                            }
+                        }).catch((error) => {
+                            if (error.message && (error.message == "ETIMEDOUT" || error.message == "ESOCKETTIMEDOUT")) {
+                                console.log(objAlbum.id_album_deezer + " ERROR DE TIMEOUT = " + error.message);
+                                setTimeout(() => {
+                                    loop(i);
+                                }, timeout * 10);
+                            } else {
+                                console.log("FAIL = " + objAlbum._id + " id_album_deezer = " + objAlbum.id_album_deezer + " -> " + i + ", skip = " + skip, error);
+                                nb++;
+                                if (nb == tAlbums.length) {
+                                    skip += limit;
+                                    console.log("SKIP = " + skip);
+                                    writeSkipInFile(skip, FILE_TITLE_ALBUM);
+                                    fetch(skip);
+                                } else {
+                                    i++;
+                                    setTimeout(() => {
+                                        if (!(i % 500)) {
+                                            console.log("SKIP = " + (skip + i));
+                                            writeSkipInFile(skip + i, FILE_TITLE_ALBUM);
+                                        }
+                                        loop(i);
+                                    }, timeout);
+                                }
+                            }
+                        });
+                    })(i);
+                });
+            } else {
+                console.log("TRAITEMENT TERMINE");
+            }
+        })(skip);
+    });
     res.json(config.http.valid.send_message_ok);
 };
-
-
-
+/**
+ * API vérifiant que les musiques d'un album ont le même id_album_deezer
+ * @param {*} req 
+ * @param {*} res 
+ */
+var checkAndUpdateIdAlbum = (req, res) => {
+    var skip = 0,
+        limit = 10000,
+        projection = {
+            "_id": 1
+        },
+        projectionSong = {
+            "id_album": 1,
+            "id_album_deezer": 1
+        };
+    req.db.collection(COLLECTIONALBUM).count({}, function (err, nbAlbum) {
+        (function loop(skip) {
+            req.db.collection(COLLECTIONALBUM).find({}, projection).maxTimeMS(160000).skip(skip).limit(limit).toArray(function (err, tAlbums) {
+                //Nombre d'album traité
+                var nbEnd = 0;
+                for (var i = 0, l = tAlbums.length; i < l; i++) {
+                    ((oAlbum) => {
+                        var querySong = {
+                            $and: [{
+                                "id_album": oAlbum._id
+                            }, {
+                                "id_album_deezer": {
+                                    $exists: 1
+                                }
+                            }]
+                        };
+                        req.db.collection(COLLECTIONSONG).find(querySong, projectionSong).toArray(function (err, tSongs) {
+                            //tSongs contient les musiques possedant le champ id_album_deezer
+                            if (tSongs.length > 0) {
+                                var tIdAlbum = {},
+                                    main_id_album_deezer,
+                                    urlDeezer;
+                                //Beaucoup de musique ne pointe pas vers le bon album nous compterons donc le nombre de fois ou un ID est le plus présent
+                                //On considérera que l'id le plus présent est l'ID du vrai album
+                                for (var j = 0, lj = tSongs.length; j < lj; j++) {
+                                    if (tIdAlbum.hasOwnProperty(tSongs[j].id_album_deezer)) {
+                                        tIdAlbum[tSongs[j].id_album_deezer].push(tSongs[j].id_album_deezer);
+                                    } else {
+                                        tIdAlbum[tSongs[j].id_album_deezer] = [];
+                                        tIdAlbum[tSongs[j].id_album_deezer].push(tSongs[j].id_album_deezer);
+                                    }
+                                }
+                                //si tIdAlbum a plus d'une propriété (que ses id_album_deezer de la collection song pointes vers des albums différents)
+                                if (Object.keys(tIdAlbum).length > 1) {
+                                    var maxLength = 0;
+                                    //On va voir quelle propriété à le plus de valeur
+                                    for (var it in tIdAlbum) {
+                                        //pour chaque propriété de tIdAlbum
+                                        if (maxLength < tIdAlbum[it].length) {
+                                            maxLength = tIdAlbum[it].length;
+                                            main_id_album_deezer = it;
+                                        }
+                                    }
+                                } else {
+                                    //Dans ce cas peut importe la musique choisi pour remplir main_id_album_deezer car les musiques pointes tous sur le même album
+                                    main_id_album_deezer = tSongs[0].id_album_deezer;
+                                }
+                                urlDeezer = "http://www.deezer.com/album/" + main_id_album_deezer;
+                                //faire update des albums
+                                req.db.collection(COLLECTIONALBUM).updateOne({
+                                    "_id": oAlbum._id
+                                }, {
+                                    $set: {
+                                        "id_album_deezer": main_id_album_deezer,
+                                        "urlDeezer": urlDeezer
+                                    }
+                                });
+                            }
+                            nbEnd++
+                            if (nbEnd == tAlbums.length) {
+                                skip += tAlbums.length;
+                                if (skip == nbAlbum) {
+                                    console.log("traitement terminé :" + skip + '/' + nbAlbum);
+                                } else {
+                                    console.log("Un autre tour de boucle = " + skip);
+                                    loop(skip);
+                                }
+                            }
+                        });
+                    })(tAlbums[i]);
+                }
+            });
+        })(skip);
+    });
+    res.json(config.http.valid.send_message_ok);
+};
+/**
+ * 
+ * @param {*} message to write in file
+ * @param {*} fileTitle 
+ */
+var writeSkipInFile = (message, fileTitle) => {
+    fs.writeFile(fileTitle, message, (err) => {
+        if (err) throw err;
+        console.log('It\'s saved!');
+    });
+};
 /**
  * Envoie une requête sur l'API deezer passé en parametre
  * @param {*} urlDeezer url vers l'API de deezer
@@ -244,7 +615,6 @@ var requestDeezer = (urlDeezer) => {
             if (!err && resp.statusCode == 200) {
                 resolve(JSON.parse(body));
             } else {
-                console.log(" => erreur " + err);
                 reject(err);
             }
         });
@@ -296,10 +666,9 @@ var updateFieldsArtistsDeezer = (oArtist, oDeezer) => {
         big: oDeezer.picture_big ? oDeezer.picture_big : "",
         xl: oDeezer.picture_xl ? oDeezer.picture_xl : "",
     };
-    oArtist.id_artist_deezer = oDeezer.id;
-    oArtist.urlDeezer = oDeezer.link ? oDeezer.link : "";
     oArtist.deezerFans = oDeezer.nb_fan ? oDeezer.nb_fan : 0;
 };
+
 /**
 / * On construit l'objet album a enregistrer dans la base de données. Les données récupérées sur l'API de deezer seront ajoutées 
 / * @param {*} oAlbum objet album a enregister dans notre base de données
@@ -313,12 +682,14 @@ var updateFieldsAlbumsDeezer = (oAlbum, oDeezer) => {
         big: oDeezer.cover_big ? oDeezer.cover_big : "",
         xl: oDeezer.cover_xl ? oDeezer.cover_xl : "",
     };
-    oArtist.id_album_deezer = oDeezer.id;
-    oAlbum.urlDeezer = oDeezer.link ? oDeezer.link : "";
     oAlbum.deezerFans = oDeezer.fans ? oDeezer.fans : 0;
+    oAlbum.explicitLyrics = oDeezer.explicit_lyrics ? oDeezer.explicit_lyrics : "";
+    oAlbum.upc = oDeezer.upc ? oDeezer.upc : "";
 };
 exports.doMappingWasabiDeezer = doMappingWasabiDeezer;
 exports.getAllSongs = getAllSongs;
 exports.getSong = getSong;
 exports.getAllArtists = getAllArtists;
 exports.getAllAlbums = getAllAlbums;
+exports.checkAndUpdateIdArtist = checkAndUpdateIdArtist;
+exports.checkAndUpdateIdAlbum = checkAndUpdateIdAlbum;

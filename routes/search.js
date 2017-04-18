@@ -685,7 +685,6 @@ router.get('/dbinfo', (req, res) => {
         "genres": ["Heavy Metal", "Thrash Metal"],
         "labels": ["Elektra", "Megaforce Records", "Mercury Records", "Warner Bros. Records"],
         "members": [{
-            "id_member_musicbrainz": "118ba687-ad7f-4c28-9355-67e14b18baeb",
             "name": "Ron McGovney",
             "instruments": [
                 "bass guitar"
@@ -693,7 +692,6 @@ router.get('/dbinfo', (req, res) => {
             "begin": "1982",
             "end": "1982",
             "ended": true,
-            "disambiguation": "",
             "type": "member of band"
         }],
         "urlAmazon": "http://www.amazon.com/asdf/e/B000APEBQY?tag=wikia-20",
@@ -706,24 +704,19 @@ router.get('/dbinfo', (req, res) => {
         "urlPureVolume": "http://www.purevolume.com/metallica",
         "urlRateYourMusic": "http://rateyourmusic.com/artist/metallica",
         "urlSoundCloud": "http://soundcloud.com/loureedmetallica",
-        "id_artist_musicbrainz": "65f4f0c5-ef9e-490c-aee3-909e7ae6b2ab",
-        "disambiguation": "",
-        "type": "Group",
         "lifeSpan": {
             "ended": false,
             "begin": "1981-10",
             "end": ""
         },
         "location": {
-            "id_city_musicbrainz": "1f40c6e1-47ba-4e35-996f-fe6ee5840e62",
             "country": "United States",
             "city": "Los Angeles"
         },
         "gender": "",
         "endArea": {
             "id": "",
-            "name": "",
-            "disambiguation": ""
+            "name": ""
         },
         "rdf": " 1963-03-04 Jason Curtis Newsted Bass, guitar, drums, vocals Jason Newsted Jason Curtis Newsted (born March 4, 1963) is an American metal musician, known for playing bass guitar with the bands Metallica (in which he did occasional lead vocals) ...",
         "albums": [{
@@ -773,22 +766,13 @@ router.get('/artist/:artistName', new RateLimit({
         artistName = req.params.artistName;
     db.collection(COLLECTIONARTIST).findOne({
         name: artistName
-    }, {
-        "urlWikia": 0,
-        wordCount: 0
-    }, (err, artist) => {
+    }, config.request.projection.search.get_artist.artist, (err, artist) => {
         if (artist === null) {
             return res.status(404).json(config.http.error.artist_404);
         }
         db.collection(COLLECTIONALBUM).find({
             id_artist: artist._id
-        }, {
-            "urlWikipedia": 0,
-            "genres": 0,
-            "urlAlbum": 0,
-            "wordCount": 0,
-            "rdf": 0
-        }).sort({
+        }, config.request.projection.search.get_artist.album).sort({
             "publicationDate": -1
         }).toArray((err, albums) => {
             var nbAlbum = albums.length,
@@ -799,10 +783,7 @@ router.get('/artist/:artistName', new RateLimit({
                 ((album) => {
                     db.collection(COLLECTIONSONG).find({
                         "id_album": album._id
-                    }, {
-                        "position": 1,
-                        "title": 1
-                    }).sort({
+                    }, config.request.projection.search.get_artist.song).sort({
                         "position": 1
                     }).toArray((err, songs) => {
                         if (err) throw err;
@@ -839,56 +820,6 @@ router.get('/artist/:artistName', new RateLimit({
     {
         "_id": "56d93d84ce06f50c0fed8747",
         "name": "Metallica",
-        "urlWikipedia": "http://en.wikipedia.org/wiki/Metallica",
-        "urlOfficialWebsite": "http://www.metallica.com/",
-        "urlFacebook": "http://www.facebook.com/metallica",
-        "urlMySpace": "https://myspace.com/Metallica",
-        "urlTwitter": "http://twitter.com/metallica",
-        "locationInfo": ["United States", "California", "Los Angeles"],
-        "genres": ["Heavy Metal", "Thrash Metal"],
-        "labels": ["Elektra", "Megaforce Records", "Mercury Records", "Warner Bros. Records"],
-        "members": [{
-            "id_member_musicbrainz": "118ba687-ad7f-4c28-9355-67e14b18baeb",
-            "name": "Ron McGovney",
-            "instruments": [
-                "bass guitar"
-            ],
-            "begin": "1982",
-            "end": "1982",
-            "ended": true,
-            "disambiguation": "",
-            "type": "member of band"
-        }],
-        "urlAmazon": "http://www.amazon.com/asdf/e/B000APEBQY?tag=wikia-20",
-        "urlITunes": "https://itunes.apple.com/us/artist/id3996865",
-        "urlAllmusic": "http://www.allmusic.com/artist/mn0000446509",
-        "urlDiscogs": "http://www.discogs.com/artist/18839",
-        "urlMusicBrainz": "http://musicbrainz.org/artist/65f4f0c5-ef9e-490c-aee3-909e7ae6b2ab",
-        "urlYouTube": "https://www.youtube.com/user/MetallicaTV",
-        "urlSpotify": "https://play.spotify.com/artist/2ye2Wgw4gimLv2eAKyk1NB",
-        "urlPureVolume": "http://www.purevolume.com/metallica",
-        "urlRateYourMusic": "http://rateyourmusic.com/artist/metallica",
-        "urlSoundCloud": "http://soundcloud.com/loureedmetallica",
-        "id_artist_musicbrainz": "65f4f0c5-ef9e-490c-aee3-909e7ae6b2ab",
-        "disambiguation": "",
-        "type": "Group",
-        "lifeSpan": {
-            "ended": false,
-            "begin": "1981-10",
-            "end": ""
-        },
-        "location": {
-            "id_city_musicbrainz": "1f40c6e1-47ba-4e35-996f-fe6ee5840e62",
-            "country": "United States",
-            "city": "Los Angeles"
-        },
-        "gender": "",
-        "endArea": {
-            "id": "",
-            "name": "",
-            "disambiguation": ""
-        },
-        "rdf": " 1963-03-04 Jason Curtis Newsted Bass, guitar ...",
         "albums": {
             "_id": "5714debe25ac0d8aee36b664",
             "name": "Metallica",
@@ -947,10 +878,7 @@ router.get('/artist/:artistName/album/:albumName', new RateLimit({
         artistName = req.params.artistName;
     db.collection(COLLECTIONARTIST).findOne({
         name: artistName
-    }, {
-        "urlWikia": 0,
-        "wordCount": 0
-    }, (err, artist) => {
+    }, config.request.projection.search.get_album.artist, (err, artist) => {
         if (artist == null) {
             return res.status(404).json(config.http.error.artist_404);
         }
@@ -961,26 +889,19 @@ router.get('/artist/:artistName/album/:albumName', new RateLimit({
             }, {
                 "id_artist": artist._id
             }]
-        }, {
-            "urlAlbum": 0,
-            "wordCount": 0
-        }, (err, album) => {
+        }, config.request.projection.search.get_album.album, (err, album) => {
             if (album == null) {
                 return res.status(404).json(config.http.error.album_404);
             }
             db.collection(COLLECTIONSONG).find({
                 "id_album": album._id
-            }, {
-                "position": 1,
-                "title": 1
-            }).toArray((err, songs) => {
+            }, config.request.projection.search.get_album.song).toArray((err, songs) => {
                 if (songs == null) {
                     return res.status(404).json(config.http.error.song_404);
                 }
                 album.songs = songs;
                 artist.albums = album;
                 res.json(artist);
-
             });
         });
     });
@@ -1003,56 +924,6 @@ router.get('/artist/:artistName/album/:albumName', new RateLimit({
     {
         "_id": "56d93d84ce06f50c0fed8747",
         "name": "Metallica",
-        "urlWikipedia": "http://en.wikipedia.org/wiki/Metallica",
-        "urlOfficialWebsite": "http://www.metallica.com/",
-        "urlFacebook": "http://www.facebook.com/metallica",
-        "urlMySpace": "https://myspace.com/Metallica",
-        "urlTwitter": "http://twitter.com/metallica",
-        "locationInfo": ["United States", "California", "Los Angeles"],
-        "genres": ["Heavy Metal", "Thrash Metal"],
-        "labels": ["Elektra", "Megaforce Records", "Mercury Records", "Warner Bros. Records"],
-        "members": [{
-            "id_member_musicbrainz": "118ba687-ad7f-4c28-9355-67e14b18baeb",
-            "name": "Ron McGovney",
-            "instruments": [
-                "bass guitar"
-            ],
-            "begin": "1982",
-            "end": "1982",
-            "ended": true,
-            "disambiguation": "",
-            "type": "member of band"
-        }],
-        "urlAmazon": "http://www.amazon.com/asdf/e/B000APEBQY?tag=wikia-20",
-        "urlITunes": "https://itunes.apple.com/us/artist/id3996865",
-        "urlAllmusic": "http://www.allmusic.com/artist/mn0000446509",
-        "urlDiscogs": "http://www.discogs.com/artist/18839",
-        "urlMusicBrainz": "http://musicbrainz.org/artist/65f4f0c5-ef9e-490c-aee3-909e7ae6b2ab",
-        "urlYouTube": "https://www.youtube.com/user/MetallicaTV",
-        "urlSpotify": "https://play.spotify.com/artist/2ye2Wgw4gimLv2eAKyk1NB",
-        "urlPureVolume": "http://www.purevolume.com/metallica",
-        "urlRateYourMusic": "http://rateyourmusic.com/artist/metallica",
-        "urlSoundCloud": "http://soundcloud.com/loureedmetallica",
-        "id_artist_musicbrainz": "65f4f0c5-ef9e-490c-aee3-909e7ae6b2ab",
-        "disambiguation": "",
-        "type": "Group",
-        "lifeSpan": {
-            "ended": false,
-            "begin": "1981-10",
-            "end": ""
-        },
-        "location": {
-            "id_city_musicbrainz": "1f40c6e1-47ba-4e35-996f-fe6ee5840e62",
-            "country": "United States",
-            "city": "Los Angeles"
-        },
-        "gender": "",
-        "endArea": {
-            "id": "",
-            "name": "",
-            "disambiguation": ""
-        },
-        "rdf": " 1963-03-04 Jason Curtis Newsted Bass, guitar ...",
         "albums": {
             "_id": "5714debe25ac0d8aee36b664",
             "name": "Metallica",
@@ -1116,28 +987,19 @@ router.get('/artist_id/:artistId/album_id/:albumId', new RateLimit(config.http.l
     }
     db.collection(COLLECTIONARTIST).findOne({
         _id: ObjectId(artistId)
-    }, {
-        "urlWikia": 0,
-        "wordCount": 0
-    }, (err, artist) => {
+    }, config.request.projection.search.get_album.artist, (err, artist) => {
         if (artist == null) {
             return res.status(404).json(config.http.error.artist_404);
         }
         db.collection(COLLECTIONALBUM).findOne({
             "_id": ObjectId(albumId)
-        }, {
-            "urlAlbum": 0,
-            "wordCount": 0
-        }, (err, album) => {
+        }, config.request.projection.search.get_album.album, (err, album) => {
             if (album == null) {
                 return res.status(404).json(config.http.error.album_404);
             }
             db.collection(COLLECTIONSONG).find({
                 "id_album": album._id
-            }, {
-                "position": 1,
-                "title": 1
-            }).toArray((err, songs) => {
+            }, config.request.projection.search.get_album.song).toArray((err, songs) => {
                 if (songs == null) {
                     return res.status(404).json(config.http.error.song_404);
                 }
@@ -1283,10 +1145,7 @@ router.get('/artist/:artistName/album/:albumName/song/:songName', new RateLimit(
         songName = req.params.songName;
     db.collection(COLLECTIONARTIST).findOne({
         name: artistName
-    }, {
-        "_id": 1,
-        "name": 1
-    }, (err, artist) => {
+    }, config.request.projection.search.get_song.artist, (err, artist) => {
         if (artist == null) {
             return res.status(404).json(config.http.error.artist_404);
         }
@@ -1296,10 +1155,7 @@ router.get('/artist/:artistName/album/:albumName/song/:songName', new RateLimit(
             }, {
                 "title": albumName
             }]
-        }, {
-            "_id": 1,
-            "title": 1
-        }, (err, album) => {
+        }, config.request.projection.search.get_song.album, (err, album) => {
             if (album == null) {
                 return res.status(404).json(config.http.error.album_404);
             }
@@ -1309,10 +1165,7 @@ router.get('/artist/:artistName/album/:albumName/song/:songName', new RateLimit(
                 }, {
                     "title": songName
                 }]
-            }, {
-                "urlSong": 0,
-                "wordCount": 0
-            }, (err, song) => {
+            }, config.request.projection.search.get_song.song, (err, song) => {
                 if (song == null) {
                     return res.status(404).json(config.http.error.song_404);
                 }
@@ -1414,28 +1267,19 @@ router.get('/artist_id/:artistId/album_id/:albumId/song_id/:songId', new RateLim
     }
     db.collection(COLLECTIONARTIST).findOne({
         _id: ObjectId(artistId)
-    }, {
-        "_id": 1,
-        "name": 1
-    }, (err, artist) => {
+    }, config.request.projection.search.get_song.artist, (err, artist) => {
         if (artist == null) {
             return res.status(404).json(config.http.error.artist_404);
         }
         db.collection(COLLECTIONALBUM).findOne({
             "_id": ObjectId(albumId)
-        }, {
-            "_id": 1,
-            "title": 1
-        }, (err, album) => {
+        }, config.request.projection.search.get_song.album, (err, album) => {
             if (album == null) {
                 return res.status(404).json(config.http.error.album_404);
             }
             db.collection(COLLECTIONSONG).findOne({
                 "_id": ObjectId(songId)
-            }, {
-                "urlSong": 0,
-                "wordCount": 0
-            }, (err, song) => {
+            }, config.request.projection.search.get_song.song, (err, song) => {
                 if (song == null) {
                     return res.status(404).json(config.http.error.song_404);
                 }

@@ -16,7 +16,7 @@
                 @apply(--layout-horizontal);
                 @apply(--layout-wrap);
             }
-            
+
             .artistname {
                 font-size: 34px;
                 line-height: 34px;
@@ -25,45 +25,51 @@
                 padding-bottom: 14px;
                 padding-left: 24px;
             }
-            
+
             paper-material {
                 margin-bottom: 5%;
             }
-            
+
             #externalLink {
                 padding-right: 24px;
                 padding-bottom: 14px;
                 padding-left: 24px;
             }
-            
+
             summary:hover {
                 cursor: hand;
             }
-            
+
             .inherit:focus {
                 outline-width: 0px;
                 color: inherit;
                 background-color: inherit;
                 text-decoration: none;
             }
-            
+
             .collapse-content {
                 padding: 15px;
             }
-            
+
             ul {
                 padding: 15px;
                 margin-left: 24px;
             }
-            
+
             a {
                 text-decoration: blink;
             }
-            
+
             .infosArtist {
                 margin-left: 24px;
             }
-            
+
+            .pictureArtist {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
             paper-icon-button {
                 /*permet de ne pas déformer les icones*/
                 font-size: 0;
@@ -77,44 +83,109 @@
             <template is="dom-if" if="{{artist.rdf}}">
                 <show-dialog labeldialog="RDF {{artist.name}} :" labelbutton="Show RDF" content="{{artist.rdf}}" labelexitdialog="Close"></show-dialog>
             </template>
-            <div class="artistname">{{artist.name}}</div>
+
+            <div class="artistname pictureArtist">
+                {{artist.name}}
+                <img src="{{artist.picture.medium}}" alt="Image Artist">
+            </div>
             <div id="externalLink">
                 <template is="dom-if" if="{{artist.urlWikipedia}}">
-                    <a href="{{artist.urlWikipedia}}" target="_blank" tabindex="-1">
+                    <a href="{{artist.urlWikipedia}}" target="_blank" tabindex="-1" alt="url Wikipedia" title="Wikipedia">
                         <paper-icon-button src="../img/wikipedia_icon.svg"></paper-icon-button>
                     </a>
                 </template>
                 <template is="dom-if" if="{{artist.urlFacebook}}">
-                    <a href="{{artist.urlFacebook}}" target="_blank" tabindex="-1">
+                    <a href="{{artist.urlFacebook}}" target="_blank" tabindex="-1" alt="url Facebook" title="Facebook">
                         <paper-icon-button src="../img/facebook_icon.svg"></paper-icon-button>
                     </a>
                 </template>
                 <template is="dom-if" if="{{artist.urlTwitter}}">
-                    <a href="{{artist.urlTwitter}}" target="_blank" tabindex="-1">
+                    <a href="{{artist.urlTwitter}}" target="_blank" tabindex="-1" alt="url Twitter" title="Twitter">
                         <paper-icon-button src="../img/twitter_icon.svg"></paper-icon-button>
                     </a>
                 </template>
+                <template is="dom-if" if="{{artist.urlAmazon}}">
+                    <a href="{{artist.urlAmazon}}" target="_blank" tabindex="-1" alt="url Amazon" title="Amazon">
+                        <paper-icon-button src="../img/amazon_icon.svg"></paper-icon-button>
+                    </a>
+                </template>
+                <template is="dom-if" if="{{artist.urlYouTube}}">
+                    <a href="{{artist.urlYouTube}}" target="_blank" tabindex="-1" alt="url YouTube" title="YouTube">
+                        <paper-icon-button src="../img/youtube_icon.svg"></paper-icon-button>
+                    </a>
+                </template>
+                <template is="dom-if" if="{{artist.urlSpotify}}">
+                    <a href="{{artist.urlSpotify}}" target="_blank" tabindex="-1" alt="url Spotify" title="Spotify">
+                        <paper-icon-button src="../img/spotify_icon.svg"></paper-icon-button>
+                    </a>
+                </template>
+                <template is="dom-if" if="{{artist.urlDeezer}}">
+                    <a href="{{artist.urlDeezer}}" target="_blank" tabindex="-1" alt="url Deezer" title="Deezer">
+                        <paper-icon-button src="../img/deezer_icon.svg"></paper-icon-button>
+                    </a>
+                </template>
+                <template is="dom-if" if="{{artist.urlITunes}}">
+                    <a href="{{artist.urlITunes}}" target="_blank" tabindex="-1" alt="url iTunes" title="iTunes">
+                        <paper-icon-button src="../img/itunes_icon.svg"></paper-icon-button>
+                    </a>
+                </template>
+                <template is="dom-if" if="{{artist.urlSoundCloud}}">
+                    <a href="{{artist.urlSoundCloud}}" target="_blank" tabindex="-1" alt="url Official SoundCloud" title="SoundCloud">
+                        <paper-icon-button src="../img/soundcloud_icon.svg"></paper-icon-button>
+                    </a>
+                </template>
                 <template is="dom-if" if="{{artist.urlMySpace}}">
-                    <a href="{{artist.urlMySpace}}" target="_blank" tabindex="-1">
+                    <a href="{{artist.urlMySpace}}" target="_blank" tabindex="-1" alt="url MySpace" title="MySpace">
                         <paper-icon-button src="../img/myspace_icon.svg"></paper-icon-button>
                     </a>
                 </template>
+                <template is="dom-if" if="{{artist.urlMusicBrainz}}">
+                    <a href="{{artist.urlMusicBrainz}}" target="_blank" tabindex="-1" alt="url MusicBrainz" title="MusicBrainz">
+                        <paper-icon-button src="../img/musicbrainz_icon.svg"></paper-icon-button>
+                    </a>
+                </template>
                 <template is="dom-if" if="{{artist.urlOfficialWebsite}}">
-                    <a href="{{artist.urlOfficialWebsite}}" target="_blank" tabindex="-1">
+                    <a href="{{artist.urlOfficialWebsite}}" target="_blank" tabindex="-1" alt="url Official Website" title="Official Website">
                         <paper-icon-button src="../img/website_icon.svg"></paper-icon-button>
+                    </a>
+                </template>
+                <template is="dom-if" if="{{artist.urlAllmusic}}">
+                    <a href="{{artist.urlAllmusic}}" target="_blank" tabindex="-1" alt="All Music" title="All Music">
+                        <paper-icon-button src="../img/allmusic_icon.svg"></paper-icon-button>
+                    </a>
+                </template>
+                <template is="dom-if" if="{{artist.urlDiscogs}}">
+                    <a href="{{artist.urlDiscogs}}" target="_blank" tabindex="-1" alt="url Discogs" title="Discogs">
+                        <paper-icon-button src="../img/discogs_icon.svg"></paper-icon-button>
+                    </a>
+                </template>
+                <template is="dom-if" if="{{artist.urlPureVolume}}">
+                    <a href="{{artist.urlPureVolume}}" target="_blank" tabindex="-1" alt="url Pure Volume" title="PureVolume">
+                        <paper-icon-button src="../img/purevolume_icon.svg"></paper-icon-button>
+                    </a>
+                </template>
+                <template is="dom-if" if="{{artist.urlRateYourMusic}}">
+                    <a href="{{artist.urlRateYourMusic}}" target="_blank" tabindex="-1" alt="url Rate Your Music" title="RateYourMusic">
+                        <paper-icon-button src="../img/rateyourmusic_icon.svg"></paper-icon-button>
                     </a>
                 </template>
             </div>
 
             <div class="infosArtist">
                 <template is="dom-if" if="{{artist.lifeSpan.begin}}">
-                    <div><b>Début:</b> {{artist.lifeSpan.begin}}</div>
+                    <div><b>Begin:</b> {{artist.lifeSpan.begin}}</div>
                 </template>
                 <template is="dom-if" if="{{artist.lifeSpan.end}}">
-                    <div><b>Fin:</b> {{artist.lifeSpan.end}}</div>
+                    <div><b>End:</b> {{artist.lifeSpan.end}}</div>
+                </template>
+                <template is="dom-if" if="{{artist.endArea.name}}">
+                    <div><b>End Area:</b> {{artist.endArea.name}}</div>
                 </template>
                 <template is="dom-if" if="{{artist.locationInfo.length}}">
-                    <div><b>Localisation:</b> {{artist.locationInfo}}</div>
+                    <div><b>Location:</b> {{artist.locationInfo}}</div>
+                </template>
+                <template is="dom-if" if="{{artist.gender}}">
+                    <div><b>Gender:</b> {{artist.gender}}</div>
                 </template>
                 <template is="dom-if" if="{{artist.genres.length}}">
                     <div><b>Genre:</b> {{artist.genres}}</div>
@@ -122,7 +193,10 @@
                 <template is="dom-if" if="{{artist.labels.length}}">
                     <div><b>Label:</b> {{artist.labels}}</div>
                 </template>
-                <template id="domIfMember" is="dom-if" if="{{artist.members.length}}" restamp>
+                <template is="dom-if" if="{{artist.deezerFans}}">
+                    <div><b>Number of fans:</b> {{artist.deezerFans}}</div>
+                </template>
+                <template id="domIfMember" is="dom-if" if="{{artist.members.length}}">
                     <details>
                         <summary class="inherit">Voir les membres actuels:</summary>
                         <ul class="collapse-content">
@@ -193,6 +267,9 @@
             _encodeUri: function (nameArtist) {
                 return encodeURIComponent(nameArtist);
             },
+            _checkLocation(location) {
+                console.log(location);
+            }
         });
     </script>
 </dom-module>

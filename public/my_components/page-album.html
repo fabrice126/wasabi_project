@@ -4,17 +4,18 @@
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 
 <!--my_components-->
-<link rel="import" href="show-dialog.html">  
-<link rel="import" href="x-album.html">  
-
+<link rel="import" href="show-dialog.html">
+<link rel="import" href="x-album.html">
+<link rel="import" href="bar-code.html">
 <dom-module id="page-album">
-   <template>
+    <template>
         <style>
             .flex-wrap {
                 @apply(--layout-horizontal);
                 @apply(--layout-wrap);
             }
-            .artistname{
+
+            .artistname {
                 font-size: 2em;
                 line-height: 34px;
                 padding-top: 3%;
@@ -22,52 +23,187 @@
                 padding-bottom: 14px;
                 padding-left: 24px;
             }
+
+            .artistname>a>paper-button {
+                min-width: inherit;
+            }
+
             .inherit {
                 color: inherit;
                 background-color: inherit;
             }
-            paper-button{
+
+            paper-button {
                 padding: 0;
-                margin :0;
+                margin: 0;
             }
-            paper-material{
+
+            paper-material {
                 margin-bottom: 5%;
+            }
+
+            #albumInfos {
+                padding-top: 3%;
+                padding-right: 24px;
+                padding-bottom: 14px;
+                padding-left: 24px;
+            }
+
+            #albumInfos {
+                font-size: 19px;
+            }
+
+            #albumInfos>.urlArea {
+                margin-bottom: 20px;
+            }
+
+            #albumInfos>.urlArea>a {
+                text-decoration: none;
+            }
+
+            #albumInfos>.urlArea paper-icon-button {
+                text-decoration: none;
+                width: 45px;
+                height: 45px;
+            }
+
+            .coverAlbum {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .metadata_list {
+                list-style-type: none;
+                padding: 0px;
             }
         </style>
         <paper-material elevation="1">
-            <iron-ajax id="get_content" auto url="/search/artist/{{_encodeUri(nameArtist)}}/album/{{_encodeUri(nameAlbum)}}" last-response="{{artist}}" handleAs="json"> </iron-ajax>
-            <template is="dom-if" if="{{artist.albums.rdf.length}}">           
+            <iron-ajax id="get_content" auto url="/search/artist/{{_encodeUri(nameArtist)}}/album/{{_encodeUri(nameAlbum)}}" last-response="{{artist}}"
+                handleAs="json"> </iron-ajax>
+            <template is="dom-if" if="{{artist.albums.rdf.length}}">
                 <show-dialog labeldialog="RDF {{artist.albums.title}} :" labelbutton="Show RDF" content="{{artist.albums.rdf}}" labelexitdialog="Close"></show-dialog>
             </template>
-            <div class="artistname"> 
-                <a href="#/search/artist/{{_encodeUri(artist.name)}}" tabindex="-1" class="inherit" >
+            <div class="artistname coverAlbum">
+                <a href="#/search/artist/{{_encodeUri(artist.name)}}" tabindex="-1" class="inherit">
                     <paper-button tabindex="0" role="button" elevation="0" class="artist">{{artist.name}}</paper-button>
                 </a>
+                <img src="{{artist.albums.cover.medium}}" alt="Image Album">
             </div>
+
+            <section id="albumInfos">
+                <div class="urlArea">
+                    <template is="dom-if" if="{{artist.albums.urlWikipedia}}">
+                        <a class="urlMargin" href="{{artist.albums.urlWikipedia}}" target="_blank" tabindex="-1" alt="url Wikipedia" title="Wikipedia">
+                            <paper-icon-button src="../img/wikipedia_icon.svg"></paper-icon-button>
+                        </a>
+                    </template>
+                    <template is="dom-if" if="{{artist.albums.urlAmazon}}">
+                        <a class="urlMargin" href="{{artist.albums.urlAmazon}}" target="_blank" tabindex="-1" alt="url Amazon" title="Amazon">
+                            <paper-icon-button src="../img/amazon_icon.svg"></paper-icon-button>
+                        </a>
+                    </template>
+                    <template is="dom-if" if="{{artist.albums.urlSpotify}}">
+                        <a class="urlMargin" href="{{artist.albums.urlSpotify}}" target="_blank" tabindex="-1" alt="url Spotify" title="Spotify">
+                            <paper-icon-button src="../img/spotify_icon.svg"></paper-icon-button>
+                        </a>
+                    </template>
+                    <template is="dom-if" if="{{artist.albums.urlDeezer}}">
+                        <a href="{{artist.albums.urlDeezer}}" target="_blank" tabindex="-1" alt="url Deezer" title="Deezer">
+                            <paper-icon-button src="../img/deezer_icon.svg"></paper-icon-button>
+                        </a>
+                    </template>
+                    <template is="dom-if" if="{{artist.albums.urlITunes}}">
+                        <a class="urlMargin" href="{{artist.albums.urlITunes}}" target="_blank" tabindex="-1" alt="url iTunes" title="iTunes">
+                            <paper-icon-button src="../img/itunes_icon.svg"></paper-icon-button>
+                        </a>
+                    </template>
+                    <template is="dom-if" if="{{artist.albums.urlMusicBrainz}}">
+                        <a class="urlMargin" href="{{artist.albums.urlMusicBrainz}}" target="_blank" tabindex="-1" alt="url MusicBrainz" title="MusicBrainz">
+                            <paper-icon-button src="../img/musicbrainz_icon.svg"></paper-icon-button>
+                        </a>
+                    </template>
+                    <template is="dom-if" if="{{artist.albums.urlAllmusic}}">
+                        <a class="urlMargin" href="{{artist.albums.urlAllmusic}}" target="_blank" tabindex="-1" alt="url AllMusic" title="AllMusic">
+                            <paper-icon-button src="../img/allmusic_icon.svg"></paper-icon-button>
+                        </a>
+                    </template>
+                    <template is="dom-if" if="{{artist.albums.urlDiscogs}}">
+                        <a href="{{artist.albums.urlDiscogs}}" target="_blank" tabindex="-1" alt="url Discogs" title="Discogs">
+                            <paper-icon-button src="../img/discogs_icon.svg"></paper-icon-button>
+                        </a>
+                    </template>
+                </div>
+                <ul class="metadata_list">
+                    <template is="dom-if" if="{{artist.albums.genre}}">
+                        <li>
+                            Genre: {{artist.albums.genre}}
+                        </li>
+                    </template>
+                    <template is="dom-if" if="{{artist.albums.length}}">
+                        <li>
+                            Length: {{artist.albums.length}}
+                        </li>
+                    </template>
+                    <template is="dom-if" if="{{artist.albums.dateRelease}}">
+                        <li>
+                            Release Date: {{artist.albums.dateRelease}}
+                        </li>
+                    </template>
+                    <template is="dom-if" if="{{artist.albums.country}}">
+                        <li>
+                            Country: {{artist.albums.country}}
+                        </li>
+                    </template>
+                    <template is="dom-if" if="{{artist.albums.language}}">
+                        <li>
+                            Language: {{artist.albums.language}}
+                        </li>
+                    </template>
+                    <template is="dom-if" if="{{artist.albums.deezerFans}}">
+                        <li>
+                            Number of fans: {{artist.albums.deezerFans}}
+                        </li>
+                    </template>
+                    <template is="dom-if" if="{{artist.albums.upc}}">
+                        <li>
+                            UPC: {{artist.albums.upc}}
+                        </li>
+                    </template>
+                    <template is="dom-if" if="{{artist.albums.explicitLyrics}}">
+                        <li>This album contain explicit lyrics</li>
+                    </template>
+                    <template is="dom-if" if="{{artist.albums.barcode}}">
+                        <li>
+                            <bar-code num="{{artist.albums.barcode}}"></bar-code>
+                        </li>
+                    </template>
+                </ul>
+                <template is="dom-if" if="{{artist.albums.songs.abstract}}">
+                    <article id="abstract">Abstract: {{artist.albums.songs.abstract}}</article>
+                </template>
+            </section>
             <x-album album={{artist.albums}} moredata></x-album>
         </paper-material>
     </template>
 
 
-    
-<script>
-  // element registration
-  Polymer({
-    is: "page-album",
-    // add properties and methods on the element's prototype
-    properties: {
-        artist:{
-            type: Object,
-            value: {}
-        },
-    },
-    ready: function(e){    
 
-    },
-    _encodeUri : function(title){
-        return encodeURIComponent(title);
-    }  
-  });  
-
-</script>   
-</dom-module> 
+    <script>
+        // element registration
+        Polymer({
+            is: "page-album",
+            // add properties and methods on the element's prototype
+            properties: {
+                artist: {
+                    type: Object,
+                    value: {}
+                },
+            },
+            ready: function (e) {},
+            _encodeUri: function (title) {
+                return encodeURIComponent(title);
+            }
+        });
+    </script>
+</dom-module>

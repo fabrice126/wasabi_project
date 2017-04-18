@@ -109,9 +109,9 @@ app.use((req, res, next) => {
  */
 app.use('/jwt', jwt_api);
 app.use('/api/v1', new RateLimit(config.http.limit_request.api), api_v1);
-//permet de s'authentifier, personne ne doit pouvoir accèder au site
 app.use('/AmpSimFA', express.static(path.join(__dirname, 'public/AmpSimFA')));
 app.use('/AmpSim3', express.static(path.join(__dirname, 'public/AmpSim3')));
+//permet de s'authentifier, personne ne doit pouvoir accèder au site
 app.use(basicAuth(login.login, login.password));
 app.use('/', express.static(path.join(__dirname, 'public')));
 app.use('/apidoc', express.static(path.join(__dirname, 'apidoc')));

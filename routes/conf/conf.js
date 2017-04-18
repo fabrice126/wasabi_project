@@ -108,7 +108,70 @@ module.exports = {
     },
     "request": {
         "limit": 200,
-        "limit_search_bar": 12
+        "limit_search_bar": 12,
+        "projection": {
+            "search": {
+                "get_artist": {
+                    "artist": {
+                        "urlWikia": 0,
+                        "wordCount": 0,
+                        "animux_path": 0,
+                        "disambiguation": 0,
+                        "endArea.disambiguation": 0,
+                        "endArea.id": 0,
+                        "id_artist_musicbrainz": 0,
+                        "location.id_city_musicbrainz": 0,
+                        "members.disambiguation": 0,
+                        "members.id_member_musicbrainz": 0,
+                        "members.type": 0,
+                        "type": 0
+                    },
+                    "album": {
+                        "id_artist": 1,
+                        "name": 1,
+                        "publicationDate": 1,
+                        "title": 1
+                    },
+                    "song": {
+                        "position": 1,
+                        "title": 1
+                    }
+                },
+                "get_album": {
+                    "artist": {
+                        "name": 1
+                    },
+                    "album": {
+                        "urlAlbum": 0,
+                        "wordCount": 0,
+                        "disambiguation": 0,
+                        "id_album_musicbrainz": 0
+                    },
+                    "song": {
+                        "position": 1,
+                        "title": 1
+                    }
+                },
+                "get_song": {
+                    "artist": {
+                        "name": 1
+                    },
+                    "album": {
+                        "title": 1
+                    },
+                    "song": {
+                        "urlSong": 0,
+                        "wordCount": 0,
+                        "animux_content": 0,
+                        "animux_path": 0,
+                        "availableCountries": 0,
+                        "deezer_mapping": 0,
+                        "disambiguation": 0,
+                        "id_song_musicbrainz": 0
+                    }
+                }
+            }
+        }
     },
     "launch": {
         "env": {

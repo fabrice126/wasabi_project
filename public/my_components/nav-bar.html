@@ -13,34 +13,34 @@
             paper-toolbar {
                 box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
             }
-            
+
             app-drawer {
                 z-index: 1;
             }
-            
+
             app-toolbar {
                 /*color: #3f51b5;*/
                 color: white;
                 background-color: #20295b;
             }
-            
+
             a paper-icon-button,
             a:active paper-icon-button,
             a:visited paper-icon-button {
                 color: #FFFFFF;
             }
-            
+
             carbon-search-input {
                 max-width: 500px;
                 min-width: 220px;
             }
-            
+
             .drawer-contents {
                 height: 100%;
                 overflow-y: auto;
                 color: grey;
             }
-            
+
             .linkMenu {
                 line-height: 64px;
                 display: block;
@@ -53,43 +53,43 @@
                 text-decoration: none;
                 outline-style: none;
             }
-            
+
             .colorTextMenu {
                 color: #3f51b5;
             }
             /*Utilisé dans _closeAppDrawer*/
-            
+
             .colorTextMenuSelected {
                 color: white;
             }
-            
+
             .linkMenu:hover {
                 background-color: #5767bb;
             }
-            
+
             .linkMenu:hover>span,
             .linkMenu:hover>iron-icon {
                 color: white;
             }
             /*Utilisé dans _closeAppDrawer*/
-            
+
             .linkMenuSelected {
                 background-color: #3f51b5;
             }
             /*-------------------Modififaction de la couleur de la scrollbar----------------------------*/
-            
+
             .drawer-contents::-webkit-scrollbar,
             p::-webkit-scrollbar {
                 width: 9px;
                 height: 5px;
                 background-color: #f2f2f2;
             }
-            
+
             .drawer-contents::-webkit-scrollbar-track,
             p::-webkit-scrollbar-track {
                 background-color: #f2f2f2;
             }
-            
+
             .drawer-contents::-webkit-scrollbar-thumb,
             p::-webkit-scrollbar-thumb {
                 background-color: #3f51b5;
@@ -143,16 +143,18 @@
                 labelsAppDrawer: {
                     type: Array,
                     value: [{
-                            label: "Home",
-                            icon: "home",
-                            link: "/#/"
-                        },
-                        {
-                            label: "Test",
-                            icon: "fingerprint",
-                            link: "#/stats"
-                        }
-                    ],
+                        label: "Home",
+                        icon: "home",
+                        link: "/#/"
+                    }, {
+                        label: "Stats",
+                        icon: "fingerprint",
+                        link: "#/stats"
+                    }, {
+                        label: "API",
+                        icon: "swap-vertical-circle",
+                        link: "/apidoc"
+                    }],
                 },
                 elementSelected: {
                     type: Object,

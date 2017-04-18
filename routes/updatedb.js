@@ -525,9 +525,19 @@ router.get('/deezer/song/:_id', deezerHandler.getSong);
  */
 router.get('/deezer/artist', deezerHandler.getAllArtists);
 /**
+ * API permettant de vérifier que pour un artist donné chaque champs id_artist_deezer contenu dans les musiques de l'artiste est identique
+ * Il faut donc que chaque musique d'un artiste ait le même id_artist_deezer
+ */
+router.get('/deezer/check_and_update_id/artist', deezerHandler.checkAndUpdateIdArtist);
+/**
  * API permettant de recupérer des informations sur les albums présent sur l'API de deezer
  */
 router.get('/deezer/album', deezerHandler.getAllAlbums);
+/**
+ * API permettant de vérifier que pour un album donné chaque champs id_album_deezer contenu dans les musiques de l'album est identique
+ * Il faut donc que chaque musique d'un album ait le même id_album_deezer
+ */
+router.get('/deezer/check_and_update_id/album', deezerHandler.checkAndUpdateIdAlbum);
 
 
 
@@ -544,5 +554,38 @@ router.get('/animux/sanitize_rename/artist', animuxHandler.sanitizeAndRenameDirA
  * API permettant de faire le matching entre les fichiers animux contenant la synchronisation des paroles et nos musique en base de données
  */
 router.get('/animux/create_mapping/song', animuxHandler.getFileSong);
+
+
+/**
+ * A SUPPRIMER
+ * Permet de transformer les champs de type Double en Int32 dans la base de données de mongodb.
+ */
+router.get('/doubleint', (req, res) => {
+    var skip = 0,
+        limit = 10000;
+    (function loop(skip) {
+        if (skip < 2099289) {
+            req.db.collection(COLLECTIONSONG).find({}, {
+                "position": 1,
+                "wordCount": 1
+            }).skip(skip).limit(limit).toArray(function (err, tObj) {
+                console.log(tObj.length);
+                skip += tObj.length;
+                for (var i = 0, l = tObj.length; i < l; i++) {
+                    req.db.collection(COLLECTIONSONG).update({
+                        _id: new ObjectId(tObj[i]._id)
+                    }, {
+                        $set: tObj[i]
+                    });
+                }
+                console.log("On passe au " + skip);
+                loop(skip);
+            })
+        } else {
+            console.log("TRAITEMENT TERMINE");
+        }
+    })(skip);
+    res.send("OK");
+});
 
 export default router;

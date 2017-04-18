@@ -10,7 +10,7 @@ const URL_TO_REPLACE = "http://musicbrainz.org";
 const USE_MUSICBRAINZ_URL_LOCAL = true;
 const URL_MUSICBRAINZ = USE_MUSICBRAINZ_URL_LOCAL ? "http://127.0.0.1:5000/ws/2" : "http://musicbrainz.org/ws/2";
 const URL_PARAMS_ARTIST = "?inc=artist-rels&fmt=json";
-const URL_PARAMS_ALBUM = "?inc=artist-rels&fmt=json";
+const URL_PARAMS_ALBUM = "?fmt=json";
 const URL_PARAMS_SONG = "?inc=work-rels&fmt=json";
 
 /**
@@ -34,7 +34,6 @@ var getArtist = (req, res) => {
         return res.status(404).json(config.http.error.objectid_404);
     }
     getAndUpdateOne(req.db, res, id, COLLECTIONARTIST, URL_PARAMS_ARTIST, updateFieldsArtistMusicBrainz);
-    res.json(config.http.valid.send_message_ok);
 }
 /**
  * Permet de mettre a jour les documents albums de la base de données ayant une URL vers musicbrainz
@@ -56,7 +55,6 @@ var getAlbum = (req, res) => {
         return res.status(404).json(config.http.error.objectid_404);
     }
     getAndUpdateOne(req.db, res, id, COLLECTIONALBUM, URL_PARAMS_ALBUM, updateFieldsAlbumMusicBrainz);
-    // res.json(config.http.valid.send_message_ok);
 }
 /**
  * Permet de mettre a jour les documents musiques de la base de données ayant une URL vers musicbrainz
@@ -78,8 +76,6 @@ var getSong = (req, res) => {
         return res.status(404).json(config.http.error.objectid_404);
     }
     getAndUpdateOne(req.db, res, id, COLLECTIONSONG, URL_PARAMS_SONG, updateFieldsSongMusicBrainz);
-    // res.json(config.http.valid.send_message_ok);
-
 }
 
 
@@ -130,13 +126,9 @@ var getAndUpdateAll = (db, collection, urlParams, updateFieldsCollectionMusicBra
                                 }
                             });
                         }).catch((error) => {
-                            if (collection == COLLECTIONARTIST) {
-                                console.log("FAIL = " + tObj[i].urlMusicBrainz + " / " + collection);
-                            } else if (collection == COLLECTIONALBUM) {
-                                console.log("FAIL = " + tObj[i].urlMusicBrainz + " / " + collection);
-                            } else if (collection == COLLECTIONSONG) {
-                                console.log("FAIL = " + tObj[i].urlMusicBrainz + " / " + collection);
-                            }
+                            if (collection == COLLECTIONARTIST) console.log("FAIL = " + tObj[i].urlMusicBrainz + " / " + collection);
+                            else if (collection == COLLECTIONALBUM) console.log("FAIL = " + tObj[i].urlMusicBrainz + " / " + collection);
+                            else if (collection == COLLECTIONSONG) console.log("FAIL = " + tObj[i].urlMusicBrainz + " / " + collection);
                             nb++;
                             if (nb == tObj.length) {
                                 skip += limit;
@@ -181,13 +173,9 @@ var getAndUpdateOne = (db, res, id, collection, urlParams, updateFieldsCollectio
                 $set: obj
             }, function (err) {
                 if (err) throw err;
-                if (collection == COLLECTIONARTIST) {
-                    console.log("AJOUT TERMINEE: " + obj.name);
-                } else if (collection == COLLECTIONALBUM) {
-                    console.log("AJOUT TERMINEE: " + obj._id + " / " + collection);
-                } else if (collection == COLLECTIONSONG) {
-                    console.log("AJOUT TERMINEE: " + obj._id + " / " + collection);
-                }
+                if (collection == COLLECTIONARTIST) console.log("AJOUT TERMINEE: " + obj.name);
+                else if (collection == COLLECTIONALBUM) console.log("AJOUT TERMINEE: " + obj._id + " / " + collection);
+                else if (collection == COLLECTIONSONG) console.log("AJOUT TERMINEE: " + obj._id + " / " + collection);
             });
             res.json(obj);
         }).catch((error) => {
@@ -225,8 +213,6 @@ var requestMusicBrainz = (urlMusicBrainz) => {
  * @param {*} oMB objet musicbrainz représente un document d'un artiste récupéré via l'api de musicbrainz 
  */
 var updateFieldsArtistMusicBrainz = function (objArtist, oMB) {
-    console.log("update ARTIST fields");
-
     objArtist.id_artist_musicbrainz = oMB.id;
     objArtist.disambiguation = oMB.disambiguation;
     objArtist.type = oMB.type ? oMB.type : "";
@@ -275,7 +261,12 @@ var updateFieldsArtistMusicBrainz = function (objArtist, oMB) {
  * @param {*} oMB objet musicbrainz représente un document d'un album récupéré via l'api de musicbrainz 
  */
 var updateFieldsAlbumMusicBrainz = function (objAlbum, oMB) {
-    console.log("update ALBUM fields");
+    objAlbum.id_album_musicbrainz = oMB.id;
+    objAlbum.country = oMB.country || "";
+    objAlbum.disambiguation = oMB.disambiguation || "";
+    objAlbum.barcode = oMB.barcode || "";
+    objAlbum.dateRelease = oMB.date || oMB["first-release-date"] || "toto";
+    objAlbum.language = oMB['text-representation'] ? oMB['text-representation'].language || "" : "";
 }
 /**
  * Permet d'ajouter des champs à l'objet objSong de notre base de données en les récupérant de l'objet oMB venant de l'api de musicbrainz 
