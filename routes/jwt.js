@@ -30,7 +30,7 @@ router.post('/login', new RateLimit(config.http.limit_request.search), (req, res
             // Create token if the password matched and no error was thrown
             delete user.password;
             var token = req.jwt.sign(user, confJwt.secretOrKey, {
-                expiresIn: 120 // in seconds
+                expiresIn: 4 * 3600 * 24 // in seconds
             });
             return res.json({
                 success: true,
