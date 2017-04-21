@@ -445,7 +445,7 @@
                 },
                 token: {
                     type: String,
-                    value: localStorage.getItem("token")
+                    value: localStorage.getItem("token") || ""
                 },
                 headers: {
                     computed: '_computeHeader(token)'
