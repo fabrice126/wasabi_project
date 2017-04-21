@@ -7,12 +7,11 @@ module.exports = function (passport) {
     var opts = {
         "secretOrKey": confJwt.secretOrKey,
         "jwtFromRequest": ExtractJwt.fromAuthHeader(),
+        "passReqToCallback": true
     };
-    passport.use(new JwtStrategy(opts, function (jwt_payload, done) {
+    passport.use(new JwtStrategy(opts, function (req, jwt_payload, done) {
         User.findById(jwt_payload._doc._id, function (err, user) {
-            if (err) {
-                return done(err, false);
-            }
+            if (err) return done(err, false);
             if (user) {
                 done(null, user);
             } else {

@@ -66,7 +66,8 @@
     "pushstate-anchor": "~0.3.2",
     "google-youtube": "GoogleWebComponents/google-youtube#^1.2.1",
     "app-layout": "PolymerElements/app-layout#^0.10.1",
-    "app-route": "PolymerElements/app-route#^0.9.2"
+    "app-route": "PolymerElements/app-route#^0.9.2",
+    "iron-form": "PolymerElements/iron-form#^1.1.4"
   },
   "resolutions": {
     "polymer": "^1.2.3"

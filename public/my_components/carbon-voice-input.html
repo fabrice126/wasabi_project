@@ -27,50 +27,52 @@ Example:
     properties: {
 
       /**
-      * `transcript` The transcript of the users input.
-      */
+       * `transcript` The transcript of the users input.
+       */
       transcript: {
         type: String,
         notify: true
       },
 
       /**
-      * `interim` updates as the user speaks.
-      */
+       * `interim` updates as the user speaks.
+       */
       interim: {
         type: String,
         notify: true
       },
 
       /**
-      * `listening` indicates if speech recognition is active.
-      */
-      listening:{
+       * `listening` indicates if speech recognition is active.
+       */
+      listening: {
         type: Boolean,
         value: false,
         notify: true
       },
 
       /**
-      * `supported` indicates if the browser supports speech recognition.
-      */
+       * `supported` indicates if the browser supports speech recognition.
+       */
       supported: {
         type: Boolean,
-        value: function(){ return ('webkitSpeechRecognition' in window); },
+        value: function () {
+          return ('webkitSpeechRecognition' in window);
+        },
         notify: true
       }
 
     },
 
     /**
-    * Initlize the Web Speech API.
-    *
-    * Start listening to the users input. Browser will stop listening automatically
-    * when the user stops talking.
-    */
-    listen: function(){
+     * Initlize the Web Speech API.
+     *
+     * Start listening to the users input. Browser will stop listening automatically
+     * when the user stops talking.
+     */
+    listen: function () {
 
-      if(this.supported){
+      if (this.supported) {
 
         var self = this;
         var recognition = new webkitSpeechRecognition();
@@ -78,17 +80,17 @@ Example:
         recognition.interimResults = true;
         recognition.start();
 
-        recognition.onstart = function(){
+        recognition.onstart = function () {
           self.listening = true;
         }
 
-        recognition.onresult = function(event){
+        recognition.onresult = function (event) {
 
           var interim = '';
-          var final   = '';
+          var final = '';
 
-          for(var i = event.resultIndex; i < event.results.length; ++i){
-            if(event.results[i].isFinal)
+          for (var i = event.resultIndex; i < event.results.length; ++i) {
+            if (event.results[i].isFinal)
               final += event.results[i][0].transcript;
             else
               interim += event.results[i][0].transcript;
@@ -99,11 +101,11 @@ Example:
 
         }
 
-        recognition.onerror = function(){
+        recognition.onerror = function () {
           self.listening = false;
         }
 
-        recognition.onend = function(){
+        recognition.onend = function () {
           self.listening = false;
         }
 

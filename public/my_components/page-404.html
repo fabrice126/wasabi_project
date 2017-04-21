@@ -1,69 +1,66 @@
-
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../bower_components/google-map/google-map.html">
 
-    <dom-module id="page-404">
-       <template>
-            <style>
-                paper-material{
-                    margin-bottom: 5%;
-                }
-                google-map{
-                    height: 500px;
-                }
-                h1{
-                    padding-top: 2%;
-                    color: #3F51B5;
-                }
-            </style>           
-            <paper-material elevation="1">
-                <h1><center>Lost ?</center></h1>
-               <google-map id="map" longitude={{longitude}} latitude={{latitude}} zoom="17">
-                   <google-map-marker longitude={{longitudeMarker}} latitude={{latitudeMarker}} open><b>You are here !</b></google-map-marker>
+<dom-module id="page-404">
+    <template>
+        <style>
+            paper-material {
+                margin-bottom: 5%;
+            }
+
+            google-map {
+                height: 500px;
+            }
+
+            h1 {
+                padding-top: 2%;
+                color: #3F51B5;
+            }
+        </style>
+        <paper-material elevation="1">
+            <h1>
+                <center>Lost ?</center>
+            </h1>
+            <google-map id="map" longitude={{longitude}} latitude={{latitude}} zoom="17">
+                <google-map-marker longitude={{longitudeMarker}} latitude={{latitudeMarker}} open><b>You are here !</b></google-map-marker>
             </google-map>
-           </paper-material>
-
-
-
-        </template>
-
-    
-<script>
-  // element registration
-  Polymer({
-    is: "page-404",
-    // add properties and methods on the element's prototype
-    properties: {
-        longitude:{
-            type: String,
-            value: "-122.38736023608394",
-        },        
-        latitude:{
-            type: String,
-            value: "37.73801877296961",
-        },
-        longitudeMarker:{
-            type: String,
-            value: "-122.38736023608394",
-        },        
-        latitudeMarker:{
-            type: String,
-            value: "37.73801877296961",
-        },
-    },
-    ready: function(e){    
-        if(navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(this.showPosition.bind(this));
-        }
-    },
-    showPosition: function(position) {
-        this.latitude = position.coords.latitude;
-        this.longitude = position.coords.longitude;
-        this.latitudeMarker = position.coords.latitude;
-        this.longitudeMarker = position.coords.longitude;
-    },
-  });  
-
-</script>   
-</dom-module> 
+        </paper-material>
+    </template>
+    <script>
+        // element registration
+        Polymer({
+            is: "page-404",
+            // add properties and methods on the element's prototype
+            properties: {
+                longitude: {
+                    type: String,
+                    value: "-122.38736023608394",
+                },
+                latitude: {
+                    type: String,
+                    value: "37.73801877296961",
+                },
+                longitudeMarker: {
+                    type: String,
+                    value: "-122.38736023608394",
+                },
+                latitudeMarker: {
+                    type: String,
+                    value: "37.73801877296961",
+                },
+            },
+            ready: function (e) {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(this.showPosition.bind(this));
+                }
+            },
+            showPosition: function (position) {
+                this.latitude = position.coords.latitude;
+                this.longitude = position.coords.longitude;
+                this.latitudeMarker = position.coords.latitude;
+                this.longitudeMarker = position.coords.longitude;
+            },
+        });
+    </script>
+</dom-module>

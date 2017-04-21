@@ -12,19 +12,19 @@
             paper-tab {
                 --paper-tab-ink: #E0E0E0;
             }
-            
+
             paper-tab:hover {
                 background-color: #f2f2f2;
             }
-            
+
             paper-tabs {
                 --paper-tabs-selection-bar-color: #3f51b5;
             }
-            
+
             paper-button:hover {
                 @apply(--shadow-elevation-6dp);
             }
-            
+
             paper-button {
                 -o-transition: all 1s linear;
                 -moz-transition: all 1s linear;
@@ -39,97 +39,94 @@
                 display: inline-table;
                 padding-top: 18px;
             }
-            
+
             #loader {
                 display: block;
                 text-align: center;
                 margin-top: 1%;
             }
-            
+
             .flex-wrap {
                 @apply(--layout-horizontal);
                 @apply(--layout-wrap);
             }
-            
+
             [id^=alphabet_]>li {
                 padding-left: 0.2%;
                 padding-right: 0.2%;
                 font-size: 20px;
                 display: inline-block;
             }
-            
+
             [id^=alphabet_]>li>a {
                 color: #3f51b5;
                 text-decoration: none;
             }
-            
+
             [id^=alphabet_] {
                 list-style: none;
                 display: inline-block;
                 width: 100%;
                 padding-left: 0px;
             }
-            
+
             #nav_alphabet {
                 text-align: center;
             }
-            
+
             #nav_sub_alphabet {
                 text-align: center;
             }
-            
+
             [id^=alphabet_sub]>li {
                 padding-left: 0.2%;
                 padding-right: 0.2%;
                 font-size: 20px;
                 display: inline-block;
             }
-            
+
             [id^=alphabet_sub]>li>a {
                 color: #3f51b5;
                 text-decoration: none;
             }
-            
+
             [id^=alphabet_sub] {
                 list-style: none;
                 display: inline-block;
                 width: 100%;
                 padding-left: 0px;
             }
-            
+
             paper-fab.blue {
                 --paper-fab-background: #3F51B5;
                 --paper-fab-keyboard-focus-background: var(--paper-light-blue-900);
             }
-            
-            .previousPage {
-                display: inline-flex;
-                position: relative;
-                left: -42%;
-                margin: 1%;
-            }
-            
-            .nextPage {
-                display: inline-flex;
-                position: relative;
-                left: 42%;
-                margin: 1%;
-            }
-            
+
             #paginationBottom {
                 margin-bottom: 5%;
             }
-            
+
             .listData {
                 padding-bottom: 2%;
+            }
+
+            .paginationButtons {
+                display: flex;
+                justify-content: space-between;
+            }
+
+            .paginationButtons>a {
+                margin: 10px;
             }
         </style>
         <!--Chargement automatique du contenu en ajax et vérification avec _checkUrlParams que les parametres sont les bons-->
         <template is="dom-if" if="{{_checkUrlParams(lettre,numPage)}}">
-            <iron-ajax id="get_content" url="/search/categorie/{{categorie}}/lettre/{{lettre}}/page/{{numPage}}" last-response="{{data}}"handleAs="json" auto> </iron-ajax>
+            <iron-ajax id="get_content" url="/search/categorie/{{categorie}}/lettre/{{lettre}}/page/{{numPage}}" last-response="{{data}}" handleAs="json" auto> </iron-ajax>
         </template>
         <iron-ajax id="get_db_info" url="/search/dbinfo" last-response="{{db_info}}" auto handleAs="json"></iron-ajax>
-        <iron-ajax id="get_db_info_count" url="/search/count/{{categorie}}/{{lettre}}" last-response="{{dbcount}}" auto handleAs="json"></iron-ajax>
+        <template is="dom-if" if="{{categorie}}">
+            <iron-ajax id="get_db_info_count" url="/search/count/{{categorie}}/{{lettre}}" last-response="{{dbcount}}" auto handleAs="json"></iron-ajax>
+        </template>
         <!-- Génération des listes de catégories -->
         <paper-material elevation="1">
             <paper-tabs id="paperTabsCategorie" selected={{idxCurrentTab}}>
@@ -152,9 +149,9 @@
                             </template>
                         </ul>
                     </template>
-                    <template is="dom-if" if="{{_countNbArtist(idxCurrentTab)}}"> 
+                    <template is="dom-if" if="{{_countNbArtist(idxCurrentTab)}}">
                         Nous avons actuellement {{ db_info.nbArtist}} artistes !
-                        </template>
+                    </template>
                     <template is="dom-if" if="{{_countNbAlbum(idxCurrentTab)}}">
                         Nous avons actuellement {{db_info.nbAlbum}} albums !
                     </template>
@@ -168,12 +165,14 @@
         <template is="dom-if" if="{{_isData(data)}}">
             <div id="loader">
                 <paper-material elevation="1">
-                    <a class="previousPage" href="#/search/categorie/{{categorie}}/lettre/{{lettre}}/page/{{_hasPrevious(numPage)}}" tabindex="-1">
-                        <paper-fab mini icon="chevron-left" title="previous" class="blue"></paper-fab>
-                    </a>
-                    <a class="nextPage" href="#/search/categorie/{{categorie}}/lettre/{{lettre}}/page/{{_hasNext(numPage,data)}}" tabindex="-1">
-                        <paper-fab mini icon="chevron-right" title="next" class="blue"></paper-fab>
-                    </a>
+                    <nav class="paginationButtons">
+                        <a href="#/search/categorie/{{categorie}}/lettre/{{lettre}}/page/{{_hasPrevious(numPage)}}" tabindex="-1">
+                            <paper-fab mini icon="chevron-left" title="previous" class="blue"></paper-fab>
+                        </a>
+                        <a href="#/search/categorie/{{categorie}}/lettre/{{lettre}}/page/{{_hasNext(numPage,data)}}" tabindex="-1">
+                            <paper-fab mini icon="chevron-right" title="next" class="blue"></paper-fab>
+                        </a>
+                    </nav>
                     <nav id="nav_sub_alphabet">
                         <ul id="alphabet_sub{{categorie}}">
                             <template is="dom-repeat" items="{{alphabet}}" as="lettreIdx" index-as="idx">
@@ -200,10 +199,9 @@
                     <paper-material class="listData" elevation="1">
                         <div>Il y a actuellement {{_getNbCount(dbcount)}} albums commençant par la lettre {{lettre}}</div>
                         <template class="flex-wrap" is="dom-repeat" items="{{data.albums}}" as="album">
-                            <paper-button on-tap='doLoadCategorie' id="#/search/artist/{{_encodeUri(album.name)}}/album/{{_encodeUri(album.titleAlbum)}}"
-                                raised>
+                            <paper-button on-tap='doLoadCategorie' id="#/search/artist/{{_encodeUri(album.name)}}/album/{{_encodeUri(album.titleAlbum)}}" raised>
                                 {{album.titleAlbum}}<br> de: {{album.name}}
-                                </paper-button>
+                            </paper-button>
                         </template>
                     </paper-material>
                 </template>
@@ -212,20 +210,21 @@
                     <paper-material class="listData" elevation="1">
                         <div>Il y a actuellement {{_getNbCount(dbcount)}} musiques commençant par la lettre {{lettre}}</div>
                         <template class="flex-wrap" is="dom-repeat" items="{{data.songs}}" as="song">
-                            <paper-button on-tap='doLoadCategorie' id="#/search/artist/{{_encodeUri(song.name)}}/album/{{_encodeUri(song.albumTitle)}}/song/{{_encodeUri(song.titleSong)}}"
-                                raised>
+                            <paper-button on-tap='doLoadCategorie' id="#/search/artist/{{_encodeUri(song.name)}}/album/{{_encodeUri(song.albumTitle)}}/song/{{_encodeUri(song.titleSong)}}" raised>
                                 {{song.titleSong}}<br> de: {{song.name}}
-                                </paper-button>
+                            </paper-button>
                         </template>
                     </paper-material>
                 </template>
                 <paper-material id="paginationBottom" elevation="1">
-                    <a class="previousPage" href="#/search/categorie/{{categorie}}/lettre/{{lettre}}/page/{{_hasPrevious(numPage)}}" tabindex="-1">
-                        <paper-fab mini icon="chevron-left" title="previous" class="blue"></paper-fab>
-                    </a>
-                    <a class="nextPage" href="#/search/categorie/{{categorie}}/lettre/{{lettre}}/page/{{_hasNext(numPage,data)}}" tabindex="-1">
-                        <paper-fab mini icon="chevron-right" title="next" class="blue"></paper-fab>
-                    </a>
+                    <nav class="paginationButtons">
+                        <a href="#/search/categorie/{{categorie}}/lettre/{{lettre}}/page/{{_hasPrevious(numPage)}}" tabindex="-1">
+                            <paper-fab mini icon="chevron-left" title="previous" class="blue"></paper-fab>
+                        </a>
+                        <a href="#/search/categorie/{{categorie}}/lettre/{{lettre}}/page/{{_hasNext(numPage,data)}}" tabindex="-1">
+                            <paper-fab mini icon="chevron-right" title="next" class="blue"></paper-fab>
+                        </a>
+                    </nav>
                 </paper-material>
             </div>
         </template>

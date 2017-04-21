@@ -12,11 +12,6 @@
 <dom-module id="page-artist">
     <template>
         <style>
-            .flex-wrap {
-                @apply(--layout-horizontal);
-                @apply(--layout-wrap);
-            }
-
             .artistname {
                 font-size: 34px;
                 line-height: 34px;
@@ -68,6 +63,7 @@
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
+                flex-wrap: wrap;
             }
 
             paper-icon-button {
@@ -77,7 +73,6 @@
             }
         </style>
         <paper-material elevation="1">
-
             <iron-ajax id="get_content" auto url="/search/artist/{{_encodeUri(nameArtist)}}" last-response="{{artist}}" handleAs="json">
             </iron-ajax>
             <template is="dom-if" if="{{artist.rdf}}">
@@ -86,7 +81,9 @@
 
             <div class="artistname pictureArtist">
                 {{artist.name}}
-                <img src="{{artist.picture.medium}}" alt="Image Artist">
+                <template is="dom-if" if="{{artist.picture}}">
+                    <img src="{{artist.picture.medium}}" alt="Image Artist">
+                </template>
             </div>
             <div id="externalLink">
                 <template is="dom-if" if="{{artist.urlWikipedia}}">
@@ -238,11 +235,7 @@
                     </details>
                 </template>
             </div>
-
-
-
-            <template class="flex-wrap" is="dom-repeat" items="{{artist.albums}}" as="album" initial-count="1">
-                <!-- -->
+            <template is="dom-repeat" items="{{artist.albums}}" as="album" initial-count="1">
                 <x-album album={{album}}></x-album>
             </template>
 

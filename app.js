@@ -1,9 +1,10 @@
 import config from './routes/conf/conf';
-import login from './routes/conf/login.json';
+import configLogin from './routes/conf/login.json';
 //Import express
 import express from 'express';
 import RateLimit from 'express-rate-limit';
 import session from 'express-session';
+import proxy from 'express-http-proxy';
 import helmet from 'helmet';
 //Import DB
 import elasticsearch from 'elasticsearch';
@@ -27,7 +28,7 @@ import passport from 'passport';
 import bcrypt from 'bcrypt-nodejs';
 //Import routes
 import confPassport from './routes/conf/passport';
-import search from './routes/search';
+import search from './routes/search/search';
 import api_v1 from './routes/api/v1/api_v1';
 import MT5 from './routes/MT5';
 import updatedb from './routes/updatedb';
@@ -79,10 +80,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: true
 }));
-//initialisation de passport permettant la connexion via JWT
-confPassport(passport);
-app.use(passport.initialize());
 app.use((req, res, next) => {
+    //initialisation des variables de l'objet req
     req.db = db;
     req.dbMongoose = dbMongoose;
     req.jwt = jwt;
@@ -90,6 +89,9 @@ app.use((req, res, next) => {
     req.COLLECTIONALBUM = config.database.collection_album;
     req.COLLECTIONSONG = config.database.collection_song;
     req.elasticsearchClient = elasticsearchClient;
+    //initialisation de passport permettant la connexion via JWT
+    passport.initialize();
+    confPassport(passport);
     //<start> pour MT5
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
@@ -101,31 +103,28 @@ app.use((req, res, next) => {
     //</start> pour MT5
     next();
 });
-
 /**
  * -------------------------------------------------------------------------------------------------------
  * --------------------------------------DEFINITION DES ROUTES D'API--------------------------------------
  * -------------------------------------------------------------------------------------------------------
  */
-app.use('/jwt', jwt_api);
-app.use('/api/v1', new RateLimit(config.http.limit_request.api), api_v1);
+app.use('/', express.static(path.join(__dirname, 'public')));
 app.use('/AmpSimFA', express.static(path.join(__dirname, 'public/AmpSimFA')));
 app.use('/AmpSim3', express.static(path.join(__dirname, 'public/AmpSim3')));
-//permet de s'authentifier, personne ne doit pouvoir accèder au site
-app.use(basicAuth(login.login, login.password));
-app.use('/', express.static(path.join(__dirname, 'public')));
-app.use('/apidoc', express.static(path.join(__dirname, 'apidoc')));
-app.use('/search', search);
 app.use('/MT5', MT5);
+app.use('/search', search);
+app.use('/api/v1', new RateLimit(config.http.limit_request.api), api_v1);
+app.use('/jwt', jwt_api);
+//permet de s'authentifier, personne ne doit pouvoir accèder à la doc
+app.use(basicAuth(configLogin.login, configLogin.password));
+app.use('/apidoc', express.static(path.join(__dirname, 'apidoc')));
+app.use('/download', express.static(path.join(__dirname, 'public/download')));
 //Placer ici les routes utile uniquement pour le développement
 if (app.get('env') === config.launch.env.dev) {
     console.error("/!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\\");
     console.error("/!\\ Projet executé en mode: " + app.get('env') + " veuillez le mettre en mode production avant de push sur le git (dans app.js)/!\\");
-    if (config.http.limit_request.search.max < 30) {
-        console.error("/!\\-------------------------------LE QUOTA DE REQUETE PAR MINUTE N'EST PAS ASSEZ ELEVE------------------------------/!\\");
-    }
+    if (config.http.limit_request.search.max < 30) console.error("/!\\-------------------------------LE QUOTA DE REQUETE PAR MINUTE N'EST PAS ASSEZ ELEVE------------------------------/!\\");
     console.error("/!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\\");
-
     app.use('/graphql', graphqlHTTP({
         schema: schema,
         rootValue: root,
@@ -135,6 +134,9 @@ if (app.get('env') === config.launch.env.dev) {
     app.use('/mergedb', mergedb);
     app.use('/createdb', createdb);
     app.use('/extractdbpedia', extractdbpedia);
+    // development error handler
+    // will print stacktrace
+    app.use(errorHandler());
 }
 // catch 404 and forward to error handler
 //Return la page-404.html via <app-router> dans index.html 
@@ -148,11 +150,6 @@ app.use((req, res, next) => {
     err.status = 404;
     next(err);
 });
-// development error handler
-// will print stacktrace
-if (app.get('env') === config.launch.env.dev) {
-    app.use(errorHandler());
-}
 // production error handler
 // no stacktraces leaked to user
 app.use((err, req, res, next) => {

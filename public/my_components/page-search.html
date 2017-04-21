@@ -15,32 +15,35 @@
 <dom-module id="page-search">
     <template>
         <style>
-            .flex-wrap {
-                @apply(--layout-horizontal);
-                @apply(--layout-wrap);
-            }
-            paper-material{
+            paper-material {
                 width: 100%;
                 height: 100%;
                 border-radius: 2px;
                 transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
                 padding-top: 1%;
                 padding-bottom: 2%;
-            }        
-            .search_album{
+            }
+
+            .search_album {
                 font-size: 12px;
             }
-            .band_search_bar,.album_search_bar,.song_search_bar{
-                border-radius: 4px;  
+
+            .band_search_bar,
+            .album_search_bar,
+            .song_search_bar {
+                border-radius: 4px;
                 padding: 7px;
             }
-            .band_search_bar{
+
+            .band_search_bar {
                 background-color: #3F51B5;
             }
-            .album_search_bar{
+
+            .album_search_bar {
                 background-color: #f98b13;
             }
-            paper-card{
+
+            paper-card {
                 width: 100%;
                 padding-left: 5%;
                 padding-top: 1%;
@@ -48,30 +51,37 @@
                 cursor: pointer;
                 color: black;
             }
-            .song_search_bar{
+
+            .song_search_bar {
                 background-color: #C0A805;
             }
-            .search_title{
+
+            .search_title {
                 position: absolute;
                 margin-top: 10px;
                 margin-left: 10px;
             }
-            .center{
+
+            .center {
                 text-align: center;
             }
-            .searchText-info{
+
+            .searchText-info {
                 font-size: 1.5em;
                 padding: 25px;
                 color: #333333;
             }
-            .icon-home{
+
+            .icon-home {
                 color: #3F51B5;
             }
-            paper-icon-button{
+
+            paper-icon-button {
                 width: 50px;
                 height: 50px;
-                --paper-icon-button-ink-color : #3F51B5;
+                --paper-icon-button-ink-color: #3F51B5;
             }
+
             .inherit {
                 color: inherit;
                 background-color: inherit;
@@ -81,7 +91,7 @@
             <iron-ajax id="get_content" auto url="/search/more/{{_encodeUri(searchText)}}" last-response="{{searchResults}}" handleAs="json"> </iron-ajax>
             <template is="dom-if" if="{{!searchResults.length}}">
                 <p class="center searchText-info">No artists and songs found for: {{searchText}}</p>
-                <div  class="center icon-home">
+                <div class="center icon-home">
                     <a href="/" tabindex="-1" class="inherit">
                         <paper-icon-button icon="icons:home"></paper-icon-button>
                     </a>
@@ -90,56 +100,53 @@
             <template is="dom-if" if="{{searchResults.length}}">
                 <p class="center searchText-info">Artists and songs found for: {{searchText}}</p>
             </template>
-            <template class="flex-wrap" is="dom-repeat" items="{{searchResults}}" as="result" initial-count="1">
+            <template is="dom-repeat" items="{{searchResults}}" as="result" initial-count="1">
                 <template is="dom-if" if="{{_isArtist(result)}}">
                     <a href="#/search/artist/{{_encodeUri(result.name)}}" class="inherit">
-                        <paper-card elevation="0" >
-                            <img class="band_search_bar" src="../img/band_search_bar.svg" alt="Band"> 
+                        <paper-card elevation="0">
+                            <img class="band_search_bar" src="../img/band_search_bar.svg" alt="Band">
                             <span class="search_title">{{result.name}}</span>
                             <paper-ripple></paper-ripple>
-                        </paper-card> 
+                        </paper-card>
                     </a>
                 </template>
                 <template is="dom-if" if="{{_isSong(result)}}">
-                   <a href="#/search/artist/{{_encodeUri(result.name)}}/album/{{_encodeUri(result.albumTitle)}}/song/{{_encodeUri(result.title)}}" class="inherit">
-                        <paper-card elevation="0" >
-                            <img class="song_search_bar" src="../img/song_search_bar.svg" alt="Song"> 
+                    <a href="#/search/artist/{{_encodeUri(result.name)}}/album/{{_encodeUri(result.albumTitle)}}/song/{{_encodeUri(result.title)}}" class="inherit">
+                        <paper-card elevation="0">
+                            <img class="song_search_bar" src="../img/song_search_bar.svg" alt="Song">
                             <span class="search_title">{{result.title}} - {{result.name}}<span class="search_album">(album: {{result.albumTitle}})</span>
                             </span>
                             <paper-ripple></paper-ripple>
-                        </paper-card> 
+                        </paper-card>
                     </a>
                 </template>
             </template>
         </paper-material>
     </template>
-<script>
-  // element registration
-  Polymer({
-    is: "page-search",
-    // add properties and methods on the element's prototype
-    properties: {
-    },
-    ready: function(e){    
-    },
-    _encodeUri : function(nameArtist){
-        return encodeURIComponent(nameArtist);
-    },    
-    _isArtist : function(data){
-        var isArtist = false;
-        if(typeof data.albumTitle == 'undefined') {
-            isArtist = true;
-        }
-        return isArtist;
-    },
-    _isSong : function(data){
-        var isSong = false;
-        if(typeof data.albumTitle !== 'undefined') {
-            isSong = true;
-        }
-        return isSong;
-    },
-  });  
-
-</script>   
+    <script>
+        // element registration
+        Polymer({
+            is: "page-search",
+            // add properties and methods on the element's prototype
+            properties: {},
+            ready: function (e) {},
+            _encodeUri: function (nameArtist) {
+                return encodeURIComponent(nameArtist);
+            },
+            _isArtist: function (data) {
+                var isArtist = false;
+                if (typeof data.albumTitle == 'undefined') {
+                    isArtist = true;
+                }
+                return isArtist;
+            },
+            _isSong: function (data) {
+                var isSong = false;
+                if (typeof data.albumTitle !== 'undefined') {
+                    isSong = true;
+                }
+                return isSong;
+            },
+        });
+    </script>
 </dom-module>

@@ -8,94 +8,94 @@
 <!--my_components-->
 <link href="x-song.html" rel="import">
 
-
 <dom-module id="x-album">
     <template>
         <style>
             .done {
                 background: green;
             }
-            paper-fab{
+
+            paper-fab {
                 display: inline-block;
             }
-            article{
+
+            article {
                 border-bottom: 1px solid #e5e5e5;
                 padding-top: 4%;
                 padding-bottom: 4%;
             }
-            .album{
+
+            .album {
                 font-size: 22px;
                 font-weight: 400;
                 line-height: 40px;
                 padding: 4%;
-                cursor:pointer;
+                cursor: pointer;
             }
-            .album:hover{
+
+            .album:hover {
                 background-color: #F2F2F2;
             }
-            .flex-wrap {
-                @apply(--layout-horizontal);
-                @apply(--layout-wrap);
-            }
-            ol{
-                list-style-position:inside;
+
+            ol {
+                list-style-position: inside;
                 margin: 0px;
                 padding: 0px;
             }
-            paper-input{
-                padding: 4% ;
-                height: 24px ;
-                margin-left: 2% ;
-                display: inline-block ;
+
+            paper-input {
+                padding: 4%;
+                height: 24px;
+                margin-left: 2%;
+                display: inline-block;
             }
-            paper-fab{
+
+            paper-fab {
                 float: right;
                 margin-right: 3%;
             }
-            .addSong{
+
+            .addSong {
                 margin: 4% 0% 1% 9%;
                 background: rgb(63, 81, 181);
                 color: white;
             }
-
         </style>
-        <iron-ajax id="get_content" method="GET" on-response="responseHandler" handleAs="json"> </iron-ajax>
-        <iron-ajax id="put_content" method="PUT" content-type="application/json"></iron-ajax>
+        <iron-ajax id="get_content" headers="[[headers]]" method="GET" on-response="responseHandler" handle-as="json"> </iron-ajax>
+        <iron-ajax id="put_content" headers="[[headers]]" method="PUT" content-type="application/json"></iron-ajax>
         <article id="container">
             <template is="dom-if" if="{{!moredata}}">
-                <span on-tap="doLoadAlbum" link="#/search/artist/{{_encodeUri(album.name)}}/album/{{_encodeUri(album.title)}}"  hidden="{{editing}}" class="album">
+                <span on-tap="doLoadAlbum" link="#/search/artist/{{_encodeUri(album.name)}}/album/{{_encodeUri(album.title)}}" hidden="{{editing}}" class="album">
                     Album:  {{album.title}} {{album.publicationDate}}
                 </span>
             </template>
             <template is="dom-if" if="{{moredata}}">
-                <span on-tap="doLoadAlbum" link="#/search/more/{{_concat(album.name,album.title)}}"  hidden="{{editing}}" class="album">
+                <span on-tap="doLoadAlbum" link="#/search/more/{{_concat(album.name,album.title)}}" hidden="{{editing}}" class="album">
                     Album:  {{album.title}} {{album.publicationDate}}
                 </span>
             </template>
-            <paper-fab hidden="{{editing}}"  icon="icons:create" on-tap="doEdit" class="edit" mini></paper-fab>
-            <paper-fab hidden="{{!editing}}" icon="icons:done"   on-tap="doEdit" class="done" mini></paper-fab>
+            <paper-fab hidden="{{editing}}" icon="icons:create" on-tap="doEdit" class="edit" mini></paper-fab>
+            <paper-fab hidden="{{!editing}}" icon="icons:done" on-tap="doEdit" class="done" mini></paper-fab>
         </article>
         <div role="listbox">
             <ol id="listSong">
-                <template id="songs" class="flex-wrap" is="dom-repeat" items="{{album.songs}}" as="song">
-                    <x-song  album={{album}} editing={{editing}} song={{song}}></x-song>
+                <template id="songs" is="dom-repeat" items="{{album.songs}}" as="song">
+                    <x-song album={{album}} editing={{editing}} song={{song}}></x-song>
                 </template>
             </ol>
         </div>
-        <paper-button class="addSong"on-tap="addSong" hidden="{{!editing}}" raised elevation="2">
+        <paper-button class="addSong" on-tap="addSong" hidden="{{!editing}}" raised elevation="2">
             Ajouter une musique
             <iron-icon icon="add"></iron-icon>
         </paper-button>
     </template>
-
-
     <script>
         // element registration
         Polymer({
             is: "x-album",
             // add properties and methods on the element's prototype
             properties: {
-                album:{
+                album: {
                     type: Object,
                     value: {},
                     observer: 'onAlbumChanged'
@@ -104,75 +104,84 @@
                     type: Boolean,
                     value: false,
                 },
-                moredata:{
-                    type:Boolean,
-                    value:false
+                moredata: {
+                    type: Boolean,
+                    value: false
+                },
+                token: {
+                    type: String,
+                    value: localStorage.getItem("token")
+                },
+                headers: {
+                    computed: '_computeHeader(token)'
                 }
             },
-            doLoadAlbum:function(e){
+            doLoadAlbum: function (e) {
                 window.location.href = e.target.link;
             },
-            getURLAlbum: function(){
-                return "/search/artist/"+this._encodeUri(this.album.name)+"/album/"+this._encodeUri(this.album.title);
+            _computeHeader: function (token) {
+                return {
+                    Authorization: token
+                };
             },
-            getURLAlbumID: function(){
-                return "/search/artist_id/"+this.album.id_artist+"/album_id/"+this.album._id+"";
+            getURLAlbum: function () {
+                return "/search/artist/" + this._encodeUri(this.album.name) + "/album/" + this._encodeUri(
+                    this.album.title);
             },
-//            addSong:function(e){
-//                var xsong = document.createElement("x-song");
-//                xsong.artist = this.artist;
-//                xsong.album = this.album;
-//                xsong.editing = this.editing;
-//                Polymer.dom(this.$.listSong).appendChild(xsong);
-//
-//            },
-            _concat: function(str1,str2){
-                return this._encodeUri(str1+' '+str2);
+            getURLAlbumID: function () {
+                return "/search/artist_id/" + this.album.id_artist + "/album_id/" + this.album._id + "";
             },
-            _stringify: function(obj){
+            //    addSong:function(e){
+            //        var xsong = document.createElement("x-song");
+            //        xsong.artist = this.artist;
+            //        xsong.album = this.album;
+            //        xsong.editing = this.editing;
+            //        Polymer.dom(this.$.listSong).appendChild(xsong);
+            //    },
+            _concat: function (str1, str2) {
+                return this._encodeUri(str1 + ' ' + str2);
+            },
+            _stringify: function (obj) {
                 return JSON.stringify(obj);
             },
-            doEdit: function(e){
-                this.editing=!this.editing;
-                if(this.editing){
+            doEdit: function (e) {
+                this.editing = !this.editing;
+                if (this.editing) {
                     // on crée dans un premier temps les inputs contenant les infos potentiellement non mis a jour (la requête ajax étant généré juste après)
                     // la mise a jour du title ou de la date de sortie se feront dans onAlbumChanged
                     this.checkIfInputExist();
                     this.$.get_content.url = this.getURLAlbumID();
-                    console.log("URL DE L'ALBUM A MODIFIER :"+this.$.get_content.url);
                     this.$.get_content.generateRequest();
-                }
-                else{
+                } else {
                     this.checkIfInputExist();
-                    console.log("DANS !THIS EDITING");
                     this.$.put_content.body = JSON.stringify(this.album);
                     this.$.put_content.url = this.getURLAlbum();
                     this.$.put_content.generateRequest();
                     //si more data vaut true alors on est sur la page d'un album nous ne somme donc pas sur la page de la discographie de l'artist nous modifions donc l'url
-                    if(this.moredata){
-                        window.history.replaceState("","", "#"+this.getURLAlbum());
+                    if (this.moredata) {
+                        window.history.replaceState("", "", "#" + this.getURLAlbum());
                     }
                 }
             },
             /**
              * Permet de mettre à jour sur l'IHM du title de l'album que l'ont veut modifier, l'observer se déclenchera lorsque la requête ajax de this.responseHandler sera fini
              */
-            onAlbumChanged : function(){
+            onAlbumChanged: function () {
                 this.checkIfInputExist();
             },
-            checkIfInputExist: function(){
+            checkIfInputExist: function () {
                 //on veut éditer
-                if(this.editing){
+                if (this.editing) {
                     var paperInputTitre, paperInputDateSortie;
                     //si le paper input n'existe pas on le crée
-                    if(!this.$.edit && !this.$.editDateSortie){
+                    if (!this.$.edit && !this.$.editDateSortie) {
                         //On crée un paper input équivalent a celui ci-dessous
                         //<paper-input id="edit" label="title: {{song.title}}" hidden="{{!editing}}" value="{{song.title}}"></paper-input>
                         paperInputTitre = document.createElement("paper-input");
                         paperInputTitre.id = "editTitre";
                         paperInputTitre.label = "Nom de l'album";
-                        paperInputTitre.hidden= false;
-                        paperInputTitre.value=this.album.title;
+                        paperInputTitre.hidden = false;
+                        paperInputTitre.value = this.album.title;
                         paperInputTitre.style.cssText = "padding:4%; height:24px; margin-left:2%; display:inline-block;";
                         this.$.editTitre = paperInputTitre;
                         //On crée un paper input équivalent a celui ci-dessous
@@ -180,52 +189,47 @@
                         paperInputDateSortie = document.createElement("paper-input");
                         paperInputDateSortie.id = "editDateSortie";
                         paperInputDateSortie.label = "Date de sortie";
-                        paperInputDateSortie.hidden= false;
-                        paperInputDateSortie.value=this.album.publicationDate;
+                        paperInputDateSortie.hidden = false;
+                        paperInputDateSortie.value = this.album.publicationDate;
                         paperInputDateSortie.style.cssText = "padding:4%; height:24px; margin-left:2%; display:inline-block;";
-
                         this.$.editDateSortie = paperInputDateSortie;
-
                         this.$.container.appendChild(paperInputTitre);
                         this.$.container.appendChild(paperInputDateSortie);
-
                     }
                     // le paper input existe déja
-                    else{
+                    else {
                         paperInputTitre = this.$.editTitre;
-                        paperInputTitre.value=this.album.title;
-                        paperInputTitre.hidden= false;
-
+                        paperInputTitre.value = this.album.title;
+                        paperInputTitre.hidden = false;
                         paperInputDateSortie = this.$.editDateSortie;
-                        paperInputDateSortie.value=this.album.publicationDate;
-                        paperInputDateSortie.hidden= false;
+                        paperInputDateSortie.value = this.album.publicationDate;
+                        paperInputDateSortie.hidden = false;
                     }
                 }
                 //on veut sauvegarder
-                else{
-                    if(this.$.editTitre && this.$.editDateSortie){
-                        var paperInputTitre =  this.$.editTitre;
+                else {
+                    if (this.$.editTitre && this.$.editDateSortie) {
+                        var paperInputTitre = this.$.editTitre;
                         paperInputTitre.hidden = true;
-                        if(paperInputTitre.value == this.album.title){
-                            this.fire("onTitleAlbumChanged",{titleAlbum:paperInputTitre.value});
+                        if (paperInputTitre.value == this.album.title) {
+                            this.fire("onTitleAlbumChanged", {
+                                titleAlbum: paperInputTitre.value
+                            });
                         }
-                        this.set("album.title",paperInputTitre.value);
-
-                        var paperInputDateSortie =  this.$.editDateSortie;
+                        this.set("album.title", paperInputTitre.value);
+                        var paperInputDateSortie = this.$.editDateSortie;
                         paperInputDateSortie.hidden = true;
-                        this.set("album.publicationDate",paperInputDateSortie.value);
-
+                        this.set("album.publicationDate", paperInputDateSortie.value);
                     }
                 }
             },
-            responseHandler: function(response){
+            responseHandler: function (response) {
                 console.log("Requete fini");
                 this.album = response.detail.response.albums;
             },
-            _encodeUri : function(title){
+            _encodeUri: function (title) {
                 return encodeURIComponent(title);
             }
         });
-
     </script>
 </dom-module>

@@ -95,9 +95,6 @@
                 background-color: #3f51b5;
             }
         </style>
-        <!-- local DOM for your element -->
-        <!--permet d'envoyer une requête ajax-->
-        <iron-request id="createdb"></iron-request>
         <paper-toolbar justify="justified" middleJustify="justified">
             <app-drawer id="appDrawer" swipe-open opened="{{isOpen}}">
                 <app-toolbar>Menu</app-toolbar>
@@ -115,20 +112,14 @@
                 </div>
             </app-drawer>
             <div>
-                <paper-icon-button icon="menu" on-tap="menuAction"></paper-icon-button>
+                <paper-icon-button icon="menu" on-tap="menuAction" title="Menu"></paper-icon-button>
             </div>
             <carbon-search-input placeholder="Search" voice-enabled></carbon-search-input>
             <div>
-                <a href="/stats" tabindex="-1">
-                    <paper-icon-button icon="assessment">+</paper-icon-button>
+                <a href="/login" tabindex="-1">
+                    <paper-icon-button icon="account-circle" title="Login"></paper-icon-button>
                 </a>
             </div>
-            <!--
-                <paper-button on-tap="createdb" id="btn_createdb" raised>
-                    <iron-icon icon="cloud-done"></iron-icon>
-                    Create Database
-                </paper-button>
--->
         </paper-toolbar>
     </template>
     <script>
@@ -180,12 +171,6 @@
                 });
                 this.elementSelected = event.currentTarget;
                 this.$.appDrawer.close();
-            },
-            createdb: function () {
-                console.log("On tap Create Database : dans create db avant envoie ajax : nav-bar component");
-                this.$.createdb.send({
-                    url: "/createdb"
-                });
             },
             menuAction: function () {
                 this.isOpen = !this.isOpen;

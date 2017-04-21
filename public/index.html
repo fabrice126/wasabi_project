@@ -24,6 +24,8 @@
         <app-router trailingSlash="ignore">
             <!--Page d'accueil-->
             <app-route path="/" onUrlChange="updateModel" import="my_components/paper-tabs-content.html"></app-route>
+            <!--Page de login de l'application-->
+            <app-route path="/login" onUrlChange="updateModel" import="my_components/page-login.html"></app-route>
             <!--Page contenant des statistiques de l'application-->
             <app-route path="/stats" onUrlChange="updateModel" import="my_components/page-stats.html"></app-route>
             <!--Page d'accueil + recherche d'artistes/albums/musiques par lettre-->

@@ -36,208 +36,343 @@ Example:
 -->
 
 <dom-module id="carbon-search-input">
-  <template>
-    <style include="iron-flex">
+    <template>
+        <style include="iron-flex">
+             :host {
+                display: block;
+                box-sizing: border-box;
 
-      :host {
-        display: block;
-        box-sizing: border-box;
+                width: 100%;
+                height: 36px;
+            }
 
-        width: 100%;
-        height: 36px;
-      }
-        #suggestion{
-            display: none;
-            background-color: white;
-            color:black;
-            border-radius: 0px 0px 5px 5px;
-            box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
-        }
+            #suggestion {
+                display: none;
+                background-color: white;
+                color: black;
+                border-radius: 0px 0px 5px 5px;
+                box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+            }
 
-        paper-card{
-            width: 100%;
-            padding-left: 5%;
-            padding-top: 1%;
-            padding-bottom: 1%;
-            cursor: pointer;
-            color: black;
-        }
-        #suggestion:last-child{
-            border-radius: 0px 0px 5px 5px;
-            margin-top: -2px;
-        }
-        paper-card:hover{
-            background-color: #EBEEF4;
-        }
-        .arrowSelector{
-            background-color: #AFC6F5;
-        }
+            paper-card {
+                width: 100%;
+                padding-left: 5%;
+                padding-top: 1%;
+                padding-bottom: 1%;
+                cursor: pointer;
+                color: black;
+            }
 
-        a:hover, a:focus,a:active a:visited {
-            color:black;
-        }
-        .search_title{
-            position: absolute;
-            margin-top: 10px;
-            margin-left: 10px;
-        }
-        .search_album{
-            font-size: 12px;
-        }
-        paper-material{
-            width: 100%;
-            height: 100%;
-            background-color: rgba(163,231,255,0.50);
-            border-radius: 2px;
-            transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        #search::-webkit-input-placeholder {
-            color: white;
-        }
-         
-        :host[blend] paper-material{
-          background-color: var(--dark-primary-color);
-        }
+            #suggestion:last-child {
+                border-radius: 0px 0px 5px 5px;
+                margin-top: -2px;
+            }
 
-        :host[focused] paper-material{
-            background-color: #FFFFFF !important;
-            transition: all 0.5s linear;
-        }
-        :host[focused] paper-material .searchIcon{ 
-            fill: #737373;
-        }
-        :host[focused] paper-material #microphone{ 
-            color: #737373;
-        }
-        :host[focused] paper-material #search::-webkit-input-placeholder{ 
-            color: #737373;
-        }
-        :host[focused] #search{ 
-            color: black;
-        }
-        .searchIcon{
-            fill: white;
-            transition: all 0.5s linear;
-        }
-        #microphone{
-            color: white;
-            transition: all 0.5s linear;
-        }
-        .band_search_bar,.album_search_bar,.song_search_bar,.more_search_bar{
-            border-radius: 4px;  
-            padding: 7px;
-        }
-        .band_search_bar{
-            background-color: #3F51B5;
-        }
-        .album_search_bar{
-            background-color: #f98b13;
-        }
-        .song_search_bar{
-            background-color: #F39C12;
-        }
-        .more_search_bar{
-            color: #3F51B5;
-        }
-        #paper-card-more{
-            border-top: 1px solid #EBEEF4;
-        }
+            paper-card:hover {
+                background-color: #EBEEF4;
+            }
 
+            .arrowSelector {
+                background-color: #AFC6F5;
+            }
 
+            a:hover,
+            a:focus,
+            a:active a:visited {
+                color: black;
+            }
 
-      :host [is="iron-input"]{
-        box-sizing: border-box;
-        border: none;
-        outline: none;
-        font-size: 17px;
-        width: 100%;
-        font-family: roboto;    
-        background-color: transparent;
-        height: 100%;
-        color: white;
-        transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
-      }
-        :host[blend] [is="iron-input"]{ color: var(--dark-theme-secondary-color); 
-        }
+            .search_title {
+                position: absolute;
+                margin-top: 10px;
+                margin-left: 10px;
+            }
 
-        :host[listening] [is="iron-input"]{ 
-            color: var(--light-theme-secondary-color); 
-        }
+            .search_album {
+                font-size: 12px;
+            }
 
-      :host [icon="search"]{
-        transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
-        color: var(--light-theme-secondary-color);
-        margin: 0 24px;
-      }
+            paper-material {
+                width: 100%;
+                height: 100%;
+                background-color: rgba(163, 231, 255, 0.50);
+                border-radius: 2px;
+                transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+            }
 
-        :host[blend]  [icon="search"]{ color: var(--dark-theme-text-color); }
+            #search::-webkit-input-placeholder {
+                color: white;
+            }
 
-        :host[focused] [icon="search"]{ color: var(--light-theme-secondary-color); }
+             :host[blend] paper-material {
+                background-color: var(--dark-primary-color);
+            }
 
-      paper-icon-button{
-        transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
-        color: var(--light-theme-secondary-color);
-        margin-right: 12px;
-        border-radius: 50%;
-        /*z-index: 2000;*/
-      }
+             :host[focused] paper-material {
+                background-color: #FFFFFF !important;
+                transition: all 0.5s linear;
+            }
 
-      :host[blend] paper-icon-button{ color: var(--dark-theme-text-color); }
+             :host[focused] paper-material .searchIcon {
+                fill: #737373;
+            }
 
-      :host[focused] paper-icon-button{ color: var(--light-theme-secondary-color); }
+             :host[focused] paper-material #microphone {
+                color: #737373;
+            }
 
-      :host[listening] paper-icon-button{
-        background-color: var(--accent-color);
-        transform: scale(1.2);
-        color: #FFFFFF !important;
-        transition: all .3s ease-out;
+             :host[focused] paper-material #search::-webkit-input-placeholder {
+                color: #737373;
+            }
 
-        animation: search-scale 4s infinite;
-      }
+             :host[focused] #search {
+                color: black;
+            }
 
-      @-webkit-keyframes search-scale {
-        0% { transform: scale(1.0) } 10% { transform: scale(1.4) }
-        20% { transform: scale(1.2)} 30%{ transform: scale(1.3) }
-        40%{ transform: scale(1.2) } 50%{ transform: scale(1.7) }
-        60%{ transform: scale(1.5) } 70%{ transform: scale(1.0) }
-        80%{ transform: scale(1.3) } 90%{ transform: scale(1.4) }
-        100% { transform: scale(1.0) }
-      }
-      @-moz-keyframes search-scale {
-        0% { transform: scale(1.0) } 10% { transform: scale(1.4) }
-        20% { transform: scale(1.2)} 30%{ transform: scale(1.3) }
-        40%{ transform: scale(1.2) } 50%{ transform: scale(1.7) }
-        60%{ transform: scale(1.5) } 70%{ transform: scale(1.0) }
-        80%{ transform: scale(1.3) } 90%{ transform: scale(1.4) }
-        100% { transform: scale(1.0) }
-      }
-      @-o-keyframes search-scale {
-        0% { transform: scale(1.0) } 10% { transform: scale(1.4) }
-        20% { transform: scale(1.2)} 30%{ transform: scale(1.3) }
-        40%{ transform: scale(1.2) } 50%{ transform: scale(1.7) }
-        60%{ transform: scale(1.5) } 70%{ transform: scale(1.0) }
-        80%{ transform: scale(1.3) } 90%{ transform: scale(1.4) }
-        100% { transform: scale(1.0) }
-      }
+            .searchIcon {
+                fill: white;
+                transition: all 0.5s linear;
+            }
 
-      @keyframes search-scale {
-        0% { transform: scale(1.0) } 10% { transform: scale(1.4) }
-        20% { transform: scale(1.2)} 30%{ transform: scale(1.3) }
-        40%{ transform: scale(1.2) } 50%{ transform: scale(1.7) }
-        60%{ transform: scale(1.5) } 70%{ transform: scale(1.0) }
-        80%{ transform: scale(1.3) } 90%{ transform: scale(1.4) }
-        100% { transform: scale(1.0) }
-      }
+            #microphone {
+                color: white;
+                transition: all 0.5s linear;
+            }
 
-    </style>
-      <iron-ajax id="get_search" last-response="{{data}}" handleAs="json"> </iron-ajax>
+            .band_search_bar,
+            .album_search_bar,
+            .song_search_bar,
+            .more_search_bar {
+                border-radius: 4px;
+                padding: 7px;
+            }
 
-    <carbon-voice-input id="voiceInput"
-                        supported="{{_supported}}"
-                        transcript="{{_transcript}}"
-                        interim="{{_interim}}"
-                        listening="{{listening}}"></carbon-voice-input>
+            .band_search_bar {
+                background-color: #3F51B5;
+            }
 
+            .album_search_bar {
+                background-color: #f98b13;
+            }
+
+            .song_search_bar {
+                background-color: #F39C12;
+            }
+
+            .more_search_bar {
+                color: #3F51B5;
+            }
+
+            #paper-card-more {
+                border-top: 1px solid #EBEEF4;
+            }
+
+             :host [is="iron-input"] {
+                box-sizing: border-box;
+                border: none;
+                outline: none;
+                font-size: 17px;
+                width: 100%;
+                font-family: roboto;
+                background-color: transparent;
+                height: 100%;
+                color: white;
+                transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+
+             :host[blend] [is="iron-input"] {
+                color: var(--dark-theme-secondary-color);
+            }
+
+             :host[listening] [is="iron-input"] {
+                color: var(--light-theme-secondary-color);
+            }
+
+             :host [icon="search"] {
+                transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+                color: var(--light-theme-secondary-color);
+                margin: 0 24px;
+            }
+
+             :host[blend] [icon="search"] {
+                color: var(--dark-theme-text-color);
+            }
+
+             :host[focused] [icon="search"] {
+                color: var(--light-theme-secondary-color);
+            }
+
+            paper-icon-button {
+                transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+                color: var(--light-theme-secondary-color);
+                margin-right: 12px;
+                border-radius: 50%;
+                /*z-index: 2000;*/
+            }
+
+             :host[blend] paper-icon-button {
+                color: var(--dark-theme-text-color);
+            }
+
+             :host[focused] paper-icon-button {
+                color: var(--light-theme-secondary-color);
+            }
+
+             :host[listening] paper-icon-button {
+                background-color: var(--accent-color);
+                transform: scale(1.2);
+                color: #FFFFFF !important;
+                transition: all .3s ease-out;
+
+                animation: search-scale 4s infinite;
+            }
+
+            @-webkit-keyframes search-scale {
+                0% {
+                    transform: scale(1.0)
+                }
+                10% {
+                    transform: scale(1.4)
+                }
+                20% {
+                    transform: scale(1.2)
+                }
+                30% {
+                    transform: scale(1.3)
+                }
+                40% {
+                    transform: scale(1.2)
+                }
+                50% {
+                    transform: scale(1.7)
+                }
+                60% {
+                    transform: scale(1.5)
+                }
+                70% {
+                    transform: scale(1.0)
+                }
+                80% {
+                    transform: scale(1.3)
+                }
+                90% {
+                    transform: scale(1.4)
+                }
+                100% {
+                    transform: scale(1.0)
+                }
+            }
+
+            @-moz-keyframes search-scale {
+                0% {
+                    transform: scale(1.0)
+                }
+                10% {
+                    transform: scale(1.4)
+                }
+                20% {
+                    transform: scale(1.2)
+                }
+                30% {
+                    transform: scale(1.3)
+                }
+                40% {
+                    transform: scale(1.2)
+                }
+                50% {
+                    transform: scale(1.7)
+                }
+                60% {
+                    transform: scale(1.5)
+                }
+                70% {
+                    transform: scale(1.0)
+                }
+                80% {
+                    transform: scale(1.3)
+                }
+                90% {
+                    transform: scale(1.4)
+                }
+                100% {
+                    transform: scale(1.0)
+                }
+            }
+
+            @-o-keyframes search-scale {
+                0% {
+                    transform: scale(1.0)
+                }
+                10% {
+                    transform: scale(1.4)
+                }
+                20% {
+                    transform: scale(1.2)
+                }
+                30% {
+                    transform: scale(1.3)
+                }
+                40% {
+                    transform: scale(1.2)
+                }
+                50% {
+                    transform: scale(1.7)
+                }
+                60% {
+                    transform: scale(1.5)
+                }
+                70% {
+                    transform: scale(1.0)
+                }
+                80% {
+                    transform: scale(1.3)
+                }
+                90% {
+                    transform: scale(1.4)
+                }
+                100% {
+                    transform: scale(1.0)
+                }
+            }
+
+            @keyframes search-scale {
+                0% {
+                    transform: scale(1.0)
+                }
+                10% {
+                    transform: scale(1.4)
+                }
+                20% {
+                    transform: scale(1.2)
+                }
+                30% {
+                    transform: scale(1.3)
+                }
+                40% {
+                    transform: scale(1.2)
+                }
+                50% {
+                    transform: scale(1.7)
+                }
+                60% {
+                    transform: scale(1.5)
+                }
+                70% {
+                    transform: scale(1.0)
+                }
+                80% {
+                    transform: scale(1.3)
+                }
+                90% {
+                    transform: scale(1.4)
+                }
+                100% {
+                    transform: scale(1.0)
+                }
+            }
+        </style>
+        <iron-ajax id="get_search" last-response="{{data}}" handleAs="json"> </iron-ajax>
+        <carbon-voice-input id="voiceInput" supported="{{_supported}}" transcript="{{_transcript}}" interim="{{_interim}}" listening="{{listening}}"></carbon-voice-input>
         <paper-material class="layout horizontal center" elevation="[[_elevation]]">
             <iron-icon icon="search" class="searchIcon"></iron-icon>
             <input is="iron-input" on-input="search" class="flex" type="text" id="search" placeholder="[[placeholder]]" autocomplete="off" bind-value="{{value}}">
@@ -247,354 +382,347 @@ Example:
             <template is="dom-repeat" items="{{data}}" as="suggestion">
                 <template is="dom-if" if="{{_isArtist(suggestion)}}" restamp="true">
                     <a href="#/search/artist/{{_encodeUri(suggestion.name)}}">
-                        <paper-card on-click='doLoadSearch' elevation="0" >
-                            <img class="band_search_bar" src="../img/band_search_bar.svg" alt="Band"> 
+                        <paper-card on-click='doLoadSearch' elevation="0">
+                            <img class="band_search_bar" src="../img/band_search_bar.svg" alt="Band">
                             <span class="search_title">{{suggestion.name}}</span>
                             <paper-ripple></paper-ripple>
-                        </paper-card> 
+                        </paper-card>
                     </a>
                 </template>
                 <template is="dom-if" if="{{_isSong(suggestion)}}" restamp="true">
-                   <a href="#/search/artist/{{_encodeUri(suggestion.name)}}/album/{{_encodeUri(suggestion.albumTitle)}}/song/{{_encodeUri(suggestion.title)}}">
-                        <paper-card on-click='doLoadSearch' elevation="0" >
-                            <img class="song_search_bar" src="../img/song_search_bar.svg" alt="Song"> 
+                    <a href="#/search/artist/{{_encodeUri(suggestion.name)}}/album/{{_encodeUri(suggestion.albumTitle)}}/song/{{_encodeUri(suggestion.title)}}">
+                        <paper-card on-click='doLoadSearch' elevation="0">
+                            <img class="song_search_bar" src="../img/song_search_bar.svg" alt="Song">
                             <span class="search_title">{{suggestion.title}} - {{suggestion.name}} <span class="search_album">(album: {{suggestion.albumTitle}})</span></span>
                             <paper-ripple></paper-ripple>
-                        </paper-card> 
+                        </paper-card>
                     </a>
                 </template>
             </template>
             <a href="#/search/more/{{_encodeUri(value)}}">
-                <paper-card id="paper-card-more" on-click='doLoadSearch' elevation="0" >
+                <paper-card id="paper-card-more" on-click='doLoadSearch' elevation="0">
                     <span><iron-icon class="more_search_bar" icon="icons:add-circle" ></iron-icon> Containing: {{value}}</span>
                     <paper-ripple></paper-ripple>
-                </paper-card> 
+                </paper-card>
             </a>
         </div>
 
-  </template>
+    </template>
 
-  <script>
-    Polymer({
-      is: 'carbon-search-input',
+    <script>
+        Polymer({
+            is: 'carbon-search-input',
 
-      properties: {
-        urlFullTextAPI: {
-            type: String,
-            value: "/search/fulltext/"
-        },
-        urlMorePage: {
-            type: String,
-            value: "#/search/more/"
-        },
-        /**
-        * `listItems` contain all elements of suggestion list
-        **/
-        listItems:{
-            type: Array,
-        },
-        currentLinkHighlight:{
-            type: String,
-            value:""
-        },
-        /**
-         * `placeholder` The placeholder text that will show until the user types
-         * something into the search input.
-         */
-        placeholder: String,
+            properties: {
+                urlFullTextAPI: {
+                    type: String,
+                    value: "/search/fulltext/"
+                },
+                urlMorePage: {
+                    type: String,
+                    value: "#/search/more/"
+                },
+                /**
+                 * `listItems` contain all elements of suggestion list
+                 **/
+                listItems: {
+                    type: Array,
+                },
+                currentLinkHighlight: {
+                    type: String,
+                    value: ""
+                },
+                /**
+                 * `placeholder` The placeholder text that will show until the user types
+                 * something into the search input.
+                 */
+                placeholder: String,
 
-        /**
-         * `value` is the value of the users search input.
-         */
-        value: {
-          type: String,
-          notify: true
-        },
+                /**
+                 * `value` is the value of the users search input.
+                 */
+                value: {
+                    type: String,
+                    notify: true
+                },
 
-        /**
-         * `focused` is true when the search input is focused.
-         */
-        focused: {
-          type: Boolean,
-          value: false,
-          reflectToAttribute: true,
-          observer: '_focusChange'
-        },
+                /**
+                 * `focused` is true when the search input is focused.
+                 */
+                focused: {
+                    type: Boolean,
+                    value: false,
+                    reflectToAttribute: true,
+                    observer: '_focusChange'
+                },
 
-        /**
-         * `voiceEnabled` when true, the microphone support will be check. If supported,
-         * a microphone will appear in the serach box enabling voice search.
-         */
-        voiceEnabled: {
-          type: Boolean,
-          value: false
-        },
+                /**
+                 * `voiceEnabled` when true, the microphone support will be check. If supported,
+                 * a microphone will appear in the serach box enabling voice search.
+                 */
+                voiceEnabled: {
+                    type: Boolean,
+                    value: false
+                },
 
-        /**
-         * `blend`, If true, the search input will use the `--dark-theme-secondary-color`
-         * CSS variable as the search inputs background color when not in focus.
-         */
-        blend: {
-          type: Boolean,
-          value: false,
-          observer: '_modeChange'
-        },
+                /**
+                 * `blend`, If true, the search input will use the `--dark-theme-secondary-color`
+                 * CSS variable as the search inputs background color when not in focus.
+                 */
+                blend: {
+                    type: Boolean,
+                    value: false,
+                    observer: '_modeChange'
+                },
 
-        /**
-         * `listening` will be true if the user is using the voice serach.
-         */
-        listening: {
-          type: Boolean,
-          value: false,
-          notify: true,
-          observer: "_listenChange",
-          reflectToAttribute: true
-        },
+                /**
+                 * `listening` will be true if the user is using the voice serach.
+                 */
+                listening: {
+                    type: Boolean,
+                    value: false,
+                    notify: true,
+                    observer: "_listenChange",
+                    reflectToAttribute: true
+                },
 
-        /**
-         * `_elevation` determines the elevation of the search input. Changes depending on
-         * blend and focus properties.
-         */
-        _elevation: Number,
+                /**
+                 * `_elevation` determines the elevation of the search input. Changes depending on
+                 * blend and focus properties.
+                 */
+                _elevation: Number,
 
-        /**
-         * `_supported` will be true if the browser supports voice search.
-         */
-        _supported: Boolean,
+                /**
+                 * `_supported` will be true if the browser supports voice search.
+                 */
+                _supported: Boolean,
 
-        /**
-         * `_transcipt` The result of the users voice search.
-         */
-        _transcript: {
-          type: String,
-          observer: "_voiceInput"
-        },
+                /**
+                 * `_transcipt` The result of the users voice search.
+                 */
+                _transcript: {
+                    type: String,
+                    observer: "_voiceInput"
+                },
 
-        /**
-         * `_interim` Updates as the users speaks with the users search query.
-         * Moslty here for fancy visual effects.
-         */
-        _interim: {
-          type: String,
-          observer: "_voiceInput",
-          notify: true
-        },
+                /**
+                 * `_interim` Updates as the users speaks with the users search query.
+                 * Moslty here for fancy visual effects.
+                 */
+                _interim: {
+                    type: String,
+                    observer: "_voiceInput",
+                    notify: true
+                },
 
-        /**
-         * `_microphoneVisible` If voice search is enabled and the browser supports
-         * voice serach, then this will be true.
-         */
-        _microphoneVisible: {
-          type: Boolean,
-          computed: '_computeMicrophoneVisibility(_supported, voiceEnabled)'
-        }
-
-      },
-
-      listeners: {
-        'microphone.tap': 'startListening',
-        'search.focus': '_updateFocus',
-        'search.blur': '_updateFocus'
-      },
-
-      /**
-       * Activates the voice search feature.
-       *
-       * The same as clicking the 'microphone' button.
-       */
-      startListening: function(){
-        this.$.voiceInput.listen();
-      },
-
-      /**
-       * Sets the focus attribute based on the foucs state of the search box.
-       *
-       */
-      _updateFocus: function(){
-        if(this.$.search === document.activeElement)
-          this.focused = true;
-        else
-          this.focused = false;
-      },
-
-      /**
-       * Attempt to destroy this element's enemies with a beam of light!
-       *
-       * Or, at least, dispatch an event in the vain hope that someone else will
-       * do the zapping.
-       */
-      _listenChange: function(){
-        if(!this.listening)
-          this.value = this._transcript;
-        else
-          this.$.search.focus();
-      },
-
-      /**
-       * Attempt to destroy this element's enemies with a beam of light!
-       *
-       * Or, at least, dispatch an event in the vain hope that someone else will
-       * do the zapping.
-       */
-      _computeMicrophoneVisibility: function(supported, voiceEnabled){
-        return supported && voiceEnabled;
-      },
-
-      /**
-       * Attempt to destroy this element's enemies with a beam of light!
-       *
-       * Or, at least, dispatch an event in the vain hope that someone else will
-       * do the zapping.
-       */        
-      _voiceInput: function(){
-        if(this.listening){
-            this.value = this._interim;
-            if(this.value!=""){
-                this.$.suggestion.style.display = "block";
-                this.$.get_search.url =this.urlFullTextAPI+encodeURIComponent(this.value);
-                this.$.get_search.generateRequest();
-            }
-        }
-        else{
-            this.value = this._transcript;
-        }
-      },
-
-      /**
-       * Attempt to destroy this element's enemies with a beam of light!
-       *
-       * Or, at least, dispatch an event in the vain hope that someone else will
-       * do the zapping.
-       */
-      _modeChange: function(){
-        if(this.blend) this._elevation = 0;
-      },
-
-      /**
-       * Attempt to destroy this element's enemies with a beam of light!
-       *
-       * Or, at least, dispatch an event in the vain hope that someone else will
-       * do the zapping.
-       */
-      _focusChange: function(){
-        if (this.blend)
-          this._elevation = this.focused ? 1 : 0;
-        else
-          this._elevation = 1;
-      },
-    doLoadSearch:function(e){
-//        this.$.search.value = "";
-        this.$.suggestion.style.display = "none";
-    },
-    search:function(e){
-        var searchField = this.$.search;
-        var currentRequestId;
-        searchField.onkeydown = function(evt) {
-            // cancel current timeOutRequest if it exists
-            if(currentRequestId !== undefined) {
-                clearTimeout(currentRequestId);
-            }
-            if ( evt.keyCode == 40 || evt.keyCode == 38 ) {
-                this.arrowKeyHandle(evt);
-            }  
-        }.bind(this);
-        searchField.onkeyup = function(evt) {
-            clearTimeout(currentRequestId);
-            currentRequestId = setTimeout(function() {
-                var searchString = this.$.search.value;
-                if(!searchString.length){
-                    this.doLoadSearch(evt);
-                }//On n'envoie pas de requete si l'utilisateur touche les fléches
-                else if ([37,38,39,40].indexOf(evt.keyCode) > -1){
-                    return;
+                /**
+                 * `_microphoneVisible` If voice search is enabled and the browser supports
+                 * voice serach, then this will be true.
+                 */
+                _microphoneVisible: {
+                    type: Boolean,
+                    computed: '_computeMicrophoneVisibility(_supported, voiceEnabled)'
                 }
-                else if (evt.keyCode === 13) {
-                    // enter pressed!
-                    this.doLoadSearch(evt);
-                    //Si currentLinkHighlight n'est pas vide alors on a selectionné avec les fléches un item
-                    if(this.currentLinkHighlight != ""){
-                        location.href = this.currentLinkHighlight;
+
+            },
+
+            listeners: {
+                'microphone.tap': 'startListening',
+                'search.focus': '_updateFocus',
+                'search.blur': '_updateFocus'
+            },
+
+            /**
+             * Activates the voice search feature.
+             *
+             * The same as clicking the 'microphone' button.
+             */
+            startListening: function () {
+                this.$.voiceInput.listen();
+            },
+
+            /**
+             * Sets the focus attribute based on the foucs state of the search box.
+             *
+             */
+            _updateFocus: function () {
+                if (this.$.search === document.activeElement)
+                    this.focused = true;
+                else
+                    this.focused = false;
+            },
+
+            /**
+             * Attempt to destroy this element's enemies with a beam of light!
+             *
+             * Or, at least, dispatch an event in the vain hope that someone else will
+             * do the zapping.
+             */
+            _listenChange: function () {
+                if (!this.listening)
+                    this.value = this._transcript;
+                else
+                    this.$.search.focus();
+            },
+
+            /**
+             * Attempt to destroy this element's enemies with a beam of light!
+             *
+             * Or, at least, dispatch an event in the vain hope that someone else will
+             * do the zapping.
+             */
+            _computeMicrophoneVisibility: function (supported, voiceEnabled) {
+                return supported && voiceEnabled;
+            },
+
+            /**
+             * Attempt to destroy this element's enemies with a beam of light!
+             *
+             * Or, at least, dispatch an event in the vain hope that someone else will
+             * do the zapping.
+             */
+            _voiceInput: function () {
+                if (this.listening) {
+                    this.value = this._interim;
+                    if (this.value != "") {
+                        this.$.suggestion.style.display = "block";
+                        this.$.get_search.url = this.urlFullTextAPI + encodeURIComponent(this.value);
+                        this.$.get_search.generateRequest();
                     }
-                    else{//on cherche plus de résultat
-                        location.href = this.urlMorePage+encodeURIComponent(searchString);
+                } else {
+                    this.value = this._transcript;
+                }
+            },
+
+            /**
+             * Attempt to destroy this element's enemies with a beam of light!
+             *
+             * Or, at least, dispatch an event in the vain hope that someone else will
+             * do the zapping.
+             */
+            _modeChange: function () {
+                if (this.blend) this._elevation = 0;
+            },
+
+            /**
+             * Attempt to destroy this element's enemies with a beam of light!
+             *
+             * Or, at least, dispatch an event in the vain hope that someone else will
+             * do the zapping.
+             */
+            _focusChange: function () {
+                if (this.blend)
+                    this._elevation = this.focused ? 1 : 0;
+                else
+                    this._elevation = 1;
+            },
+            doLoadSearch: function (e) {
+                //        this.$.search.value = "";
+                this.$.suggestion.style.display = "none";
+            },
+            search: function (e) {
+                var searchField = this.$.search;
+                var currentRequestId;
+                searchField.onkeydown = function (evt) {
+                    // cancel current timeOutRequest if it exists
+                    if (currentRequestId !== undefined) {
+                        clearTimeout(currentRequestId);
+                    }
+                    if (evt.keyCode == 40 || evt.keyCode == 38) {
+                        this.arrowKeyHandle(evt);
+                    }
+                }.bind(this);
+                searchField.onkeyup = function (evt) {
+                    clearTimeout(currentRequestId);
+                    currentRequestId = setTimeout(function () {
+                        var searchString = this.$.search.value;
+                        if (!searchString.length) {
+                            this.doLoadSearch(evt);
+                        } //On n'envoie pas de requete si l'utilisateur touche les fléches
+                        else if ([37, 38, 39, 40].indexOf(evt.keyCode) > -1) {
+                            return;
+                        } else if (evt.keyCode === 13) {
+                            // enter pressed!
+                            this.doLoadSearch(evt);
+                            //Si currentLinkHighlight n'est pas vide alors on a selectionné avec les fléches un item
+                            if (this.currentLinkHighlight != "") {
+                                location.href = this.currentLinkHighlight;
+                            } else { //on cherche plus de résultat
+                                location.href = this.urlMorePage + encodeURIComponent(searchString);
+                            }
+                        } else {
+                            this.$.suggestion.style.display = "block";
+                            // on supprime la class permettant d'highlight l'element choisi via les fleches du clavier
+                            this.removeClass(this.$.suggestion.getElementsByClassName("arrowSelector")[0], "arrowSelector");
+                            this.$.get_search.url = this.urlFullTextAPI + encodeURIComponent(searchString);
+                            this.$.get_search.generateRequest();
+                        }
+                    }.bind(this), 70);
+                }.bind(this);
+
+            },
+            _encodeUri: function (infosData) {
+                return encodeURIComponent(infosData);
+            },
+            _isArtist: function (data) {
+                var isArtist = false;
+                if (typeof data.albumTitle == 'undefined') {
+                    isArtist = true;
+                }
+                return isArtist;
+            },
+            _isSong: function (data) {
+                var isSong = false;
+                if (typeof data.albumTitle !== 'undefined') {
+                    isSong = true;
+                }
+                return isSong;
+            },
+            //elt : element sur lequel on supprime la class, className : nom de la classe a supprimer
+            removeClass: function (elt, className) {
+                if (elt) {
+                    //On supprime la class arrowSelector de l'ancien element
+                    elt.classList.remove(className);
+                    this.currentLinkHighlight = "";
+                    this.listItems = this.$.suggestion.getElementsByTagName('a');
+                }
+            },
+            arrowKeyHandle: function (evt) {
+                var current;
+                var currentItemNext = 0;
+                var currentItemPrev = 0;
+                var prevCurrentItem = 0;
+                this.listItems = this.$.suggestion.getElementsByTagName('a');
+                for (var i = 0; i < this.listItems.length; i++) {
+                    if (this.listItems[i].getElementsByClassName('arrowSelector')[0]) {
+                        prevCurrentItem = i;
+                        currentItemPrev = i - 1;
+                        currentItemNext = i + 1;
+                        break;
                     }
                 }
-                else{
-                    this.$.suggestion.style.display = "block";
-                    // on supprime la class permettant d'highlight l'element choisi via les fleches du clavier
-                    this.removeClass(this.$.suggestion.getElementsByClassName("arrowSelector")[0],"arrowSelector");
-                    this.$.get_search.url =this.urlFullTextAPI+encodeURIComponent(searchString);
-                    this.$.get_search.generateRequest(); 
+                this.removeClass(this.$.suggestion.getElementsByClassName("arrowSelector")[0], "arrowSelector");
+                if (evt.keyCode == 40) { // Down key
+                    if (currentItemNext == 0 || typeof this.listItems[currentItemNext] === "undefined") {
+                        current = this.listItems[0];
+                    } else {
+                        current = this.listItems[currentItemNext];
+                    }
+                } else if (evt.keyCode == 38) { // Up key
+                    if (currentItemPrev == -1 || typeof this.listItems[currentItemPrev] === "undefined") {
+                        //                current = this.listItems[this.data.length];
+                        this.removeClass(this.$.suggestion.getElementsByClassName("arrowSelector")[0], "arrowSelector");
+                    } else {
+                        current = this.listItems[currentItemPrev]
+                    }
                 }
-            }.bind(this), 70);
-        }.bind(this);
-        
-    },        
-    _encodeUri : function(infosData){
-        return encodeURIComponent(infosData);
-    },
-    _isArtist : function(data){
-        var isArtist = false;
-        if(typeof data.albumTitle == 'undefined') {
-            isArtist = true;
-        }
-        return isArtist;
-    },
-    _isSong : function(data){
-        var isSong = false;
-        if(typeof data.albumTitle !== 'undefined') {
-            isSong = true;
-        }
-        return isSong;
-    },
-    //elt : element sur lequel on supprime la class, className : nom de la classe a supprimer
-    removeClass : function(elt,className){
-        if(elt){
-            //On supprime la class arrowSelector de l'ancien element
-            elt.classList.remove(className);
-            this.currentLinkHighlight = "";
-            this.listItems = this.$.suggestion.getElementsByTagName('a');
-        }
-    },
-    arrowKeyHandle: function(evt){
-        var current; 
-        var currentItemNext = 0;
-        var currentItemPrev = 0;
-        var prevCurrentItem = 0;
-        this.listItems = this.$.suggestion.getElementsByTagName('a');
-        for(var i = 0;i<this.listItems.length;i++){
-            if(this.listItems[i].getElementsByClassName('arrowSelector')[0]){
-                prevCurrentItem = i; currentItemPrev = i-1; currentItemNext = i+1;
-                break;
+                if (typeof current !== "undefined") {
+                    this.currentLinkHighlight = current.getAttribute("href");
+                    current.getElementsByTagName("paper-card")[0].className += " arrowSelector";
+                    this.value = current.querySelector("paper-card>span").textContent;
+                    console.log();
+                }
             }
-        }
-        this.removeClass(this.$.suggestion.getElementsByClassName("arrowSelector")[0],"arrowSelector");
-        if ( evt.keyCode == 40 ){// Down key
-            if ( currentItemNext == 0|| typeof this.listItems[currentItemNext] === "undefined" ) {
-                current = this.listItems[0];
-            }
-            else {
-                current = this.listItems[currentItemNext];
-            }
-        }
-        else if ( evt.keyCode == 38 ){ // Up key
-            if ( currentItemPrev == -1 || typeof this.listItems[currentItemPrev] === "undefined" ) {
-//                current = this.listItems[this.data.length];
-                this.removeClass(this.$.suggestion.getElementsByClassName("arrowSelector")[0],"arrowSelector");
-            }
-            else {
-                current = this.listItems[currentItemPrev]
-            }
-        }
-        if(typeof current !== "undefined"){
-            this.currentLinkHighlight = current.getAttribute("href");
-            current.getElementsByTagName("paper-card")[0].className += " arrowSelector";
-            this.value = current.querySelector("paper-card>span").textContent;
-            console.log();
-        }
-    }
-
-        
-    });
-  </script>
+        });
+    </script>
 </dom-module>

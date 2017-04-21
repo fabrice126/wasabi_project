@@ -10,11 +10,6 @@
 <dom-module id="page-album">
     <template>
         <style>
-            .flex-wrap {
-                @apply(--layout-horizontal);
-                @apply(--layout-wrap);
-            }
-
             .artistname {
                 font-size: 2em;
                 line-height: 34px;
@@ -71,6 +66,7 @@
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
+                flex-wrap: wrap;
             }
 
             .metadata_list {
@@ -79,8 +75,7 @@
             }
         </style>
         <paper-material elevation="1">
-            <iron-ajax id="get_content" auto url="/search/artist/{{_encodeUri(nameArtist)}}/album/{{_encodeUri(nameAlbum)}}" last-response="{{artist}}"
-                handleAs="json"> </iron-ajax>
+            <iron-ajax id="get_content" auto headers="[[headers]]" url="/search/artist/{{_encodeUri(nameArtist)}}/album/{{_encodeUri(nameAlbum)}}" last-response="{{artist}}" handle-as="json"> </iron-ajax>
             <template is="dom-if" if="{{artist.albums.rdf.length}}">
                 <show-dialog labeldialog="RDF {{artist.albums.title}} :" labelbutton="Show RDF" content="{{artist.albums.rdf}}" labelexitdialog="Close"></show-dialog>
             </template>
@@ -88,7 +83,9 @@
                 <a href="#/search/artist/{{_encodeUri(artist.name)}}" tabindex="-1" class="inherit">
                     <paper-button tabindex="0" role="button" elevation="0" class="artist">{{artist.name}}</paper-button>
                 </a>
-                <img src="{{artist.albums.cover.medium}}" alt="Image Album">
+                <template is="dom-if" if="{{artist.albums.cover}}">
+                    <img src="{{artist.albums.cover.medium}}" alt="Image Album">
+                </template>
             </div>
 
             <section id="albumInfos">
@@ -199,11 +196,23 @@
                     type: Object,
                     value: {}
                 },
+                token: {
+                    type: String,
+                    value: localStorage.getItem("token")
+                },
+                headers: {
+                    computed: '_computeHeader(token)'
+                }
             },
             ready: function (e) {},
             _encodeUri: function (title) {
                 return encodeURIComponent(title);
-            }
+            },
+            _computeHeader: function (token) {
+                return {
+                    Authorization: token
+                };
+            },
         });
     </script>
 </dom-module>

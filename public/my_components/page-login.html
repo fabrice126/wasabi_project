@@ -1,0 +1,70 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/iron-form/iron-form.html">
+
+<dom-module id="page-login">
+    <template>
+        <style>
+             :host {
+                display: flex;
+                justify-content: center;
+            }
+
+            paper-button {
+                padding: 0;
+                margin: 0;
+                height: 40px;
+                margin-top: 15px;
+                /* text-align: center; */
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background-color: #3f51b5;
+                color: white;
+            }
+
+            paper-material {
+                display: flex;
+                margin-bottom: 5%;
+                justify-content: center;
+                flex: 1;
+                padding: 10% 0% 10% 0%;
+            }
+
+            form {
+                display: flex;
+                flex-direction: column;
+                flex: 0.5;
+            }
+        </style>
+        <paper-material elevation="1">
+            <form is="iron-form" id="form" method="post" action="/jwt/login" on-iron-form-response="responseHandler">
+                <paper-input type="email" name="email" label="email" required autofocus auto-validate error-message="Needs a valid email" autocomplete></paper-input>
+                <paper-input type="password" name="password" label="password" required></paper-input>
+                <paper-button raised on-click="submitForm">Submit</paper-button>
+            </form>
+        </paper-material>
+    </template>
+    <script>
+        // element registration
+        Polymer({
+            is: "page-login",
+            // add properties and methods on the element's prototype
+            properties: {},
+            ready: function (e) {},
+            submitForm: function () {
+                this.$.form.submit();
+            },
+            responseHandler: function (e) {
+                if (e.detail.response.success) {
+                    localStorage.setItem("token", e.detail.response.token);
+                    window.history.back();
+                } else {
+                    this.$.form.reset();
+                }
+            }
+        });
+    </script>
+</dom-module>

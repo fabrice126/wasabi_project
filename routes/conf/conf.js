@@ -64,6 +64,24 @@ module.exports = {
                 "password": {
                     "success": false,
                     "message": "Authentication failed. Passwords did not match."
+                },
+            },
+            "put": {
+                "general": {
+                    "success": false,
+                    "message": "You cannot edit if you are not logged in"
+                },
+                "artist": {
+                    "success": false,
+                    "message": "You cannot edit artist if you are not logged in"
+                },
+                "album": {
+                    "success": false,
+                    "message": "You cannot edit album if you are not logged in"
+                },
+                "song": {
+                    "success": false,
+                    "message": "You cannot edit song if you are not logged in"
                 }
             }
         },
@@ -170,6 +188,13 @@ module.exports = {
                         "id_song_musicbrainz": 0
                     }
                 }
+            }
+        }
+    },
+    "passport": {
+        "auth": {
+            "jwt": {
+                session: false
             }
         }
     },

@@ -58,6 +58,11 @@
                 --paper-tabs-selection-bar-color: #3f51b5;
             }
 
+            #songLyricsSection {
+                display: flex;
+                justify-content: center;
+            }
+
             #songLyricsNonEditable,
             #songLyricsEditable,
             #songName,
@@ -85,6 +90,11 @@
             nav>a {
                 margin-right: 5px;
                 margin-left: 5px;
+            }
+
+            #updateData {
+                display: flex;
+                flex-direction: row-reverse;
             }
 
             #songLyricsNonEditable,
@@ -179,13 +189,12 @@
         </style>
         <paper-material elevation="1">
             <!--permet de lancer automatiquement la requête get chargeant la page-->
-            <iron-ajax id="get_content_auto" auto url="/search/artist/{{_encodeUri(nameArtist)}}/album/{{_encodeUri(nameAlbum)}}/song/{{_encodeUri(nameSong)}}"
-                last-response="{{artist}}" handleAs="json" on-response="handleResponse"> </iron-ajax>
+            <iron-ajax id="get_content_auto" auto headers="[[headers]]" url="/search/artist/{{_encodeUri(nameArtist)}}/album/{{_encodeUri(nameAlbum)}}/song/{{_encodeUri(nameSong)}}" last-response="{{artist}}" handle-as="json" on-response="handleResponse"> </iron-ajax>
             <!--permet de faire des requêtes get permettant de recupérer les données avant modification-->
-            <iron-ajax id="get_content" last-response="{{artist}}" handleAs="json" on-response="handleResponse"> </iron-ajax>
+            <iron-ajax id="get_content" last-response="{{artist}}" headers="[[headers]]" handle-as="json" on-response="handleResponse">
+            </iron-ajax>
             <!--permet de faire des requêtes de modification-->
-            <iron-ajax id="put_content" method="PUT" content-type="application/json"></iron-ajax>
-
+            <iron-ajax id="put_content" method="PUT" headers="[[headers]]" content-type="application/json"></iron-ajax>
             <!--Ce dom-if sert uniquement a ne pas avoir de problème d'affichage sur la selection du paper-tab (uniquement sur les musiques ayant du multitrack)-->
             <template is="dom-if" if="{{artist}}">
                 <paper-tabs selected="{{idxCurrentTab}}">
@@ -195,12 +204,10 @@
                     </template>
                 </paper-tabs>
             </template>
-
             <iron-pages selected="{{idxCurrentTab}}">
                 <div>
                     <template is="dom-if" if="{{artist.albums.songs.rdf}}">
-                        <show-dialog labeldialog="RDF {{artist.albums.songs.title}} :" labelbutton="Show RDF" content="{{artist.albums.songs.rdf}}"
-                            labelexitdialog="Close"></show-dialog>
+                        <show-dialog labeldialog="RDF {{artist.albums.songs.title}} :" labelbutton="Show RDF" content="{{artist.albums.songs.rdf}}" labelexitdialog="Close"></show-dialog>
                     </template>
                     <section id="songName">
                         <div class="song inline">
@@ -243,8 +250,7 @@
                                 </a>
                             </template>
                             <template is="dom-if" if="{{artist.albums.songs.urlYouTube}}">
-                                <a class="urlMargin" href="http://www.youtube.com/watch?v={{artist.albums.songs.urlYouTube}}" target="_blank" tabindex="-1"
-                                    alt="url YouTube" title="YouTube">
+                                <a class="urlMargin" href="http://www.youtube.com/watch?v={{artist.albums.songs.urlYouTube}}" target="_blank" tabindex="-1" alt="url YouTube" title="YouTube">
                                     <paper-icon-button src="../img/youtube_icon.svg"></paper-icon-button>
                                 </a>
                             </template>
@@ -385,6 +391,7 @@
                             <article id="abstract">Abstract: {{artist.albums.songs.abstract}}</article>
                         </template>
                     </section>
+
                     <section id="updateData">
                         <paper-fab hidden={{editing}} icon="icons:create" on-tap="doEdit" class="edit" mini></paper-fab>
                         <paper-fab hidden={{!editing}} icon="icons:done" on-tap="doEdit" class="done" mini></paper-fab>
@@ -435,6 +442,13 @@
                 MT5loaded: {
                     type: Boolean,
                     value: false
+                },
+                token: {
+                    type: String,
+                    value: localStorage.getItem("token")
+                },
+                headers: {
+                    computed: '_computeHeader(token)'
                 }
             },
             getURLSongId: function () {
@@ -516,11 +530,15 @@
                     this.MT5loaded = true;
                 }
             },
+            _computeHeader: function (token) {
+                return {
+                    Authorization: token
+                };
+            },
             //  /!\ si <template is="dom-if" if="{{artist.albums.songs.multitrack_path.length}}"> est supprimé il y a une change que la frame soit charger
             //avant que la requête soit arrivée
             onFrameLoaded: function () {
                 //Si la requête ajax a été recue avant la fin du chargement de l'iframe
-                console.log(this.artist.albums.songs);
                 this.fire('firedataiframe', {
                     song: this.artist.albums.songs
                 });
