@@ -35,7 +35,8 @@ import updatedb from './routes/updatedb';
 import mergedb from './routes/mergedb';
 import createdb from './routes/createdb';
 import extractdbpedia from './routes/extractdbpedia';
-import jwt_api from './routes/jwt'; //a supprimer après les tests JWT
+import jwt_api from './routes/jwt';
+import download from './routes/download/download';
 const app = express();
 /**
  * -------------------------------------------------------------------------------------------------------
@@ -118,7 +119,7 @@ app.use('/jwt', jwt_api);
 //permet de s'authentifier, personne ne doit pouvoir accèder à la doc
 app.use(basicAuth(configLogin.login, configLogin.password));
 app.use('/apidoc', express.static(path.join(__dirname, 'apidoc')));
-app.use('/download', express.static(path.join(__dirname, 'public/download')));
+app.use('/download', download);
 //Placer ici les routes utile uniquement pour le développement
 if (app.get('env') === config.launch.env.dev) {
     console.error("/!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\\");
