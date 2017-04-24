@@ -23,6 +23,7 @@
 
             paper-material {
                 margin-bottom: 5%;
+                opacity: 0.9;
             }
 
             #externalLink {
@@ -71,14 +72,26 @@
                 font-size: 0;
                 padding: 6px;
             }
+
+            .div_bgImg {
+                background-size: cover !important;
+                position: fixed;
+                filter: blur(5px) grayscale(50%) contrast(80%);
+                height: 100%;
+                top: 0;
+                left: 0;
+                right: 0;
+            }
         </style>
+        <template is="dom-if" if="{{checkIfPicture(artist.picture.xl)}}">
+            <div class="div_bgImg" style$="background:url( {{artist.picture.xl}} ) no-repeat;" alt="">
+            </div>
+        </template>
         <paper-material elevation="1">
-            <iron-ajax id="get_content" auto url="/search/artist/{{_encodeUri(nameArtist)}}" last-response="{{artist}}" handleAs="json">
-            </iron-ajax>
+            <iron-ajax id="get_content" auto url="/search/artist/{{_encodeUri(nameArtist)}}" last-response="{{artist}}" handle-as="json"></iron-ajax>
             <template is="dom-if" if="{{artist.rdf}}">
                 <show-dialog labeldialog="RDF {{artist.name}} :" labelbutton="Show RDF" content="{{artist.rdf}}" labelexitdialog="Close"></show-dialog>
             </template>
-
             <div class="artistname pictureArtist">
                 {{artist.name}}
                 <template is="dom-if" if="{{artist.picture}}">
@@ -260,8 +273,10 @@
             _encodeUri: function (nameArtist) {
                 return encodeURIComponent(nameArtist);
             },
-            _checkLocation(location) {
-                console.log(location);
+            checkIfPicture: function (pictureXl) {
+                //Une url bien formé est: http://e-cdn-images.deezer.com/images/artist/b4719bc7a0ddb4a5be41277f37856ae6/1000x1000-000000-80-0-0.jpg
+                //Si une url n'a pas d'image elle sera : http://e-cdn-images.deezer.com/images/artist//1000x1000-000000-80-0-0.jpg
+                if (pictureXl) return !new RegExp("artist//").test(pictureXl);
             }
         });
     </script>

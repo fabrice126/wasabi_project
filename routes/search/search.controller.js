@@ -9,7 +9,7 @@ const COLLECTIONARTIST = config.database.collection_artist;
 const COLLECTIONALBUM = config.database.collection_album;
 const COLLECTIONSONG = config.database.collection_song;
 const LIMIT = config.request.limit;
-
+const COPYRIGHT_CONTENT = "<br> <br>... Due to copyright reason <br>we limit the display of lyrics to 10% of text."
 
 var get_collectionByCategoryAndLetter = (req, res, next) => {
     var tObjectRequest, skip, tParamToFind;
@@ -451,6 +451,7 @@ var get_song = (req, res) => {
                     if (!user) {
                         song.lyrics = song.lyrics.slice(0, (song.lyrics.length * 0.1));
                         song.lyrics = song.lyrics.slice(0, song.lyrics.lastIndexOf(' '));
+                        song.lyrics += COPYRIGHT_CONTENT;
                         song.multitrack_path = "";
                     }
                     album.songs = song;
@@ -485,6 +486,7 @@ var get_songById = (req, res) => {
                     if (!user) {
                         song.lyrics = song.lyrics.slice(0, (song.lyrics.length * 0.1));
                         song.lyrics = song.lyrics.slice(0, song.lyrics.lastIndexOf(' '));
+                        song.lyrics += COPYRIGHT_CONTENT;
                         song.multitrack_path = "";
                     }
                     album.songs = song;

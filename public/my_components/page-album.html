@@ -35,6 +35,7 @@
 
             paper-material {
                 margin-bottom: 5%;
+                opacity: 0.9;
             }
 
             #albumInfos {
@@ -73,7 +74,30 @@
                 list-style-type: none;
                 padding: 0px;
             }
+
+            #albumBackground {
+                position: fixed;
+                width: 102%;
+                left: 0;
+                right: 0;
+                top: 0;
+                filter: blur(5px) grayscale(50%) contrast(80%)
+            }
+
+            .div_bgImg {
+                background-size: cover !important;
+                position: fixed;
+                filter: blur(5px) grayscale(50%) contrast(80%);
+                height: 100%;
+                top: 0;
+                left: 0;
+                right: 0;
+            }
         </style>
+
+        <template is="dom-if" if="{{checkIfCover(artist.albums.cover.xl)}}">
+            <div class="div_bgImg" style$="background:url( {{artist.albums.cover.xl}} ) no-repeat;" alt="Image Album"></div>
+        </template>
         <paper-material elevation="1">
             <iron-ajax id="get_content" auto headers="[[headers]]" url="/search/artist/{{_encodeUri(nameArtist)}}/album/{{_encodeUri(nameAlbum)}}" last-response="{{artist}}" handle-as="json"> </iron-ajax>
             <template is="dom-if" if="{{artist.albums.rdf.length}}">
@@ -213,6 +237,11 @@
                     Authorization: token
                 };
             },
+            checkIfCover: function (coverXl) {
+                //Une url bien formé est: http://e-cdn-images.deezer.com/images/artist/b4719bc7a0ddb4a5be41277f37856ae6/1000x1000-000000-80-0-0.jpg
+                //Si une url n'a pas d'image elle sera : http://e-cdn-images.deezer.com/images/artist//1000x1000-000000-80-0-0.jpg
+                if (coverXl) return !new RegExp("cover//").test(coverXl);
+            }
         });
     </script>
 </dom-module>
