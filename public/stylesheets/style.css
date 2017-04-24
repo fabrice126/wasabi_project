@@ -9,11 +9,10 @@ html {
 }
 
 #mainContent {
-    width: 50%;
+    width: 70%;
     margin: auto;
     margin-top: 5%;
     min-width: 345px;
-    opacity: 0.95;
 }
 
 paper-material {
