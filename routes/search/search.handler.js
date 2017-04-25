@@ -90,7 +90,6 @@ var fullTextQuery = function (req, maxinfo, queryArtist, querySong, maxinfoselec
  * @param idSong
  */
 var updateSongES = function (req, objSong, idSong) {
-    console.log(idSong);
     req.elasticsearchClient.update({
         index: config.database.index_song,
         type: config.database.index_type_song,

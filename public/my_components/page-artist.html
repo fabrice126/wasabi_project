@@ -83,20 +83,24 @@
                 left: 0;
                 right: 0;
             }
+
+            .imageArtist {
+                box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.24), 0 1px 7px 0 rgba(0, 0, 0, 0.52), 0 3px 1px -2px rgba(0, 0, 0, 0.3);
+                border-radius: 3px;
+            }
         </style>
         <template is="dom-if" if="{{checkIfPicture(artist.picture.xl)}}">
-            <div class="div_bgImg" style$="background:url( {{artist.picture.xl}} ) no-repeat;" alt="">
-            </div>
+            <div class="div_bgImg" style$="background:url( {{artist.picture.xl}} ) no-repeat;" alt=""></div>
         </template>
         <paper-material elevation="1">
-            <iron-ajax id="get_content" auto url="/search/artist/{{_encodeUri(nameArtist)}}" last-response="{{artist}}" handle-as="json"></iron-ajax>
+            <iron-ajax id="get_content" auto url="/search/artist/{{_encodeUri(nameArtist)}}" last-response="{{artist}}" headers="[[headers]]" handle-as="json"></iron-ajax>
             <template is="dom-if" if="{{artist.rdf}}">
-                <show-dialog labeldialog="RDF {{artist.name}} :" labelbutton="Show RDF" content="{{artist.rdf}}" labelexitdialog="Close"></show-dialog>
+                <show-dialog labeldialog="RDF {{artist.name}} :" labelbutton="Show RDF" content="{{artist.rdf}}" headers="[[headers]]" labelexitdialog="Close"></show-dialog>
             </template>
             <div class="artistname pictureArtist">
                 {{artist.name}}
-                <template is="dom-if" if="{{artist.picture}}">
-                    <img src="{{artist.picture.medium}}" alt="Image Artist">
+                <template is="dom-if" if="{{artist.picture.medium}}">
+                    <img class="imageArtist" src$="{{artist.picture.medium}}" alt="Image Artist">
                 </template>
             </div>
             <div id="externalLink">
@@ -250,7 +254,7 @@
                 </template>
             </div>
             <template is="dom-repeat" items="{{artist.albums}}" as="album" initial-count="1">
-                <x-album album={{album}}></x-album>
+                <x-album album={{album}} is-connected={{artist.isConnected}}></x-album>
             </template>
 
         </paper-material>
@@ -266,6 +270,13 @@
                     type: Object,
                     value: {}
                 },
+                token: {
+                    type: String,
+                    value: localStorage.getItem("token") || ""
+                },
+                headers: {
+                    computed: '_computeHeader(token)'
+                }
             },
             ready: function (e) {},
             _stringify: function (obj) {
@@ -274,11 +285,17 @@
             _encodeUri: function (nameArtist) {
                 return encodeURIComponent(nameArtist);
             },
-            checkIfPicture: function (pictureXl) {
+            checkIfPicture: function (picture) {
                 //Une url bien formé est: http://e-cdn-images.deezer.com/images/artist/b4719bc7a0ddb4a5be41277f37856ae6/1000x1000-000000-80-0-0.jpg
                 //Si une url n'a pas d'image elle sera : http://e-cdn-images.deezer.com/images/artist//1000x1000-000000-80-0-0.jpg
-                if (pictureXl) return !new RegExp("artist//").test(pictureXl);
-            }
+                if (picture) return !new RegExp("artist//").test(picture);
+            },
+            _computeHeader: function () {
+                this.token = localStorage.getItem("token") || "";
+                return {
+                    Authorization: this.token
+                };
+            },
         });
     </script>
 </dom-module>

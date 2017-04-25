@@ -100,6 +100,10 @@ Example:
                 transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
             }
 
+            paper-material:hover {
+                background-color: rgba(163, 231, 255, 0.8);
+            }
+
             #search::-webkit-input-placeholder {
                 color: white;
             }
@@ -372,39 +376,41 @@ Example:
             }
         </style>
         <iron-ajax id="get_search" last-response="{{data}}" handleAs="json"> </iron-ajax>
-        <carbon-voice-input id="voiceInput" supported="{{_supported}}" transcript="{{_transcript}}" interim="{{_interim}}" listening="{{listening}}"></carbon-voice-input>
-        <paper-material class="layout horizontal center" elevation="[[_elevation]]">
-            <iron-icon icon="search" class="searchIcon"></iron-icon>
-            <input is="iron-input" on-input="search" class="flex" type="text" id="search" placeholder="[[placeholder]]" autocomplete="off" bind-value="{{value}}">
-            <paper-icon-button id="microphone" hidden$="[[!_microphoneVisible]]" icon="hardware:keyboard-voice"></paper-icon-button>
-        </paper-material>
-        <div id=suggestion>
-            <template is="dom-repeat" items="{{data}}" as="suggestion">
-                <template is="dom-if" if="{{_isArtist(suggestion)}}" restamp="true">
-                    <a href="#/search/artist/{{_encodeUri(suggestion.name)}}">
-                        <paper-card on-click='doLoadSearch' elevation="0">
-                            <img class="band_search_bar" src="../img/band_search_bar.svg" alt="Band">
-                            <span class="search_title">{{suggestion.name}}</span>
-                            <paper-ripple></paper-ripple>
-                        </paper-card>
-                    </a>
+        <div id="input_search">
+            <carbon-voice-input id="voiceInput" supported="{{_supported}}" transcript="{{_transcript}}" interim="{{_interim}}" listening="{{listening}}"></carbon-voice-input>
+            <paper-material class="layout horizontal center" elevation="[[_elevation]]">
+                <iron-icon icon="search" class="searchIcon"></iron-icon>
+                <input is="iron-input" on-input="search" class="flex" type="text" id="search" placeholder="[[placeholder]]" autocomplete="off" bind-value="{{value}}">
+                <paper-icon-button id="microphone" hidden$="[[!_microphoneVisible]]" icon="hardware:keyboard-voice"></paper-icon-button>
+            </paper-material>
+            <div id=suggestion>
+                <template is="dom-repeat" items="{{data}}" as="suggestion">
+                    <template is="dom-if" if="{{_isArtist(suggestion)}}" restamp="true">
+                        <a href="#/search/artist/{{_encodeUri(suggestion.name)}}">
+                            <paper-card on-click='doLoadSearch' elevation="0">
+                                <img class="band_search_bar" src="../img/band_search_bar.svg" alt="Band">
+                                <span class="search_title">{{suggestion.name}}</span>
+                                <paper-ripple></paper-ripple>
+                            </paper-card>
+                        </a>
+                    </template>
+                    <template is="dom-if" if="{{_isSong(suggestion)}}" restamp="true">
+                        <a href="#/search/artist/{{_encodeUri(suggestion.name)}}/album/{{_encodeUri(suggestion.albumTitle)}}/song/{{_encodeUri(suggestion.title)}}">
+                            <paper-card on-click='doLoadSearch' elevation="0">
+                                <img class="song_search_bar" src="../img/song_search_bar.svg" alt="Song">
+                                <span class="search_title">{{suggestion.title}} - {{suggestion.name}} <span class="search_album">(album: {{suggestion.albumTitle}})</span></span>
+                                <paper-ripple></paper-ripple>
+                            </paper-card>
+                        </a>
+                    </template>
                 </template>
-                <template is="dom-if" if="{{_isSong(suggestion)}}" restamp="true">
-                    <a href="#/search/artist/{{_encodeUri(suggestion.name)}}/album/{{_encodeUri(suggestion.albumTitle)}}/song/{{_encodeUri(suggestion.title)}}">
-                        <paper-card on-click='doLoadSearch' elevation="0">
-                            <img class="song_search_bar" src="../img/song_search_bar.svg" alt="Song">
-                            <span class="search_title">{{suggestion.title}} - {{suggestion.name}} <span class="search_album">(album: {{suggestion.albumTitle}})</span></span>
-                            <paper-ripple></paper-ripple>
-                        </paper-card>
-                    </a>
-                </template>
-            </template>
-            <a href="#/search/more/{{_encodeUri(value)}}">
-                <paper-card id="paper-card-more" on-click='doLoadSearch' elevation="0">
-                    <span><iron-icon class="more_search_bar" icon="icons:add-circle" ></iron-icon> Containing: {{value}}</span>
-                    <paper-ripple></paper-ripple>
-                </paper-card>
-            </a>
+                <a href="#/search/more/{{_encodeUri(value)}}">
+                    <paper-card id="paper-card-more" on-click='doLoadSearch' elevation="0">
+                        <span><iron-icon class="more_search_bar" icon="icons:add-circle" ></iron-icon> Containing: {{value}}</span>
+                        <paper-ripple></paper-ripple>
+                    </paper-card>
+                </a>
+            </div>
         </div>
 
     </template>
@@ -455,7 +461,6 @@ Example:
                     reflectToAttribute: true,
                     observer: '_focusChange'
                 },
-
                 /**
                  * `voiceEnabled` when true, the microphone support will be check. If supported,
                  * a microphone will appear in the serach box enabling voice search.
@@ -525,13 +530,16 @@ Example:
                 }
 
             },
-
+            ready: function (e) {
+                window.addEventListener('click', (e) => {
+                    if (this.$.suggestion.style.display != "none") this.$.suggestion.style.display = "none";
+                });
+            },
             listeners: {
                 'microphone.tap': 'startListening',
                 'search.focus': '_updateFocus',
                 'search.blur': '_updateFocus'
             },
-
             /**
              * Activates the voice search feature.
              *
@@ -540,18 +548,25 @@ Example:
             startListening: function () {
                 this.$.voiceInput.listen();
             },
-
             /**
              * Sets the focus attribute based on the foucs state of the search box.
              *
              */
-            _updateFocus: function () {
-                if (this.$.search === document.activeElement)
-                    this.focused = true;
-                else
-                    this.focused = false;
+            _updateFocus: function (e) {
+                if (this.$.search === document.activeElement) this.focused = true;
+                else this.focused = false;
             },
 
+            /**
+             * Attempt to destroy this element's enemies with a beam of light!
+             *
+             * Or, at least, dispatch an event in the vain hope that someone else will
+             * do the zapping.
+             */
+            _focusChange: function () {
+                if (this.blend) this._elevation = this.focused ? 1 : 0;
+                else this._elevation = 1;
+            },
             /**
              * Attempt to destroy this element's enemies with a beam of light!
              *
@@ -604,18 +619,6 @@ Example:
                 if (this.blend) this._elevation = 0;
             },
 
-            /**
-             * Attempt to destroy this element's enemies with a beam of light!
-             *
-             * Or, at least, dispatch an event in the vain hope that someone else will
-             * do the zapping.
-             */
-            _focusChange: function () {
-                if (this.blend)
-                    this._elevation = this.focused ? 1 : 0;
-                else
-                    this._elevation = 1;
-            },
             doLoadSearch: function (e) {
                 //        this.$.search.value = "";
                 this.$.suggestion.style.display = "none";

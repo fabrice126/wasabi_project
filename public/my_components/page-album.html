@@ -64,25 +64,16 @@
                 height: 45px;
             }
 
-            .coverAlbum {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                flex-wrap: wrap;
-            }
-
             .metadata_list {
                 list-style-type: none;
                 padding: 0px;
             }
 
-            #albumBackground {
-                position: fixed;
-                width: 102%;
-                left: 0;
-                right: 0;
-                top: 0;
-                filter: blur(5px) grayscale(50%) contrast(80%)
+            .coverAlbum {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                flex-wrap: wrap;
             }
 
             .div_bgImg {
@@ -93,6 +84,11 @@
                 top: 0;
                 left: 0;
                 right: 0;
+            }
+
+            .imageAlbum {
+                box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.24), 0 1px 7px 0 rgba(0, 0, 0, 0.52), 0 3px 1px -2px rgba(0, 0, 0, 0.3);
+                border-radius: 3px;
             }
         </style>
 
@@ -108,8 +104,8 @@
                 <a href="#/search/artist/{{_encodeUri(artist.name)}}" tabindex="-1" class="inherit">
                     <paper-button tabindex="0" role="button" elevation="0" class="artist">{{artist.name}}</paper-button>
                 </a>
-                <template is="dom-if" if="{{artist.albums.cover}}">
-                    <img src="{{artist.albums.cover.medium}}" alt="Image Album">
+                <template is="dom-if" if="{{artist.albums.cover.medium}}">
+                    <img class="imageAlbum" src$="{{artist.albums.cover.medium}}" alt="Image Album">
                 </template>
             </div>
 
@@ -205,7 +201,7 @@
                     <article id="abstract">Abstract: {{artist.albums.songs.abstract}}</article>
                 </template>
             </section>
-            <x-album album={{artist.albums}} moredata></x-album>
+            <x-album album={{artist.albums}} is-connected={{artist.isConnected}} moredata></x-album>
         </paper-material>
     </template>
 
@@ -233,15 +229,16 @@
             _encodeUri: function (title) {
                 return encodeURIComponent(title);
             },
-            _computeHeader: function (token) {
+            _computeHeader: function () {
+                this.token = localStorage.getItem("token") || "";
                 return {
-                    Authorization: token
+                    Authorization: this.token
                 };
             },
-            checkIfCover: function (coverXl) {
+            checkIfCover: function (cover) {
                 //Une url bien formé est: http://e-cdn-images.deezer.com/images/artist/b4719bc7a0ddb4a5be41277f37856ae6/1000x1000-000000-80-0-0.jpg
                 //Si une url n'a pas d'image elle sera : http://e-cdn-images.deezer.com/images/artist//1000x1000-000000-80-0-0.jpg
-                if (coverXl) return !new RegExp("cover//").test(coverXl);
+                if (cover) return !new RegExp("cover//").test(cover);
             }
         });
     </script>

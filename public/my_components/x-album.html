@@ -74,8 +74,10 @@
                     Album:  {{album.title}} {{album.publicationDate}}
                 </span>
             </template>
-            <paper-fab hidden="{{editing}}" icon="icons:create" on-tap="doEdit" class="edit" mini></paper-fab>
-            <paper-fab hidden="{{!editing}}" icon="icons:done" on-tap="doEdit" class="done" mini></paper-fab>
+            <template is="dom-if" if="{{isConnected}}">
+                <paper-fab hidden="{{editing}}" icon="icons:create" on-tap="doEdit" class="edit" mini></paper-fab>
+                <paper-fab hidden="{{!editing}}" icon="icons:done" on-tap="doEdit" class="done" mini></paper-fab>
+            </template>
         </article>
         <div role="listbox">
             <ol id="listSong">
@@ -100,6 +102,10 @@
                     value: {},
                     observer: 'onAlbumChanged'
                 },
+                isConnected: {
+                    type: Boolean,
+                    value: false,
+                },
                 editing: {
                     type: Boolean,
                     value: false,
@@ -119,14 +125,8 @@
             doLoadAlbum: function (e) {
                 window.location.href = e.target.link;
             },
-            _computeHeader: function (token) {
-                return {
-                    Authorization: token
-                };
-            },
             getURLAlbum: function () {
-                return "/search/artist/" + this._encodeUri(this.album.name) + "/album/" + this._encodeUri(
-                    this.album.title);
+                return "/search/artist/" + this._encodeUri(this.album.name) + "/album/" + this._encodeUri(this.album.title);
             },
             getURLAlbumID: function () {
                 return "/search/artist_id/" + this.album.id_artist + "/album_id/" + this.album._id + "";
@@ -226,6 +226,12 @@
             responseHandler: function (response) {
                 console.log("Requete fini");
                 this.album = response.detail.response.albums;
+            },
+            _computeHeader: function () {
+                this.token = localStorage.getItem("token") || "";
+                return {
+                    Authorization: this.token
+                };
             },
             _encodeUri: function (title) {
                 return encodeURIComponent(title);

@@ -649,7 +649,7 @@ router.get('/artist/:artistName/album/:albumName', new RateLimit({
         "error": "Artist not found"
     }
  */
-router.get('/artist_id/:artistId/album_id/:albumId', new RateLimit(config.http.limit_request.search), searchController.put_albumById);
+router.get('/artist_id/:artistId/album_id/:albumId', new RateLimit(config.http.limit_request.search), searchController.get_albumById);
 
 //PUT ALBUM PAR NOM D'ALBUM
 router.put('/artist/:artistName/album/:albumName', new RateLimit(config.http.limit_request.search), searchController.put_album);

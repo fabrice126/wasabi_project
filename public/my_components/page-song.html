@@ -213,12 +213,14 @@
                     <section id="songName">
                         <div class="song inline">
                             <a href="#/search/more/{{_concat(artist.name,artist.albums.songs.title)}}" tabindex="-1" class="inherit">
-                                <!--hidden="{{editing}}"-->
                                 <paper-button tabindex="0" role="button" elevation="0">{{artist.albums.songs.title}}</paper-button>
                             </a>
+                            <!--sans cette verification on verrai les deux icons s'afficher en même temps jusqu'a ce que la requête ajax arrive-->
                             <template is="dom-if" if="{{artist}}">
-                                <paper-icon-button on-tap="doIsClassic" class="isClassic" icon="star-border" hidden$="{{artist.albums.songs.isClassic}}"></paper-icon-button>
-                                <paper-icon-button on-tap="doIsClassic" class="isClassic" icon="star" hidden$="{{!artist.albums.songs.isClassic}}"></paper-icon-button>
+                                <template is="dom-if" if="{{artist.isConnected}}">
+                                    <paper-icon-button on-tap="doIsClassic" class="isClassic" icon="star-border" hidden$="{{artist.albums.songs.isClassic}}"></paper-icon-button>
+                                    <paper-icon-button on-tap="doIsClassic" class="isClassic" icon="star" hidden$="{{!artist.albums.songs.isClassic}}"></paper-icon-button>
+                                </template>
                             </template>
                         </div>
                         <div>
@@ -238,7 +240,6 @@
                         </div>
                     </section>
                     <section id="songInfos">
-
                         <div class="urlArea">
                             <template is="dom-if" if="{{artist.albums.songs.urlWikipedia}}">
                                 <a class="urlMargin" href="{{artist.albums.songs.urlWikipedia}}" target="_blank" tabindex="-1" alt="url Wikipedia" title="Wikipedia">
@@ -392,12 +393,12 @@
                             <article id="abstract">Abstract: {{artist.albums.songs.abstract}}</article>
                         </template>
                     </section>
-
-                    <section id="updateData">
-                        <paper-fab hidden={{editing}} icon="icons:create" on-tap="doEdit" class="edit" mini></paper-fab>
-                        <paper-fab hidden={{!editing}} icon="icons:done" on-tap="doEdit" class="done" mini></paper-fab>
-                    </section>
-
+                    <template is="dom-if" if="{{artist.isConnected}}">
+                        <section id="updateData">
+                            <paper-fab hidden={{editing}} icon="icons:create" on-tap="doEdit" class="edit" mini></paper-fab>
+                            <paper-fab hidden={{!editing}} icon="icons:done" on-tap="doEdit" class="done" mini></paper-fab>
+                        </section>
+                    </template>
                     <section id="songLyricsSection">
                         <article id="songLyricsNonEditable" hidden={{editing}} contenteditable=false> </article>
                         <article id="songLyricsEditable" hidden={{!editing}} contenteditable=true> </article>
@@ -414,8 +415,15 @@
                 </div>
                 <template is="dom-if" if="{{artist.albums.songs.multitrack_path}}">
                     <div>
-                        <template is="dom-if" if="{{MT5loaded}}">
-                            <iframe id="frameMT5" style="width:100%; height:1000px" src="MT5/index.html" on-load="onFrameLoaded"></iframe>
+                        <template is="dom-if" if="{{artist.isConnected}}">
+                            <template is="dom-if" if="{{MT5loaded}}">
+                                <iframe id="frameMT5" style="width:100%; height:1000px" src="MT5/index.html" on-load="onFrameLoaded"></iframe>
+                            </template>
+                        </template>
+                        <template is="dom-if" if="{{!artist.isConnected}}">
+                            <div style="height: 200px; justify-content: center; display: flex; align-items: center;">
+                                <b>Only for registered users. Please contact micbuffa@gmail.com for an access</b>
+                            </div>
                         </template>
                     </div>
                 </template>
@@ -453,12 +461,10 @@
                 }
             },
             getURLSongId: function () {
-                return "/search/artist_id/" + this.artist._id + "/album_id/" + this.artist.albums._id +
-                    "/song_id/" + this.artist.albums.songs._id;
+                return "/search/artist_id/" + this.artist._id + "/album_id/" + this.artist.albums._id + "/song_id/" + this.artist.albums.songs._id;
             },
             getURLSong: function () {
-                return "/search/artist/" + this._encodeUri(this.artist.name) + "/album/" + this._encodeUri(
-                    this.artist.albums.title) + "/song/" + this._encodeUri(this.artist.albums.songs.title);
+                return "/search/artist/" + this._encodeUri(this.artist.name) + "/album/" + this._encodeUri(this.artist.albums.title) + "/song/" + this._encodeUri(this.artist.albums.songs.title);
             },
             ready: function () {
                 this.$.songLyricsEditable.addEventListener("paste", function (e) {
@@ -503,8 +509,7 @@
                 else {
                     //1er replace : On replace dans un premier temps les <div> (chrome) et <p> (firefox) du contenteditable correspondant au saut de ligne par des <br>
                     //2eme replace :On supprime ensuite les retours chariots et les autres tags HTML de l'utilisateur
-                    this.$.songLyricsNonEditable.innerHTML = this.$.songLyricsEditable.innerHTML.replace(
-                        /<div>|<p>/ig, "<br>").replace(/\\n|\\r|\\r\\n|(<((?!br)[^>]+)>)/ig, "");
+                    this.$.songLyricsNonEditable.innerHTML = this.$.songLyricsEditable.innerHTML.replace(/<div>|<p>/ig, "<br>").replace(/\\n|\\r|\\r\\n|(<((?!br)[^>]+)>)/ig, "");
                     //Construction du body pour l'envoie des lyrics, on doit envoyer le html afin de garder la bonne mise en page
                     this.artist.albums.songs.lyrics = this.$.songLyricsNonEditable.innerHTML;
                     this.$.put_content.body = JSON.stringify(this.artist.albums.songs);
@@ -531,9 +536,10 @@
                     this.MT5loaded = true;
                 }
             },
-            _computeHeader: function (token) {
+            _computeHeader: function () {
+                this.token = localStorage.getItem("token") || "";
                 return {
-                    Authorization: token
+                    Authorization: this.token
                 };
             },
             //  /!\ si <template is="dom-if" if="{{artist.albums.songs.multitrack_path.length}}"> est supprimé il y a une change que la frame soit charger

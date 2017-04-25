@@ -9,7 +9,7 @@ const COLLECTIONARTIST = config.database.collection_artist;
 const COLLECTIONALBUM = config.database.collection_album;
 const COLLECTIONSONG = config.database.collection_song;
 const LIMIT = config.request.limit;
-const COPYRIGHT_CONTENT = "<br> <br>... Due to copyright reason <br>we limit the display of lyrics to 10% of text."
+const COPYRIGHT_CONTENT = "<br> <br><b><i>... Due to copyright reason <br>we limit the display of lyrics to 10% of text.</i></b>"
 
 var get_collectionByCategoryAndLetter = (req, res, next) => {
     var tObjectRequest, skip, tParamToFind;
@@ -284,94 +284,106 @@ var get_dbinfo = (req, res) => {
 
 
 var get_artist = (req, res) => {
-    var db = req.db,
-        artistName = req.params.artistName;
-    db.collection(COLLECTIONARTIST).findOne({
-        name: artistName
-    }, config.request.projection.search.get_artist.artist, (err, artist) => {
-        if (artist === null) return res.status(404).json(config.http.error.artist_404);
-        db.collection(COLLECTIONALBUM).find({
-            id_artist: artist._id
-        }, config.request.projection.search.get_artist.album).sort({
-            "publicationDate": -1
-        }).toArray((err, albums) => {
-            var nbAlbum = albums.length,
-                cnt = 0;
-            //On construit le tableau albums afin d'y ajouter les infos des albums
-            artist.albums = albums;
-            for (var i = 0; i < nbAlbum; i++) {
-                ((album) => {
-                    db.collection(COLLECTIONSONG).find({
-                        "id_album": album._id
-                    }, config.request.projection.search.get_artist.song).sort({
-                        "position": 1
-                    }).toArray((err, songs) => {
-                        if (err) throw err;
-                        //On construit le tableau songs afin d'y ajouter les infos des musiques
-                        album.songs = songs;
-                        cnt++;
-                        if (nbAlbum == cnt) {
-                            return res.json(artist);
-                        }
-                    });
-                })(artist.albums[i]);
-            }
-        })
-    });
+    passport.authenticate('jwt', config.passport.auth.jwt, (err, user) => {
+        var db = req.db,
+            artistName = req.params.artistName;
+        db.collection(COLLECTIONARTIST).findOne({
+            name: artistName
+        }, config.request.projection.search.get_artist.artist, (err, artist) => {
+            if (artist === null) return res.status(404).json(config.http.error.artist_404);
+            db.collection(COLLECTIONALBUM).find({
+                id_artist: artist._id
+            }, config.request.projection.search.get_artist.album).sort({
+                "publicationDate": -1
+            }).toArray((err, albums) => {
+                var nbAlbum = albums.length,
+                    cnt = 0;
+                //On construit le tableau albums afin d'y ajouter les infos des albums
+                artist.albums = albums;
+                for (var i = 0; i < nbAlbum; i++) {
+                    ((album) => {
+                        db.collection(COLLECTIONSONG).find({
+                            "id_album": album._id
+                        }, config.request.projection.search.get_artist.song).sort({
+                            "position": 1
+                        }).toArray((err, songs) => {
+                            if (err) throw err;
+                            //On construit le tableau songs afin d'y ajouter les infos des musiques
+                            album.songs = songs;
+                            cnt++;
+                            if (nbAlbum == cnt) {
+                                artist.isConnected = true;
+                                if (!user) artist.isConnected = false;
+                                return res.json(artist);
+                            }
+                        });
+                    })(artist.albums[i]);
+                }
+            })
+        });
+    })(req, res);
 };
 
 var get_album = (req, res) => {
-    var db = req.db,
-        albumName = req.params.albumName,
-        artistName = req.params.artistName;
-    db.collection(COLLECTIONARTIST).findOne({
-        name: artistName
-    }, config.request.projection.search.get_album.artist, (err, artist) => {
-        if (artist == null) return res.status(404).json(config.http.error.artist_404);
-        //!\ UN ARTIST PEUT AVOIR PLUSIEURS FOIS UN MEME TITRE D'ALBUM /!\ ERREUR A CORRIGER -> si on clique sur un album
-        db.collection(COLLECTIONALBUM).findOne({
-            $and: [{
-                "title": albumName
-            }, {
-                "id_artist": artist._id
-            }]
-        }, config.request.projection.search.get_album.album, (err, album) => {
-            if (album == null) return res.status(404).json(config.http.error.album_404);
-            db.collection(COLLECTIONSONG).find({
-                "id_album": album._id
-            }, config.request.projection.search.get_album.song).toArray((err, songs) => {
-                if (songs == null) return res.status(404).json(config.http.error.song_404);
-                album.songs = songs;
-                artist.albums = album;
-                return res.json(artist);
+    passport.authenticate('jwt', config.passport.auth.jwt, (err, user) => {
+        var db = req.db,
+            albumName = req.params.albumName,
+            artistName = req.params.artistName;
+        db.collection(COLLECTIONARTIST).findOne({
+            name: artistName
+        }, config.request.projection.search.get_album.artist, (err, artist) => {
+            if (artist == null) return res.status(404).json(config.http.error.artist_404);
+            //!\ UN ARTIST PEUT AVOIR PLUSIEURS FOIS UN MEME TITRE D'ALBUM /!\ ERREUR A CORRIGER -> si on clique sur un album
+            db.collection(COLLECTIONALBUM).findOne({
+                $and: [{
+                    "title": albumName
+                }, {
+                    "id_artist": artist._id
+                }]
+            }, config.request.projection.search.get_album.album, (err, album) => {
+                if (album == null) return res.status(404).json(config.http.error.album_404);
+                db.collection(COLLECTIONSONG).find({
+                    "id_album": album._id
+                }, config.request.projection.search.get_album.song).toArray((err, songs) => {
+                    if (songs == null) return res.status(404).json(config.http.error.song_404);
+                    artist.isConnected = true;
+                    if (!user) artist.isConnected = false;
+                    album.songs = songs;
+                    artist.albums = album;
+                    return res.json(artist);
+                });
             });
         });
-    });
+    })(req, res);
 }
 
-var put_albumById = (req, res) => {
-    var db = req.db,
-        artistId = req.params.artistId,
-        albumId = req.params.albumId;
-    if (!ObjectId.isValid(artistId) || !ObjectId.isValid(albumId)) return res.status(404).json(config.http.error.objectid_404);
-    db.collection(COLLECTIONARTIST).findOne({
-        _id: ObjectId(artistId)
-    }, config.request.projection.search.get_album.artist, (err, artist) => {
-        if (artist == null) return res.status(404).json(config.http.error.artist_404);
-        db.collection(COLLECTIONALBUM).findOne({
-            "_id": ObjectId(albumId)
-        }, config.request.projection.search.get_album.album, (err, album) => {
-            if (album == null) return res.status(404).json(config.http.error.album_404);
-            db.collection(COLLECTIONSONG).find({
-                "id_album": album._id
-            }, config.request.projection.search.get_album.song).toArray((err, songs) => {
-                if (songs == null) return res.status(404).json(config.http.error.song_404);
-                album.songs = songs;
-                artist.albums = album;
-                return res.json(artist);
+var get_albumById = (req, res) => {
+    passport.authenticate('jwt', config.passport.auth.jwt, (err, user) => {
+        var db = req.db,
+            artistId = req.params.artistId,
+            albumId = req.params.albumId;
+        if (!ObjectId.isValid(artistId) || !ObjectId.isValid(albumId)) return res.status(404).json(config.http.error.objectid_404);
+        db.collection(COLLECTIONARTIST).findOne({
+            _id: ObjectId(artistId)
+        }, config.request.projection.search.get_album.artist, (err, artist) => {
+            if (artist == null) return res.status(404).json(config.http.error.artist_404);
+            db.collection(COLLECTIONALBUM).findOne({
+                "_id": ObjectId(albumId)
+            }, config.request.projection.search.get_album.album, (err, album) => {
+                if (album == null) return res.status(404).json(config.http.error.album_404);
+                db.collection(COLLECTIONSONG).find({
+                    "id_album": album._id
+                }, config.request.projection.search.get_album.song).toArray((err, songs) => {
+                    if (songs == null) return res.status(404).json(config.http.error.song_404);
+                    artist.isConnected = true;
+                    if (!user) artist.isConnected = false;
+                    album.songs = songs;
+                    artist.albums = album;
+                    return res.json(artist);
+                });
             });
         });
-    });
+    })(req, res);
 };
 
 
@@ -448,11 +460,12 @@ var get_song = (req, res) => {
                     }]
                 }, config.request.projection.search.get_song.song, (err, song) => {
                     if (song == null) return res.status(404).json(config.http.error.song_404);
+                    artist.isConnected = true;
                     if (!user) {
+                        artist.isConnected = false;
                         song.lyrics = song.lyrics.slice(0, (song.lyrics.length * 0.1));
                         song.lyrics = song.lyrics.slice(0, song.lyrics.lastIndexOf(' '));
                         song.lyrics += COPYRIGHT_CONTENT;
-                        song.multitrack_path = "";
                     }
                     album.songs = song;
                     artist.albums = album;
@@ -483,11 +496,12 @@ var get_songById = (req, res) => {
                     "_id": ObjectId(songId)
                 }, config.request.projection.search.get_song.song, (err, song) => {
                     if (song == null) return res.status(404).json(config.http.error.song_404);
+                    artist.isConnected = true;
                     if (!user) {
+                        artist.isConnected = false;
                         song.lyrics = song.lyrics.slice(0, (song.lyrics.length * 0.1));
                         song.lyrics = song.lyrics.slice(0, song.lyrics.lastIndexOf(' '));
                         song.lyrics += COPYRIGHT_CONTENT;
-                        song.multitrack_path = "";
                     }
                     album.songs = song;
                     artist.albums = album;
@@ -510,7 +524,9 @@ var put_song = (req, res) => {
         req.db.collection(COLLECTIONSONG).update({
             _id: ObjectId(idSong)
         }, {
-            $set: songBody
+            $set: {
+                lyrics: songBody.lyrics
+            }
         }, (err) => {
             //On fait un POST sur elasticsearch afin de modifier le champs title de la musique sur le BDD elasticsearch
             searchHandler.updateSongES(req, songBody, idSong)
@@ -603,7 +619,7 @@ exports.get_countByField = get_countByField;
 exports.get_dbinfo = get_dbinfo;
 exports.get_artist = get_artist;
 exports.get_album = get_album;
-exports.put_albumById = put_albumById;
+exports.get_albumById = get_albumById;
 exports.put_album = put_album;
 exports.get_song = get_song;
 exports.get_songById = get_songById;
