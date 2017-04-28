@@ -192,8 +192,7 @@
             <!--permet de lancer automatiquement la requête get chargeant la page-->
             <iron-ajax id="get_content_auto" auto headers="[[headers]]" url="/search/artist/{{_encodeUri(nameArtist)}}/album/{{_encodeUri(nameAlbum)}}/song/{{_encodeUri(nameSong)}}" last-response="{{artist}}" handle-as="json" on-response="handleResponse"> </iron-ajax>
             <!--permet de faire des requêtes get permettant de recupérer les données avant modification-->
-            <iron-ajax id="get_content" last-response="{{artist}}" headers="[[headers]]" handle-as="json" on-response="handleResponse">
-            </iron-ajax>
+            <iron-ajax id="get_content" last-response="{{artist}}" headers="[[headers]]" handle-as="json" on-response="handleResponse"></iron-ajax>
             <!--permet de faire des requêtes de modification-->
             <iron-ajax id="put_content" method="PUT" headers="[[headers]]" content-type="application/json"></iron-ajax>
             <!--Ce dom-if sert uniquement a ne pas avoir de problème d'affichage sur la selection du paper-tab (uniquement sur les musiques ayant du multitrack)-->

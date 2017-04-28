@@ -14,18 +14,19 @@ module.exports = {
         "limit_request": {
             "api": {
                 "windowMs": 60000, // 60 secondes 
-                "max": 30, // limit each IP to 100 requests per windowMs 
+                "max": 30, // limit each IP to x requests per windowMs 
                 "delayMs": 0 // disable delaying - full speed until the max limit is reached
             },
             "search": {
                 "windowMs": 60000, // 60 secondes 
-                "max": 30, // limit each IP to 100 requests per windowMs 
+                "max": 30, // limit each IP to x requests per windowMs 
                 "delayMs": 0 // disable delaying - full speed until the max limit is reached
             },
             "login": {
-                "windowMs": 60000, // 60 secondes 
-                "max": 5, // limit each IP to 100 requests per windowMs 
-                "delayMs": 0 // disable delaying - full speed until the max limit is reached
+                "windowMs": 60000 * 2, // 60 secondes 
+                "max": 5, // limit each IP to x requests per windowMs 
+                "delayMs": 0, // disable delaying - full speed until the max limit is reached
+                message: "Sorry, the maximum limit of try has been reached. Try again in 2 minutes",
             }
         },
         "error": {

@@ -77,6 +77,7 @@
             .div_bgImg {
                 background-size: cover !important;
                 position: fixed;
+                z-index: -1;
                 filter: blur(10px) grayscale(50%) contrast(80%);
                 height: 100%;
                 top: 0;
@@ -95,7 +96,7 @@
         <paper-material elevation="1">
             <iron-ajax id="get_content" auto url="/search/artist/{{_encodeUri(nameArtist)}}" last-response="{{artist}}" headers="[[headers]]" handle-as="json"></iron-ajax>
             <template is="dom-if" if="{{artist.rdf}}">
-                <show-dialog labeldialog="RDF {{artist.name}} :" labelbutton="Show RDF" content="{{artist.rdf}}" headers="[[headers]]" labelexitdialog="Close"></show-dialog>
+                <show-dialog labeldialog="RDF {{artist.name}} :" labelbutton="Show RDF" content="{{artist.rdf}}" labelexitdialog="Close"></show-dialog>
             </template>
             <div class="artistname pictureArtist">
                 {{artist.name}}

@@ -18,7 +18,7 @@ const router = express.Router();
 //         return res.json(config.http.valid.user.user_created);
 //     });
 // });
-router.post('/login', new RateLimit(config.http.limit_request.search), (req, res) => {
+router.post('/login', new RateLimit(config.http.limit_request.login), (req, res) => {
     User.findOne({
         email: req.body.email
     }, (err, user) => {

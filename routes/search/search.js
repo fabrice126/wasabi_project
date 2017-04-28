@@ -498,11 +498,7 @@ router.get('/dbinfo', searchController.get_dbinfo);
  */
 
 
-router.get('/artist/:artistName', new RateLimit({
-    "windowMs": 60000, // 60 secondes 
-    "max": 30, // limit each IP to 100 requests per windowMs 
-    "delayMs": 0 // disable delaying - full speed until the max limit is reached
-}), searchController.get_artist);
+router.get('/artist/:artistName', new RateLimit(config.http.limit_request.search), searchController.get_artist);
 //==========================================================================================================================\\
 //========================================WEBSERVICE REST POUR LA GESTION DES ALBUMS========================================\\
 //==========================================================================================================================\\
@@ -572,11 +568,7 @@ router.get('/artist/:artistName', new RateLimit({
         "error": "Artist not found"
     }
  */
-router.get('/artist/:artistName/album/:albumName', new RateLimit({
-    "windowMs": 60000, // 60 secondes 
-    "max": 30, // limit each IP to 100 requests per windowMs 
-    "delayMs": 0 // disable delaying - full speed until the max limit is reached
-}), searchController.get_album);
+router.get('/artist/:artistName/album/:albumName', new RateLimit(config.http.limit_request.search), searchController.get_album);
 //GET ALBUM PAR ID D'ARTISTE ET D'ALBUM
 /**
  * @api {get} search/artist_id/:artistId/album_id/:albumId Get infos about album by id
@@ -733,11 +725,7 @@ router.put('/artist/:artistName/album/:albumName', new RateLimit(config.http.lim
         "error": "Song not found"
     }
  */
-router.get('/artist/:artistName/album/:albumName/song/:songName', new RateLimit({
-    "windowMs": 60000, // 60 secondes 
-    "max": 30, // limit each IP to 100 requests per windowMs 
-    "delayMs": 0 // disable delaying - full speed until the max limit is reached
-}), searchController.get_song);
+router.get('/artist/:artistName/album/:albumName/song/:songName', new RateLimit(config.http.limit_request.search), searchController.get_song);
 //GET SONG PAR ID D'ARTISTE,ALBUM,MUSIQUE
 /**
  * @api {get} search/artist_id/:artistId/album_id/:albumId/song_id/:songId Get Page information

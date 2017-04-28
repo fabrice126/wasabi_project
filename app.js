@@ -38,6 +38,7 @@ import extractdbpedia from './routes/extractdbpedia';
 import jwt_api from './routes/jwt';
 import download from './routes/download/download';
 const app = express();
+app.enable('trust proxy');
 /**
  * -------------------------------------------------------------------------------------------------------
  * ----------------------------------OPTION DE L'ENVIRONNEMENT NODE JS------------------------------------
@@ -95,7 +96,8 @@ app.use((req, res, next) => {
     confPassport(passport);
     //<start> pour MT5
     res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+
     // For Microsoft browsers
     var url = req.originalUrl;
     if (url.endsWith("vtt")) {
@@ -143,7 +145,7 @@ if (app.get('env') === config.launch.env.dev) {
 //Return la page-404.html via <app-router> dans index.html 
 app.get('*', (req, res) => {
     //On renvoie le chemin tapé par l'utilisateur, ce chemin ne correspondra à rien pour <app-router> ce qui renverra la page 404
-    res.status(404).redirect('/#' + req.path);
+    res.status(404).redirect('/page-404.html' + req.path);
 });
 // error handlers
 app.use((req, res, next) => {
