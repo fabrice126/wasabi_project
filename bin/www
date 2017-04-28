@@ -16,7 +16,7 @@ const fs = require('fs')
  */
 
 var portHttp = normalizePort('8081');
-var portHttps = normalizePort('444'); //443
+var portHttps = normalizePort('443'); //443
 
 app.set('portHttp', portHttp);
 app.set('portHttps', portHttps);
