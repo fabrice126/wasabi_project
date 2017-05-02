@@ -15,8 +15,8 @@ const app = require('../app'),
  * Get port from environment and store in Express.
  */
 
-var portHttp = normalizePort('8081'), //8081
-  portHttps = normalizePort('8082'); //8082
+var portHttp = normalizePort('80'),
+  portHttps = normalizePort('443');
 
 app.set('portHttp', portHttp);
 app.set('portHttps', portHttps);

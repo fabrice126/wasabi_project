@@ -112,6 +112,7 @@ app.use((req, res, next) => {
  * -------------------------------------------------------------------------------------------------------
  */
 app.use('/', express.static(path.join(__dirname, 'public')));
+app.use('/blog', proxy('http://localhost:8080'));
 app.use('/AmpSimFA', express.static(path.join(__dirname, 'public/AmpSimFA')));
 app.use('/AmpSim3', express.static(path.join(__dirname, 'public/AmpSim3')));
 app.use('/MT5', MT5);
