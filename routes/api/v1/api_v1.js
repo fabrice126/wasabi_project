@@ -1,15 +1,16 @@
 import express from 'express';
+import RateLimit from 'express-rate-limit';
 import config from '../../conf/conf';
+import apiV1Controller from './api_v1.controller';
 import request from 'request';
+const router = express.Router();
 import {
     ObjectId
 } from 'mongoskin';
-const router = express.Router();
 const COLLECTIONARTIST = config.database.collection_artist;
 const COLLECTIONALBUM = config.database.collection_album;
 const COLLECTIONSONG = config.database.collection_song;
 const LIMIT = config.request.limit;
-
 
 
 
@@ -158,65 +159,7 @@ const LIMIT = config.request.limit;
         "error": "An internal error occurred"
     }
  */
-router.get('/artist_all/:start', function (req, res, next) {
-    var db = req.db,
-        start = Number.parseInt(req.params.start),
-        cntAlbum = 0,
-        cntArtist = 0,
-        nbAlbum = 0;
-    if (!Number.isInteger(start) || start < 0) {
-        return res.status(404).json(config.http.error.global_404);
-    }
-    db.collection(COLLECTIONARTIST).find({}, {
-        wordCount: 0,
-        rdf: 0
-    }).skip(start).limit(LIMIT).toArray((err, artists) => {
-        if (err) {
-            return res.status(404).json(config.http.error.internal_error_404);
-        }
-        for (var i = 0, l = artists.length; i < l; i++) {
-            (function (i) {
-                db.collection(COLLECTIONALBUM).find({
-                    id_artist: artists[i]._id
-                }, {
-                    wordCount: 0,
-                    rdf: 0
-                }).toArray((err, albums) => {
-                    if (err) {
-                        return res.status(404).json(config.http.error.internal_error_404);
-                    }
-                    cntArtist++;
-                    nbAlbum += albums.length;
-                    artists[i].albums = albums;
-                    //Si le dernier artist ne possède pas d'album alors on retourne ici le resultat car il ne pourra pas entrer dans le callback de la collection song ci-dessous
-                    for (var j = 0, k = albums.length; j < k; j++) {
-                        (function (j) {
-                            db.collection(COLLECTIONSONG).find({
-                                id_album: albums[j]._id
-                            }, {
-                                wordCount: 0,
-                                rdf: 0,
-                                name: 0,
-                                albumTitle: 0,
-                                publicationDateAlbum: 0,
-                                lengthAlbum: 0
-                            }).toArray((err, songs) => {
-                                if (err) {
-                                    return res.status(404).json(config.http.error.internal_error_404);
-                                }
-                                artists[i].albums[j].songs = songs;
-                                cntAlbum++;
-                                if (cntArtist == artists.length && cntAlbum == nbAlbum) {
-                                    return res.json(artists);
-                                }
-                            });
-                        })(j);
-                    }
-                });
-            })(i);
-        }
-    });
-});
+router.get('/artist_all/:start', apiV1Controller.get_artistAll);
 
 //==========================================================================================================================\\
 //=====================API REST POUR RECUPERER LES MUSIQUES DE CHAQUE ALBUM D'UN ARTISTE PAR ID D'ARTIST====================\\
@@ -361,63 +304,7 @@ router.get('/artist_all/:start', function (req, res, next) {
         "error": "An internal error occurred"
     }
  */
-router.get('/artist_all/id/:id', function (req, res, next) {
-    var db = req.db,
-        id = req.params.id,
-        cnt = 0;
-    if (!ObjectId.isValid(id)) {
-        return res.status(404).json(config.http.error.objectid_404);
-    }
-    db.collection(COLLECTIONARTIST).findOne({
-        _id: new ObjectId(id)
-    }, {
-        wordCount: 0,
-        rdf: 0
-    }, (err, artist) => {
-        if (err || !artist) {
-            return res.status(404).json(config.http.error.internal_error_404);
-        }
-        db.collection(COLLECTIONALBUM).find({
-            id_artist: artist._id
-        }, {
-            wordCount: 0,
-            rdf: 0
-        }).toArray((err, albums) => {
-            if (err) {
-                return res.status(404).json(config.http.error.internal_error_404);
-            }
-            artist.albums = albums;
-            //si il n'y a aucun album on retourne l'artiste
-            if (!artist.albums.length) {
-                console.log("RETOURNE JSON");
-                return res.json(artist);
-            }
-            for (var i = 0, l = albums.length; i < l; i++) {
-                (function (i) {
-                    db.collection(COLLECTIONSONG).find({
-                        id_album: albums[i]._id
-                    }, {
-                        wordCount: 0,
-                        rdf: 0,
-                        name: 0,
-                        albumTitle: 0,
-                        publicationDateAlbum: 0,
-                        lengthAlbum: 0
-                    }).toArray((err, songs) => {
-                        if (err) {
-                            return res.status(404).json(config.http.error.internal_error_404);
-                        }
-                        artist.albums[i].songs = songs;
-                        cnt++;
-                        if (cnt == artist.albums.length) {
-                            return res.send(artist);
-                        }
-                    });
-                })(i);
-            }
-        });
-    });
-});
+router.get('/artist_all/id/:id', apiV1Controller.get_artistAllById);
 //==========================================================================================================================\\
 //====================API REST POUR RECUPERER LES MUSIQUES DE CHAQUE ALBUM D'UN ARTISTE PAR NOM D'ARTISTE===================\\
 //==========================================================================================================================\\
@@ -561,60 +448,7 @@ router.get('/artist_all/id/:id', function (req, res, next) {
         "error": "An internal error occurred"
     }
  */
-router.get('/artist_all/name/:name', function (req, res, next) {
-    var db = req.db,
-        name = req.params.name,
-        cnt = 0;
-    db.collection(COLLECTIONARTIST).findOne({
-        name: name
-    }, {
-        wordCount: 0,
-        rdf: 0
-    }, (err, artist) => {
-        //si il y a une erreur ou que l'artiste n'existe pas on retourne une erreur
-        if (err || !artist) {
-            return res.status(404).json(config.http.error.internal_error_404);
-        }
-        db.collection(COLLECTIONALBUM).find({
-            id_artist: artist._id
-        }, {
-            wordCount: 0,
-            rdf: 0
-        }).toArray((err, albums) => {
-            if (err) {
-                return res.status(404).json(config.http.error.internal_error_404);
-            }
-            artist.albums = albums;
-            //si un artist n'a pas d'album alors on envoie l'objet artist contenant les infos de l'artiste et ayant un tableau artist.albums == []
-            if (!artist.albums.length) {
-                return res.json(artist);
-            }
-            for (var i = 0, l = albums.length; i < l; i++) {
-                (function (i) {
-                    db.collection(COLLECTIONSONG).find({
-                        id_album: albums[i]._id
-                    }, {
-                        wordCount: 0,
-                        rdf: 0,
-                        name: 0,
-                        albumTitle: 0,
-                        publicationDateAlbum: 0,
-                        lengthAlbum: 0
-                    }).toArray((err, songs) => {
-                        if (err) {
-                            return res.status(404).json(config.http.error.internal_error_404);
-                        }
-                        artist.albums[i].songs = songs;
-                        cnt++;
-                        if (cnt == artist.albums.length) {
-                            return res.send(artist);
-                        }
-                    });
-                })(i);
-            }
-        });
-    });
-});
+router.get('/artist_all/name/:name', apiV1Controller.get_artistAllByName);
 
 //Une API pour tester si la ram est suffisante pour éxecuter l'api api/artist_all
 router.get('/api_test/artist_all', (req, res) => {
@@ -720,24 +554,7 @@ router.get('/api_test/artist_all', (req, res) => {
         "error": "An internal error occurred"
     }
  */
-router.get('/artist/id/:id', function (req, res, next) {
-    var db = req.db,
-        id = req.params.id;
-    if (!ObjectId.isValid(id)) {
-        return res.status(404).json(config.http.error.objectid_404);
-    }
-    db.collection(COLLECTIONARTIST).findOne({
-        _id: new ObjectId(id)
-    }, {
-        wordCount: 0,
-        rdf: 0
-    }, (err, artist) => {
-        if (err) {
-            return res.status(404).json(config.http.error.internal_error_404);
-        }
-        return res.json(artist);
-    });
-});
+router.get('/artist/id/:id', apiV1Controller.get_artistById);
 //==========================================================================================================================\\
 //=========================================API REST POUR RECUPERER UN ARTISTE PAR NOM D'ARTISTE========================================\\
 //==========================================================================================================================\\
@@ -814,21 +631,7 @@ router.get('/artist/id/:id', function (req, res, next) {
         "error": "An internal error occurred"
     }
  */
-router.get('/artist/name/:artistName', function (req, res, next) {
-    var db = req.db,
-        artistName = req.params.artistName;
-    db.collection(COLLECTIONARTIST).findOne({
-        name: artistName
-    }, {
-        wordCount: 0,
-        rdf: 0
-    }, (err, artist) => {
-        if (err) {
-            return res.status(404).json(config.http.error.internal_error_404);
-        }
-        return res.json(artist);
-    });
-});
+router.get('/artist/name/:artistName', apiV1Controller.get_artistByName);
 //==========================================================================================================================\\
 //==========================================API REST POUR RECUPERER UN ALBUM PAR ID=========================================\\
 //==========================================================================================================================\\
@@ -874,24 +677,7 @@ router.get('/artist/name/:artistName', function (req, res, next) {
         "error": "An internal error occurred"
     }
  */
-router.get('/album/id/:id', function (req, res, next) {
-    var db = req.db,
-        id = req.params.id;
-    if (!ObjectId.isValid(id)) {
-        return res.status(404).json(config.http.error.objectid_404);
-    }
-    db.collection(COLLECTIONALBUM).findOne({
-        _id: new ObjectId(id)
-    }, {
-        wordCount: 0,
-        rdf: 0
-    }, (err, album) => {
-        if (err) {
-            return res.status(404).json(config.http.error.internal_error_404);
-        }
-        return res.json(album);
-    });
-});
+router.get('/album/id/:id', apiV1Controller.get_albumById);
 //==========================================================================================================================\\
 //=========================================API REST POUR RECUPERER UNE MUSIQUE PAR ID=======================================\\
 //==========================================================================================================================\\
@@ -953,24 +739,7 @@ router.get('/album/id/:id', function (req, res, next) {
         "error": "An internal error occurred"
     }
  */
-router.get('/song/id/:id', function (req, res, next) {
-    var db = req.db,
-        id = req.params.id;
-    if (!ObjectId.isValid(id)) {
-        return res.status(404).json(config.http.error.objectid_404);
-    }
-    db.collection(COLLECTIONSONG).findOne({
-        _id: new ObjectId(id)
-    }, {
-        wordCount: 0,
-        rdf: 0
-    }, (err, song) => {
-        if (err) {
-            return res.status(404).json(config.http.error.internal_error_404);
-        }
-        return res.json(song);
-    });
-});
+router.get('/song/id/:id', apiV1Controller.get_songById);
 //==========================================================================================================================\\
 //====================================API REST POUR RECUPERER UN ARTISTE PAR NOM DE MEMBRE==================================\\
 //==========================================================================================================================\\
@@ -1047,21 +816,7 @@ router.get('/song/id/:id', function (req, res, next) {
         "error": "An internal error occurred"
     }
  */
-router.get('/member/name/:memberName', function (req, res, next) {
-    var db = req.db,
-        memberName = req.params.memberName.trim();
-    db.collection(COLLECTIONARTIST).find({
-        "members.name": memberName
-    }, {
-        wordCount: 0,
-        rdf: 0
-    }).toArray((err, artists) => {
-        if (err) {
-            return res.status(404).json(config.http.error.internal_error_404);
-        }
-        return res.json(artists);
-    });
-});
+router.get('/member/name/:memberName', apiV1Controller.get_memberByName);
 
 /**
  * @api {get} api/v1/animux_all/:start Get songs with an animux field
@@ -1183,24 +938,20 @@ router.get('/member/name/:memberName', function (req, res, next) {
     }
  */
 
-router.get('/animux_all/:start', function (req, res, next) {
-    var db = req.db,
-        start = Number.parseInt(req.params.start);
-    if (!Number.isInteger(start) || start < 0) {
-        return res.status(404).json(config.http.error.global_404);
-    }
-    db.collection(COLLECTIONSONG).find({
-        animux_path: {
-            $exists: 1
-        }
-    }, {
-        wordCount: 0,
-        rdf: 0,
-    }).skip(start).limit(LIMIT).toArray((err, songs) => {
-        if (err) {
-            return res.status(404).json(config.http.error.internal_error_404);
-        }
-        return res.json(songs);
-    });
-});
+router.get('/animux_all/:start', apiV1Controller.get_animuxAll);
+
+
+
+router.get('/artist/genres/popularity', apiV1Controller.get_artistGenresByPopularity);
+router.get('/artist/labels/popularity', apiV1Controller.get_artistLabelsByPopularity);
+router.get('/artist/city/popularity', apiV1Controller.get_artistCityByPopularity);
+router.get('/artist/country/popularity', apiV1Controller.get_artistCountryByPopularity);
+router.get('/artist/instrument/popularity', apiV1Controller.get_artistInstrumentByPropularity);
+router.get('/artist/member/count/band', apiV1Controller.get_artistMemberWithMostGroup);
+
+
+// router.get('/song/producer/popularity', apiV1Controller.get_songProducerByPropularity);
+router.get('/artist/count/album', apiV1Controller.get_artistWithMostAlbum);
+router.get('/artist/count/song', apiV1Controller.get_artistWithMostSong);
+
 export default router;

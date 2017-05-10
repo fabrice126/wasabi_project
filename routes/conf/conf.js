@@ -111,6 +111,13 @@ module.exports = {
     },
     "database": {
         "mongodb_connect": "mongodb://localhost:27017/wasabi",
+        "mongodb_option": {
+            server: {
+                socketOptions: {
+                    socketTimeoutMS: 160000
+                }
+            }
+        },
         "collection_artist": "artist",
         "collection_album": "album",
         "collection_song": "song",
@@ -119,7 +126,7 @@ module.exports = {
         "index_artist": "idx_artists",
         "index_song": "idx_songs",
         "index_type_artist": "artist",
-        "index_type_song": "song"
+        "index_type_song": "song",
     },
     "MT5": {
         "TRACKS_PATH": "public/my_components/MT5/multitrack/",

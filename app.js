@@ -50,20 +50,13 @@ config.launch.env.dev_mode ? app.set('env', config.launch.env.dev) : app.set('en
  * -----------------------CONNEXION A LA BASE DE DONNEES MONGODB ET ELASTICSEARCH-------------------------
  * -------------------------------------------------------------------------------------------------------
  */
-const server = app.get('env') === config.launch.env.dev ? {
-    server: {
-        socketOptions: {
-            socketTimeoutMS: 160000
-        }
-    }
-} : {};
+const server = app.get('env') === config.launch.env.dev ? config.database.mongodb_option : {};
 mongoose.Promise = global.Promise;
 const dbMongoose = mongoose.connect(config.database.mongodb_connect);
 const db = dbMongo(config.database.mongodb_connect, server);
 const elasticsearchClient = new elasticsearch.Client({
     host: config.database.elasticsearch_connect
 });
-
 /**
  * -------------------------------------------------------------------------------------------------------
  * ----------------------------------INITIALISATION DE CERTAINS CHAMPS------------------------------------
@@ -112,7 +105,6 @@ app.use((req, res, next) => {
  * -------------------------------------------------------------------------------------------------------
  */
 app.use('/', express.static(path.join(__dirname, 'public')));
-app.use('/blog', proxy('http://localhost:8080'));
 app.use('/AmpSimFA', express.static(path.join(__dirname, 'public/AmpSimFA')));
 app.use('/AmpSim3', express.static(path.join(__dirname, 'public/AmpSim3')));
 app.use('/MT5', MT5);
@@ -146,7 +138,8 @@ if (app.get('env') === config.launch.env.dev) {
 //Return la page-404.html via <app-router> dans index.html 
 app.get('*', (req, res) => {
     //On renvoie le chemin tapé par l'utilisateur, ce chemin ne correspondra à rien pour <app-router> ce qui renverra la page 404
-    res.status(404).redirect('/page-404.html' + req.path);
+    console.log(req.path);
+    res.status(404).redirect('/#/page-404.html');
 });
 // error handlers
 app.use((req, res, next) => {
