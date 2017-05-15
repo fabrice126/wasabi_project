@@ -809,7 +809,8 @@ router.get('/artist/:artistName/album/:albumName/song/:songName', new RateLimit(
  */
 router.get('/artist_id/:artistId/album_id/:albumId/song_id/:songId', new RateLimit(config.http.limit_request.search), searchController.get_songById);
 //PUT SONG OBJECT
-router.put('/artist/:artistName/album/:albumName/song/:songName', new RateLimit(config.http.limit_request.search), searchController.put_song);
+router.put('/artist/:artistName/album/:albumName/song/:songName/lyrics', new RateLimit(config.http.limit_request.search), searchController.put_songLyrics);
+router.put('/artist/:artistName/album/:albumName/song/:songName/is_classic', new RateLimit(config.http.limit_request.search), searchController.put_songIsClassic);
 //==========================================================================================================================\\
 //====================================API REST POUR RECUPERER UN ARTISTE PAR NOM DE MEMBRE==================================\\
 //==========================================================================================================================\\

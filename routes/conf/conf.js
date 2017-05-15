@@ -59,18 +59,14 @@ module.exports = {
                     "success": false,
                     "error": "Authentication failed. User not found."
                 },
-                "login": {
+                "login_password": {
                     "success": false,
-                    "message": "Please enter email and password."
+                    "message": "Wrong password or email."
                 },
                 "mail_exist": {
                     "success": false,
                     "message": "That email address already exists."
-                },
-                "password": {
-                    "success": false,
-                    "message": "Authentication failed. Passwords did not match."
-                },
+                }
             },
             "put": {
                 "general": {

@@ -1,0 +1,151 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+
+
+<dom-module id="page-example">
+    <template>
+        <style>
+            paper-material {
+                margin-bottom: 5%;
+                border-radius: 3px;
+            }
+        </style>
+        <paper-material elevation="1">
+            <iron-ajax id="get_content" handle-as="json" on-response="handleResponse"> </iron-ajax>
+
+            <paper-tabs selected="{{selected}}" scrollable>
+                <paper-tab>Ville</paper-tab>
+                <paper-tab>Labels</paper-tab>
+                <paper-tab>Pays</paper-tab>
+                <paper-tab>Instrument</paper-tab>
+            </paper-tabs>
+            <iron-pages selected="{{selected}}">
+                <div>
+                    <paper-button raised link="api/v1/artist/city/popularity" on-tap="sendRequest">Ville</paper-button>
+                    <template is="dom-if" if="{{dataCity}}">
+                        <table>
+                            <tr>
+                                <th>Ville</th>
+                                <th>Nombre de groupe formé</th>
+                                <th>_id MusicBrainz</th>
+                            </tr>
+                            <template is="dom-repeat" items="{{dataCity}}">
+                                <tr>
+                                    <td>{{item.city}}</td>
+                                    <td>{{item.sum}}</td>
+                                    <td>{{item._id}}</td>
+                                </tr>
+                            </template>
+                        </table>
+                    </template>
+                </div>
+                <div>
+                    <paper-button raised link="api/v1/artist/labels/popularity" on-tap="sendRequest">Labels</paper-button>
+                    <template is="dom-if" if="{{dataLabels}}">
+                        <table>
+                            <tr>
+                                <th>Labels</th>
+                                <th>Nombre de groupe formé</th>
+                            </tr>
+                            <template is="dom-repeat" items="{{dataLabels}}">
+                                <tr>
+                                    <td>{{item._id}}</td>
+                                    <td>{{item.sum}}</td>
+                                </tr>
+                            </template>
+                        </table>
+                    </template>
+                </div>
+                <div>
+                    <paper-button raised link="api/v1/artist/country/popularity" on-tap="sendRequest">Pays</paper-button>
+                    <template is="dom-if" if="{{dataCountry}}">
+                        <table>
+                            <tr>
+                                <th>Pays</th>
+                                <th>Nombre de groupe formé</th>
+                            </tr>
+                            <template is="dom-repeat" items="{{dataCountry}}">
+                                <tr>
+                                    <td>{{item._id}}</td>
+                                    <td>{{item.sum}}</td>
+                                </tr>
+                            </template>
+                        </table>
+                    </template>
+                </div>
+                <div>
+                    <paper-button raisedl link="api/v1/artist/instrument/popularity" on-tap="sendRequest">Instrument</paper-button>
+                    <template is="dom-if" if="{{dataInstrument}}">
+                        <table>
+                            <tr>
+                                <th>Instruments</th>
+                                <th>Nombre dans wasabi</th>
+                            </tr>
+                            <template is="dom-repeat" items="{{dataInstrument}}">
+                                <tr>
+                                    <td>{{item._id}}</td>
+                                    <td>{{item.sum}}</td>
+                                </tr>
+                            </template>
+                        </table>
+                    </template>
+                </div>
+            </iron-pages>
+        </paper-material>
+    </template>
+    <script>
+        // element registration
+        Polymer({
+            is: "page-example",
+            // add properties and methods on the element's prototype
+            properties: {
+                dataCity: {
+                    type: Array
+                },
+                dataLabels: {
+                    type: Array
+                },
+                dataCountry: {
+                    type: Array
+                },
+                dataInstrument: {
+                    type: Array
+                },
+                selected: {
+                    type: Number,
+                    value: 0,
+                },
+            },
+            ready: function (e) {
+
+            },
+            sendRequest: function (e) {
+                this.$.get_content.url = e.target.getAttribute('link');
+                this.$.get_content.generateRequest();
+            },
+            handleResponse: function (evt) {
+                switch (evt.detail.url) {
+                    case "api/v1/artist/city/popularity":
+                        this.dataCity = evt.detail.response;
+                        break;
+                    case "api/v1/artist/labels/popularity":
+                        this.dataLabels = evt.detail.response;
+                        break;
+                    case "api/v1/artist/country/popularity":
+                        this.dataCountry = evt.detail.response;
+                        break;
+                    case "api/v1/artist/instrument/popularity":
+                        this.dataInstrument = evt.detail.response;
+                        break;
+                }
+            },
+            _stringify: function (evt) {
+                return JSON.stringify(obj);
+            },
+        });
+    </script>
+</dom-module>

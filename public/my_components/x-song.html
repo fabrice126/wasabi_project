@@ -27,7 +27,7 @@
                 background-color: #F2F2F2;
             }
         </style>
-        <a class="li-link" href="#/search/artist/{{_encodeUri(album.name)}}/album/{{_encodeUri(album.title)}}/song/{{_encodeUri(song.title)}}" tabindex="-1">
+        <a class="li-link" href="{{getURLSongPage(album.name, album.title, song.title)}}" tabindex="-1">
             <li hidden="{{editing}}" id="song">{{song.title}}</li>
         </a>
     </template>
@@ -51,6 +51,9 @@
                     value: false,
                     observer: 'onEditingChanged'
                 },
+            },
+            getURLSongPage: function (nameArtist, titleAlbum, titleSong) {
+                return "#/search/artist/" + this._encodeUri(nameArtist) + "/album/" + this._encodeUri(titleAlbum) + "/song/" + this._encodeUri(titleSong);
             },
             /**
              * Permet la création des paperInput lorsque l'utilisateur clique sur le bouton pour éditer

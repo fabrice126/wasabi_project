@@ -37,7 +37,7 @@ var get_collectionByCategoryAndLetter = (req, res, next) => {
             }, {
                 "name": 1
             }).skip(skip).limit(LIMIT).toArray((err, artists) => {
-                if (err) throw err;
+                if (err) return res.status(404).json(config.http.error.artist_404);
                 objSend.artists = artists;
                 return res.json(objSend);
             });
@@ -59,7 +59,7 @@ var get_collectionByCategoryAndLetter = (req, res, next) => {
                     "name": 1
                 }
             }], (err, albums) => {
-                if (err) throw err;
+                if (err) return res.status(404).json(config.http.error.album_404);
                 objSend.albums = albums;
                 return res.json(objSend);
             });
@@ -82,14 +82,13 @@ var get_collectionByCategoryAndLetter = (req, res, next) => {
                     "titleSong": "$title"
                 }
             }], (err, songs) => {
-                if (err) throw err;
+                if (err) return res.status(404).json(config.http.error.song_404);
                 objSend.songs = songs;
                 return res.json(objSend);
             });
             break;
         default:
             return res.status(404).json(config.http.error.global_404);
-            break;
     }
 };
 
@@ -307,7 +306,7 @@ var get_artist = (req, res) => {
                         }, config.request.projection.search.get_artist.song).sort({
                             "position": 1
                         }).toArray((err, songs) => {
-                            if (err) throw err;
+                            if (err) return res.status(404).json(config.http.error.song_404);
                             //On construit le tableau songs afin d'y ajouter les infos des musiques
                             album.songs = songs;
                             cnt++;
@@ -403,14 +402,14 @@ var put_album = (req, res) => {
             // On supprime l'id car mongodb lance un avertissement si ce champ n'est pas supprimé (_id est immutable pas d'update possible)
             delete albumBody.songs[j]._id;
             delete albumBody.songs[j].id_album;
-            ((idSong, song, totalSong) => {
+            ((idSong, song, name, albumTitle, totalSong) => {
                 db.collection(COLLECTIONSONG).update({
                     _id: new ObjectId(idSong)
                 }, {
                     $set: song
                 }, (err) => {
-                    if (err) throw err;
-                    searchHandler.updateSongES(req, song, idSong)
+                    if (err) return res.status(404).json(config.http.error.song_404);
+                    searchHandler.updateSongES(req, name, albumTitle, song.title, idSong)
                     //Quand toutes les musiques ont été update on update le document album. ainsi si il n'y a aucun risque que l'album soit update sans que les musiques le soit avant
                     nbSongUpdated = nbSongUpdated + 1;
                     if (totalSong == nbSongUpdated) {
@@ -427,7 +426,7 @@ var put_album = (req, res) => {
                         });
                     }
                 })
-            })(idSong, albumBody.songs[j], albumBody.songs.length);
+            })(idSong, albumBody.songs[j], albumBody.name, albumBody.title, albumBody.songs.length);
         }
         return res.json(config.http.valid.send_message_ok);
     })(req, res);
@@ -511,7 +510,7 @@ var get_songById = (req, res) => {
         });
     })(req, res);
 };
-var put_song = (req, res) => {
+var put_songLyrics = (req, res) => {
     passport.authenticate('jwt', config.passport.auth.jwt, function (err, user) {
         if (!user) return res.status(403).json(config.http.error.put.song);
         var songBody = req.body;
@@ -519,22 +518,40 @@ var put_song = (req, res) => {
         var idSong = songBody._id;
         if (!ObjectId.isValid(idSong)) return res.status(404).json(config.http.error.objectid_404);
         //!\ Il faut supprimer les attributs qui sont de type objectId dans notre base car songBody les récupéres en string
-        delete songBody.id_album;
         delete songBody._id;
+        console.log(songBody);
         req.db.collection(COLLECTIONSONG).update({
             _id: ObjectId(idSong)
         }, {
             $set: {
                 lyrics: songBody.lyrics
             }
-        }, (err) => {
-            //On fait un POST sur elasticsearch afin de modifier le champs title de la musique sur le BDD elasticsearch
-            searchHandler.updateSongES(req, songBody, idSong)
+        }, (err, song) => {
+            return res.json(config.http.valid.send_message_ok);
         });
-        return res.json(config.http.valid.send_message_ok);
     })(req, res);
 };
-
+var put_songIsClassic = (req, res) => {
+    passport.authenticate('jwt', config.passport.auth.jwt, function (err, user) {
+        if (!user) return res.status(403).json(config.http.error.put.song);
+        var songBody = req.body;
+        //On récupére l'id de la musique afin de modifier l'objet en base de données
+        var idSong = songBody._id;
+        if (!ObjectId.isValid(idSong)) return res.status(404).json(config.http.error.objectid_404);
+        //!\ Il faut supprimer les attributs qui sont de type objectId dans notre base car songBody les récupéres en string
+        delete songBody._id;
+        console.log(songBody)
+        req.db.collection(COLLECTIONSONG).update({
+            _id: ObjectId(idSong)
+        }, {
+            $set: {
+                isClassic: songBody.isClassic
+            }
+        }, (err) => {
+            return res.json(config.http.valid.send_message_ok);
+        });
+    })(req, res);
+};
 var get_member_name_memberName = (req, res) => {
     var memberName = req.params.memberName;
     req.db.collection(COLLECTIONARTIST).find({
@@ -623,7 +640,8 @@ exports.get_albumById = get_albumById;
 exports.put_album = put_album;
 exports.get_song = get_song;
 exports.get_songById = get_songById;
-exports.put_song = put_song;
+exports.put_songLyrics = put_songLyrics;
+exports.put_songIsClassic = put_songIsClassic;
 exports.get_member_name_memberName = get_member_name_memberName;
 exports.get_fullTextSearch = get_fullTextSearch;
 exports.get_moreSearchText = get_moreSearchText;

@@ -394,8 +394,8 @@
                     </section>
                     <template is="dom-if" if="{{artist.isConnected}}">
                         <section id="updateData">
-                            <paper-fab hidden={{editing}} icon="icons:create" on-tap="doEdit" class="edit" mini></paper-fab>
-                            <paper-fab hidden={{!editing}} icon="icons:done" on-tap="doEdit" class="done" mini></paper-fab>
+                            <paper-fab hidden={{editing}} icon="icons:create" on-tap="doEditLyrics" class="edit" mini></paper-fab>
+                            <paper-fab hidden={{!editing}} icon="icons:done" on-tap="doEditLyrics" class="done" mini></paper-fab>
                         </section>
                     </template>
                     <section id="songLyricsSection">
@@ -465,6 +465,12 @@
             getURLSong: function () {
                 return "/search/artist/" + this._encodeUri(this.artist.name) + "/album/" + this._encodeUri(this.artist.albums.title) + "/song/" + this._encodeUri(this.artist.albums.songs.title);
             },
+            getURLSongLyrics: function () {
+                return this.getURLSong() + "/lyrics";
+            },
+            getURLSongIsClassic: function () {
+                return this.getURLSong() + "/is_classic";
+            },
             ready: function () {
                 this.$.songLyricsEditable.addEventListener("paste", function (e) {
                     e.preventDefault();
@@ -496,7 +502,7 @@
                 return this._encodeUri(str1 + ' ' + str2);
             },
             //Lorsque l'utilisateur clique sur le bouton de modification ou de sauvegarde
-            doEdit: function (e) {
+            doEditLyrics: function (e) {
                 this.editing = !this.editing;
                 //lorsque l'utilisateur clique sur l'icone de modification
                 if (this.editing) {
@@ -511,9 +517,12 @@
                     this.$.songLyricsNonEditable.innerHTML = this.$.songLyricsEditable.innerHTML.replace(/<div>|<p>/ig, "<br>").replace(/\\n|\\r|\\r\\n|(<((?!br)[^>]+)>)/ig, "");
                     //Construction du body pour l'envoie des lyrics, on doit envoyer le html afin de garder la bonne mise en page
                     this.artist.albums.songs.lyrics = this.$.songLyricsNonEditable.innerHTML;
-                    this.$.put_content.body = JSON.stringify(this.artist.albums.songs);
+                    this.$.put_content.body = {
+                        "_id": this.artist.albums.songs._id,
+                        "lyrics": this.artist.albums.songs.lyrics
+                    };
                     //Construction de la requête
-                    this.$.put_content.url = this.getURLSong();
+                    this.$.put_content.url = this.getURLSongLyrics();
                     //On lance la requête
                     this.$.put_content.generateRequest();
                     //Si des modifications on eu lieu alors il faudra envoyé la requête ajax
@@ -527,7 +536,7 @@
                     "_id": this.artist.albums.songs._id,
                     "isClassic": this.artist.albums.songs.isClassic
                 };
-                this.$.put_content.url = this.getURLSong();
+                this.$.put_content.url = this.getURLSongIsClassic();
                 this.$.put_content.generateRequest();
             },
             _currentTabSelected: function (selectedTab) {

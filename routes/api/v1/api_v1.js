@@ -941,17 +941,141 @@ router.get('/member/name/:memberName', apiV1Controller.get_memberByName);
 router.get('/animux_all/:start', apiV1Controller.get_animuxAll);
 
 
+/**
+ * @api {get} artist/:fields/popularity Get fields by popularity
+ * @apiExample Example usage: 
+ *      wasabi.i3s.unice.fr/api/v1/artist/genres/popularity
+ *      wasabi.i3s.unice.fr/api/v1/artist/genres/popularity?skip=2
+ *      wasabi.i3s.unice.fr/api/v1/artist/genres/popularity?limit=10
+ *      wasabi.i3s.unice.fr/api/v1/artist/genres/popularity?skip=2&limit=10
+ * @apiVersion 1.0.0
+ * @apiName GetArtistFieldsByPopularity
+ * @apiGroup Api/v1
 
+ * @apiParam {Number} fields {genres,labels,city,country,instrument}
+ * @apiParam {Number} skip default = 0
+ * @apiParam {Number} limit default = 20
+ * @apiSuccessExample Success-Response for an artist:
+    HTTP/1.1 200 OK
+    [
+        {
+            "_id": "Rock",
+            "sum": 2161
+        },
+        {
+            "_id": "Pop",
+            "sum": 1856
+            },
+        {
+            "_id": "Folk",
+            "sum": 961
+        }
+    ]
+ * @apiError error the database does not respond.
+ * @apiErrorExample Error-Response internal error:
+    HTTP/1.1 404 Not Found
+    {
+        "error": "An internal error occurred"
+    }
+ */
 router.get('/artist/genres/popularity', apiV1Controller.get_artistGenresByPopularity);
 router.get('/artist/labels/popularity', apiV1Controller.get_artistLabelsByPopularity);
 router.get('/artist/city/popularity', apiV1Controller.get_artistCityByPopularity);
 router.get('/artist/country/popularity', apiV1Controller.get_artistCountryByPopularity);
 router.get('/artist/instrument/popularity', apiV1Controller.get_artistInstrumentByPropularity);
+/**
+ * @api {get} artist/member/count/band Get members with the most bands
+ * @apiExample Example usage: 
+ *      wasabi.i3s.unice.fr/api/v1/artist/member/count/band
+ *      wasabi.i3s.unice.fr/api/v1/artist/member/count/band?skip=2
+ *      wasabi.i3s.unice.fr/api/v1/artist/member/count/band?limit=10
+ *      wasabi.i3s.unice.fr/api/v1/artist/member/count/band?skip=2&limit=10
+ * @apiVersion 1.0.0
+ * @apiName GetArtistMemberWithMostBand
+ * @apiGroup Api/v1
+
+ * @apiParam {Number} skip default = 0
+ * @apiParam {Number} limit default = 20
+ * @apiSuccessExample Success-Response for an artist:
+    HTTP/1.1 200 OK
+    [
+        {
+            "_id": "8f8446bd-03f9-44a2-851f-2e2a29346bff",
+            "sum": 21,
+            "membername": "David Schmitt"
+        },
+        {
+            "_id": "1ba97964-8d70-4b33-a361-d1a4ed222672",
+            "sum": 20,
+            "membername": "Josh Freese"
+        },
+        {
+            "_id": "9f90d963-deca-4b74-ac3d-ae143e94d9e5",
+            "sum": 17,
+            "membername": "Nightswim"
+        },
+            {
+            "_id": "ecb41014-1d7a-4987-a107-df49b2d8d77c",
+            "sum": 14,
+            "membername": "Chris Connelly"
+        }
+    ]
+ * @apiError error the database does not respond.
+ * @apiErrorExample Error-Response internal error:
+    HTTP/1.1 404 Not Found
+    {
+        "error": "An internal error occurred"
+    }
+ */
 router.get('/artist/member/count/band', apiV1Controller.get_artistMemberWithMostGroup);
 
 
-// router.get('/song/producer/popularity', apiV1Controller.get_songProducerByPropularity);
+/**
+ * @api {get} /artist/count/album Get artist with the most albums
+ * @apiExample Example usage: 
+ *      wasabi.i3s.unice.fr/api/v1/artist/count/album
+ *      wasabi.i3s.unice.fr/api/v1/artist/count/album?skip=2
+ *      wasabi.i3s.unice.fr/api/v1/artist/count/album?limit=10
+ *      wasabi.i3s.unice.fr/api/v1/artist/count/album?skip=2&limit=10
+ * @apiVersion 1.0.0
+ * @apiName GetArtistWithMostAlbum
+ * @apiGroup Api/v1
+
+ * @apiParam {Number} skip default = 0
+ * @apiParam {Number} limit default = 20
+ * @apiSuccessExample Success-Response for an artist:
+    HTTP/1.1 200 OK
+    [
+        {
+            "_id": "8f8446bd-03f9-44a2-851f-2e2a29346bff",
+            "sum": 21,
+            "membername": "David Schmitt"
+        },
+        {
+            "_id": "1ba97964-8d70-4b33-a361-d1a4ed222672",
+            "sum": 20,
+            "membername": "Josh Freese"
+        },
+        {
+            "_id": "9f90d963-deca-4b74-ac3d-ae143e94d9e5",
+            "sum": 17,
+            "membername": "Nightswim"
+        },
+            {
+            "_id": "ecb41014-1d7a-4987-a107-df49b2d8d77c",
+            "sum": 14,
+            "membername": "Chris Connelly"
+        }
+    ]
+ * @apiError error the database does not respond.
+ * @apiErrorExample Error-Response internal error:
+    HTTP/1.1 404 Not Found
+    {
+        "error": "An internal error occurred"
+    }
+ */
 router.get('/artist/count/album', apiV1Controller.get_artistWithMostAlbum);
+// router.get('/song/producer/popularity', apiV1Controller.get_songProducerByPropularity);
 router.get('/artist/count/song', apiV1Controller.get_artistWithMostSong);
 
 export default router;

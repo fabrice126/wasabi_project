@@ -65,12 +65,12 @@
         <iron-ajax id="put_content" headers="[[headers]]" method="PUT" content-type="application/json"></iron-ajax>
         <article id="container">
             <template is="dom-if" if="{{!moredata}}">
-                <span on-tap="doLoadAlbum" link="#/search/artist/{{_encodeUri(album.name)}}/album/{{_encodeUri(album.title)}}" hidden="{{editing}}" class="album">
+                <span on-tap="doLoadAlbum" link="{{getURLAlbumPage(album.name,album.title)}}" hidden="{{editing}}" class="album">
                     Album:  {{album.title}} {{album.publicationDate}}
                 </span>
             </template>
             <template is="dom-if" if="{{moredata}}">
-                <span on-tap="doLoadAlbum" link="#/search/more/{{_concat(album.name,album.title)}}" hidden="{{editing}}" class="album">
+                <span on-tap="doLoadAlbum" link="{{getURLMoreAlbumPage(album.name,album.title)}}" hidden="{{editing}}" class="album">
                     Album:  {{album.title}} {{album.publicationDate}}
                 </span>
             </template>
@@ -126,6 +126,12 @@
             },
             doLoadAlbum: function (e) {
                 window.location.href = e.target.link;
+            },
+            getURLMoreAlbumPage: function (name, title) {
+                return "#/search/more/" + this._concat(name, title);
+            },
+            getURLAlbumPage: function (name, title) {
+                return "#/search/artist/" + this._encodeUri(name) + "/album/" + this._encodeUri(title);
             },
             getURLAlbum: function () {
                 return "/search/artist/" + this._encodeUri(this.album.name) + "/album/" + this._encodeUri(this.album.title);

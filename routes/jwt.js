@@ -22,11 +22,11 @@ router.post('/login', new RateLimit(config.http.limit_request.login), (req, res)
     User.findOne({
         email: req.body.email
     }, (err, user) => {
-        if (err) throw err;
-        if (!user) return res.status(404).json(config.http.error.user.login);
+        if (err) return res.status(404).json(config.http.error.user.login_password);
+        if (!user) return res.status(404).json(config.http.error.user.login_password);
         // Check if password matches
         user.comparePassword(req.body.password, function (err, isMatch) {
-            if (!isMatch || err) return res.json(config.http.error.user.password);
+            if (!isMatch || err) return res.status(404).json(config.http.error.user.login_password);
             // Create token if the password matched and no error was thrown
             delete user.password;
             var token = req.jwt.sign(user, confJwt.secretOrKey, {

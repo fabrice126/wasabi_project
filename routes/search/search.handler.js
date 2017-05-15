@@ -89,7 +89,7 @@ var fullTextQuery = function (req, maxinfo, queryArtist, querySong, maxinfoselec
  * @param objSong
  * @param idSong
  */
-var updateSongES = function (req, objSong, idSong) {
+var updateSongES = function (req, name, albumTitle, title, idSong) {
     req.elasticsearchClient.update({
         index: config.database.index_song,
         type: config.database.index_type_song,
@@ -97,13 +97,14 @@ var updateSongES = function (req, objSong, idSong) {
         body: {
             // put the partial document under the `doc` key
             doc: {
-                "name": objSong.name,
-                "albumTitle": objSong.albumTitle,
-                "title": objSong.title
+                "name": name,
+                "albumTitle": albumTitle,
+                "title": title
             }
         }
     }, function (err) {
         if (err) throw err;
+        console.log("ElasticSearch updated: " + name + "/" + albumTitle + "/" + title);
     });
 };
 //Si un title de musique est modifié et qu'il comporte l'attribut multitrack_path (indiquant que cette musique possède du multipiste)
