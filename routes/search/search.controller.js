@@ -627,9 +627,9 @@ var get_moreSearchText = (req, res) => {
                 "completion": {
                     "field": "nameSuggest",
                     "size": LIMIT,
-                    "fuzzy": {
-                        "fuzziness": 2
-                    }
+                    // "fuzzy": {
+                    //     "fuzziness": 1
+                    // }
                 }
             }
         }
