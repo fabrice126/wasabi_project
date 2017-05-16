@@ -626,7 +626,7 @@ var get_moreSearchText = (req, res) => {
                 "text": searchText,
                 "completion": {
                     "field": "nameSuggest",
-                    "size": maxinfo,
+                    "size": LIMIT,
                     "fuzzy": {
                         "fuzziness": 2
                     }
