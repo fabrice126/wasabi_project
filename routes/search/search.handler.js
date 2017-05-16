@@ -54,8 +54,8 @@ var fullTextQuery = function (req, maxinfo, queryArtist, querySong, maxinfoselec
             body: queryArtist
         }).then(function (respArtists) {
             var artist = [];
-            for (var i = 0; i < respArtists.hits.hits.length; i++) {
-                artist.push(respArtists.hits.hits[i]._source);
+            for (var i = 0; i < respArtists.suggest.artistSuggest[0].options.length; i++) {
+                artist.push(respArtists.suggest.artistSuggest[0].options[i]._source);
             }
             req.elasticsearchClient.search({
                 index: config.database.index_song,

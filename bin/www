@@ -23,7 +23,15 @@ app.set('portHttps', portHttps);
 /**
  * Create HTTP server.
  */
-var serverHttp = http.createServer(app).listen(portHttp);
+var serverHttp = http.createServer((function (req, res) {
+  res.writeHead(301, {
+    "Location": "https://" + req.headers['host'] + req.url
+  });
+  res.end();
+})).listen(portHttp);
+// serverHttp.get('*', function (req, res) {
+//   res.redirect('https://' + req.headers['host'] + req.url)
+// })
 serverHttp.on('error', onError);
 serverHttp.on('listening', onListening);
 /**

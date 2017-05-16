@@ -100,15 +100,21 @@ router.get('/createdbelasticsearchartist', function (req, res) {
     var typeName = config.database.index_type_artist;
     var indexName = config.database.index_artist;
     var projectObj = {
-        "name": 1
+        "name": 1,
+        "deezerFans": 1
     }; //ce que nous voulons récupérer dans la base de données mongodb
     var urlIndex = urlElasticSearch + indexName;
     var mappingObj = {};
     mappingObj[typeName] = {
         "properties": {
             "name": {
-                "type": "string",
-                "analyzer": "folding"
+                "type": "string"
+            },
+            "nameSuggest": {
+                "type": "completion",
+                "analyzer": "folding",
+                "preserve_position_increments": false,
+                "preserve_separators": false
             }
         }
     };

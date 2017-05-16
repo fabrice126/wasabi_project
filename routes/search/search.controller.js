@@ -568,14 +568,28 @@ var get_fullTextSearch = (req, res) => {
     var searchText = elasticSearchHandler.escapeElasticSearch(req.params.searchText);
     var maxinfo = config.request.limit_search_bar;
     var maxinfoselected = maxinfo / 2; // nombre d'élements devant apparaitre dans l'autocomplétion de recherche
+    // var queryArtist = {
+    //     "query": {
+    //         "query_string": {
+    //             "default_field": "name",
+    //             "query": searchText
+    //         }
+    //     },
+    //     "size": maxinfo
+    // };
     var queryArtist = {
-        "query": {
-            "query_string": {
-                "default_field": "name",
-                "query": searchText
+        "suggest": {
+            "artistSuggest": {
+                "text": searchText,
+                "completion": {
+                    "field": "nameSuggest",
+                    "size": maxinfo,
+                    "fuzzy": {
+                        "fuzziness": 2
+                    }
+                }
             }
-        },
-        "size": maxinfo
+        }
     };
     var querySong = {
         "query": {
@@ -597,14 +611,28 @@ var get_fullTextSearch = (req, res) => {
 var get_moreSearchText = (req, res) => {
     var searchText = elasticSearchHandler.escapeElasticSearch(req.params.searchText);
     var maxinfoselected = LIMIT / 2;
+    // var queryArtist = {
+    //     "query": {
+    //         "query_string": {
+    //             "default_field": "name",
+    //             "query": searchText
+    //         }
+    //     },
+    //     "size": LIMIT
+    // };
     var queryArtist = {
-        "query": {
-            "query_string": {
-                "default_field": "name",
-                "query": searchText
+        "suggest": {
+            "artistSuggest": {
+                "text": searchText,
+                "completion": {
+                    "field": "nameSuggest",
+                    "size": maxinfo,
+                    "fuzzy": {
+                        "fuzziness": 2
+                    }
+                }
             }
-        },
-        "size": LIMIT
+        }
     };
     var querySong = {
         "query": {

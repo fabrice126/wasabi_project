@@ -131,7 +131,7 @@
             properties: {},
             ready: function (e) {},
             _encodeUri: function (nameArtist) {
-                return encodeURIComponent(nameArtist);
+                return encodeURIComponent(decodeURIComponent(nameArtist).trim());
             },
             _isArtist: function (data) {
                 var isArtist = false;

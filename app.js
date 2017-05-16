@@ -44,13 +44,16 @@ app.enable('trust proxy');
  * ----------------------------------OPTION DE L'ENVIRONNEMENT NODE JS------------------------------------
  * -------------------------------------------------------------------------------------------------------
  */
-config.launch.env.dev_mode ? app.set('env', config.launch.env.dev) : app.set('env', config.launch.env.prod);
+
+config.launch.env.dev_mode ? process.env.NODE_ENV = config.launch.env.dev : process.env.NODE_ENV = config.launch.env.prod;
 /**
  * -------------------------------------------------------------------------------------------------------
  * -----------------------CONNEXION A LA BASE DE DONNEES MONGODB ET ELASTICSEARCH-------------------------
  * -------------------------------------------------------------------------------------------------------
  */
-const server = app.get('env') === config.launch.env.dev ? config.database.mongodb_option : {};
+
+
+const server = process.env.NODE_ENV === config.launch.env.dev ? config.database.mongodb_option : {};
 mongoose.Promise = global.Promise;
 const dbMongoose = mongoose.connect(config.database.mongodb_connect);
 const db = dbMongo(config.database.mongodb_connect, server);
@@ -63,7 +66,7 @@ const elasticsearchClient = new elasticsearch.Client({
  * -------------------------------------------------------------------------------------------------------
  */
 // view cache
-app.set('view cache', app.get('env') === config.launch.env.dev ? true : false); // désactivation du cache express
+app.set('view cache', process.env.NODE_ENV === config.launch.env.dev ? true : false); // désactivation du cache express
 app.set('config', config);
 app.use(helmet());
 String.prototype.endsWith = function (suffix) {
@@ -116,9 +119,9 @@ app.use(basicAuth(configLogin.login, configLogin.password));
 app.use('/apidoc', express.static(path.join(__dirname, 'apidoc')));
 app.use('/download', download);
 //Placer ici les routes utile uniquement pour le développement
-if (app.get('env') === config.launch.env.dev) {
+if (process.env.NODE_ENV === config.launch.env.dev) {
     console.error("/!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\\");
-    console.error("/!\\ Projet executé en mode: " + app.get('env') + " veuillez le mettre en mode production avant de push sur le git (dans app.js)/!\\");
+    console.error("/!\\ Projet executé en mode: " + process.env.NODE_ENV + " veuillez le mettre en mode production avant de push sur le git (dans app.js)/!\\");
     if (config.http.limit_request.search.max < 30) console.error("/!\\-------------------------------LE QUOTA DE REQUETE PAR MINUTE N'EST PAS ASSEZ ELEVE------------------------------/!\\");
     console.error("/!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\\");
     app.use('/graphql', graphqlHTTP({

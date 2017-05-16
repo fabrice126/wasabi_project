@@ -95,31 +95,44 @@ var createMappingElasticSearchIndex = function (url, indexMappingObj) {
 /**
  * Fonction permettant d'ajouter une grande quantité de données rapidement dans elasticsearch
  * @param req
- * @param collectioName
+ * @param collectionName
  * @param projectObj
  * @param indexName
  * @param typeName
  */
-var insertBulkData = function (req, collectioName, projectObj, indexName, typeName) {
+var insertBulkData = function (req, collectionName, projectObj, indexName, typeName) {
     var elasticsearchClient = req.elasticsearchClient;
     var db = req.db;
     var skip = 0;
     var limit = 10000;
     (function recursivePost(skip) {
         console.log("Traitement en cours : " + skip);
-        db.collection(collectioName).find({}, projectObj).skip(skip).limit(limit).toArray(function (err, obj) {
+        db.collection(collectionName).find({}, projectObj).skip(skip).limit(limit).toArray(function (err, obj) {
             //On insérera l'enregistrement dans cet index
             var bulk_request = [];
             for (var i = 0; i < obj.length; i++) {
-                var id = obj[i]._id;
+                var id = obj[i]._id,
+                    weight = obj[i].deezerFans;
                 delete obj[i]._id;
+                delete obj[i].deezerFans;
                 bulk_request.push({
                     index: {
                         _index: indexName,
                         _type: typeName,
                         _id: id
                     }
-                }); // Insert index
+                });
+                // Insert index
+                if (obj[i].name && !obj[i].albumTitle) {
+                    obj[i].nameSuggest = {};
+                    obj[i].nameSuggest.input = [];
+                    obj[i].nameSuggest.input.push(obj[i].name);
+                    //Si le nom contient plus de deux mots ex : The Rolling Stones
+                    if (obj[i].name.split(" ").length > 1) {
+                        obj[i].nameSuggest.input.push(obj[i].name.substring(obj[i].name.indexOf(" ") + 1, obj[i].name.length));
+                    }
+                    obj[i].nameSuggest.weight = Number(weight || 0);
+                }
                 bulk_request.push(obj[i]); // Insert data
             }
             elasticsearchClient.bulk({
