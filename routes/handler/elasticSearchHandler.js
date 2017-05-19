@@ -104,7 +104,7 @@ var insertBulkData = function (req, collectionName, projectObj, indexName, typeN
     var elasticsearchClient = req.elasticsearchClient;
     var db = req.db;
     var skip = 0;
-    var limit = 100000;
+    var limit = 10000;
     (function recursivePost(skip) {
         console.log("Traitement en cours : " + skip);
         db.collection(collectionName).find({}, projectObj).skip(skip).limit(limit).toArray(function (err, obj) {
