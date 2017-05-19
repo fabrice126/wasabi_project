@@ -69,7 +69,7 @@ function View()
                         "<progress class='pisteProgress' id='progress" + trackNumber + "' value='0' max='100' style='width : "+SAMPLE_HEIGHT+"px' ></progress>" +
                         trackName + '<div style="float : right;">' + 
                         "<button class='mute' id='mute" + trackNumber + "' onclick='muteUnmuteTrack(" + trackNumber + ");'><span class='glyphicon glyphicon-volume-up'></span></button> "+ 
-                        "<button class='solo' id='solo" + trackNumber + "' onclick='soloNosoloTrack(" + trackNumber + ");'><img src='../img/earphones.png' /></button></div><td>";
+                        "<button class='solo' id='solo" + trackNumber + "' onclick='soloNosoloTrack(" + trackNumber + ");'><img src='./img/earphones.png' /></button></div><td>";
         
         this.tracks.appendChild(tr);
         

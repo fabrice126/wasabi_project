@@ -568,38 +568,9 @@ var get_fullTextSearch = (req, res) => {
     var searchText = elasticSearchHandler.escapeElasticSearch(req.params.searchText);
     var maxinfo = config.request.limit_search_bar;
     var maxinfoselected = maxinfo / 2; // nombre d'élements devant apparaitre dans l'autocomplétion de recherche
-    // var queryArtist = {
-    //     "query": {
-    //         "query_string": {
-    //             "default_field": "name",
-    //             "query": searchText
-    //         }
-    //     },
-    //     "size": maxinfo
-    // };
-    var queryArtist = {
-        "suggest": {
-            "artistSuggest": {
-                "text": searchText,
-                "completion": {
-                    "field": "nameSuggest",
-                    "size": maxinfo,
-                    "fuzzy": {
-                        "fuzziness": 2
-                    }
-                }
-            }
-        }
-    };
-    var querySong = {
-        "query": {
-            "query_string": {
-                "query": searchText,
-                "fields": ["title^4", "name^2", "albumTitle"]
-            }
-        },
-        "size": maxinfo
-    };
+
+    var queryArtist = searchHandler.artistFullTextQuery(searchText, maxinfo);
+    var querySong = searchHandler.songFullTextQuery(searchText, maxinfo);
     searchHandler.fullTextQuery(req, maxinfo, queryArtist, querySong, maxinfoselected).then((resp) => {
         //Ne pas renvoyer avec res.json
         return res.send(resp);
@@ -611,38 +582,9 @@ var get_fullTextSearch = (req, res) => {
 var get_moreSearchText = (req, res) => {
     var searchText = elasticSearchHandler.escapeElasticSearch(req.params.searchText);
     var maxinfoselected = LIMIT / 2;
-    // var queryArtist = {
-    //     "query": {
-    //         "query_string": {
-    //             "default_field": "name",
-    //             "query": searchText
-    //         }
-    //     },
-    //     "size": LIMIT
-    // };
-    var queryArtist = {
-        "suggest": {
-            "artistSuggest": {
-                "text": searchText,
-                "completion": {
-                    "field": "nameSuggest",
-                    "size": LIMIT,
-                    // "fuzzy": {
-                    //     "fuzziness": 1
-                    // }
-                }
-            }
-        }
-    };
-    var querySong = {
-        "query": {
-            "query_string": {
-                "query": searchText,
-                "fields": ["title^4", "name^2", "albumTitle"]
-            }
-        },
-        "size": LIMIT
-    };
+    //On construit les requêtes pour recupérer les artistes et les musiques contenant searchText
+    var queryArtist = searchHandler.artistFullTextQuery(searchText, LIMIT);
+    var querySong = searchHandler.songFullTextQuery(searchText, LIMIT);
     searchHandler.fullTextQuery(req, LIMIT, queryArtist, querySong, maxinfoselected).then((resp) => {
         //Ne pas renvoyer avec res.json
         return res.send(resp);

@@ -81,16 +81,16 @@
             <app-drawer id="appDrawer" swipe-open opened="{{isOpen}}">
                 <app-toolbar>Menu</app-toolbar>
                 <div class="drawer-contents">
-                    <a href="https://github.com/fabrice126/wasabi_project" target="_blank" on-click="_closeAppDrawer" class="linkMenu">
-                        <iron-icon class="colorTextMenu" icon="help" item-icon> </iron-icon> <span class="colorTextMenu">WASABI PROJECT</span>
-                        <paper-ripple></paper-ripple>
-                    </a>
                     <template is="dom-repeat" id="menu" items="[[labelsAppDrawer]]">
                         <a href="[[item.link]]" class="linkMenu" on-tap="_closeAppDrawer">
                             <iron-icon class="colorTextMenu" icon="[[item.icon]]" item-icon> </iron-icon> <span class="colorTextMenu">[[item.label]]</span>
                             <paper-ripple></paper-ripple>
                         </a>
                     </template>
+                    <a href="https://github.com/fabrice126/wasabi_project" target="_blank" on-click="_closeAppDrawer" class="linkMenu">
+                        <iron-icon class="colorTextMenu" icon="help" item-icon> </iron-icon> <span class="colorTextMenu">WASABI PROJECT</span>
+                        <paper-ripple></paper-ripple>
+                    </a>
                 </div>
             </app-drawer>
             <div>

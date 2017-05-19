@@ -67,7 +67,6 @@ const elasticsearchClient = new elasticsearch.Client({
  */
 // view cache
 app.set('view cache', process.env.NODE_ENV === config.launch.env.dev ? true : false); // désactivation du cache express
-app.set('config', config);
 app.use(helmet());
 String.prototype.endsWith = function (suffix) {
     return this.indexOf(suffix, this.length - suffix.length) !== -1;
@@ -83,6 +82,7 @@ app.use((req, res, next) => {
     req.db = db;
     req.dbMongoose = dbMongoose;
     req.jwt = jwt;
+    req.config = config;
     req.COLLECTIONARTIST = config.database.collection_artist;
     req.COLLECTIONALBUM = config.database.collection_album;
     req.COLLECTIONSONG = config.database.collection_song;

@@ -37,6 +37,43 @@ var optimizeFind = function (lettre) {
 };
 
 /**
+ * 
+ * @param {*} searchText user input
+ * @param {*} maxinfo number max of object to return matching with user input
+ */
+var artistFullTextQuery = (searchText, maxinfo) => {
+    return {
+        "suggest": {
+            "artistSuggest": {
+                "text": searchText,
+                "completion": {
+                    "field": "nameSuggest",
+                    "size": maxinfo,
+                    "fuzzy": {
+                        "fuzziness": 1
+                    }
+                }
+            }
+        }
+    };
+};
+/**
+ * 
+ * @param {*} searchText user input
+ * @param {*} maxinfo number max of object to return matching with user input
+ */
+var songFullTextQuery = (searchText, maxinfo) => {
+    return {
+        "query": {
+            "query_string": {
+                "query": searchText,
+                "fields": ["title^4", "name^2", "albumTitle"]
+            }
+        },
+        "size": maxinfo
+    };
+};
+/**
  * Permet de construire les requetes elasticsearch
  * @param req
  * @param maxinfo
@@ -116,3 +153,5 @@ exports.constructData = constructData;
 exports.optimizeFind = optimizeFind;
 exports.fullTextQuery = fullTextQuery;
 exports.updateSongES = updateSongES;
+exports.artistFullTextQuery = artistFullTextQuery;
+exports.songFullTextQuery = songFullTextQuery;

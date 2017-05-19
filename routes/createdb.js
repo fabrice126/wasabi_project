@@ -64,7 +64,8 @@ router.get('/createdbelasticsearchsong', function (req, res) {
     var projectObj = {
         "title": 1,
         "name": 1,
-        "albumTitle": 1
+        "albumTitle": 1,
+        "rank": 1
     }; //ce que nous voulons récupérer dans la base de données mongodb
     var urlIndex = urlElasticSearch + indexName;
     var mappingObj = {};
@@ -81,7 +82,11 @@ router.get('/createdbelasticsearchsong', function (req, res) {
             "albumTitle": {
                 "type": "string",
                 "analyzer": "folding"
+            },
+            "weight": {
+                "type": "integer"
             }
+
         }
     };
     //Suppression de l'index

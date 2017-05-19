@@ -104,7 +104,7 @@ var insertBulkData = function (req, collectionName, projectObj, indexName, typeN
     var elasticsearchClient = req.elasticsearchClient;
     var db = req.db;
     var skip = 0;
-    var limit = 10000;
+    var limit = 100000;
     (function recursivePost(skip) {
         console.log("Traitement en cours : " + skip);
         db.collection(collectionName).find({}, projectObj).skip(skip).limit(limit).toArray(function (err, obj) {
@@ -112,9 +112,15 @@ var insertBulkData = function (req, collectionName, projectObj, indexName, typeN
             var bulk_request = [];
             for (var i = 0; i < obj.length; i++) {
                 var id = obj[i]._id,
-                    weight = obj[i].deezerFans;
+                    weight = 0;
+                if (indexName === req.config.database.index_song) {
+                    weight = Number(obj[i].rank || 0);
+                    delete obj[i].rank;
+                } else { //on traite les artistes
+                    weight = Number(obj[i].deezerFans || 0);
+                    delete obj[i].deezerFans;
+                }
                 delete obj[i]._id;
-                delete obj[i].deezerFans;
                 bulk_request.push({
                     index: {
                         _index: indexName,
@@ -123,7 +129,10 @@ var insertBulkData = function (req, collectionName, projectObj, indexName, typeN
                     }
                 });
                 // Insert index
-                if (obj[i].name && !obj[i].albumTitle) {
+                if (obj[i].albumTitle || obj[i].title) {
+                    obj[i].weight = weight;
+                } else {
+                    console.log("On traite un artiste");
                     obj[i].nameSuggest = {};
                     obj[i].nameSuggest.input = [];
                     obj[i].nameSuggest.input.push(obj[i].name);
@@ -131,7 +140,7 @@ var insertBulkData = function (req, collectionName, projectObj, indexName, typeN
                     if (obj[i].name.split(" ").length > 1) {
                         obj[i].nameSuggest.input.push(obj[i].name.substring(obj[i].name.indexOf(" ") + 1, obj[i].name.length));
                     }
-                    obj[i].nameSuggest.weight = Number(weight || 0);
+                    obj[i].nameSuggest.weight = weight;
                 }
                 bulk_request.push(obj[i]); // Insert data
             }
