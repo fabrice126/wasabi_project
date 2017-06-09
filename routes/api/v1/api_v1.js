@@ -746,8 +746,8 @@ router.get('/song/id/:id', apiV1Controller.get_songById);
 /**
  * @api {get} api/v1/song_all/:start Song - Get songs
  * @apiExample Example usage: 
- *      wasabi.i3s.unice.fr/api/v1/song_all/3000
- *      wasabi.i3s.unice.fr/api/v1/song_all/3000?project=_id,lyrics,title,name
+ *      wasabi.i3s.unice.fr/api/v1/song_all/300
+ *      wasabi.i3s.unice.fr/api/v1/song_all/300?project=_id,lyrics,title,name,language_detect
  *      wasabi.i3s.unice.fr/api/v1/song_all/500?project=lyrics
  * @apiVersion 1.0.0
  * @apiName GetSongs
