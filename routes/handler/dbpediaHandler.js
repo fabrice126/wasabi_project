@@ -46,9 +46,9 @@ var getInfosDbpedia = function(obj,sparqlRequest,urlEndpoint){
     });
     return promise;
 };
-//var languageDetect = function(text){
+// var languageDetect = function(text){
 //    console.log(lngDetector.detect(text,2));
-//}
+// }
 
 
 /*Avec le temps, les URIs d'un artist/album/musique peuvent changer, les anciens liens ne sont pas pour autant abandonnée, une redirection est effectuée sur le navigateur, 

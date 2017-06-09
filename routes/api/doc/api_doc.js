@@ -114,6 +114,7 @@ const router = express.Router();
  * @apiSuccess {String} title Song title
  * @apiSuccess {String} urlSong Url to lyricsWikia
  * @apiSuccess {String} lyrics Song lyrics
+ * @apiSuccess {String} language_detect Song language
  * @apiSuccess {String} urlWikipedia Song urlWikipedia
  * @apiSuccess {String} id_album Artist id
  * @apiSuccess {String} rdf Song rdf

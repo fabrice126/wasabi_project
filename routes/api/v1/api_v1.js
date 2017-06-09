@@ -18,7 +18,7 @@ const LIMIT = config.request.limit;
 //===========================API REST POUR RECUPERER LES MUSIQUES DE CHAQUE ALBUM DE CHAQUE ARTISTE=========================\\
 //==========================================================================================================================\\
 /**
- * @api {get} api/v1/artist_all/:start Get songs of each album of each artist
+ * @api {get} api/v1/artist_all/:start All - Get songs of each album of each artist
  * @apiExample Example usage: 
  *      wasabi.i3s.unice.fr/api/v1/artist_all/72000
  * @apiVersion 1.0.0
@@ -165,7 +165,7 @@ router.get('/artist_all/:start', apiV1Controller.get_artistAll);
 //=====================API REST POUR RECUPERER LES MUSIQUES DE CHAQUE ALBUM D'UN ARTISTE PAR ID D'ARTIST====================\\
 //==========================================================================================================================\\
 /**
- * @api {get} api/v1/artist_all/id/:id Get songs of each album of the artist having this id
+ * @api {get} api/v1/artist_all/id/:id All - Get songs of each album of the artist having this id
  * @apiExample Example usage: 
  *      wasabi.i3s.unice.fr/api/v1/artist_all/id/56d93d84ce06f50c0fed8747
  * @apiVersion 1.0.0
@@ -309,7 +309,7 @@ router.get('/artist_all/id/:id', apiV1Controller.get_artistAllById);
 //====================API REST POUR RECUPERER LES MUSIQUES DE CHAQUE ALBUM D'UN ARTISTE PAR NOM D'ARTISTE===================\\
 //==========================================================================================================================\\
 /**
- * @api {get} api/v1/artist_all/name/:name Get songs of each album of the artist having this name
+ * @api {get} api/v1/artist_all/name/:name All - Get songs of each album of the artist having this name
  * @apiExample Example usage: 
  *      wasabi.i3s.unice.fr/api/v1/artist_all/name/Metallica
  * @apiVersion 1.0.0
@@ -476,7 +476,7 @@ router.get('/api_test/artist_all', (req, res) => {
 //=========================================API REST POUR RECUPERER UN ARTISTE PAR ID========================================\\
 //==========================================================================================================================\\
 /**
- * @api {get} api/v1/artist/id/:id Get an artist document by id
+ * @api {get} api/v1/artist/id/:id Artist - Get an artist document by id
  * @apiExample Example usage: 
  *      wasabi.i3s.unice.fr/api/v1/artist/id/56d93d84ce06f50c0fed8747
  * @apiVersion 1.0.0
@@ -559,7 +559,7 @@ router.get('/artist/id/:id', apiV1Controller.get_artistById);
 //=========================================API REST POUR RECUPERER UN ARTISTE PAR NOM D'ARTISTE========================================\\
 //==========================================================================================================================\\
 /**
- * @api {get} api/v1/artist/name/:artistName Get an artist document by artistName
+ * @api {get} api/v1/artist/name/:artistName Artist - Get an artist document by artistName
  * @apiExample Example usage: 
  *      wasabi.i3s.unice.fr/api/v1/artist/name/Metallica
  * @apiVersion 1.0.0
@@ -636,7 +636,7 @@ router.get('/artist/name/:artistName', apiV1Controller.get_artistByName);
 //==========================================API REST POUR RECUPERER UN ALBUM PAR ID=========================================\\
 //==========================================================================================================================\\
 /**
- * @api {get} api/v1/album/id/:id Get an album document by id
+ * @api {get} api/v1/album/id/:id Album - Get an album document by id
  * @apiExample Example usage: 
  *      wasabi.i3s.unice.fr/api/v1/album/id/5714debe25ac0d8aee36b664
  * @apiVersion 1.0.0
@@ -682,7 +682,7 @@ router.get('/album/id/:id', apiV1Controller.get_albumById);
 //=========================================API REST POUR RECUPERER UNE MUSIQUE PAR ID=======================================\\
 //==========================================================================================================================\\
 /**
- * @api {get} api/v1/song/id/:id Get a song document by id
+ * @api {get} api/v1/song/id/:id Song - Get a song document by id
  * @apiExample Example usage: 
  *      wasabi.i3s.unice.fr/api/v1/song/id/5714dedb25ac0d8aee4ad810
  * @apiVersion 1.0.0
@@ -741,10 +741,36 @@ router.get('/album/id/:id', apiV1Controller.get_albumById);
  */
 router.get('/song/id/:id', apiV1Controller.get_songById);
 //==========================================================================================================================\\
+//======================================API REST POUR RECUPERER LES MUSIQUES 200 PAR 200====================================\\
+//==========================================================================================================================\\
+/**
+ * @api {get} api/v1/song_all/:start Song - Get songs
+ * @apiExample Example usage: 
+ *      wasabi.i3s.unice.fr/api/v1/song_all/3000
+ *      wasabi.i3s.unice.fr/api/v1/song_all/3000?project=_id,lyrics,title,name
+ *      wasabi.i3s.unice.fr/api/v1/song_all/500?project=lyrics
+ * @apiVersion 1.0.0
+ * @apiName GetSongs
+ * @apiGroup Api/v1
+ * 
+ * @apiParam {Number} start start the extraction from :start and return the 200 first documents
+ * @apiParam {Number} project field(s) to retrieve
+ * 
+ * @apiError error the database does not respond.
+ * @apiErrorExample Error-Response internal error:
+    HTTP/1.1 404 Not Found
+    {
+        "error": "An internal error occurred"
+    }
+ */
+router.get('/song_all/:start', apiV1Controller.get_songAll);
+
+
+//==========================================================================================================================\\
 //====================================API REST POUR RECUPERER UN ARTISTE PAR NOM DE MEMBRE==================================\\
 //==========================================================================================================================\\
 /**
- * @api {get} api/v1/member/name/:memberName Get an artist document by memberName
+ * @api {get} api/v1/member/name/:memberName Artist - Get an artist document by memberName
  * @apiExample Example usage: 
  *      wasabi.i3s.unice.fr/api/v1/member/name/Adrian%20Smith
  * @apiVersion 1.0.0
@@ -819,7 +845,7 @@ router.get('/song/id/:id', apiV1Controller.get_songById);
 router.get('/member/name/:memberName', apiV1Controller.get_memberByName);
 
 /**
- * @api {get} api/v1/animux_all/:start Get songs with an animux field
+ * @api {get} api/v1/animux_all/:start Song - Get songs with an animux field
  * @apiExample Example usage: 
  *      wasabi.i3s.unice.fr/api/v1/animux_all/340
  * @apiVersion 1.0.0
@@ -942,7 +968,7 @@ router.get('/animux_all/:start', apiV1Controller.get_animuxAll);
 
 
 /**
- * @api {get} artist/:fields/popularity Get fields by popularity
+ * @api {get} artist/:fields/popularity Artist - Get fields by popularity
  * @apiExample Example usage: 
  *      wasabi.i3s.unice.fr/api/v1/artist/genres/popularity
  *      wasabi.i3s.unice.fr/api/v1/artist/genres/popularity?skip=2
@@ -955,6 +981,7 @@ router.get('/animux_all/:start', apiV1Controller.get_animuxAll);
  * @apiParam {Number} fields {genres,labels,city,country,instrument}
  * @apiParam {Number} skip default = 0
  * @apiParam {Number} limit default = 20
+ * @apiParam {Number} order default = 0
  * @apiSuccessExample Success-Response for an artist:
     HTTP/1.1 200 OK
     [
@@ -984,7 +1011,7 @@ router.get('/artist/city/popularity', apiV1Controller.get_artistCityByPopularity
 router.get('/artist/country/popularity', apiV1Controller.get_artistCountryByPopularity);
 router.get('/artist/instrument/popularity', apiV1Controller.get_artistInstrumentByPropularity);
 /**
- * @api {get} artist/member/count/band Get members with the most bands
+ * @api {get} artist/member/count/band Get Artist - members with the most bands
  * @apiExample Example usage: 
  *      wasabi.i3s.unice.fr/api/v1/artist/member/count/band
  *      wasabi.i3s.unice.fr/api/v1/artist/member/count/band?skip=2
@@ -1031,7 +1058,7 @@ router.get('/artist/member/count/band', apiV1Controller.get_artistMemberWithMost
 
 
 /**
- * @api {get} /artist/count/album Get artist with the most albums
+ * @api {get} /artist/count/album Artist - Get artist with the most albums
  * @apiExample Example usage: 
  *      wasabi.i3s.unice.fr/api/v1/artist/count/album
  *      wasabi.i3s.unice.fr/api/v1/artist/count/album?skip=2

@@ -191,6 +191,25 @@ var get_albumById = (req, res) => {
         return res.json(album);
     });
 };
+var get_songAll = (req, res) => {
+    var project = {},
+        start = Number.parseInt(req.params.start);
+    if (!Number.isInteger(start) || start < 0) return res.status(404).json(config.http.error.global_404);
+    if (req.query.project) {
+        var splitedquery = req.query.project.split(",");
+        for (var i = 0; i < splitedquery.length; i++) project[splitedquery[i]] = 1;
+    } else {
+        project = {
+            wordCount: 0,
+            rdf: 0,
+            availableCountries: 0
+        }
+    }
+    req.db.collection(COLLECTIONSONG).find({}, project).skip(start).limit(LIMIT).toArray((err, songs) => {
+        if (err) return res.status(404).json(config.http.error.internal_error_404);
+        return res.json(songs);
+    });
+};
 var get_songById = (req, res) => {
     var id = req.params.id;
     if (!ObjectId.isValid(id)) return res.status(404).json(config.http.error.objectid_404);
@@ -531,6 +550,7 @@ exports.get_artistById = get_artistById;
 exports.get_artistByName = get_artistByName;
 exports.get_albumById = get_albumById;
 exports.get_songById = get_songById;
+exports.get_songAll = get_songAll;
 exports.get_memberByName = get_memberByName;
 exports.get_animuxAll = get_animuxAll;
 exports.get_artistGenresByPopularity = get_artistGenresByPopularity;

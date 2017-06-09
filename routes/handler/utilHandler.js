@@ -1,4 +1,5 @@
 import fs from 'fs';
+
 /**
  *
  * @param obj
@@ -89,9 +90,17 @@ function fillField(selector) {
     }
     return "";
 }
+
+
+var decodeHtmlEntities = function (str) {
+    return String(str).replace(/&apos;/g, "'").replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"');
+}
+
+
 exports.sanitizeProperties = sanitizeProperties;
 exports.encodePathWindows = encodePathWindows;
 exports.decodePathWindows = decodePathWindows;
 exports.writeEncodedFile = writeEncodedFile;
 exports.escapeRegExp = escapeRegExp;
+exports.decodeHtmlEntities = decodeHtmlEntities;
 exports.fillField = fillField;

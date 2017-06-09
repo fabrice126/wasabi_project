@@ -6,11 +6,13 @@ import wordCountHandler from './handler/wordCountHandler.js';
 import musicBrainzHandler from './handler/musicBrainzHandler';
 import deezerHandler from './handler/deezerHandler';
 import animuxHandler from './handler/animuxHandler';
+import languageDetectHandler from './handler/languageDetectHandler';
 import {
     ObjectId
 } from 'mongoskin';
 import fs from 'fs';
 import os from 'os';
+
 const router = express.Router();
 const COLLECTIONARTIST = config.database.collection_artist;
 const COLLECTIONALBUM = config.database.collection_album;
@@ -587,5 +589,6 @@ router.get('/doubleint', (req, res) => {
     })(skip);
     res.send("OK");
 });
+router.get('/lyrics/language_detect', languageDetectHandler.detectLanguage);
 
 export default router;
