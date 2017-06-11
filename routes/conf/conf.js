@@ -211,7 +211,7 @@ module.exports = {
         "env": {
             "prod": "production",
             "dev": "development",
-            "dev_mode": true
+            "dev_mode": false
         }
     }
 };
