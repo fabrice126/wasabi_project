@@ -558,37 +558,14 @@ router.get('/animux/sanitize_rename/artist', animuxHandler.sanitizeAndRenameDirA
 router.get('/animux/create_mapping/song', animuxHandler.getFileSong);
 
 
+
 /**
- * A SUPPRIMER
- * Permet de transformer les champs de type Double en Int32 dans la base de données de mongodb.
+ * API permettant de detecter les langues des lyrics et d'ajouter un attribut language_detect pour chaque musique 
  */
-router.get('/doubleint', (req, res) => {
-    var skip = 0,
-        limit = 10000;
-    (function loop(skip) {
-        if (skip < 2099289) {
-            req.db.collection(COLLECTIONSONG).find({}, {
-                "position": 1,
-                "wordCount": 1
-            }).skip(skip).limit(limit).toArray(function (err, tObj) {
-                console.log(tObj.length);
-                skip += tObj.length;
-                for (var i = 0, l = tObj.length; i < l; i++) {
-                    req.db.collection(COLLECTIONSONG).update({
-                        _id: new ObjectId(tObj[i]._id)
-                    }, {
-                        $set: tObj[i]
-                    });
-                }
-                console.log("On passe au " + skip);
-                loop(skip);
-            })
-        } else {
-            console.log("TRAITEMENT TERMINE");
-        }
-    })(skip);
-    res.send("OK");
-});
 router.get('/lyrics/language_detect', languageDetectHandler.detectLanguage);
+/**
+ * API mettant à jour la collection _stats_lang
+ */
+router.get('/lyrics/language/popularity', languageDetectHandler.updateLanguagePopularity);
 
 export default router;

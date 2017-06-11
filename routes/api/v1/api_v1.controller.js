@@ -474,7 +474,12 @@ var get_artistWithMostSong = (req, res) => {
         return res.json(result);
     });
 };
-
+var get_lyricsLanguageByPopularity = (req, res) => {
+    req.db.collection("_stats_lang").find({}).toArray((err, statsLang) => {
+        if (err) return res.status(404).json(config.http.error.internal_error_404);;
+        return res.json(statsLang);
+    });
+}
 
 var get_artistWithMostAlbum = (req, res) => {
     var limit = Number.parseInt(req.query.limit) || 20,
@@ -560,5 +565,6 @@ exports.get_artistCityByPopularity = get_artistCityByPopularity;
 exports.get_songProducerByPropularity = get_songProducerByPropularity;
 exports.get_artistWithMostAlbum = get_artistWithMostAlbum;
 exports.get_artistWithMostSong = get_artistWithMostSong;
+exports.get_lyricsLanguageByPopularity = get_lyricsLanguageByPopularity;
 exports.get_artistInstrumentByPropularity = get_artistInstrumentByPropularity;
 exports.get_artistMemberWithMostGroup = get_artistMemberWithMostGroup;

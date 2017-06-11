@@ -18,7 +18,7 @@ const LIMIT = config.request.limit;
 //===========================API REST POUR RECUPERER LES MUSIQUES DE CHAQUE ALBUM DE CHAQUE ARTISTE=========================\\
 //==========================================================================================================================\\
 /**
- * @api {get} api/v1/artist_all/:start All - Get songs of each album of each artist
+ * @api {get} api/v1/artist_all/:start All - Get songs of each albums of each artists
  * @apiExample Example usage: 
  *      wasabi.i3s.unice.fr/api/v1/artist_all/72000
  * @apiVersion 1.0.0
@@ -165,7 +165,7 @@ router.get('/artist_all/:start', apiV1Controller.get_artistAll);
 //=====================API REST POUR RECUPERER LES MUSIQUES DE CHAQUE ALBUM D'UN ARTISTE PAR ID D'ARTIST====================\\
 //==========================================================================================================================\\
 /**
- * @api {get} api/v1/artist_all/id/:id All - Get songs of each album of the artist having this id
+ * @api {get} api/v1/artist_all/id/:id All - Get songs of each albums of the artists having this id
  * @apiExample Example usage: 
  *      wasabi.i3s.unice.fr/api/v1/artist_all/id/56d93d84ce06f50c0fed8747
  * @apiVersion 1.0.0
@@ -309,7 +309,7 @@ router.get('/artist_all/id/:id', apiV1Controller.get_artistAllById);
 //====================API REST POUR RECUPERER LES MUSIQUES DE CHAQUE ALBUM D'UN ARTISTE PAR NOM D'ARTISTE===================\\
 //==========================================================================================================================\\
 /**
- * @api {get} api/v1/artist_all/name/:name All - Get songs of each album of the artist having this name
+ * @api {get} api/v1/artist_all/name/:name All - Get songs of each albums of the artists having this name
  * @apiExample Example usage: 
  *      wasabi.i3s.unice.fr/api/v1/artist_all/name/Metallica
  * @apiVersion 1.0.0
@@ -1010,6 +1010,7 @@ router.get('/artist/labels/popularity', apiV1Controller.get_artistLabelsByPopula
 router.get('/artist/city/popularity', apiV1Controller.get_artistCityByPopularity);
 router.get('/artist/country/popularity', apiV1Controller.get_artistCountryByPopularity);
 router.get('/artist/instrument/popularity', apiV1Controller.get_artistInstrumentByPropularity);
+
 /**
  * @api {get} artist/member/count/band Get Artist - members with the most bands
  * @apiExample Example usage: 
@@ -1088,7 +1089,7 @@ router.get('/artist/member/count/band', apiV1Controller.get_artistMemberWithMost
             "sum": 17,
             "membername": "Nightswim"
         },
-            {
+        {
             "_id": "ecb41014-1d7a-4987-a107-df49b2d8d77c",
             "sum": 14,
             "membername": "Chris Connelly"
@@ -1103,6 +1104,47 @@ router.get('/artist/member/count/band', apiV1Controller.get_artistMemberWithMost
  */
 router.get('/artist/count/album', apiV1Controller.get_artistWithMostAlbum);
 // router.get('/song/producer/popularity', apiV1Controller.get_songProducerByPropularity);
+/**
+ * @api {get} /song/lyrics/language/popularity Song - Get stats about lyrics languages
+ * @apiExample Example usage: 
+ *      wasabi.i3s.unice.fr/api/v1/song/lyrics/language/popularity
+ * 
+ * @apiVersion 1.0.0
+ * @apiName GetStatsLang
+ * @apiGroup Api/v1
+
+ * @apiSuccessExample Success-Response for an artist:
+    HTTP/1.1 200 OK
+    [
+        {
+            "_id": "english",
+            "sum": 1314052
+        },
+        {
+            "_id": "spanish",
+            "sum": 109569
+        },
+        {
+            "_id": "german",
+            "sum": 56075
+        },
+        {
+            "_id": "french",
+            "sum": 54824
+        },
+        {
+            "_id": "italian",
+            "sum": 50376
+        }
+    ]
+ * @apiError error the database does not respond.
+ * @apiErrorExample Error-Response internal error:
+    HTTP/1.1 404 Not Found
+    {
+        "error": "An internal error occurred"
+    }
+ */
+router.get('/song/lyrics/language/popularity', apiV1Controller.get_lyricsLanguageByPopularity);
 router.get('/artist/count/song', apiV1Controller.get_artistWithMostSong);
 
 export default router;

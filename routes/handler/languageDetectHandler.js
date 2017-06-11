@@ -56,9 +56,35 @@ var detectLanguage = (req, res) => {
         })(skip);
     });
     res.send("OK");
-
-
 };
 
 
+var updateLanguagePopularity = (req, res) => {
+    req.db.collection(COLLECTIONSONG).aggregate([{
+        "$match": {
+            "language_detect": {
+                "$exists": true,
+                "$ne": ""
+            }
+        }
+    }, {
+        $group: {
+            _id: "$language_detect",
+            sum: {
+                $sum: 1
+            }
+        }
+    }, {
+        $sort: {
+            sum: -1
+        }
+    }, {
+        "$out": "_stats_lang"
+    }], (err, result) => {
+        if (err) return res.status(404).json(config.http.error.internal_error_404);
+    });
+    return res.json(config.http.valid.send_message_ok);
+}
+
 exports.detectLanguage = detectLanguage;
+exports.updateLanguagePopularity = updateLanguagePopularity;
