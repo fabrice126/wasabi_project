@@ -815,7 +815,7 @@ router.put('/artist/:artistName/album/:albumName/song/:songName/is_classic', new
 //====================================API REST POUR RECUPERER UN ARTISTE PAR NOM DE MEMBRE==================================\\
 //==========================================================================================================================\\
 /**
- * @api {get} api/v1/member/name/:memberName Get an artist document by memberName
+ * @api {get} search/member/name/:memberName Get an artist document by memberName
  * @apiExample Example usage: 
  *      wasabi.i3s.unice.fr/search/member/name/Adrian%20Smith
  * @apiVersion 1.0.0
@@ -843,6 +843,26 @@ router.get('/member/name/:memberName', searchController.get_member_name_memberNa
 //==========================================================================================================================\\
 //permet de chercher des artistes via la barre de recherche
 //FUTURE voir la configuration
+/**
+ * @api {get} search/fulltext/:searchText Get artist or song by search
+ * @apiExample Example usage: 
+ *      wasabi.i3s.unice.fr/search/fulltext/iro
+ * @apiVersion 1.0.0
+ * @apiName GetSearchResult
+ * @apiGroup Search
+ * 
+ * @apiParam {String} searchText artist or song to find
+ *
+ * @apiSuccessExample Success-Response for an artist:
+    HTTP/1.1 200 OK
+    [{
+        "name": "Iron Maiden",
+        "nameSuggest": {
+            "input": ["Iron Maiden", "Maiden"],
+            "weight": 1641346
+        }
+    }]
+ */
 router.get('/fulltext/:searchText', searchController.get_fullTextSearch);
 
 router.get('/more/:searchText', new RateLimit(config.http.limit_request.search), searchController.get_moreSearchText);
