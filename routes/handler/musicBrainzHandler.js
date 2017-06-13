@@ -216,6 +216,7 @@ var updateFieldsArtistMusicBrainz = function (objArtist, oMB) {
     objArtist.id_artist_musicbrainz = oMB.id;
     objArtist.disambiguation = oMB.disambiguation;
     objArtist.type = oMB.type ? oMB.type : "";
+    objArtist.gender = oMB.gender ? oMB.gender : "";
     objArtist.lifeSpan = {
         "ended": oMB["life-span"].ended,
         "begin": oMB["life-span"].begin ? oMB["life-span"].begin : "",
@@ -233,7 +234,6 @@ var updateFieldsArtistMusicBrainz = function (objArtist, oMB) {
         "name": oMB.end_area ? oMB.end_area.name : "",
         "disambiguation": oMB.end_area ? oMB.end_area.disambiguation : ""
     };
-    objArtist.gender = oMB.gender ? oMB.gender : "";
     //On supprime l'existant en base de données pour faire la mise a jour
     objArtist.members = [];
     for (var i = 0, l = oMB.relations.length; i < l; i++) {
@@ -265,7 +265,7 @@ var updateFieldsAlbumMusicBrainz = function (objAlbum, oMB) {
     objAlbum.country = oMB.country || "";
     objAlbum.disambiguation = oMB.disambiguation || "";
     objAlbum.barcode = oMB.barcode || "";
-    objAlbum.dateRelease = oMB.date || oMB["first-release-date"] || "toto";
+    objAlbum.dateRelease = oMB.date || oMB["first-release-date"] || "";
     objAlbum.language = oMB['text-representation'] ? oMB['text-representation'].language || "" : "";
 }
 /**
