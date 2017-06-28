@@ -2,6 +2,7 @@ mongo/backup_mongo/*
 mongo/backup_mongo_tmp/*
 mongo/deezer/*
 mongo/animux/*
+mongo/animux*
 public/my_components/MT5/multitrack/*
 public/download/*
 public/AmpSim3/*
@@ -11,3 +12,4 @@ cert_https/*
 routes/conf/login.json
 routes/conf/confJwt.json
 
+/nbproject/private/

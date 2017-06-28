@@ -620,7 +620,7 @@ Example:
             },
 
             doLoadSearch: function (e) {
-                //        this.$.search.value = "";
+                this.$.search.value = e.target.innerText;
                 this.$.suggestion.style.display = "none";
             },
             search: function (e) {

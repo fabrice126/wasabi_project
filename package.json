@@ -13,6 +13,7 @@
   },
   "scripts": {
     "start": "nodemon bin/www --exec babel-node --presets es2015",
+    "debug": "node-debug --nodejs node_modules/babel-cli/bin/babel-node --hidden node_modules/ --no-preload bin/www",
     "test": "mocha --require babel-polyfill --compilers js:babel-register"
   },
   "dependencies": {
@@ -42,6 +43,7 @@
     "mongoose": "^4.8.1",
     "mongoskin": "^2.0.3",
     "morgan": "~1.6.1",
+    "mv": "^2.1.1",
     "passport": "^0.3.2",
     "passport-jwt": "^2.2.1",
     "q": "^1.4.1",

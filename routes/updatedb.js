@@ -544,18 +544,28 @@ router.get('/deezer/check_and_update_id/album', deezerHandler.checkAndUpdateIdAl
 
 
 /**
- * API permettant de faire le matching entre les dossiers contenant le nom d'un artiste/groupe
- */
-router.get('/animux/create_mapping/artist', animuxHandler.getDirArtist);
-/**
  * API permettant de rename les noms d'artistes animux avec les noms d'artistes wasabi afin d'utiliser 
  * dans /animux/create_mapping/artist un find sans regex pour améliorer les performances
  */
 router.get('/animux/sanitize_rename/artist', animuxHandler.sanitizeAndRenameDirArtist);
 /**
+ * API permettant de faire le matching entre les dossiers contenant le nom d'un artiste/groupe
+ */
+router.get('/animux/create_mapping/artist', animuxHandler.getDirArtist);
+/**
+ * API permettant de faire le matching entre les dossiers du fichier généré par l'API /animux/create_mapping/artist (filename: animux_artist_not_found_log.txt)
+ */
+router.get('/animux/create_mapping/artist/not_found', animuxHandler.getNotFoundLogArtist);
+/**
+ * API permettant d'avoir le nombre liens animux présent dans notre base de données
+ */
+router.get('/animux/count/artist', animuxHandler.countArtistAnimuxDirInDB);
+/**
  * API permettant de faire le matching entre les fichiers animux contenant la synchronisation des paroles et nos musique en base de données
  */
 router.get('/animux/create_mapping/song', animuxHandler.getFileSong);
+
+
 
 
 
