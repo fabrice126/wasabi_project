@@ -81,14 +81,14 @@ Il est conseillé de lire ce que fait chaque API avant de l'utiliser notamment c
 
 ## Musicbrainz en local
 
-- **voir : **https://musicbrainz.org/doc/MusicBrainz_Server/Setup, lorsque bin/reindex est exécuté, vous pouvez lancer des requêtes via l'API Musicbrainz local
+- voir : https://musicbrainz.org/doc/MusicBrainz_Server/Setup, lorsque bin/reindex est exécuté, vous pouvez lancer des requêtes via l'API Musicbrainz local
 
 **Comment générer la documentation des APIs**
 =======
 Nous utilisons http://apidocjs.com/ pour décrire nos APIs et générer leurs documentations. Pour cela: 
 
 - rendez-vous sur le répertoire racine du projet: `wasabi_project`
-- lancez la commande: `apidoc -i routes/ -o apidoc/` plus d'informations: <a href="http://apidocjs.com/#run" target="_blank">ici</a> 
+- lancez la commande: `npm run apidoc` plus d'informations: <a href="http://apidocjs.com/#run" target="_blank">ici</a> 
 cela générera la documentation des APIs contenu dans le dossier `wasabi_project/routes` dans le dossier `wasabi_project/apidoc` 
 
 **Comment installer le certificat HTTPS**
