@@ -222,7 +222,7 @@ var getSong = (req, res) => {
  */
 var getAllArtists = (req, res) => {
     var db = req.db,
-        skip = 18060,
+        skip = 0,
         query = {
             id_artist_deezer: {
                 $exists: 1

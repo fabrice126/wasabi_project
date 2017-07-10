@@ -2,7 +2,7 @@ mongo/backup_mongo/*
 mongo/backup_mongo_tmp/*
 mongo/deezer/*
 mongo/animux/*
-mongo/animux*
+mongo/discogs/*
 public/my_components/MT5/multitrack/*
 public/download/*
 public/AmpSim3/*

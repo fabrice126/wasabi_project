@@ -311,8 +311,8 @@ var get_artist = (req, res) => {
                             album.songs = songs;
                             cnt++;
                             if (nbAlbum == cnt) {
-                                artist.isConnected = true;
                                 if (!user) artist.isConnected = false;
+                                else artist.isConnected = true;
                                 return res.json(artist);
                             }
                         });

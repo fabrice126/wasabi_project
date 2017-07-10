@@ -12,7 +12,7 @@
     ]
   },
   "scripts": {
-    "start": "nodemon bin/www --exec babel-node --presets es2015",
+    "start": "nodemon bin/www --exec babel-node --presets es2015 --ignore mongo/",
     "debug": "node-debug --nodejs node_modules/babel-cli/bin/babel-node --hidden node_modules/ --no-preload bin/www",
     "test": "mocha --require babel-polyfill --compilers js:babel-register",
     "apidoc": "apidoc -i routes/ -o apidoc/"
@@ -29,6 +29,7 @@
     "debug": "~2.2.0",
     "elasticsearch": "^12.1.3",
     "errorhandler": "^1.4.3",
+    "event-stream": "^3.3.4",
     "express": "^4.15.2",
     "express-graphql": "^0.6.3",
     "express-rate-limit": "^2.6.0",
@@ -51,11 +52,12 @@
     "request": "2.72.0",
     "serve-favicon": "~2.3.0",
     "spdy": "^3.4.4",
-    "xml2js": "^0.4.17"
-  },
-  "devDependencies": {
+    "xml2js": "^0.4.17",
     "babel-cli": "^6.22.2",
     "babel-preset-env": "^1.1.8",
     "babel-preset-latest": "^6.22.0"
+  },
+  "devDependencies": {
+
   }
 }

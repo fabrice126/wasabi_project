@@ -4,6 +4,7 @@ import lyricsWikia from './handler/lyricsWikia.js';
 import utilHandler from './handler/utilHandler.js';
 import wordCountHandler from './handler/wordCountHandler.js';
 import musicBrainzHandler from './handler/musicBrainzHandler';
+import discogsHandler from './handler/discogsHandler';
 import deezerHandler from './handler/deezerHandler';
 import animuxHandler from './handler/animuxHandler';
 import languageDetectHandler from './handler/languageDetectHandler';
@@ -46,17 +47,17 @@ router.get('/artist', function (req, res) {
                             db.collection(COLLECTIONARTIST).update({
                                 _id: new ObjectId(idArtist)
                             }, {
-                                $set: objArtist
-                            }, function (err) {
-                                if (err) throw err;
-                                nb++;
-                                console.log("Updated => " + objArtist.name);
-                                if (nb == result.length) {
-                                    skip += limit;
-                                    console.log("\n\n SKIP = " + skip);
-                                    fetchArtist(skip, nbArtist);
-                                }
-                            });
+                                    $set: objArtist
+                                }, function (err) {
+                                    if (err) throw err;
+                                    nb++;
+                                    console.log("Updated => " + objArtist.name);
+                                    if (nb == result.length) {
+                                        skip += limit;
+                                        console.log("\n\n SKIP = " + skip);
+                                        fetchArtist(skip, nbArtist);
+                                    }
+                                });
                         });
                         if (i < result.length - 1) {
                             i++;
@@ -88,11 +89,11 @@ router.get('/artist/:artistName', function (req, res) {
             db.collection(COLLECTIONARTIST).update({
                 _id: new ObjectId(idArtist)
             }, {
-                $set: objArtist
-            }, function (err) {
-                if (err) throw err;
-                console.log("Updated => " + objArtist.name);
-            });
+                    $set: objArtist
+                }, function (err) {
+                    if (err) throw err;
+                    console.log("Updated => " + objArtist.name);
+                });
         });
     });
     res.send("OK");
@@ -123,17 +124,17 @@ router.get('/album', function (req, res) {
                             db.collection(COLLECTIONALBUM).update({
                                 _id: new ObjectId(idAlbum)
                             }, {
-                                $set: objAlbum
-                            }, function (err) {
-                                if (err) console.log(err);
-                                nb++;
-                                console.log("Updated => " + objAlbum.name + " - " + objAlbum.title + "   " + nb + "/" + result.length);
-                                if (nb == result.length) {
-                                    skip += limit;
-                                    console.log("\n\n SKIP = " + skip);
-                                    fetchAlbum(skip, nbAlbum);
-                                }
-                            });
+                                    $set: objAlbum
+                                }, function (err) {
+                                    if (err) console.log(err);
+                                    nb++;
+                                    console.log("Updated => " + objAlbum.name + " - " + objAlbum.title + "   " + nb + "/" + result.length);
+                                    if (nb == result.length) {
+                                        skip += limit;
+                                        console.log("\n\n SKIP = " + skip);
+                                        fetchAlbum(skip, nbAlbum);
+                                    }
+                                });
                         });
                         if (i < result.length - 1) {
                             i++;
@@ -168,11 +169,11 @@ router.get('/album/:idAlbum', function (req, res) {
             db.collection(COLLECTIONALBUM).update({
                 _id: new ObjectId(idAlbum)
             }, {
-                $set: objAlbum
-            }, function (err) {
-                if (err) throw err;
-                console.log("Updated => " + objAlbum.name + " - " + objAlbum.title);
-            });
+                    $set: objAlbum
+                }, function (err) {
+                    if (err) throw err;
+                    console.log("Updated => " + objAlbum.name + " - " + objAlbum.title);
+                });
         });
     });
     res.json("OK");
@@ -207,17 +208,17 @@ router.get('/song', function (req, res) {
                                 db.collection(COLLECTIONSONG).update({
                                     _id: new ObjectId(idSong)
                                 }, {
-                                    $set: objSong
-                                }, function (err) {
-                                    nbSongUpdated++;
-                                    if (err) throw err;
-                                    console.log(i + " => Updated => " + objSong.name + " : " + objSong.title + "       " + objSong.urlSong);
-                                    if (nbSongUpdated == limit) {
-                                        skip += limit;
-                                        console.log("\n\n\n\n !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! SKIP = " + skip + "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n\n\n\n");
-                                        fetchSong(skip, nbSong);
-                                    }
-                                });
+                                        $set: objSong
+                                    }, function (err) {
+                                        nbSongUpdated++;
+                                        if (err) throw err;
+                                        console.log(i + " => Updated => " + objSong.name + " : " + objSong.title + "       " + objSong.urlSong);
+                                        if (nbSongUpdated == limit) {
+                                            skip += limit;
+                                            console.log("\n\n\n\n !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! SKIP = " + skip + "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n\n\n\n");
+                                            fetchSong(skip, nbSong);
+                                        }
+                                    });
                             }).catch(function () {
                                 // console.log("==================================================ERREUR : REJECT==================================================");
                                 nbSongUpdated++;
@@ -278,7 +279,7 @@ router.get('/multitrackspath', function (req, res) {
         totalFilesDirLength = 0,
         countFilesDir = 0;
     console.log(PATHMULTITRACKS);
-    (os.platform() == 'win32') ? PATHMULTITRACKS = config.multitracks.path_windows: PATHMULTITRACKS = config.multitracks.path_linux;
+    (os.platform() == 'win32') ? PATHMULTITRACKS = config.multitracks.path_windows : PATHMULTITRACKS = config.multitracks.path_linux;
     console.log(PATHMULTITRACKS);
     //On cherche dans le dossier contenant les musiques multitracks
     console.log("En cours de traitement ...");
@@ -351,10 +352,10 @@ router.get('/multitrackspath', function (req, res) {
                                             db.collection(COLLECTIONSONG).update(query, {
                                                 $set: addMultitrackpath
                                             }, {
-                                                multi: true
-                                            }, function (err) {
-                                                if (err) throw err;
-                                            });
+                                                    multi: true
+                                                }, function (err) {
+                                                    if (err) throw err;
+                                                });
                                         }
                                         countFilesDir = countFilesDir + 1;
                                         if (countFilesDir % 100 == 0) {
@@ -432,14 +433,14 @@ router.get('/wordcount/:collection/:_id', function (req, res) {
                 db.collection(collection).update({
                     _id: obj._id
                 }, {
-                    $set: {
-                        "wordCount": currentWordCountSong
-                    }
-                }, function (resultat) {
-                    console.log("le word count pour la collection: " + collection + " est terminé");
-                    db.collection(collectionTmp).drop();
-                    res.send("OK");
-                });
+                        $set: {
+                            "wordCount": currentWordCountSong
+                        }
+                    }, function (resultat) {
+                        console.log("le word count pour la collection: " + collection + " est terminé");
+                        db.collection(collectionTmp).drop();
+                        res.send("OK");
+                    });
             });
 
         });
@@ -474,10 +475,10 @@ router.get('/song/isclassic/:_id', function (req, res) {
             }]
         }]
     }, {
-        $set: {
-            isClassic: true
-        }
-    });
+            $set: {
+                isClassic: true
+            }
+        });
     console.log("Traiement terminé");
     res.send("OK");
 });
@@ -488,7 +489,11 @@ router.get('/musicbrainz/artist', musicBrainzHandler.getAllArtists);
 /**
  * /!\ Pour utiliser cette API il faut que la VM musicbrainz soit active sur:  http://127.0.0.1:5000/ /!\
  */
-router.get('/musicbrainz/artist/:_id', musicBrainzHandler.getArtist);
+router.get('/musicbrainz/artist/id/:_id', musicBrainzHandler.getArtist);
+/**
+ * /!\ Pour utiliser cette API il faut que la VM musicbrainz soit active sur:  http://127.0.0.1:5000/ /!\
+ */
+router.get('/musicbrainz/artist/member', musicBrainzHandler.getAllArtistsMembers);
 /**
  * /!\ Pour utiliser cette API il faut que la VM musicbrainz soit active sur:  http://127.0.0.1:5000/ /!\
  */
@@ -496,7 +501,7 @@ router.get('/musicbrainz/album', musicBrainzHandler.getAllAlbums);
 /**
  * /!\ Pour utiliser cette API il faut que la VM musicbrainz soit active sur:  http://127.0.0.1:5000/ /!\
  */
-router.get('/musicbrainz/album/:_id', musicBrainzHandler.getAlbum);
+router.get('/musicbrainz/album/id/:_id', musicBrainzHandler.getAlbum);
 /**
  * /!\ Pour utiliser cette API il faut que la VM musicbrainz soit active sur:  http://127.0.0.1:5000/ /!\
  */
@@ -504,14 +509,30 @@ router.get('/musicbrainz/song', musicBrainzHandler.getAllSongs);
 /**
  * /!\ Pour utiliser cette API il faut que la VM musicbrainz soit active sur:  http://127.0.0.1:5000/ /!\
  */
-router.get('/musicbrainz/song/:_id', musicBrainzHandler.getSong);
+router.get('/musicbrainz/song/id/:_id', musicBrainzHandler.getSong);
 
 
+/**
+ * API permettant de recupérer des informations sur les artistes présents sur l'API de discogs
+ */
+router.get('/discogs/artist', discogsHandler.getAllArtists);
+/**
+ * API permettant de créer le champ id_artist_musicbrainz contenant l'id vers musicbrainz
+ */
+router.get('/discogs/add/artist/id', discogsHandler.getAddFieldsIdArtistDiscogs);
+/**
+ * API permettant de recupérer des informations sur les albums présents sur l'API de discogs
+ */
+router.get('/discogs/album', discogsHandler.getAllAlbums);
+/**
+ * API permettant de recupérer des informations sur les musiques présentent sur l'API de discogs
+ */
+router.get('/discogs/song', discogsHandler.getAllSongs);
 
 
 
 /**
- * API permettant d'ajouter en base de données id des musiques de wasabi avec les id des musiques de deezer
+ * API permettant d'ajouter en base de données l'id des musiques de wasabi avec les id des musiques de deezer
  */
 router.get('/deezer/create_mapping', deezerHandler.doMappingWasabiDeezer);
 /**
@@ -557,9 +578,15 @@ router.get('/animux/create_mapping/artist', animuxHandler.getDirArtist);
  */
 router.get('/animux/create_mapping/artist/not_found', animuxHandler.getNotFoundLogArtist);
 /**
- * API permettant d'avoir le nombre liens animux présent dans notre base de données
+ * API permettant d'avoir le nombre de liens animux présent dans notre base de données
  */
 router.get('/animux/count/artist', animuxHandler.countArtistAnimuxDirInDB);
+/**
+ * API permettant d'avoir le nombre de liens animux présent dans notre base de données
+ */
+router.get('/animux/count/song', animuxHandler.countSongAnimuxFileInDB);
+
+
 /**
  * API permettant de faire le matching entre les fichiers animux contenant la synchronisation des paroles et nos musique en base de données
  */

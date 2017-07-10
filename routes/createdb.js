@@ -179,39 +179,6 @@ router.get('/add/elasticsearch/song/:_id', function (req, res) {
     });
     res.send("OK");
 });
-// A FINIR Cette fonction créee l'arborescence de dossier représentant la base de données
-router.get('/createdirectories', function (req, res) {
-    var db = req.db,
-        skip = 0,
-        limit = 10000;
-    this.console.log("dedans /createdb/createdirectories");
-    (function nextSkipStep(skip) {
-        db.collection(COLLECTIONARTIST).find({}).skip(skip).limit(limit).toArray(function (err, tObj) {
-            var encoded = "";
-            for (var i = 0, l = tObj.length; i < l; i++) {
-                //CON, COM1 ou LPT1 /^CON$/i || /^COM1$/i ||/^LPT1$/i ce sont des noms de fichier réservé sous windows on les remplacera par C_O_N   C_O_M_1   L_P_T_1
-                // if(tObj[i].name.match(/^CON$/i) || tObj[i].name.match(/^COM1$/i) || tObj[i].name.match(/^LPT1$/i)){
-                //     tObj[i].name = tObj[i].name+'_';
-                // }
-                // encoded = utilHandler.encodePathWindows(tObj[i].name);
-                // if(encoded.length > 224){
-                //     console.log("Taille encoded: "+encoded.length+" Original Taille: "+tObj[i].name.length);
-                // }
-                fs.mkdir("mongo/wasabi_db_file/" + tObj._id, (err) => {
-                    if (err) console.log(err);
-                });
-                if (i == limit - 1) {
-                    skip += limit;
-                    console.log("nextSkipStep = " + skip);
-                    nextSkipStep(skip);
-                }
-            }
-        });
-    })(skip);
-
-    //On cherche dans le dossier contenant les musiques multitracks
-    res.send("OK");
-});
 
 router.get('*', function (req, res) {
     //On renvoie index.html qui ira match l'url via <app-router> de index.html ce qui renverra la page 404 si la page n'existe pas

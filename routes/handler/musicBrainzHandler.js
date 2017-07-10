@@ -9,8 +9,8 @@ const COLLECTIONSONG = config.database.collection_song;
 const URL_TO_REPLACE = "http://musicbrainz.org";
 const USE_MUSICBRAINZ_URL_LOCAL = true;
 const URL_MUSICBRAINZ = USE_MUSICBRAINZ_URL_LOCAL ? "http://127.0.0.1:5000/ws/2" : "http://musicbrainz.org/ws/2";
-const URL_PARAMS_ARTIST = "?inc=artist-rels&fmt=json";
-const URL_PARAMS_ALBUM = "?fmt=json";
+const URL_PARAMS_ARTIST = "?inc=artist-rels+url-rels&fmt=json";
+const URL_PARAMS_ALBUM = "?inc=url-rels&fmt=json";
 const URL_PARAMS_SONG = "?inc=work-rels&fmt=json";
 
 /**
@@ -21,7 +21,15 @@ const URL_PARAMS_SONG = "?inc=work-rels&fmt=json";
 var getAllArtists = (req, res) => {
     getAndUpdateAll(req.db, COLLECTIONARTIST, URL_PARAMS_ARTIST, updateFieldsArtistMusicBrainz);
     res.json(config.http.valid.send_message_ok);
-
+}
+/**
+ * Permet de mettre a jour les membres de groupe de la base de données ayant une URL vers musicbrainz
+ * @param {*} req 
+ * @param {*} res 
+ */
+var getAllArtistsMembers = (req, res) => {
+    getAndUpdateAllArtistsMembers(req.db);
+    res.json(config.http.valid.send_message_ok);
 }
 /**
  * Permet de mettre a jour le document artiste de la base de données dont l'id est passé en parametre
@@ -30,9 +38,7 @@ var getAllArtists = (req, res) => {
  */
 var getArtist = (req, res) => {
     var id = req.params._id;
-    if (!ObjectId.isValid(req.params._id)) {
-        return res.status(404).json(config.http.error.objectid_404);
-    }
+    if (!ObjectId.isValid(id)) return res.status(404).json(config.http.error.objectid_404);
     getAndUpdateOne(req.db, res, id, COLLECTIONARTIST, URL_PARAMS_ARTIST, updateFieldsArtistMusicBrainz);
 }
 /**
@@ -51,9 +57,7 @@ var getAllAlbums = (req, res) => {
  */
 var getAlbum = (req, res) => {
     var id = req.params._id;
-    if (!ObjectId.isValid(req.params._id)) {
-        return res.status(404).json(config.http.error.objectid_404);
-    }
+    if (!ObjectId.isValid(id)) return res.status(404).json(config.http.error.objectid_404);
     getAndUpdateOne(req.db, res, id, COLLECTIONALBUM, URL_PARAMS_ALBUM, updateFieldsAlbumMusicBrainz);
 }
 /**
@@ -72,9 +76,7 @@ var getAllSongs = (req, res) => {
  */
 var getSong = (req, res) => {
     var id = req.params._id;
-    if (!ObjectId.isValid(req.params._id)) {
-        return res.status(404).json(config.http.error.objectid_404);
-    }
+    if (!ObjectId.isValid(id)) return res.status(404).json(config.http.error.objectid_404);
     getAndUpdateOne(req.db, res, id, COLLECTIONSONG, URL_PARAMS_SONG, updateFieldsSongMusicBrainz);
 }
 
@@ -88,7 +90,7 @@ var getSong = (req, res) => {
  */
 var getAndUpdateAll = (db, collection, urlParams, updateFieldsCollectionMusicBrainz) => {
     var skip = 0,
-        limit = 10000,
+        limit = 1000,
         query = {
             urlMusicBrainz: {
                 $ne: ""
@@ -99,10 +101,11 @@ var getAndUpdateAll = (db, collection, urlParams, updateFieldsCollectionMusicBra
             wordCount: 0
         };
     db.collection(collection).count(query, function (err, nbObj) {
-        console.log("There are " + nbObj + " songs with an id musicbrainz");
+        console.log("There are " + nbObj + " " + collection + " with an id musicbrainz");
         (function fetchObj(skip) {
             var nb = 0;
             if (skip < nbObj) {
+                console.log("skip begin = " + skip);
                 db.collection(collection).find(query, projection).skip(skip).limit(limit).toArray(function (err, tObj) {
                     var i = 0;
                     (function loop(i) {
@@ -141,13 +144,80 @@ var getAndUpdateAll = (db, collection, urlParams, updateFieldsCollectionMusicBra
                         });
                     })(i);
                 });
-            } else {
-                console.log("TRAITEMENT TERMINE");
-            }
+            } else console.log("TRAITEMENT TERMINE");
         })(skip);
     });
 }
-
+/**
+ * Function to update the members of each artist(band) by adding data from MusicBrainz
+ * @param {*} db 
+ */
+var getAndUpdateAllArtistsMembers = (db) => {
+    var skip = 12000,
+        limit = 1000,
+        query = {
+            members: {
+                $ne: []
+            }
+        },
+        projection = {
+            rdf: 0,
+            wordCount: 0
+        };
+    db.collection(COLLECTIONARTIST).count(query, function (err, nbObj) {
+        console.log("There are " + nbObj + " " + COLLECTIONARTIST + " with an id musicbrainz");
+        (function fetchObj(skip) {
+            var nb = 0;
+            if (skip < nbObj) {
+                console.log("skip begin = " + skip);
+                db.collection(COLLECTIONARTIST).find(query, projection).skip(skip).limit(limit).toArray(function (err, tObj) {
+                    var i = 0;
+                    //We process an artist
+                    (function loop(i) {
+                        var tMembersMB = [];
+                        for (var j = 0, l = tObj[i].members.length; j < l; j++) {
+                            let url = URL_MUSICBRAINZ + '/artist/' + tObj[i].members[j].id_member_musicbrainz + URL_PARAMS_ARTIST;
+                            requestMusicBrainz(url).then((oMB) => {
+                                tMembersMB.push(oMB);
+                                //When tMembersMB contain all json of members we continue
+                                if (tMembersMB.length == l) {
+                                    updateFieldsArtistMemberMusicBrainz(tObj[i], tMembersMB);
+                                    db.collection(COLLECTIONARTIST).update({
+                                        _id: new ObjectId(tObj[i]._id)
+                                    }, {
+                                        $set: tObj[i]
+                                    }, function (err) {
+                                        if (err) throw err;
+                                        nb++;
+                                        if (nb == tObj.length) {
+                                            skip += limit;
+                                            console.log("SKIP = " + skip);
+                                            fetchObj(skip);
+                                        } else {
+                                            i++;
+                                            loop(i);
+                                        }
+                                    });
+                                }
+                            }).catch((error) => {
+                                console.log("FAIL = " + tObj[i].urlMusicBrainz + " / " + COLLECTIONARTIST);
+                                nb++;
+                                if (nb == tObj.length) {
+                                    skip += limit;
+                                    console.log("SKIP = " + skip);
+                                    fetchObj(skip);
+                                } else {
+                                    i++;
+                                    loop(i);
+                                }
+                            });
+                        }
+                    })(i);
+                });
+            } else console.log("TRAITEMENT TERMINE");
+        })(skip);
+    });
+}
 /**
  * 
  * @param {*} db base de données dans laquelle enregistrer les modifications
@@ -192,19 +262,25 @@ var getAndUpdateOne = (db, res, id, collection, urlParams, updateFieldsCollectio
  */
 var requestMusicBrainz = (urlMusicBrainz) => {
     return new Promise((resolve, reject) => {
-        request({
-            url: urlMusicBrainz,
-            headers: {
-                'User-Agent': 'wasabi'
-            }
-        }, (err, resp, body) => {
-            if (!err && resp.statusCode == 200) {
-                resolve(JSON.parse(body));
-            } else {
-                console.log("erreur " + err);
-                reject(err);
-            }
-        });
+        (function requestProcess() {
+            request({
+                url: urlMusicBrainz,
+                headers: {
+                    'User-Agent': 'wasabi'
+                }
+            }, (err, resp, body) => {
+                if (!err && resp.statusCode == 200) resolve(JSON.parse(body));
+                else {
+                    //If request take too much time we relaunch it
+                    if (err.code == "ECONNRESET") {
+                        console.log("relance de la requête " + urlMusicBrainz);
+                        requestProcess();
+                    } else {
+                        reject(err);
+                    }
+                }
+            });
+        })()
     })
 };
 /**
@@ -236,9 +312,15 @@ var updateFieldsArtistMusicBrainz = function (objArtist, oMB) {
     };
     //On supprime l'existant en base de données pour faire la mise a jour
     objArtist.members = [];
+    //Fields to add
+    var tFieldsToGetFromMusicBrainz = [
+        'BBC Music page', 'wikipedia', 'myspace', 'last.fm', 'discogs', 'official homepage',
+        'allmusic', 'youtube', 'soundcloud', 'wikidata', 'secondhandsongs', 'social network', 'purevolume'
+    ];
     for (var i = 0, l = oMB.relations.length; i < l; i++) {
-        var member = oMB.relations[i];
-        if (member.type == "member of band") {
+        var relation = oMB.relations[i];
+        if (relation.type == "member of band") {
+            var member = relation;
             //On crée un objet membre contenant les propriétés du membre du groupe
             var objMember = {
                 id_member_musicbrainz: member.artist.id,
@@ -252,6 +334,88 @@ var updateFieldsArtistMusicBrainz = function (objArtist, oMB) {
             }
             //On ajoute aux membres le nouveau membre 
             objArtist.members.push(objMember);
+        }
+        extractUrls(objArtist, tFieldsToGetFromMusicBrainz, relation);
+    }
+}
+
+
+var extractUrls = (objArtist, tFieldsToGetFromMusicBrainz, relation) => {
+    if (relation["target-type"] == "url") {
+        if (tFieldsToGetFromMusicBrainz.indexOf(relation.type) >= 0) {
+            //Nous faisons un merge avec les metadata récupérées de MusicBrainz
+            var url = relation.url.resource;
+            var type = relation.type;
+            switch (type) {
+                case "BBC Music page":
+                    objArtist.urlBBC || (objArtist.urlBBC = url);
+                    break;
+                case "official homepage":
+                    objArtist.urlOfficialWebsite || (objArtist.urlOfficialWebsite = url);
+                    break;
+                case "youtube":
+                    objArtist.urlYouTube || (objArtist.urlYouTube = url);
+                    break;
+                case "soundcloud":
+                    objArtist.urlSoundCloud || (objArtist.urlSoundCloud = url);
+                    break;
+                case "myspace":
+                    objArtist.urlMySpace || (objArtist.urlMySpace = url);
+                    break;
+                case "secondhandsongs":
+                    objArtist.urlSecondHandSongs || (objArtist.urlSecondHandSongs = url);
+                    break;
+                case "purevolume":
+                    objArtist.urlPureVolume || (objArtist.urlPureVolume = url);
+                    break;
+                case "last.fm":
+                    objArtist.urlLastFm || (objArtist.urlLastFm = url);
+                    break;
+                case "allmusic":
+                    objArtist.urlAllmusic || (objArtist.urlAllmusic = url);
+                    break;
+                case "wikipedia":
+                    objArtist.urlWikipedia || (objArtist.urlWikipedia = url);
+                    break;
+                case "wikidata":
+                    objArtist.urlWikidata || (objArtist.urlWikidata = url);
+                    break;
+                case "discogs":
+                    objArtist.urlDiscogs || (objArtist.urlDiscogs = url);
+                    break;
+            }
+            if (type == "social network") {
+                if (/instagram/i.test(url)) objArtist.urlInstagram || (objArtist.urlInstagram = url);
+                else if ((/facebook/i.test(url))) objArtist.urlFacebook || (objArtist.urlFacebook = url);
+                else if ((/twitter/i.test(url))) objArtist.urlTwitter || (objArtist.urlTwitter = url);
+                else if ((/plus\.google\.com/i.test(url))) objArtist.urlGooglePlus || (objArtist.urlGooglePlus = url);
+            }
+        }
+    }
+}
+/**
+ * Allows to add fields to the objArtist.members[i] object of our database by retrieving data from the tMembersMB object coming from the api of musicbrainz
+ * @param {*} objArtist objet du membre d'un groupe  
+ * @param {*} tMembersMB Object json from MusicBrainz which is a member of band 
+ */
+var updateFieldsArtistMemberMusicBrainz = function (objArtist, tMembersMB) {
+    if (tMembersMB.length != objArtist.members.length) {
+        console.log(objArtist.name);
+    }
+    var tFieldsToGetFromMusicBrainz = [
+        'BBC Music page', 'wikipedia', 'myspace', 'last.fm', 'discogs', 'official homepage',
+        'allmusic', 'youtube', 'soundcloud', 'wikidata', 'secondhandsongs', 'social network', 'purevolume'
+    ];
+    for (var i = 0, l = objArtist.members.length; i < l; i++) {
+        var memberWasabi = objArtist.members[i];
+        for (var j = 0, ll = tMembersMB.length; j < ll; j++) {
+            if (memberWasabi.id_member_musicbrainz == tMembersMB[j].id) {
+                memberWasabi.gender = tMembersMB[j].gender;
+                for (var k = 0, lll = tMembersMB[j].relations.length; k < lll; k++) {
+                    var relation = tMembersMB[j].relations[k];
+                    extractUrls(memberWasabi, tFieldsToGetFromMusicBrainz, relation);
+                }
+            }
         }
     }
 }
@@ -289,7 +453,9 @@ var updateFieldsSongMusicBrainz = function (objSong, oMB) {
 
 
 
+
 exports.getAllArtists = getAllArtists;
+exports.getAllArtistsMembers = getAllArtistsMembers;
 exports.getArtist = getArtist;
 exports.getAllAlbums = getAllAlbums;
 exports.getAlbum = getAlbum;

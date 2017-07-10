@@ -4,7 +4,6 @@ import configLogin from './routes/conf/login.json';
 import express from 'express';
 import RateLimit from 'express-rate-limit';
 import session from 'express-session';
-import proxy from 'express-http-proxy';
 import helmet from 'helmet';
 //Import DB
 import elasticsearch from 'elasticsearch';
@@ -93,7 +92,6 @@ app.use((req, res, next) => {
     //<start> pour MT5
     res.header("Access-Control-Allow-Origin", "*");
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-
     // For Microsoft browsers
     var url = req.originalUrl;
     if (url.endsWith("vtt")) {
