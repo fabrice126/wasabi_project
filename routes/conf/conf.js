@@ -110,7 +110,7 @@ module.exports = {
         "mongodb_option": {
             server: {
                 socketOptions: {
-                    socketTimeoutMS: 160000
+                    socketTimeoutMS: 999999
                 }
             }
         },
@@ -211,7 +211,7 @@ module.exports = {
         "env": {
             "prod": "production",
             "dev": "development",
-            "dev_mode": false
+            "dev_mode": true
         }
     }
 };

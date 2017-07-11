@@ -28,7 +28,6 @@
                 font-size: 12px;
             }
 
-            .band_search_bar,
             .album_search_bar,
             .song_search_bar {
                 border-radius: 4px;
@@ -36,7 +35,8 @@
             }
 
             .band_search_bar {
-                background-color: #3F51B5;
+                border-radius: 100%;
+                width: 45px;
             }
 
             .album_search_bar {
@@ -104,7 +104,7 @@
                 <template is="dom-if" if="{{_isArtist(result)}}">
                     <a href="#/search/artist/{{_encodeUri(result.name)}}" class="inherit">
                         <paper-card elevation="0">
-                            <img class="band_search_bar" src="../img/band_search_bar.svg" alt="Band">
+                            <img class="band_search_bar" src="{{putPicture(result)}}" alt="Band">
                             <span class="search_title">{{result.name}}</span>
                             <paper-ripple></paper-ripple>
                         </paper-card>
@@ -147,6 +147,9 @@
                 }
                 return isSong;
             },
+            putPicture: function (artist) {
+                return artist.picture || "../img/band_search_bar.svg";
+            }
         });
     </script>
 </dom-module>

@@ -54,13 +54,21 @@ Example:
                 box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
             }
 
+            #suggestion a {
+                text-decoration: none;
+            }
+
             paper-card {
                 width: 100%;
-                padding-left: 5%;
-                padding-top: 1%;
-                padding-bottom: 1%;
+                padding: 5px 10px;
                 cursor: pointer;
-                color: black;
+                color: rgb(122, 129, 132);
+                border-bottom: 1px dotted #607D8B;
+                vertical-align: middle;
+                display: flex;
+                flex-direction: row;
+                justify-content: flex-start;
+                align-items: center;
             }
 
             #suggestion:last-child {
@@ -83,9 +91,7 @@ Example:
             }
 
             .search_title {
-                position: absolute;
-                margin-top: 10px;
-                margin-left: 10px;
+                padding: 0px 15px;
             }
 
             .search_album {
@@ -143,7 +149,6 @@ Example:
                 transition: all 0.5s linear;
             }
 
-            .band_search_bar,
             .album_search_bar,
             .song_search_bar,
             .more_search_bar {
@@ -152,7 +157,8 @@ Example:
             }
 
             .band_search_bar {
-                background-color: #3F51B5;
+                border-radius: 100%;
+                width: 45px;
             }
 
             .album_search_bar {
@@ -388,7 +394,7 @@ Example:
                     <template is="dom-if" if="{{_isArtist(suggestion)}}" restamp="true">
                         <a href="#/search/artist/{{_encodeUri(suggestion.name)}}">
                             <paper-card on-click='doLoadSearch' elevation="0">
-                                <img class="band_search_bar" src="../img/band_search_bar.svg" alt="Band">
+                                <img class="band_search_bar" src="{{putPicture(suggestion)}}" alt="Band">
                                 <span class="search_title">{{suggestion.name}}</span>
                                 <paper-ripple></paper-ripple>
                             </paper-card>
@@ -725,6 +731,9 @@ Example:
                     this.value = current.querySelector("paper-card>span").textContent;
                     console.log();
                 }
+            },
+            putPicture: function (suggestion) {
+                return suggestion.picture || "../img/band_search_bar.svg";
             }
         });
     </script>

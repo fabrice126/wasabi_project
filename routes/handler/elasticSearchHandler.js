@@ -112,13 +112,21 @@ var insertBulkData = function (req, collectionName, projectObj, indexName, typeN
             var bulk_request = [];
             for (var i = 0; i < obj.length; i++) {
                 var id = obj[i]._id,
-                    weight = 0;
+                    weight = 0,
+                    picture = "";
                 if (indexName === req.config.database.index_song) {
                     weight = Number(obj[i].rank || 0);
                     delete obj[i].rank;
                 } else { //on traite les artistes
                     weight = Number(obj[i].deezerFans || 0);
+                    picture = obj[i].hasOwnProperty('picture') ? obj[i].picture.small : "";
+                    if (picture == "http://e-cdn-images.deezer.com/images/artist//56x56-000000-80-0-0.jpg") {
+                        picture = "";
+                    }
+                    //On supprime les champs ci-dessous pour ne pas les avoir dans elasticsearch, 
+                    //nous voulons le champ 'weight' et pas 'deezerFans' 
                     delete obj[i].deezerFans;
+                    delete obj[i].picture;
                 }
                 delete obj[i]._id;
                 bulk_request.push({
@@ -132,7 +140,7 @@ var insertBulkData = function (req, collectionName, projectObj, indexName, typeN
                 if (obj[i].albumTitle || obj[i].title) {
                     obj[i].weight = weight;
                 } else {
-                    console.log("On traite un artiste");
+                    //It's an artist
                     obj[i].nameSuggest = {};
                     obj[i].nameSuggest.input = [];
                     obj[i].nameSuggest.input.push(obj[i].name);
@@ -141,6 +149,7 @@ var insertBulkData = function (req, collectionName, projectObj, indexName, typeN
                         obj[i].nameSuggest.input.push(obj[i].name.substring(obj[i].name.indexOf(" ") + 1, obj[i].name.length));
                     }
                     obj[i].nameSuggest.weight = weight;
+                    obj[i].picture = picture;
                 }
                 bulk_request.push(obj[i]); // Insert data
             }

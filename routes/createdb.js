@@ -106,7 +106,8 @@ router.get('/createdbelasticsearchartist', function (req, res) {
     var indexName = config.database.index_artist;
     var projectObj = {
         "name": 1,
-        "deezerFans": 1
+        "deezerFans": 1,
+        "picture.small": 1
     }; //ce que nous voulons récupérer dans la base de données mongodb
     var urlIndex = urlElasticSearch + indexName;
     var mappingObj = {};
