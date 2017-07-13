@@ -1,4 +1,7 @@
 import request from 'request';
+import {
+    ObjectId
+} from 'mongoskin';
 
 var addDocumentToElasticSearch = function (req, indexName, index_type, body, id) {
     console.log("addDocumentToElasticSearch");
@@ -111,36 +114,52 @@ var insertBulkData = function (req, collectionName, projectObj, indexName, typeN
             //On insérera l'enregistrement dans cet index
             var bulk_request = [];
             for (var i = 0; i < obj.length; i++) {
-                var id = obj[i]._id,
-                    weight = 0,
-                    picture = "";
+                var picture = "";
                 if (indexName === req.config.database.index_song) {
-                    weight = Number(obj[i].rank || 0);
-                    delete obj[i].rank;
+                    //On ajoute les images des albums pour les musiques, nous devons donc récupérer les images dans la collection album
+                    ((objSong) => {
+                        db.collection(req.config.database.collection_album).findOne({
+                            _id: new ObjectId(objSong.id_album)
+                        }, {
+                            "cover.small": 1
+                        }, function (err, objSongWasabi) {
+                            picture = objSongWasabi.hasOwnProperty('cover') ? objSongWasabi.cover.small : "";
+                            if (picture == "http://e-cdn-images.deezer.com/images/cover//56x56-000000-80-0-0.jpg") picture = "";
+                            objSong.picture = picture;
+                            objSong.weight = Number(objSong.rank || 0);
+                            //for each line we must provide the informations below
+                            //ex line1: { "index" : { "_index" : "idx_artist", "_type" : "artist", "_id" : an objectid from mongodb } }
+                            //ex line2: { "field1" : "data1", "field2" : "data2" , ...}
+                            bulk_request.push({
+                                index: {
+                                    _index: indexName,
+                                    _type: typeName,
+                                    _id: objSong._id
+                                }
+                            });
+                            delete objSong._id;
+                            delete objSong.id_album;
+                            delete objSong.rank;
+                            bulk_request.push(objSong); // Insert data
+                            if (bulk_request.length / 2 == obj.length) {
+                                elasticsearchClient.bulk({
+                                    body: bulk_request
+                                }, (err, resp) => {
+                                    if (err) console.log("ERREUR ==== " + err);
+                                });
+                                skip += limit;
+                                if (obj.length != limit) {
+                                    console.log("FIN DU TRAITEMENT !");
+                                    console.log(indexName + " Crée");
+                                    return;
+                                }
+                                recursivePost(skip);
+                            }
+                        })
+                    })(obj[i])
                 } else { //on traite les artistes
-                    weight = Number(obj[i].deezerFans || 0);
                     picture = obj[i].hasOwnProperty('picture') ? obj[i].picture.small : "";
-                    if (picture == "http://e-cdn-images.deezer.com/images/artist//56x56-000000-80-0-0.jpg") {
-                        picture = "";
-                    }
-                    //On supprime les champs ci-dessous pour ne pas les avoir dans elasticsearch, 
-                    //nous voulons le champ 'weight' et pas 'deezerFans' 
-                    delete obj[i].deezerFans;
-                    delete obj[i].picture;
-                }
-                delete obj[i]._id;
-                bulk_request.push({
-                    index: {
-                        _index: indexName,
-                        _type: typeName,
-                        _id: id
-                    }
-                });
-                // Insert index
-                if (obj[i].albumTitle || obj[i].title) {
-                    obj[i].weight = weight;
-                } else {
-                    //It's an artist
+                    if (picture == "http://e-cdn-images.deezer.com/images/artist//56x56-000000-80-0-0.jpg") picture = "";
                     obj[i].nameSuggest = {};
                     obj[i].nameSuggest.input = [];
                     obj[i].nameSuggest.input.push(obj[i].name);
@@ -148,25 +167,39 @@ var insertBulkData = function (req, collectionName, projectObj, indexName, typeN
                     if (obj[i].name.split(" ").length > 1) {
                         obj[i].nameSuggest.input.push(obj[i].name.substring(obj[i].name.indexOf(" ") + 1, obj[i].name.length));
                     }
-                    obj[i].nameSuggest.weight = weight;
+                    obj[i].nameSuggest.weight = Number(obj[i].deezerFans || 0);
                     obj[i].picture = picture;
+                    //for each line we must provide the informations below
+                    //ex line1: { "index" : { "_index" : "idx_artist", "_type" : "artist", "_id" : an objectid from mongodb } }
+                    //ex line2: { "field1" : "data1", "field2" : "data2" , ...}
+                    bulk_request.push({
+                        index: {
+                            _index: indexName,
+                            _type: typeName,
+                            _id: obj[i]._id
+                        }
+                    });
+                    //On supprime les champs ci-dessous pour ne pas les avoir dans elasticsearch, 
+                    delete obj[i]._id;
+                    delete obj[i].deezerFans;
+                    bulk_request.push(obj[i]); // Insert data
+                    if (bulk_request.length / 2 == obj.length) {
+                        console.log((bulk_request.length / 2), obj.length)
+                        elasticsearchClient.bulk({
+                            body: bulk_request
+                        }, (err, resp) => {
+                            if (err) console.log("ERREUR ==== " + err);
+                        });
+                        skip += limit;
+                        if (obj.length != limit) {
+                            console.log("FIN DU TRAITEMENT !");
+                            console.log(indexName + " Crée");
+                            return;
+                        }
+                        recursivePost(skip);
+                    }
                 }
-                bulk_request.push(obj[i]); // Insert data
             }
-            elasticsearchClient.bulk({
-                body: bulk_request
-            }, function (err, resp) {
-                if (err) {
-                    console.log(err);
-                }
-            });
-            skip += limit;
-            if (obj.length != limit) {
-                console.log("FIN DU TRAITEMENT !");
-                console.log(indexName + " Crée");
-                return;
-            }
-            recursivePost(skip);
         });
     })(skip)
 };

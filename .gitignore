@@ -1,15 +1,18 @@
 mongo/backup_mongo/*
-mongo/backup_mongo_tmp/*
 mongo/deezer/*
 mongo/animux/*
 mongo/discogs/*
+
 public/my_components/MT5/multitrack/*
 public/download/*
 public/AmpSim3/*
 public/AmpSimFA/*
-node_modules/*
-cert_https/*
+
 routes/conf/login.json
 routes/conf/confJwt.json
 
-/nbproject/private/
+node_modules/*
+
+cert_https/*
+
+.vscode/*

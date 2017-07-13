@@ -183,7 +183,11 @@ var getDirArtist = (req, res) => {
                 artistRegex = new RegExp('^' + escapePathArtist + '$', 'i');
             nbTotal++;
             req.db.collection(COLLECTIONARTIST).findOne({
-                name: artistRegex
+                $or: [{
+                    nameVariations: artistRegex
+                }, {
+                    name: artistRegex
+                }]
             }, (err, artist) => {
                 if (err) return res.status(404).json(config.http.error.artist_404);
                 if (artist != null) {
@@ -339,8 +343,13 @@ var getFileSong = (req, res) => {
  */
 var processArtistAddThe = (db, artistName) => {
     return new Promise((resolve, reject) => {
+
         db.collection(COLLECTIONARTIST).findOne({
-            name: new RegExp("^" + utilHandler.escapeRegExp("The " + artistName) + "$", "i")
+            $or: [{
+                nameVariations: new RegExp("^" + utilHandler.escapeRegExp("The " + artistName) + "$", "i")
+            }, {
+                name: new RegExp("^" + utilHandler.escapeRegExp("The " + artistName) + "$", "i")
+            }]
         }, (err, artist) => {
             if (err) return res.status(404).json(config.http.error.artist_404);
             if (artist != null) {
@@ -364,7 +373,11 @@ var processArtistRemoveThe = (db, artistName) => {
         if (!/^The(\s)/i.test(artistName)) return resolve(artistName);
         var artistNameWithoutThe = artistName.replace(/^The(\s)/i, "");
         db.collection(COLLECTIONARTIST).findOne({
-            name: new RegExp("^" + utilHandler.escapeRegExp(artistNameWithoutThe) + '$', "i")
+            $or: [{
+                nameVariations: new RegExp("^" + utilHandler.escapeRegExp(artistNameWithoutThe) + '$', "i")
+            }, {
+                name: new RegExp("^" + utilHandler.escapeRegExp(artistNameWithoutThe) + '$', "i")
+            }]
         }, (err, artist) => {
             if (err) return res.status(404).json(config.http.error.artist_404);
             if (artist != null) {
@@ -395,8 +408,13 @@ var processArtistFeatVersus = (db, artistName) => {
         tArtists = artistNameReplace.split(splitChar);
         var firstArtist = tArtists[0].trim();
         firstArtist = sanitizeFilename(firstArtist);
+
         db.collection(COLLECTIONARTIST).findOne({
-            name: new RegExp("^" + utilHandler.escapeRegExp(firstArtist) + "$", "i")
+            $or: [{
+                nameVariations: new RegExp("^" + utilHandler.escapeRegExp(firstArtist) + "$", "i")
+            }, {
+                name: new RegExp("^" + utilHandler.escapeRegExp(firstArtist) + "$", "i")
+            }]
         }, (err, artist) => {
             if (err) return res.status(404).json(config.http.error.artist_404);
             if (artist != null) {
@@ -434,8 +452,13 @@ var processArtistAnd = (db, artistName) => {
         //firstArtistName = artist1 on supprime artist2
         var firstArtistName = tArtists[0].trim();
         // on cherche d'abord l'artiste entier (artist1 & artist2). si non trouvé, alors on cherche le artist1 qui est l'artiste principal
+
         db.collection(COLLECTIONARTIST).findOne({
-            name: new RegExp("^" + utilHandler.escapeRegExp(firstArtist) + "$", "i")
+            $or: [{
+                nameVariations: new RegExp("^" + utilHandler.escapeRegExp(firstArtist) + "$", "i")
+            }, {
+                name: new RegExp("^" + utilHandler.escapeRegExp(firstArtist) + "$", "i")
+            }]
         }, (err, artist) => {
             if (err) return res.status(404).json(config.http.error.artist_404);
             //On a trouvé le nom d'artiste composé de : artist1 & artist2
@@ -445,7 +468,11 @@ var processArtistAnd = (db, artistName) => {
             } else {
                 //Nous n'avons pas trouvé le nom d'artiste composé de artist1 & artist 2. Nous cherchons donc uniquement avec artist1, qui est l'artiste principal
                 db.collection(COLLECTIONARTIST).findOne({
-                    name: new RegExp("^" + utilHandler.escapeRegExp(firstArtistName) + "$", "i")
+                    $or: [{
+                        nameVariations: new RegExp("^" + utilHandler.escapeRegExp(firstArtistName) + "$", "i")
+                    }, {
+                        name: new RegExp("^" + utilHandler.escapeRegExp(firstArtistName) + "$", "i")
+                    }]
                 }, (err, artist) => {
                     if (artist != null) {
                         updateArtistAnimuxPath(db, artist, artistName);

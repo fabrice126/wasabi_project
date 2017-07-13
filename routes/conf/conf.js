@@ -157,7 +157,8 @@ module.exports = {
                         "id_artist": 1,
                         "name": 1,
                         "publicationDate": 1,
-                        "title": 1
+                        "title": 1,
+                        "cover.medium": 1
                     },
                     "song": {
                         "position": 1,
@@ -211,7 +212,7 @@ module.exports = {
         "env": {
             "prod": "production",
             "dev": "development",
-            "dev_mode": false
+            "dev_mode": true
         }
     }
 };

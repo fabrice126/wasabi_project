@@ -28,19 +28,16 @@
                 font-size: 12px;
             }
 
-            .album_search_bar,
-            .song_search_bar {
-                border-radius: 4px;
-                padding: 7px;
-            }
-
             .band_search_bar {
                 border-radius: 100%;
                 width: 45px;
+                box-shadow: 0px 2px 3px rgb(138, 138, 138);
             }
 
-            .album_search_bar {
-                background-color: #f98b13;
+            .song_search_bar {
+                border-radius: 2px;
+                width: 45px;
+                box-shadow: 0px 2px 3px rgb(138, 138, 138);
             }
 
             paper-card {
@@ -50,10 +47,6 @@
                 padding-bottom: 1%;
                 cursor: pointer;
                 color: black;
-            }
-
-            .song_search_bar {
-                background-color: #C0A805;
             }
 
             .search_title {
@@ -104,7 +97,7 @@
                 <template is="dom-if" if="{{_isArtist(result)}}">
                     <a href="#/search/artist/{{_encodeUri(result.name)}}" class="inherit">
                         <paper-card elevation="0">
-                            <img class="band_search_bar" src="{{putPicture(result)}}" alt="Band">
+                            <img class="band_search_bar" src="{{putPictureArtist(result)}}" alt="Band">
                             <span class="search_title">{{result.name}}</span>
                             <paper-ripple></paper-ripple>
                         </paper-card>
@@ -113,7 +106,7 @@
                 <template is="dom-if" if="{{_isSong(result)}}">
                     <a href="#/search/artist/{{_encodeUri(result.name)}}/album/{{_encodeUri(result.albumTitle)}}/song/{{_encodeUri(result.title)}}" class="inherit">
                         <paper-card elevation="0">
-                            <img class="song_search_bar" src="../img/song_search_bar.svg" alt="Song">
+                            <img class="song_search_bar" src="{{putPictureSong(result)}}" alt="Song">
                             <span class="search_title">{{result.title}} - {{result.name}}<span class="search_album">(album: {{result.albumTitle}})</span>
                             </span>
                             <paper-ripple></paper-ripple>
@@ -147,8 +140,11 @@
                 }
                 return isSong;
             },
-            putPicture: function (artist) {
-                return artist.picture || "../img/band_search_bar.svg";
+            putPictureArtist: function (suggestion) {
+                return suggestion.picture || "../img/band_search_bar.svg";
+            },
+            putPictureSong: function (suggestion) {
+                return suggestion.picture || "../img/song_search_bar.svg";
             }
         });
     </script>

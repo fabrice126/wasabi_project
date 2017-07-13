@@ -16,40 +16,51 @@ const COLLECTIONARTIST = config.database.collection_artist;
 const COLLECTIONALBUM = config.database.collection_album;
 const COLLECTIONSONG = config.database.collection_song;
 const PATH_ARTIST_DISCOGS = "./mongo/discogs/discogs_20170701_artists.xml";
-const PATH_LABEL_DISCOGS = "./mongo/discogs/discogs_20170701_labels_test.xml";
+const PATH_RELEASE_DISCOGS = "./mongo/discogs/discogs_20170701_releases.xml";
 const LIMIT_XML = 10000;
 
+var createRegexObject = function (root, node) {
+    return {
+        root: {
+            start: new RegExp('^<' + root + '>', 'i'),
+            end: new RegExp('^<\/' + root + '>', 'i'),
+        },
+        node: new RegExp('^<' + node + '>', 'i')
+    };
+}
+//Add the field id_artist_discogs to each album with an urlDiscogs
 var getAddFieldsIdArtistDiscogs = (req, res) => {
-    getAddIdArtistDiscogs(req.db, COLLECTIONARTIST);
+    getAddIdCollectionDiscogs(req.db, COLLECTIONARTIST, "id_artist_discogs");
     res.json(config.http.valid.send_message_ok);
 };
-
+//Add the field id_member_discogs to each member with an urlDiscogs
 var getAddFieldsIdMemberDiscogs = (req, res) => {
     getAddIdMemberDiscogs(req.db, COLLECTIONARTIST);
+    res.json(config.http.valid.send_message_ok);
+};
+//Add the field id_album_discogs to each album with an urlDiscogs
+var getAddFieldsIdAlbumDiscogs = (req, res) => {
+    getAddIdCollectionDiscogs(req.db, COLLECTIONALBUM, "id_album_discogs");
     res.json(config.http.valid.send_message_ok);
 };
 
 var getAllArtists = (req, res) => {
     //To run this API you have to download the latest dump of artist from discogs: http://data.discogs.com/?prefix=data/2017/ and put it in mongo/discogs
-    getXMLAndUpdateAll(req.db, COLLECTIONARTIST, updateFieldsArtistsDiscogsFromXML);
+    getXMLAndUpdateAll(req.db, COLLECTIONARTIST, updateFieldsArtistsDiscogsFromXML, PATH_ARTIST_DISCOGS, 'artist');
     res.json(config.http.valid.send_message_ok);
 };
 var getAllArtistsMembers = (req, res) => {
     //To run this API you have to download the latest dump of artist from discogs: http://data.discogs.com/?prefix=data/2017/ and put it in mongo/discogs
-    getXMLAndUpdateAll(req.db, COLLECTIONARTIST, updateFieldsArtistsMembersDiscogsFromXML);
+    getXMLAndUpdateAll(req.db, COLLECTIONARTIST, updateFieldsArtistsMembersDiscogsFromXML, PATH_ARTIST_DISCOGS, 'artist');
     res.json(config.http.valid.send_message_ok);
 };
 var getAllAlbums = (req, res) => {
-    getAndUpdateAll(req.db, COLLECTIONARTIST, updateFieldsAlbumsDiscogs);
+    //To run this API you have to download the latest dump of release from discogs: http://data.discogs.com/?prefix=data/2017/ and put it in mongo/discogs
+    getXMLAndUpdateAll(req.db, COLLECTIONALBUM, updateFieldsAlbumsDiscogsFromXML, PATH_RELEASE_DISCOGS, 'release');
     res.json(config.http.valid.send_message_ok);
 };
 
-var getAllSongs = (req, res) => {
-    getAndUpdateAll(req.db, COLLECTIONARTIST, updateFieldsSongsDiscogs);
-    res.json(config.http.valid.send_message_ok);
-};
-
-var getXMLAndUpdateAll = (db, collection, updateFieldsCollectionDiscogs) => {
+var getXMLAndUpdateAll = (db, collection, updateFieldsCollectionDiscogs, path_discogs, discogsTag) => {
     var currXmlObject = "",
         options = {
             flags: 'w',
@@ -58,8 +69,9 @@ var getXMLAndUpdateAll = (db, collection, updateFieldsCollectionDiscogs) => {
         nbLineRead = 0,
         nbObject = 0,
         startAtLine = 0,
+        oRegex = createRegexObject(discogsTag + 's', discogsTag),
         loggerNotFound = fs.createWriteStream("./mongo/discogs/test_debug_discogsHandler.json", options);
-    var s = fs.createReadStream(PATH_ARTIST_DISCOGS).pipe(es.split()).pipe(es.mapSync(function (line) {
+    var s = fs.createReadStream(path_discogs).pipe(es.split()).pipe(es.mapSync(function (line) {
         // pause the readstream
         s.pause();
         nbLineRead++;
@@ -69,20 +81,21 @@ var getXMLAndUpdateAll = (db, collection, updateFieldsCollectionDiscogs) => {
         } else {
             var line = line.trim();
             //Some xml object are splitted in several lines, so we need to join it in the same object : currXmlObject
-            if ((!/^<artists>/i.test(line)) && (!/^<\/artists>/i.test(line))) {
-                if (/^<artist>/i.test(line)) {
+            if ((!oRegex.root.start.test(line)) && (!oRegex.root.end.test(line))) {
+                if (oRegex.node.test(line)) {
                     //It's a new line, we must parse to json the string
                     if (currXmlObject.length) {
                         //We found the entire artist object
                         nbObject++;
-                        parseAndUpdate(db, collection, updateFieldsCollectionDiscogs, currXmlObject, nbObject)
+                        parseAndUpdate(db, collection, updateFieldsCollectionDiscogs, currXmlObject, nbObject, loggerNotFound)
+                        if (nbObject == 500) return;
                     }
                     //we set to empty currXmlObject
                     currXmlObject = "";
                 }
                 currXmlObject += line;
             } else {
-                if (/^<\/artists>/i.test(line)) parseAndUpdate(db, collection, updateFieldsCollectionDiscogs, currXmlObject, nbObject);
+                if (oRegex.root.end.test(line)) parseAndUpdate(db, collection, updateFieldsCollectionDiscogs, currXmlObject, nbObject);
             }
             // resume the readstream, possibly from a callback
             if (!(nbObject % LIMIT_XML)) {
@@ -96,19 +109,23 @@ var getXMLAndUpdateAll = (db, collection, updateFieldsCollectionDiscogs) => {
     }).on('error', (err) => console.log('Error while reading file.', err)).on('end', () => console.log('Read entire file.')));
 };
 
-
-
-var getAddIdArtistDiscogs = (db, collection) => {
+var getAddIdCollectionDiscogs = (db, collection, id_field) => {
     var skip = 0,
         limit = 10000,
         query = {
-            urlDiscogs: {
-                $ne: ""
-            }
+            $and: [{
+                urlDiscogs: {
+                    $exists: 1
+                }
+            }, {
+                urlDiscogs: {
+                    $ne: ""
+                }
+            }]
         },
         projection = {
-            rdf: 0,
-            wordCount: 0
+            urlDiscogs: 1,
+            _id: 1
         };
     db.collection(collection).count(query, function (err, nbObj) {
         console.log("There are " + nbObj + " " + collection + " with an id discogs");
@@ -121,13 +138,13 @@ var getAddIdArtistDiscogs = (db, collection) => {
                     (function loop(i) {
                         let url = tObj[i].urlDiscogs,
                             id = url.substring(url.lastIndexOf('/') + 1, url.length);
-                        console.log(id, tObj[i]._id);
+                        var addId = {
+                            [id_field]: id
+                        };
                         db.collection(collection).updateOne({
                             _id: new ObjectId(tObj[i]._id)
                         }, {
-                            $set: {
-                                id_artist_discogs: id
-                            }
+                            $set: addId
                         }, function (err) {
                             if (err) throw err;
                             nb++;
@@ -232,26 +249,27 @@ var updateFieldsArtistsMembersDiscogsFromXML = (db, collection, oArtist, oDiscog
         if (!(nbObject % LIMIT_XML)) console.log(nbObject + " Object updated");
     });
 };
-var updateFieldsArtistMemberDiscogs = (oArtist, oDiscogs) => {
-    console.log(membersDiscogs.length);
-    console.log(oArtist.members.length);
-    //We retrieve the API from discogs about a member of a band
+var updateFieldsAlbumsDiscogsFromXML = (db, collection, oAlbum, oDiscogs, nbObject) => {
+    console.log("Dans updateFieldsAlbumsDiscogsFromXML");
+    // db.collection(collection).updateOne({
+    //     id_album_discogs: oAlbum.id_album_discogs
+    // }, {
+    //     $set: oAlbum
+    // });
 };
-var updateFieldsAlbumsDiscogs = (oAlbum, oDiscogs) => {};
-var updateFieldsSongsDiscogs = (oSong, oDiscogs) => {};
 
-
-var parseAndUpdate = (db, collection, updateFieldsCollectionDiscogs, xml, nbObject) => {
+var parseAndUpdate = (db, collection, updateFieldsCollectionDiscogs, xml, nbObject, loggerNotFound) => {
     parseString(xml, (err, objectXMLDiscogs) => {
         if (err) console.log(err);
         var objArtist = {};
+        loggerNotFound.write(objectXMLDiscogs + "\n");
         if (objectXMLDiscogs) updateFieldsCollectionDiscogs(db, collection, objArtist, objectXMLDiscogs, nbObject);
         else console.log("OBJ ARTIST UNDEFINED");
     });
 };
 exports.getAllArtists = getAllArtists;
 exports.getAllAlbums = getAllAlbums;
-exports.getAllSongs = getAllSongs;
 exports.getAllArtistsMembers = getAllArtistsMembers;
 exports.getAddFieldsIdArtistDiscogs = getAddFieldsIdArtistDiscogs;
 exports.getAddFieldsIdMemberDiscogs = getAddFieldsIdMemberDiscogs;
+exports.getAddFieldsIdAlbumDiscogs = getAddFieldsIdAlbumDiscogs;

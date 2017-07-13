@@ -103,19 +103,19 @@
                 font-size: 19px;
             }
 
-            #songInfos>.urlArea {
-                margin-bottom: 20px;
+            #externalLink {
+                padding: 5px;
+                display: flex;
+                justify-content: center;
+                border-bottom: 1px solid #DDD;
+                box-shadow: inset 0px 2px 18px rgba(162, 162, 162, 0.26);
+                flex-wrap: wrap;
             }
 
-            #songInfos>.urlArea>a {
-                text-decoration: none;
-            }
-
-            #songInfos>.urlArea paper-icon-button {
-                text-decoration: none;
+            #externalLink paper-icon-button {
                 width: 45px;
                 height: 45px;
-            }
+            } 
 
             #songLyricsEditable,
             #songLyricsNonEditable {
@@ -238,69 +238,69 @@
                             </template>
                         </div>
                     </section>
+                    <div id="externalLink">
+                        <template is="dom-if" if="{{artist.albums.songs.urlWikipedia}}">
+                            <a class="urlMargin" href="{{artist.albums.songs.urlWikipedia}}" target="_blank" tabindex="-1" alt="url Wikipedia" title="Wikipedia">
+                                <paper-icon-button src="../img/wikipedia_icon.svg"></paper-icon-button>
+                            </a>
+                        </template>
+                        <template is="dom-if" if="{{artist.albums.songs.urlAmazon}}">
+                            <a class="urlMargin" href="{{artist.albums.songs.urlAmazon}}" target="_blank" tabindex="-1" alt="url Amazon" title="Amazon">
+                                <paper-icon-button src="../img/amazon_icon.svg"></paper-icon-button>
+                            </a>
+                        </template>
+                        <template is="dom-if" if="{{artist.albums.songs.urlYouTube}}">
+                            <a class="urlMargin" href="http://www.youtube.com/watch?v={{artist.albums.songs.urlYouTube}}" target="_blank" tabindex="-1" alt="url YouTube" title="YouTube">
+                                <paper-icon-button src="../img/youtube_icon.svg"></paper-icon-button>
+                            </a>
+                        </template>
+                        <template is="dom-if" if="{{artist.albums.songs.urlSpotify}}">
+                            <a class="urlMargin" href="{{artist.albums.songs.urlSpotify}}" target="_blank" tabindex="-1" alt="url Spotify" title="Spotify">
+                                <paper-icon-button src="../img/spotify_icon.svg"></paper-icon-button>
+                            </a>
+                        </template>
+                        <template is="dom-if" if="{{artist.albums.songs.urlDeezer}}">
+                            <a class="urlMargin" href="{{artist.albums.songs.urlDeezer}}" target="_blank" tabindex="-1" alt="url Deezer" title="Deezer">
+                                <paper-icon-button src="../img/deezer_icon.svg"></paper-icon-button>
+                            </a>
+                        </template>
+                        <template is="dom-if" if="{{artist.albums.songs.urlITunes}}">
+                            <a class="urlMargin" href="{{artist.albums.songs.urlITunes}}" target="_blank" tabindex="-1" alt="url iTunes" title="iTunes">
+                                <paper-icon-button src="../img/itunes_icon.svg"></paper-icon-button>
+                            </a>
+                        </template>
+                        <template is="dom-if" if="{{artist.albums.songs.urlMusicBrainz}}">
+                            <a class="urlMargin" href="{{artist.albums.songs.urlMusicBrainz}}" target="_blank" tabindex="-1" alt="url MusicBrainz" title="MusicBrainz">
+                                <paper-icon-button src="../img/musicbrainz_icon.svg"></paper-icon-button>
+                            </a>
+                        </template>
+                        <template is="dom-if" if="{{artist.albums.songs.urlAllmusic}}">
+                            <a class="urlMargin" href="{{artist.albums.songs.urlAllmusic}}" target="_blank" tabindex="-1" alt="url AllMusic" title="AllMusic">
+                                <paper-icon-button src="../img/allmusic_icon.svg"></paper-icon-button>
+                            </a>
+                        </template>
+                        <template is="dom-if" if="{{artist.albums.songs.urlLastFm}}">
+                            <a class="urlMargin" href="{{artist.albums.songs.urlLastFm}}" target="_blank" tabindex="-1" alt="url Last FM" title="Last FM">
+                                <paper-icon-button src="../img/lastfm_icon.svg"></paper-icon-button>
+                            </a>
+                        </template>
+                        <template is="dom-if" if="{{artist.albums.songs.urlPandora}}">
+                            <a class="urlMargin" href="{{artist.albums.songs.urlPandora}}" target="_blank" tabindex="-1" alt="url Pandora" title="Pandora">
+                                <paper-icon-button src="../img/pandora_icon.svg"></paper-icon-button>
+                            </a>
+                        </template>
+                        <template is="dom-if" if="{{artist.albums.songs.urlGoEar}}">
+                            <a class="urlMargin" href="{{artist.albums.songs.urlGoEar}}" target="_blank" tabindex="-1" alt="url GoEar" title="GoEar">
+                                <paper-icon-button src="../img/goear_icon.svg"></paper-icon-button>
+                            </a>
+                        </template>
+                        <template is="dom-if" if="{{artist.albums.songs.urlHypeMachine}}">
+                            <a class="urlMargin" href="{{artist.albums.songs.urlHypeMachine}}" target="_blank" tabindex="-1" alt="url Hype Machine" title="Hype Machine">
+                                <paper-icon-button src="../img/hypemachine_icon.svg"></paper-icon-button>
+                            </a>
+                        </template>
+                    </div>
                     <section id="songInfos">
-                        <div class="urlArea">
-                            <template is="dom-if" if="{{artist.albums.songs.urlWikipedia}}">
-                                <a class="urlMargin" href="{{artist.albums.songs.urlWikipedia}}" target="_blank" tabindex="-1" alt="url Wikipedia" title="Wikipedia">
-                                    <paper-icon-button src="../img/wikipedia_icon.svg"></paper-icon-button>
-                                </a>
-                            </template>
-                            <template is="dom-if" if="{{artist.albums.songs.urlAmazon}}">
-                                <a class="urlMargin" href="{{artist.albums.songs.urlAmazon}}" target="_blank" tabindex="-1" alt="url Amazon" title="Amazon">
-                                    <paper-icon-button src="../img/amazon_icon.svg"></paper-icon-button>
-                                </a>
-                            </template>
-                            <template is="dom-if" if="{{artist.albums.songs.urlYouTube}}">
-                                <a class="urlMargin" href="http://www.youtube.com/watch?v={{artist.albums.songs.urlYouTube}}" target="_blank" tabindex="-1" alt="url YouTube" title="YouTube">
-                                    <paper-icon-button src="../img/youtube_icon.svg"></paper-icon-button>
-                                </a>
-                            </template>
-                            <template is="dom-if" if="{{artist.albums.songs.urlSpotify}}">
-                                <a class="urlMargin" href="{{artist.albums.songs.urlSpotify}}" target="_blank" tabindex="-1" alt="url Spotify" title="Spotify">
-                                    <paper-icon-button src="../img/spotify_icon.svg"></paper-icon-button>
-                                </a>
-                            </template>
-                            <template is="dom-if" if="{{artist.albums.songs.urlDeezer}}">
-                                <a class="urlMargin" href="{{artist.albums.songs.urlDeezer}}" target="_blank" tabindex="-1" alt="url Deezer" title="Deezer">
-                                    <paper-icon-button src="../img/deezer_icon.svg"></paper-icon-button>
-                                </a>
-                            </template>
-                            <template is="dom-if" if="{{artist.albums.songs.urlITunes}}">
-                                <a class="urlMargin" href="{{artist.albums.songs.urlITunes}}" target="_blank" tabindex="-1" alt="url iTunes" title="iTunes">
-                                    <paper-icon-button src="../img/itunes_icon.svg"></paper-icon-button>
-                                </a>
-                            </template>
-                            <template is="dom-if" if="{{artist.albums.songs.urlMusicBrainz}}">
-                                <a class="urlMargin" href="{{artist.albums.songs.urlMusicBrainz}}" target="_blank" tabindex="-1" alt="url MusicBrainz" title="MusicBrainz">
-                                    <paper-icon-button src="../img/musicbrainz_icon.svg"></paper-icon-button>
-                                </a>
-                            </template>
-                            <template is="dom-if" if="{{artist.albums.songs.urlAllmusic}}">
-                                <a class="urlMargin" href="{{artist.albums.songs.urlAllmusic}}" target="_blank" tabindex="-1" alt="url AllMusic" title="AllMusic">
-                                    <paper-icon-button src="../img/allmusic_icon.svg"></paper-icon-button>
-                                </a>
-                            </template>
-                            <template is="dom-if" if="{{artist.albums.songs.urlLastFm}}">
-                                <a class="urlMargin" href="{{artist.albums.songs.urlLastFm}}" target="_blank" tabindex="-1" alt="url Last FM" title="Last FM">
-                                    <paper-icon-button src="../img/lastfm_icon.svg"></paper-icon-button>
-                                </a>
-                            </template>
-                            <template is="dom-if" if="{{artist.albums.songs.urlPandora}}">
-                                <a class="urlMargin" href="{{artist.albums.songs.urlPandora}}" target="_blank" tabindex="-1" alt="url Pandora" title="Pandora">
-                                    <paper-icon-button src="../img/pandora_icon.svg"></paper-icon-button>
-                                </a>
-                            </template>
-                            <template is="dom-if" if="{{artist.albums.songs.urlGoEar}}">
-                                <a class="urlMargin" href="{{artist.albums.songs.urlGoEar}}" target="_blank" tabindex="-1" alt="url GoEar" title="GoEar">
-                                    <paper-icon-button src="../img/goear_icon.svg"></paper-icon-button>
-                                </a>
-                            </template>
-                            <template is="dom-if" if="{{artist.albums.songs.urlHypeMachine}}">
-                                <a class="urlMargin" href="{{artist.albums.songs.urlHypeMachine}}" target="_blank" tabindex="-1" alt="url Hype Machine" title="Hype Machine">
-                                    <paper-icon-button src="../img/hypemachine_icon.svg"></paper-icon-button>
-                                </a>
-                            </template>
-                        </div>
                         <template is="dom-if" if="{{artist.albums.songs.urlYouTube}}">
                             <google-youtube video-id="{{artist.albums.songs.urlYouTube}}"></google-youtube>
                         </template>

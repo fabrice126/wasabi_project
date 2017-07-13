@@ -5,6 +5,22 @@ Au cours du développement de wasabi, des champs récupérés de lyrics wikia se
 
 Il est conseillé de lire ce que fait chaque API avant de l'utiliser notamment celle concernant updatedb et createdb.
 
+**Répertoires et fichiers du .gitignore**
+=======
+ Vous pouvez trouvez la listes des fichiers/dossiers non présent sur le git ici: https://github.com/fabrice126/wasabi_project/blob/master/.gitignore  :
+1. `mongo/backup_mongo/*` : contient les dumps de la base de données wasabi
+2. `mongo/deezer/*` : fichier csv contenant le matching de nos musiques avec les musiques chez deezer
+3. `mongo/animux/*` : arborescence contenant les informations permettant d'aligner l'audio avec les lyrics
+4. `mongo/discogs/*` : fichiers XML contenant la base de données discogs. A télécharger ici : http://data.discogs.com/ 
+5. `public/my_components/MT5/multitrack/*` : environ 70 go de pistes audio démixées
+6. `public/download/*` : environ 70 go de pistes audio démixées en .zip
+7. `public/AmpSim3/*` : application AmpSim3
+8. `public/AmpSimFA/*` : application AmpSimFa
+9. `node_modules/*` : contient les modules node js. lancer `npm install` dans le dossier wasabi pour récupérer les modules du projet
+10. `cert_https/*` : contient les certificats HTTPS de l'application
+11. `routes/conf/login.json` : contient le login/password permettant d'accéder à certaines API
+12. `routes/conf/confJwt.json` : contient la clés permettant de hasher le token JWT
+
 **Comment lancer l'application sous windows**
 =======
 1. Récupérer l'application sur le GIT
@@ -17,13 +33,15 @@ Il est conseillé de lire ce que fait chaque API avant de l'utiliser notamment c
 *4.1.* lancer elasticsearch, voir : *"<a href="#elasticsearch-sous-windows">Comment lancer les bases de données>Elasticsearch sous Windows</a>"*  
 5. Lancer le serveur node js  
 *5.1.* En ligne de commande : `cd C:/Users/user/Documents/wasabi_project`  
-*5.2.* /!\ Par souci de sécurité le fichier contenant le login / mot de passe n'est pas sur le git vous devez donc ajouter `routes/conf/login.json` . Ce fichier contient le json suivant: `{"login": "ADemanderALAdmin","password": "ADemanderALAdmin"}`. Idem pour le fichier `routes/conf/confJwt.json`  contenant la clé des Tokens JWT ce fichier contient le json suivant :  `{"secretOrKey": "ADemanderALAdmin"}`  
+*5.2.* /!\ Par souci de sécurité le fichier contenant le login / mot de passe n'est pas sur le git vous devez donc ajouter `routes/conf/login.json` . Ce fichier contient le json suivant: `{"login": "ADemanderALAdmin","password": "ADemanderALAdmin"}`. Idem pour le fichier `routes/conf/confJwt.json`  contenant la clé des Tokens JWT ce fichier contient le json suivant :  `{"secretOrKey": "ADemanderALAdmin"}`  . Vous pouvez trouvez la listes des fichiers/dossiers non présent sur le git ici: https://github.com/fabrice126/wasabi_project/blob/master/.gitignore  
 *5.3.* Voir la partie: *"<a href="#comment-installer-le-certificat-https">Comment installer un certificat https</a>"*  
 *5.4.* taper la commande: `npm install`  cela installera les dépendances du projet  
 *5.5.* taper la commande: `npm start`  
 *5.6.* le serveur est maintenant lancé sur *http://localhost/* (dans le navigateur)  
-6. Remplir la base de données d'elasticsearch : pour cela utilisez l'api REST pour indexer le nom des artistes `http://127.0.0.1/createdb/createdbelasticsearchartist` et `http://127.0.0.1/createdb/createdbelasticsearchsong` pour indexer les noms des musiques avec les noms d'artistes et les noms d'albums ainsi nous pourrons effectuer des recherches via la barre de recherche du site  
-*6.1.* En cas de problème avec `http://127.0.0.1/createdb/createdbelasticsearchsong` vérifiez dans app.js que `app.set('env', 'development');` n'est pas commenté. Si c'est le cas, vous devez décommenter cette ligne et commentez `app.set('env', 'production');` 
+6. Remplir la base de données d'elasticsearch : 
+*6.1.* vérifiez dans `/routes/conf/conf.js`  que launch.env.dev_mode soit à true
+*6.2.* Lancez ensuite l'api REST pour indexer les artistes: `http://127.0.0.1/createdb/createdbelasticsearchartist` et `http://127.0.0.1/createdb/createdbelasticsearchsong` pour indexer les musiques. Nous pouvons maintenant effectuer des recherches via la barre de recherche du site  
+
 
 **Comment lancer l'application sous RedHat/Linux Centos 7 (serveur - uniquement en cas de ré-installation)**
 =======
@@ -32,7 +50,7 @@ Il est conseillé de lire ce que fait chaque API avant de l'utiliser notamment c
 *1.2.* Taper la commande : `git clone https://github.com/fabrice126/wasabi_project.git`  
 *1.3.* /!\ les dumps de la base de données ne sont pas sur le git. Mettre les dumps de la base de données dans le dossier `backup_mongo`. Créer le dossier dans `wasabi_project/mongo/` pour cela rendez-vous dans le bon dossier `cd wasabi_project/mongo/` puis tapez la commande : `mkdir backup_mongo`. Placer les dumps à cet endroit (conseil: envoyer les dumps via filezilla)  
 *1.4.* Dans le dossier `wasabi_project/mongo/` créer le répertoire backup_mongo_tmp. Taper la commande : `mkdir backup_mongo_tmp`  
-*1.5.* /!\ Par souci de sécurité le fichier contenant le login / mot de passe n'est pas sur le git vous devez donc ajouter `routes/conf/login.json` . Ce fichier contient le json suivant: `{"login": "ADemanderALAdmin","password": "ADemanderALAdmin"}`. Idem pour le fichier routes/conf/confJwt.json contenant la clé des Tokens JWT ce fichier contient le json suivant :  `{"secretOrKey": "ADemanderALAdmin"}`
+*1.5.* /!\ Par souci de sécurité le fichier contenant le login / mot de passe n'est pas sur le git vous devez donc ajouter `routes/conf/login.json` . Ce fichier contient le json suivant: `{"login": "ADemanderALAdmin","password": "ADemanderALAdmin"}`. Idem pour le fichier routes/conf/confJwt.json contenant la clé des Tokens JWT ce fichier contient le json suivant :  `{"secretOrKey": "ADemanderALAdmin"}`. Vous pouvez trouvez la listes des fichiers/dossiers non présent sur le git ici: https://github.com/fabrice126/wasabi_project/blob/master/.gitignore  
 2. Installer node js : *<a href="https://nodejs.org/en/download/package-manager/#enterprise-linux-and-fedora" target="_blank">ici</a>*
 3. Installer mongodb : version >= 3.2 : *<a href="https://docs.mongodb.com/manual/tutorial/install-mongodb-on-red-hat/" target="_blank">ici</a>*  
 *3.1.* lancer mongodb, voir : *"<a href="#mongodb-sous-linux-redhatcentos-7">Comment lancer les bases de données>MongoDB sous Linux RedHat/Centos 7</a>"*
@@ -45,12 +63,14 @@ Il est conseillé de lire ce que fait chaque API avant de l'utiliser notamment c
 *6.2.* taper la commande : `pm2 start --interpreter babel-node bin/www --watch --log-date-format="YYYY-MM-DD HH:mm Z"`  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*6.2.1.* Si ça ne fonctionne pas : taper `npm install` en ligne commande dans le projet wasabi afin d'installer les dépendances (voir 6.1.)  
 *6.3.* le serveur est maintenant lancé et accessible via l'URL du projet wasabi (à demander au chef du projet)
-7. Remplir la base de données d'elasticsearch: pour cela utiliser l'api REST pour indexer les noms des artistes http://urldusite/createdb/createdbelasticsearchartist et http://urldusite/createdb/createdbelasticsearchsong pour indexer les noms des musiques avec les noms des artistes et les noms des albums ainsi nous pourrons chercher une musique par son title + nom d'album + nom d'artiste.
+7. Remplir la base de données d'elasticsearch: 
+*7.1.* vérifiez dans `/routes/conf/conf.js`que launch.env.dev_mode soit à true
+*7.2.* Utiliser l'api REST pour indexer les noms des artistes http://urldusite/createdb/createdbelasticsearchartist et http://urldusite/createdb/createdbelasticsearchsong pour indexer les noms des musiques avec les noms des artistes et les noms des albums ainsi nous pourrons chercher une musique par son title + nom d'album + nom d'artiste.
 
 **Connexion et gestion du serveur wasabi**
 =======
 
-- Vous pouvez vous connecter sur le serveur via putty :  *<a href="http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html" target="_blank">ici</a>* ou par SSH 
+- Vous pouvez vous connecter sur le serveur via putty :  *<a href="http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html" target="_blank">ici</a>* ou avec la commande SSH 
 - Une fois connecté au serveur entrez votre login / mot de passe (à demander à l'admin)
 - Une fois connecté sur le compte taper : `sudo su` et `screen -r` (*<a href="https://doc.ubuntu-fr.org/screen" target="_blank">documentation de screen</a>*) afin de restaurer les diverses sessions de ligne de commande
 - Vous pouvez naviguer entre ces sessions via `ctrl + a + n`
@@ -60,6 +80,19 @@ Il est conseillé de lire ce que fait chaque API avant de l'utiliser notamment c
 - La commande `pm2 start --interpreter babel-node bin/www --watch --log-date-format="YYYY-MM-DD HH:mm Z"` sera aussi lancé 
 - D'autres sessions peuvent aussi être lancés mais n'ont pas de réelle importance
 
+
+**Connexion et gestion du serveur contenant le blog wasabi**
+=======
+
+- Vous pouvez vous connecter sur le serveur via putty :  *<a href="http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html" target="_blank">ici</a>* ou avec la commande SSH 
+- Une fois connecté au serveur entrez votre login / mot de passe (à demander à l'admin)
+- Une fois connecté sur le compte taper : `sudo su` et `screen -r` (*<a href="https://doc.ubuntu-fr.org/screen" target="_blank">documentation de screen</a>*) afin de restaurer les diverses sessions de ligne de commande
+- Vous pouvez naviguer entre ces sessions via `ctrl + a + n`
+- Le logiciel `htop` sera lancé (l'équivalent du gestionnaire de tâche windows)
+- Ce serveur contient dans `/home/user/dump_mongo_wasabi` les anciens dump de la base de données
+- Le serveur contient un site wordpress, pour le démarrer (si lampp n'est pas actif) vous devez vous rendre dans `/opt/lampp` et lancer la commande `./lampp start`
+- Lien utile : http://sharadchhetri.com/2014/03/24/install-xampp-centosrhel-6-5/ 
+- Information utiles : par défaut, l'accès à la base de données du blog wasabi n'est pas possible depuis le web. Pour changer ce comportement vous devez vous rendre dans `/opt/lampp/etc/extra/httpd-xampp.conf` et remplacer `Require local` par `Require all granted` dans `<LocationMatch>`
 **Comment lancer les bases de données**
 =======
 ## MongoDB sous Linux RedHat/Centos 7
@@ -207,14 +240,9 @@ Une collection artist contenant des documents représentant un artiste avec ses 
 #### public/img/  
 	Les images du projet
 
-#### public/javascripts/ 
-	Code javascript des pages html
-
 #### public/my_components/  
 	Composant crée pour être utilisé dans l'application  
-
-#### public/stylesheets/  
-	Code css des pages html 
+ 
 	 
 
 ## routes/

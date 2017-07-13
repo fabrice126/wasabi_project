@@ -526,6 +526,10 @@ router.get('/discogs/artist/members', discogsHandler.getAllArtistsMembers);
  */
 router.get('/discogs/add/artist/id', discogsHandler.getAddFieldsIdArtistDiscogs);
 /**
+ * API permettant de créer le champ id_album_discogs contenant l'id vers discogs
+ */
+router.get('/discogs/add/album/id', discogsHandler.getAddFieldsIdAlbumDiscogs);
+/**
  * API permettant de créer le champ members[i].id_member_discogs contenant l'id vers discogs des membres d'un groupe
  */
 router.get('/discogs/add/artist/members/id', discogsHandler.getAddFieldsIdMemberDiscogs);
@@ -533,10 +537,7 @@ router.get('/discogs/add/artist/members/id', discogsHandler.getAddFieldsIdMember
  * API permettant de recupérer des informations sur les albums présents sur l'API de discogs
  */
 router.get('/discogs/album', discogsHandler.getAllAlbums);
-/**
- * API permettant de recupérer des informations sur les musiques présentent sur l'API de discogs
- */
-router.get('/discogs/song', discogsHandler.getAllSongs);
+
 
 
 

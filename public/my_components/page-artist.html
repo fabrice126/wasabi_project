@@ -28,9 +28,17 @@
             }
 
             #externalLink {
-                padding-right: 24px;
-                padding-bottom: 14px;
-                padding-left: 24px;
+                padding: 5px;
+                display: flex;
+                justify-content: center;
+                border-bottom: 1px solid #DDD;
+                box-shadow: inset 0px 2px 18px rgba(162, 162, 162, 0.26);
+                flex-wrap: wrap;
+            }
+
+            #externalLink paper-icon-button {
+                width: 45px;
+                height: 45px;
             }
 
             summary:hover {
@@ -48,6 +56,10 @@
                 padding: 15px;
             }
 
+            x-album {
+                margin-top: 30px;
+            }
+
             ul {
                 padding: 15px;
                 margin-left: 24px;
@@ -58,7 +70,7 @@
             }
 
             .infosArtist {
-                margin-left: 24px;
+                padding: 30px;
             }
 
             .pictureArtist {

@@ -149,28 +149,23 @@ Example:
                 transition: all 0.5s linear;
             }
 
-            .album_search_bar,
-            .song_search_bar,
             .more_search_bar {
                 border-radius: 4px;
                 padding: 7px;
+                color: #3F51B5;
             }
+
 
             .band_search_bar {
                 border-radius: 100%;
                 width: 45px;
-            }
-
-            .album_search_bar {
-                background-color: #f98b13;
+                box-shadow: 0px 2px 3px rgb(138, 138, 138);
             }
 
             .song_search_bar {
-                background-color: #F39C12;
-            }
-
-            .more_search_bar {
-                color: #3F51B5;
+                border-radius: 2px;
+                width: 45px;
+                box-shadow: 0px 2px 3px rgb(138, 138, 138);
             }
 
             #paper-card-more {
@@ -394,7 +389,7 @@ Example:
                     <template is="dom-if" if="{{_isArtist(suggestion)}}" restamp="true">
                         <a href="#/search/artist/{{_encodeUri(suggestion.name)}}">
                             <paper-card on-click='doLoadSearch' elevation="0">
-                                <img class="band_search_bar" src="{{putPicture(suggestion)}}" alt="Band">
+                                <img class="band_search_bar" src="{{putPictureArtist(suggestion)}}" alt="Band">
                                 <span class="search_title">{{suggestion.name}}</span>
                                 <paper-ripple></paper-ripple>
                             </paper-card>
@@ -403,7 +398,7 @@ Example:
                     <template is="dom-if" if="{{_isSong(suggestion)}}" restamp="true">
                         <a href="#/search/artist/{{_encodeUri(suggestion.name)}}/album/{{_encodeUri(suggestion.albumTitle)}}/song/{{_encodeUri(suggestion.title)}}">
                             <paper-card on-click='doLoadSearch' elevation="0">
-                                <img class="song_search_bar" src="../img/song_search_bar.svg" alt="Song">
+                                <img class="song_search_bar" src="{{putPictureSong(suggestion)}}" alt="Song">
                                 <span class="search_title">{{suggestion.title}} - {{suggestion.name}} <span class="search_album">(album: {{suggestion.albumTitle}})</span></span>
                                 <paper-ripple></paper-ripple>
                             </paper-card>
@@ -732,8 +727,11 @@ Example:
                     console.log();
                 }
             },
-            putPicture: function (suggestion) {
+            putPictureArtist: function (suggestion) {
                 return suggestion.picture || "../img/band_search_bar.svg";
+            },
+            putPictureSong: function (suggestion) {
+                return suggestion.picture || "../img/song_search_bar.svg";
             }
         });
     </script>
