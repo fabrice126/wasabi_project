@@ -308,6 +308,11 @@ var getAllArtists = (req, res) => {
 
 /**
  * API vérifiant que les musiques d'un artiste ont le même id_artist_deezer
+ * ex: http://api.deezer.com/track/2149869 cette musique contient l'artiste ainsi que l'album
+ * Cependant nous avons le choix entre deux albums : album ou alternative.album il s'avére que ces deux albums ne pointent pas 
+ * vers le même document ex : album.id = 215330 et alternative.album.id = 14581794. La même chose peut avoir lieu entre l'objet artist et alternative.artist
+ * Cette API va donc verifier que chaque musique pointe vers le bon artiste. Pour en déduire le bon artiste nous récupérons le nombre d'occurrence de l'ID.
+ * L'id revenant le plus de fois dans une musique d'un artiste sera considéré comme étant le bon.
  * @param {*} req 
  * @param {*} res 
  */
@@ -502,6 +507,11 @@ var getAllAlbums = (req, res) => {
 };
 /**
  * API vérifiant que les musiques d'un album ont le même id_album_deezer
+ * ex: http://api.deezer.com/track/2149869 . cette musique contient l'artiste ainsi que l'album
+ * Cependant nous avons le choix entre deux albums : album ou alternative.album il s'avére que ces deux albums ne pointent pas 
+ * vers le même document ex : album.id = 215330 et alternative.album.id = 14581794. La même chose peut avoir lieu entre l'objet artist et alternative.artist
+ * Cette API va donc verifier que chaque musique pointe vers le bon album. Pour en déduire le bon artiste nous récupérons le nombre d'occurrence de l'ID.
+ * L'id revenant le plus de fois dans une musique d'un album sera considéré comme étant le bon.
  * @param {*} req 
  * @param {*} res 
  */

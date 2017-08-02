@@ -1,13 +1,16 @@
 import express from 'express';
-import config from './conf/conf';
-import lyricsWikia from './handler/lyricsWikia.js';
-import utilHandler from './handler/utilHandler.js';
-import wordCountHandler from './handler/wordCountHandler.js';
-import musicBrainzHandler from './handler/musicBrainzHandler';
-import discogsHandler from './handler/discogsHandler';
-import deezerHandler from './handler/deezerHandler';
-import animuxHandler from './handler/animuxHandler';
-import languageDetectHandler from './handler/languageDetectHandler';
+import config from '../conf/conf';
+import lyricsWikia from '../handler/lyricsWikia.js';
+import utilHandler from '../handler/utilHandler.js';
+import languageDetectHandler from './languagedetect.controller.js';
+import wordCountController from './wordcount.controller.js';
+import musicBrainzController from './musicbrainz.controller.js';
+import discogsController from './discogs.controller.js';
+import deezerController from './deezer.controller.js';
+import animuxController from './animux.controller.js';
+import equipBoardController from './equipboard.controller.js';
+import statsController from './stats.controller.js';
+
 import {
     ObjectId
 } from 'mongoskin';
@@ -411,7 +414,7 @@ router.get('/wordcount/:collection/:_id', function (req, res) {
             };
         }
         var collectionTmp = 'word_count_by_lyrics_tmp';
-        db.collection(COLLECTIONSONG).mapReduce(wordCountHandler.map, wordCountHandler.reduce, {
+        db.collection(COLLECTIONSONG).mapReduce(wordCountController.map, wordCountController.reduce, {
             query: query,
             out: collectionTmp
         }, function (err, results) {
@@ -485,92 +488,102 @@ router.get('/song/isclassic/:_id', function (req, res) {
 /**
  * /!\ Pour utiliser cette API il faut que la VM musicbrainz soit active sur:  http://127.0.0.1:5000/ /!\
  */
-router.get('/musicbrainz/artist', musicBrainzHandler.getAllArtists);
+router.get('/musicbrainz/artist', musicBrainzController.getAllArtists);
 /**
  * /!\ Pour utiliser cette API il faut que la VM musicbrainz soit active sur:  http://127.0.0.1:5000/ /!\
  */
-router.get('/musicbrainz/artist/id/:_id', musicBrainzHandler.getArtist);
+router.get('/musicbrainz/artist/id/:_id', musicBrainzController.getArtist);
 /**
  * /!\ Pour utiliser cette API il faut que la VM musicbrainz soit active sur:  http://127.0.0.1:5000/ /!\
  */
-router.get('/musicbrainz/artist/member', musicBrainzHandler.getAllArtistsMembers);
+router.get('/musicbrainz/artist/member', musicBrainzController.getAllArtistsMembers);
 /**
  * /!\ Pour utiliser cette API il faut que la VM musicbrainz soit active sur:  http://127.0.0.1:5000/ /!\
  */
-router.get('/musicbrainz/album', musicBrainzHandler.getAllAlbums);
+router.get('/musicbrainz/album', musicBrainzController.getAllAlbums);
 /**
  * /!\ Pour utiliser cette API il faut que la VM musicbrainz soit active sur:  http://127.0.0.1:5000/ /!\
  */
-router.get('/musicbrainz/album/id/:_id', musicBrainzHandler.getAlbum);
+router.get('/musicbrainz/album/id/:_id', musicBrainzController.getAlbum);
 /**
  * /!\ Pour utiliser cette API il faut que la VM musicbrainz soit active sur:  http://127.0.0.1:5000/ /!\
  */
-router.get('/musicbrainz/song', musicBrainzHandler.getAllSongs);
+router.get('/musicbrainz/song', musicBrainzController.getAllSongs);
 /**
  * /!\ Pour utiliser cette API il faut que la VM musicbrainz soit active sur:  http://127.0.0.1:5000/ /!\
  */
-router.get('/musicbrainz/song/id/:_id', musicBrainzHandler.getSong);
+router.get('/musicbrainz/song/id/:_id', musicBrainzController.getSong);
 
 
 
 /**
  * API permettant de recupérer des informations sur les artistes présents sur l'API de discogs
  */
-router.get('/discogs/artist', discogsHandler.getAllArtists);
+router.get('/discogs/artist', discogsController.getAllArtists);
 /**
  * API permettant d'ajouter des champs a discogs à chaque membre de groupe
  */
-router.get('/discogs/artist/members', discogsHandler.getAllArtistsMembers);
+router.get('/discogs/artist/members', discogsController.getAllArtistsMembers);
 /**
  * API permettant de créer le champ id_artist_discogs contenant l'id vers discogs
  */
-router.get('/discogs/add/artist/id', discogsHandler.getAddFieldsIdArtistDiscogs);
+router.get('/discogs/add/artist/id', discogsController.getAddFieldsIdArtistDiscogs);
 /**
  * API permettant de créer le champ id_album_discogs contenant l'id vers discogs
  */
-router.get('/discogs/add/album/id', discogsHandler.getAddFieldsIdAlbumDiscogs);
+router.get('/discogs/add/album/id', discogsController.getAddFieldsIdAlbumDiscogs);
 /**
  * API permettant de créer le champ members[i].id_member_discogs contenant l'id vers discogs des membres d'un groupe
  */
-router.get('/discogs/add/artist/members/id', discogsHandler.getAddFieldsIdMemberDiscogs);
+router.get('/discogs/add/artist/members/id', discogsController.getAddFieldsIdMemberDiscogs);
 /**
  * API permettant de recupérer des informations sur les albums présents sur l'API de discogs
  */
-router.get('/discogs/album', discogsHandler.getAllAlbums);
+router.get('/discogs/album', discogsController.getAllAlbums);
 
 
 
 
 /**
- * API permettant d'ajouter en base de données l'id des musiques de wasabi avec les id des musiques de deezer
+ * 1 - API permettant d'ajouter en base de données l'id des musiques de wasabi avec les id des musiques de deezer
  */
-router.get('/deezer/create_mapping', deezerHandler.doMappingWasabiDeezer);
+router.get('/deezer/create_mapping', deezerController.doMappingWasabiDeezer);
 /**
- * API permettant de recupérer des informations sur les musiques présent sur l'API de deezer
+ * 2 - API permettant de recupérer des informations sur les musiques présent sur l'API de deezer
  */
-router.get('/deezer/song', deezerHandler.getAllSongs);
+router.get('/deezer/song', deezerController.getAllSongs);
 /**
  * API permettant de recupérer des informations de la musique sur l'API de deezer
  */
-router.get('/deezer/song/:_id', deezerHandler.getSong);
+router.get('/deezer/song/:_id', deezerController.getSong);
 /**
- * API permettant de recupérer des informations sur les artistes présent sur l'API de deezer
- */
-router.get('/deezer/artist', deezerHandler.getAllArtists);
-/**
- * API permettant de vérifier que pour un artist donné chaque champs id_artist_deezer contenu dans les musiques de l'artiste est identique
+ * 3 - API permettant de vérifier que pour un artist donné chaque champs id_artist_deezer contenu dans les musiques de l'artiste est identique
  * Il faut donc que chaque musique d'un artiste ait le même id_artist_deezer
  */
-router.get('/deezer/check_and_update_id/artist', deezerHandler.checkAndUpdateIdArtist);
+router.get('/deezer/check_and_update_id/artist', deezerController.checkAndUpdateIdArtist);
 /**
- * API permettant de recupérer des informations sur les albums présent sur l'API de deezer
+ * 4 - API permettant de recupérer des informations sur les artistes présent sur l'API de deezer
  */
-router.get('/deezer/album', deezerHandler.getAllAlbums);
+router.get('/deezer/artist', deezerController.getAllArtists);
 /**
- * API permettant de vérifier que pour un album donné chaque champs id_album_deezer contenu dans les musiques de l'album est identique
+ * 5 - API permettant de vérifier que pour un album donné chaque champs id_album_deezer contenu dans les musiques de l'album est identique
  * Il faut donc que chaque musique d'un album ait le même id_album_deezer
  */
-router.get('/deezer/check_and_update_id/album', deezerHandler.checkAndUpdateIdAlbum);
+router.get('/deezer/check_and_update_id/album', deezerController.checkAndUpdateIdAlbum);
+/**
+ * 6 - API permettant de recupérer des informations sur les albums présent sur l'API de deezer
+ */
+router.get('/deezer/album', deezerController.getAllAlbums);
+
+
+
+/**
+ *  launch this command in console to use tor to extract equipboard's data: tor --controlport 9051
+ */
+router.get('/equipboard/try_tor', equipBoardController.tryTor);
+router.get('/equipboard/add/artist/members/url_equipboard', equipBoardController.getCreateLinkEquipBoard);
+router.get('/equipboard/artist', equipBoardController.getAllEquipmentBoard);
+
 
 
 
@@ -578,29 +591,29 @@ router.get('/deezer/check_and_update_id/album', deezerHandler.checkAndUpdateIdAl
  * API permettant de rename les noms d'artistes animux avec les noms d'artistes wasabi afin d'utiliser 
  * dans /animux/create_mapping/artist un find sans regex pour améliorer les performances
  */
-router.get('/animux/sanitize_rename/artist', animuxHandler.sanitizeAndRenameDirArtist);
+router.get('/animux/sanitize_rename/artist', animuxController.sanitizeAndRenameDirArtist);
 /**
  * API permettant de faire le matching entre les dossiers contenant le nom d'un artiste/groupe
  */
-router.get('/animux/create_mapping/artist', animuxHandler.getDirArtist);
+router.get('/animux/create_mapping/artist', animuxController.getDirArtist);
 /**
  * API permettant de faire le matching entre les dossiers du fichier généré par l'API /animux/create_mapping/artist (filename: animux_artist_not_found_log.txt)
  */
-router.get('/animux/create_mapping/artist/not_found', animuxHandler.getNotFoundLogArtist);
+router.get('/animux/create_mapping/artist/not_found', animuxController.getNotFoundLogArtist);
 /**
  * API permettant d'avoir le nombre de liens animux présent dans notre base de données
  */
-router.get('/animux/count/artist', animuxHandler.countArtistAnimuxDirInDB);
+router.get('/animux/count/artist', animuxController.countArtistAnimuxDirInDB);
 /**
  * API permettant d'avoir le nombre de liens animux présent dans notre base de données
  */
-router.get('/animux/count/song', animuxHandler.countSongAnimuxFileInDB);
+router.get('/animux/count/song', animuxController.countSongAnimuxFileInDB);
 
 
 /**
  * API permettant de faire le matching entre les fichiers animux contenant la synchronisation des paroles et nos musique en base de données
  */
-router.get('/animux/create_mapping/song', animuxHandler.getFileSong);
+router.get('/animux/create_mapping/song', animuxController.getFileSong);
 
 
 
@@ -613,6 +626,19 @@ router.get('/lyrics/language_detect', languageDetectHandler.detectLanguage);
 /**
  * API mettant à jour la collection _stats_lang
  */
-router.get('/lyrics/language/popularity', languageDetectHandler.updateLanguagePopularity);
+router.get('/create_stats/lyrics/language/popularity', languageDetectHandler.updateLanguagePopularity);
+/**
+ * API mettant à jour la collection _stats_prop_artist
+ */
+router.get('/create_stats/properties/artist/count', statsController.updatePropertiesStatsArtist);
+/**
+ * API mettant à jour la collection _stats_prop_album
+ */
+router.get('/create_stats/properties/album/count', statsController.updatePropertiesStatsAlbum);
+/**
+ * API mettant à jour la collection _stats_prop_song
+ */
+router.get('/create_stats/properties/song/count', statsController.updatePropertiesStatsSong);
+
 
 export default router;

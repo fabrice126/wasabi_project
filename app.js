@@ -27,15 +27,15 @@ import passport from 'passport';
 import bcrypt from 'bcrypt-nodejs';
 //Import routes
 import confPassport from './routes/conf/passport';
-import search from './routes/search/search';
+import search from './routes/api_search/search';
 import api_v1 from './routes/api/v1/api_v1';
-import MT5 from './routes/MT5';
-import updatedb from './routes/updatedb';
-import mergedb from './routes/mergedb';
-import createdb from './routes/createdb';
-import extractdbpedia from './routes/extractdbpedia';
-import jwt_api from './routes/jwt';
-import download from './routes/download/download';
+import MT5 from './routes/api_MT5/MT5';
+import updatedb from './routes/api_updatedb/updatedb';
+import mergedb from './routes/api_mergedb/mergedb';
+import createdb from './routes/api_createdb/createdb';
+import extractdbpedia from './routes/api_extractdbpedia/extractdbpedia';
+import jwt_api from './routes/api_jwt/jwt';
+import download from './routes/api_download/download';
 const app = express();
 app.enable('trust proxy');
 /**

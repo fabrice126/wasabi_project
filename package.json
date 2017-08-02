@@ -15,10 +15,16 @@
     "start": "nodemon bin/www --exec babel-node --presets es2015 --ignore mongo/",
     "debug": "node-debug --nodejs node_modules/babel-cli/bin/babel-node --hidden node_modules/ --no-preload bin/www",
     "test": "mocha --require babel-polyfill --compilers js:babel-register",
-    "apidoc": "apidoc -i routes/ -o apidoc/"
+    "apidoc": "apidoc -i routes/ -o apidoc/",
+    "start-pm2": "pm2 start --interpreter babel-node bin/www --watch --log-date-format='YYYY-MM-DD HH:mm Z'-f",
+    "start-cluster-pm2": "pm2 start --interpreter babel-node bin/www -i max",
+    "kill-pm2": "pm2 kill"
   },
   "dependencies": {
     "assert": "^1.3.0",
+    "babel-cli": "^6.22.2",
+    "babel-preset-env": "^1.1.8",
+    "babel-preset-latest": "^6.22.0",
     "babel-preset-stage-0": "^6.22.0",
     "basic-auth-connect": "^1.0.0",
     "bcrypt-nodejs": "0.0.3",
@@ -52,12 +58,8 @@
     "request": "2.72.0",
     "serve-favicon": "~2.3.0",
     "spdy": "^3.4.4",
-    "xml2js": "^0.4.17",
-    "babel-cli": "^6.22.2",
-    "babel-preset-env": "^1.1.8",
-    "babel-preset-latest": "^6.22.0"
+    "tor-request": "^1.0.6",
+    "xml2js": "^0.4.17"
   },
-  "devDependencies": {
-
-  }
+  "devDependencies": {}
 }

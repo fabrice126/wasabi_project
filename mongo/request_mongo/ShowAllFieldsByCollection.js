@@ -1,16 +1,12 @@
-var collection = "song";
+var collection = "artist";
 
-mr = db.runCommand({
+db.runCommand({
     "mapreduce": collection,
     "map": function () {
-        for (var key in this) {
-            emit(key, null);
-        }
+        for (var key in this) emit(key, null);
     },
     "reduce": function (key, stuff) {
         return null;
     },
-    "out": collection + "_keys"
+    "out": "_stats_prop_"+collection
 })
-
-db[mr.result].distinct("_id")

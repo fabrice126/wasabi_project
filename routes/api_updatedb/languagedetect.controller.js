@@ -1,8 +1,8 @@
 import request from 'request';
 import express from 'express';
-import config from '../conf/conf';
 import LanguageDetect from 'languagedetect';
-import utilHandler from './utilHandler';
+import config from '../conf/conf';
+import utilHandler from '../handler/utilHandler';
 import {
     ObjectId
 } from 'mongoskin';

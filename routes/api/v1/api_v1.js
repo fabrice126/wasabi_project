@@ -968,7 +968,7 @@ router.get('/animux_all/:start', apiV1Controller.get_animuxAll);
 
 
 /**
- * @api {get} artist/:fields/popularity Artist - Get fields by popularity
+ * @api {get} api/v1/artist/:fields/popularity Artist - Get fields by popularity
  * @apiExample Example usage: 
  *      wasabi.i3s.unice.fr/api/v1/artist/genres/popularity
  *      wasabi.i3s.unice.fr/api/v1/artist/genres/popularity?skip=2
@@ -1012,7 +1012,7 @@ router.get('/artist/country/popularity', apiV1Controller.get_artistCountryByPopu
 router.get('/artist/instrument/popularity', apiV1Controller.get_artistInstrumentByPropularity);
 
 /**
- * @api {get} artist/member/count/band Get Artist - members with the most bands
+ * @api {get} api/v1/artist/member/count/band Artist - Get members with the most bands
  * @apiExample Example usage: 
  *      wasabi.i3s.unice.fr/api/v1/artist/member/count/band
  *      wasabi.i3s.unice.fr/api/v1/artist/member/count/band?skip=2
@@ -1059,7 +1059,7 @@ router.get('/artist/member/count/band', apiV1Controller.get_artistMemberWithMost
 
 
 /**
- * @api {get} /artist/count/album Artist - Get artist with the most albums
+ * @api {get} api/v1/artist/count/album Artist - Get artist with the most albums
  * @apiExample Example usage: 
  *      wasabi.i3s.unice.fr/api/v1/artist/count/album
  *      wasabi.i3s.unice.fr/api/v1/artist/count/album?skip=2
@@ -1105,7 +1105,7 @@ router.get('/artist/member/count/band', apiV1Controller.get_artistMemberWithMost
 router.get('/artist/count/album', apiV1Controller.get_artistWithMostAlbum);
 // router.get('/song/producer/popularity', apiV1Controller.get_songProducerByPropularity);
 /**
- * @api {get} /song/lyrics/language/popularity Song - Get stats about lyrics languages
+ * @api {get} api/v1/song/lyrics/language/popularity Song - Get stats about lyrics languages
  * @apiExample Example usage: 
  *      wasabi.i3s.unice.fr/api/v1/song/lyrics/language/popularity
  * 
@@ -1145,6 +1145,113 @@ router.get('/artist/count/album', apiV1Controller.get_artistWithMostAlbum);
     }
  */
 router.get('/song/lyrics/language/popularity', apiV1Controller.get_lyricsLanguageByPopularity);
+/**
+ * @api {get} api/v1/_stats/artist/count _stats - Get the number of occurrences of each fields in the artist collection
+ * @apiExample Example usage: 
+ *      wasabi.i3s.unice.fr/api/v1/_stats/artist/count
+ * @apiVersion 1.0.0
+ * @apiName GetStatsArtist
+ * @apiGroup Api/v1
+ *
+ * @apiSuccessExample Success-Response for an artist:
+    HTTP/1.1 200 OK
+    [
+        {
+            "_id": "_id",
+            "value": 77492
+        },{
+            "_id": "abstract",
+            "value": 34373
+        },{
+            "_id": "animux_path",
+            "value": 4847
+        },{
+            "_id": "deezerFans",
+            "value": 52472
+        }, {
+            ...
+        }
+    ]
+ * @apiError error the database does not respond.
+ * @apiErrorExample Error-Response internal error:
+    HTTP/1.1 404 Not Found
+    {
+        "error": "An internal error occurred"
+    }
+ */
+router.get('/_stats/artist/count', apiV1Controller.get_statsArtistCount);
+/**
+ * @api {get} api/v1/_stats/album/count _stats - Get the number of occurrences of each fields in the album collection
+ * @apiExample Example usage: 
+ *      wasabi.i3s.unice.fr/api/v1/_stats/album/count
+ * @apiVersion 1.0.0
+ * @apiName GetStatsAlbum
+ * @apiGroup Api/v1
+ *
+ * @apiSuccessExample Success-Response for an artist:
+    HTTP/1.1 200 OK
+    [
+        {
+            "_id": "_id",
+            "value": 208743
+        },{
+            "_id": "barcode",
+            "value": 29504
+        },{
+            "_id": "country",
+            "value": 53734
+        },{
+            "_id": "cover",
+            "value": 155410
+        }, {
+            ...
+        }
+    ]
+ * @apiError error the database does not respond.
+ * @apiErrorExample Error-Response internal error:
+    HTTP/1.1 404 Not Found
+    {
+        "error": "An internal error occurred"
+    }
+ */
+router.get('/_stats/album/count', apiV1Controller.get_statsAlbumCount);
+
+/**
+ * @api {get} api/v1/_stats/song/count _stats - Get the number of occurrences of each fields in the song collection
+ * @apiExample Example usage: 
+ *      wasabi.i3s.unice.fr/api/v1/_stats/song/count
+ * @apiVersion 1.0.0
+ * @apiName GetStatsSong
+ * @apiGroup Api/v1
+ *
+ * @apiSuccessExample Success-Response for an artist:
+    HTTP/1.1 200 OK
+    [
+        {
+            "_id": "_id",
+            "value": 2099287
+        },{
+            "_id": "abstract",
+            "value": 72587
+        },{
+            "_id": "albumTitle",
+            "value": 2099266
+        },{
+            "_id": "animux_content",
+            "value": 22187
+        }, {
+            ...
+        }
+    ]
+ * @apiError error the database does not respond.
+ * @apiErrorExample Error-Response internal error:
+    HTTP/1.1 404 Not Found
+    {
+        "error": "An internal error occurred"
+    }
+ */
+router.get('/_stats/song/count', apiV1Controller.get_statsSongCount);
+
 router.get('/artist/count/song', apiV1Controller.get_artistWithMostSong);
 
 export default router;

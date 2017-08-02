@@ -5,6 +5,11 @@ import {
 const COLLECTIONARTIST = config.database.collection_artist;
 const COLLECTIONALBUM = config.database.collection_album;
 const COLLECTIONSONG = config.database.collection_song;
+
+const COLLECTION_STATS_PROP_ARTIST = config.database.collection_stats_prop_artist;
+const COLLECTION_STATS_PROP_ALBUM = config.database.collection_stats_prop_album;
+const COLLECTION_STATS_PROP_SONG = config.database.collection_stats_prop_song;
+
 const LIMIT = config.request.limit;
 
 var get_artistAll = (req, res) => {
@@ -548,6 +553,26 @@ var get_artistMemberWithMostGroup = (req, res) => {
         return res.json(result);
     });
 };
+
+var get_statsArtistCount = (req, res) => {
+    req.db.collection(COLLECTION_STATS_PROP_ARTIST).find({}).toArray((err, statsPropArtist) => {
+        if (err) return res.status(404).json(config.http.error.internal_error_404);;
+        return res.json(statsPropArtist);
+    });
+}
+var get_statsAlbumCount = (req, res) => {
+    req.db.collection(COLLECTION_STATS_PROP_ALBUM).find({}).toArray((err, statsPropAlbum) => {
+        if (err) return res.status(404).json(config.http.error.internal_error_404);;
+        return res.json(statsPropAlbum);
+    });
+}
+var get_statsSongCount = (req, res) => {
+    req.db.collection(COLLECTION_STATS_PROP_SONG).find({}).toArray((err, statsPropSong) => {
+        if (err) return res.status(404).json(config.http.error.internal_error_404);;
+        return res.json(statsPropSong);
+    });
+}
+
 exports.get_artistAll = get_artistAll;
 exports.get_artistAllById = get_artistAllById;
 exports.get_artistAllByName = get_artistAllByName;
@@ -568,3 +593,6 @@ exports.get_artistWithMostSong = get_artistWithMostSong;
 exports.get_lyricsLanguageByPopularity = get_lyricsLanguageByPopularity;
 exports.get_artistInstrumentByPropularity = get_artistInstrumentByPropularity;
 exports.get_artistMemberWithMostGroup = get_artistMemberWithMostGroup;
+exports.get_statsArtistCount = get_statsArtistCount;
+exports.get_statsAlbumCount = get_statsAlbumCount;
+exports.get_statsSongCount = get_statsSongCount;

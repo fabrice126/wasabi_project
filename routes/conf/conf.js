@@ -110,13 +110,17 @@ module.exports = {
         "mongodb_option": {
             server: {
                 socketOptions: {
-                    socketTimeoutMS: 999999
+                    socketTimeoutMS: 999999,
+                    connectTimeoutMS: 999999
                 }
             }
         },
         "collection_artist": "artist",
         "collection_album": "album",
         "collection_song": "song",
+        "collection_stats_prop_artist": "_stats_prop_artist",
+        "collection_stats_prop_album": "_stats_prop_album",
+        "collection_stats_prop_song": "_stats_prop_song",
         "elasticsearch_connect": "localhost:9200",
         "elasticsearch_url": "http://127.0.0.1:9200/",
         "index_artist": "idx_artists",

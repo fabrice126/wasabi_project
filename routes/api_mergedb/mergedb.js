@@ -9,7 +9,7 @@
  */
 
 import express from 'express';
-import config from './conf/conf';
+import config from '../conf/conf';
 import {db} from 'mongoskin';
 import {ObjectId} from 'mongoskin';
 const db_server = db("mongodb://localhost:27017/wasabi_server");

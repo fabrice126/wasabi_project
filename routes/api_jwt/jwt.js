@@ -1,8 +1,8 @@
 import express from 'express';
-import config from './conf/conf';
+import config from '../conf/conf';
 import passport from 'passport';
-import User from '../model/User.model';
-import confJwt from '../routes/conf/confJwt';
+import User from '../../model/User.model';
+import confJwt from '../../routes/conf/confJwt';
 import RateLimit from 'express-rate-limit';
 const router = express.Router();
 

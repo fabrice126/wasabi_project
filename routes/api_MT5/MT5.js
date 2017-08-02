@@ -1,9 +1,9 @@
 import express from 'express';
 import request from 'request';
-import config from './conf/conf';
+import config from '../conf/conf';
 import fs from "fs";
 import path from 'path';
-import utilHandler from './handler/utilHandler.js';
+import utilHandler from '../handler/utilHandler.js';
 // TODO  a supprimer afin d'utiliser les promises
 import Q from 'q';
 const router = express.Router();

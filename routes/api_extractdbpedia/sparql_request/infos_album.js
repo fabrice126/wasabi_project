@@ -1,4 +1,4 @@
-import dbpediaHandler from '../handler/dbpediaHandler.js';
+import dbpediaHandler from '../extractdbpedia.controller.js';
 
 var construct_request = (album, country) => {
     var objCountry = dbpediaHandler.getCountryOfEndpoint(country);

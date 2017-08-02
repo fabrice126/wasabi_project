@@ -220,6 +220,14 @@ Une collection artist contenant des documents représentant un artiste avec ses 
  
  22. [doit être exécuté après 21 et en mode `development`.] Le web service `updatedb/deezer/song` permet de récupérer des informations sur les musiques ayant un champs deezer_mapping non vide via l'API de Deezer.
 
+23. [doit être exécuté après 22 et en mode `development`.] Le web service `/deezer/check_and_update_id/artist` permet d'associer le bon id d'un artist pour une musique donnée
+
+24. [doit être exécuté après 23 et en mode `development`.] Le web service `updatedb/deezer/artist` permet de récupérer des informations sur les artistes ayant un champs deezer_mapping non vide via l'API de Deezer.
+
+25. [doit être exécuté après 24 et en mode `development`.] Le web service `/deezer/check_and_update_id/album` permet d'associer le bon id d'un album pour une musique donnée
+
+26. [doit être exécuté après 25 et en mode `development`.] Le web service `updatedb/deezer/album` permet de récupérer des informations sur les albums ayant un champs deezer_mapping non vide via l'API de Deezer.
+
 #### mongo/sparql/
 **Contient les requêtes sparql utilisées par l'application pour l'extraction du RDF pour les :**  
 

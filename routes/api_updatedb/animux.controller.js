@@ -1,7 +1,7 @@
 import express from 'express';
 import config from '../conf/conf';
+import utilHandler from '../handler/utilHandler';
 import fs from 'fs';
-import utilHandler from './utilHandler';
 import mv from 'mv';
 import {
     ObjectId

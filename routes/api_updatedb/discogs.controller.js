@@ -88,7 +88,6 @@ var getXMLAndUpdateAll = (db, collection, updateFieldsCollectionDiscogs, path_di
                         //We found the entire artist object
                         nbObject++;
                         parseAndUpdate(db, collection, updateFieldsCollectionDiscogs, currXmlObject, nbObject, loggerNotFound)
-                        if (nbObject == 500) return;
                     }
                     //we set to empty currXmlObject
                     currXmlObject = "";
@@ -103,7 +102,7 @@ var getXMLAndUpdateAll = (db, collection, updateFieldsCollectionDiscogs, path_di
                 setTimeout(() => {
                     console.log("------------------------------------TIMEOUT ENDED, RESUME------------------------------------");
                     s.resume();
-                }, 5000)
+                }, 1000)
             } else s.resume();
         }
     }).on('error', (err) => console.log('Error while reading file.', err)).on('end', () => console.log('Read entire file.')));
@@ -222,7 +221,12 @@ var updateFieldsArtistsDiscogsFromXML = (db, collection, oArtist, oDiscogs) => {
     oArtist.abstract = oDiscogs.artist.hasOwnProperty('profile') ? oDiscogs.artist.profile[0] : "";
     oArtist.nameVariations = oDiscogs.artist.hasOwnProperty('namevariations') ? oDiscogs.artist.namevariations[0].name : [];
     oArtist.urls = oDiscogs.artist.hasOwnProperty('urls') ? oDiscogs.artist.urls[0].url : [];
-    db.collection(collection).updateOne({
+    if (oArtist.abstract && oArtist.abstract.match(/\[(.*?)\]/gi)) {
+        //replace "[a=artist name]" by "artist name" which match with this regex "[l=label name]" by "label name"
+        //then replace all square brackets containing matching : [b][/b] or [i] [/i] etc.
+        oArtist.abstract = oArtist.abstract.replace(/\[a=(.*?)\]/gi, "$1").replace(/\[l=(.*?)\]/gi, "$1").replace(/\[\/?[a-zA-Z]\]/gi, "");
+    }
+    db.collection(collection).updateMany({
         id_artist_discogs: oArtist.id_artist_discogs
     }, {
         $set: oArtist
@@ -235,6 +239,10 @@ var updateFieldsArtistsMembersDiscogsFromXML = (db, collection, oArtist, oDiscog
     oArtist.abstract = oDiscogs.artist.hasOwnProperty('profile') ? oDiscogs.artist.profile[0] : "";
     oArtist.nameVariations = oDiscogs.artist.hasOwnProperty('namevariations') ? oDiscogs.artist.namevariations[0].name : [];
     oArtist.urls = oDiscogs.artist.hasOwnProperty('urls') ? oDiscogs.artist.urls[0].url : [];
+    if (oArtist.abstract && oArtist.abstract.match(/\[(.*?)\]/gi)) {
+        //replace "[a=artist name]" by "artist name" which match with this regex, then replace all square brackets containing characters
+        oArtist.abstract = oArtist.abstract.replace(/\[a=(.*?)\]/gi, "$1").replace(/\[l=(.*?)\]/gi, "$1").replace(/\[\/?[a-zA-Z]\]/gi, "");
+    }
     db.collection(collection).updateMany({
         "members.id_member_discogs": oArtist.id_member_discogs,
     }, {
@@ -262,7 +270,7 @@ var parseAndUpdate = (db, collection, updateFieldsCollectionDiscogs, xml, nbObje
     parseString(xml, (err, objectXMLDiscogs) => {
         if (err) console.log(err);
         var objArtist = {};
-        loggerNotFound.write(objectXMLDiscogs + "\n");
+        // loggerNotFound.write(objectXMLDiscogs + "\n");
         if (objectXMLDiscogs) updateFieldsCollectionDiscogs(db, collection, objArtist, objectXMLDiscogs, nbObject);
         else console.log("OBJ ARTIST UNDEFINED");
     });

@@ -1,10 +1,10 @@
 import request from 'request';
 import LanguageDetect from 'languagedetect';
-import redirect_request from '../sparql_request/redirect_request.js';
-import construct_endpoint from '../sparql_request/construct_endpoint.js';
-import infos_artist from '../sparql_request/infos_artist.js';
-import infos_album from '../sparql_request/infos_album.js';
-import infos_song from '../sparql_request/infos_song.js';
+import redirect_request from './sparql_request/redirect_request.js';
+import construct_endpoint from './sparql_request/construct_endpoint.js';
+import infos_artist from './sparql_request/infos_artist.js';
+import infos_album from './sparql_request/infos_album.js';
+import infos_song from './sparql_request/infos_song.js';
 import {parseString} from 'xml2js';
 import {ObjectId} from 'mongoskin';
 
