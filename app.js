@@ -5,6 +5,7 @@ import express from 'express';
 import RateLimit from 'express-rate-limit';
 import session from 'express-session';
 import helmet from 'helmet';
+import compression from 'compression';
 //Import DB
 import elasticsearch from 'elasticsearch';
 import mongoose from 'mongoose';
@@ -54,7 +55,9 @@ config.launch.env.dev_mode ? process.env.NODE_ENV = config.launch.env.dev : proc
 
 const server = process.env.NODE_ENV === config.launch.env.dev ? config.database.mongodb_option : {};
 mongoose.Promise = global.Promise;
-const dbMongoose = mongoose.connect(config.database.mongodb_connect);
+const dbMongoose = mongoose.connect(config.database.mongodb_connect, (err) => {
+    if (err) console.error(err);
+});
 const db = dbMongo(config.database.mongodb_connect, server);
 const elasticsearchClient = new elasticsearch.Client({
     host: config.database.elasticsearch_connect
@@ -67,6 +70,8 @@ const elasticsearchClient = new elasticsearch.Client({
 // view cache
 app.set('view cache', process.env.NODE_ENV === config.launch.env.dev ? true : false); // désactivation du cache express
 app.use(helmet());
+app.use(compression());
+
 String.prototype.endsWith = function (suffix) {
     return this.indexOf(suffix, this.length - suffix.length) !== -1;
 };
@@ -152,7 +157,7 @@ app.use((req, res, next) => {
 // no stacktraces leaked to user
 app.use((err, req, res, next) => {
     res.status(err.status || 500);
-    res.render('error test', {
+    res.json({
         message: err.message,
         error: {}
     });

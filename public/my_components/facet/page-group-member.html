@@ -28,17 +28,10 @@
                 cursor: pointer;
                 color: black;
             }
-            .song_search_bar{
-                background-color: #C0A805;
-            }
             .search_title{
                 position: absolute;
                 margin-top: 10px;
                 margin-left: 10px;
-            }
-            .song_search_bar{
-                border-radius: 4px;
-                padding: 7px;
             }
             .center{
                 text-align: center;
@@ -51,7 +44,7 @@
         </style>
         <paper-material elevation="1">
             <iron-ajax id="get_content" auto url="/search/member/name/{{_encodeUri(memberName)}}" last-response="{{artists}}" handleAs="json"> </iron-ajax>
-            <p class="center searchText-info">{{memberName}} à joué dans: {{artists.length}} groupes de musiques</p>
+            <p class="center searchText-info">{{memberName}} has played in "{{artists.length}}" music(s) band</p>
             <template class="flex-wrap" is="dom-repeat" items="{{artists}}" as="artist" initial-count="1" >
                 <a href="#/search/artist/{{_encodeUri(artist.name)}}" class="inherit">
                     <paper-card elevation="0" >

@@ -9,6 +9,7 @@ import {
 
 const router = express.Router();
 const COLLECTIONARTIST = config.database.collection_artist;
+const HOST = "http://equipboard.com";
 /**
  * API to find links in equipboard. Basically we transform all members name to an url for equipboard  
  * e.g. : Kirk Hammett => equipboard.com/pros/kirk-hammett
@@ -91,94 +92,211 @@ var getCreateLinkEquipBoard = (req, res) => {
 };
 
 var getAllEquipmentBoard = (req, res) => {
-    var test0 = "http://equipboard.com/pros/kirk-hammett",
-        test1 = "http://equipboard.com/pros/css";
     var db = req.db,
-        host = "http://equipboard.com",
-        pageStart = "?page=2",
         skip = 0,
-        limit = 1,
-        query = {
-            members: {
-                $ne: []
-            }
-        },
-        projection = {
-            "_id": 1,
-            "members": 1
-        },
-        url = test0 + pageStart;
-    db.collection(COLLECTIONARTIST).count(query, (err, nbObj) => {
-        console.log("There are " + nbObj + " " + COLLECTIONARTIST + " with members");
-        (function fetchObj(skip) {
-            var nb = 0;
-            if (skip >= nbObj) return console.log("TRAITEMENT TERMINE");
-            db.collection(COLLECTIONARTIST).find(query, projection).skip(skip).limit(limit).toArray((err, tObj) => {
-                var i = 0;
-                (function loop(i) {
-                    var oArtist = tObj[i];
-                    var l = oArtist.members.length,
-                        nbRequestMember = 0;
-                    for (var j = 0; j < l; j++) {
-                        var member = oArtist.members[j];
-                        ((j) => {
-                            requestEquipBoard(url).then((result) => {
-                                nbRequestMember++;
-                                console.log(" => Trouvé  " + url);
-                                const $ = cheerio.load(result.body);
-                                const urlLastPage = $("nav.pagination>span.last>a").attr('href');
-                                console.log("urlLastPage = " + urlLastPage);
-                                //We have several pages
-                                if (urlLastPage) {
-                                    const tSections = $(".eb-section");
-                                    console.log("Nombre de section = " + tSections.length);
-                                    for (var i = 0, l = tSections.length; i < l; i++) {
-                                        //e.g: Guitars 32 : http://equipboard.com/pros/kirk-hammett/ ou 32 est le nombre de guitare présent pour un artiste
-                                        var equipmentTitle = $(tSections[i]).find("h2.eb-vip-section-heading").text().trim();
-                                        var nbEquipment = equipmentTitle.substring(equipmentTitle.lastIndexOf(" ") + 1, equipmentTitle.length).trim();
-                                        var oEquipment = {
-                                            "type": equipmentTitle.substring(0, equipmentTitle.lastIndexOf(" ")).trim() || "",
-                                            "equipment": []
-                                        }
-                                        console.log("'" + oEquipment.type + "'", "'" + nbEquipment + "'");
-                                        var tItemDetails = $(tSections[i]).find(".eb-grid-item");
-                                        for (var j = 0, ll = tItemDetails.length; j < ll; j++) {
-                                            const container = $(tItemDetails[j]).find("div.eb-grid-item__link-container");
-                                            oEquipment.equipment.push({
-                                                name: $(tItemDetails[j]).find("div.eb-full-name").text().trim() || "",
-                                                description: "",
-                                                urlDescription: host + $(tItemDetails[j]).find(".eb-pro-item-proof-blurb .eb-more-link").attr('href').trim() || "",
-                                                url: host + $(container).find("a.eb-grid-item__link").attr('href').trim() || "",
-                                                img: $(container).find("img.eb-grid-item__img").attr('data-original').trim() || ""
-                                            });
-                                        }
-                                        tEquipments.push(oEquipment);
-                                        console.log("--------------------------------")
-                                    }
-                                    if (nbRequestMember == l) {
-                                        updateUrlArtistMemberEquipBoard(oArtist, tUrlsMembers);
-                                        //Faire l'enregistrement et loop(i+1)
-                                    }
-                                    const totalPage = urlLastPage.substring(urlLastPage.lastIndexOf('=') + 1, urlLastPage.length);
-                                    console.log("totalPage = " + totalPage);
-                                } else {
-                                    //on traite la seul page du membre de groupe
-                                    console.log("Aucune page supplémentaire");
-                                }
-                                //itérer sur ces pages
-                                res.send(tEquipments);
-                                // updateFieldsArtistMemberEquipBoard(tObj[i], oEquipBoard);
-                            }).catch((error) => {});
-                        })(j);
+        limit = 100,
+        pageStart = "?page=";
+    (function loopArtist(skip) {
+        db.collection(COLLECTIONARTIST).aggregate([{
+            $match: {}
+        }, {
+            $unwind: "$members"
+        }, {
+            $match: {
+                $and: [{
+                    "members.urlEquipBoard": {
+                        $exists: 1
                     }
-                })(i);
-            });
-        })(skip);
+                }, {
+                    "members.urlEquipBoard": {
+                        $ne: ""
+                    }
+                }]
+            }
+        }, {
+            $project: {
+                _id: 1,
+                members: 1
+            }
+        }, {
+            $skip: skip
+        }, {
+            $limit: limit
+        }], (err, tArtists) => {
+            if (err) {
+                console.log(err);
+                return res.status(404).json(config.http.error.artist_404)
+            };
+            console.log("There are " + tArtists.length + " members");
+            var time = 2000;
+            for (var i = 0; i < tArtists.length; i++) {
+                var member = tArtists[i];
+                ((member, i) => {
+                    setTimeout(() => {
+                        var url = member.members.urlEquipBoard + pageStart;
+                        member.members.equipments = [];
+                        requestPages(url, 1, member, db, res);
+                        if (i == limit - 1) {
+                            console.log("skip = " + skip);
+                            //loopArtist(skip += limit);
+                        }
+                    }, i * time)
+                })(member, i);
+            }
+        });
+    })(skip);
+    return res.json(config.http.valid.send_message_ok);
+}
+
+var requestPages = (url, currentPage, member, db, res) => {
+    var urlPage = url + currentPage;
+    // console.log("\t2 - requestPages urlPage = " + urlPage);
+    requestEquipBoard(urlPage).then((body) => {
+        const $ = cheerio.load(body);
+        // e.g. : urlLastPage => /pros/kirk-hammett?page=3 this member has 3 pages or "undefined" => only one page
+        const urlLastPage = $("nav.pagination>span.last>a").attr('href');
+        //If urlLastPage is not defined so we set totalPage at 1 because the member has only one page.
+        const totalPage = urlLastPage ? urlLastPage.substring(urlLastPage.lastIndexOf('=') + 1, urlLastPage.length) : null;
+        loopPages($, currentPage, totalPage, url, member, db, res);
+    }).catch((error) => {
+        console.log("--------------------------");
+        console.log(error)
+    });
+};
+var loopPages = ($, currentPage, totalPage, url, member, db, res) => {
+    // console.log("\t\t3 - params loopPages = ", currentPage, totalPage, url);
+    extractDataFromPage($).then((tEquipments) => {
+        currentPage++;
+        member.members.equipments.push(...tEquipments);
+        //If totalPage is undefined we are in the last page
+        if (!totalPage) {
+            // console.log("\t\t\tAucune page supplémentaire");
+            var equipments = member.members.equipments;
+            //We merges the types which appears several times
+            for (var i = 0; i < equipments.length; i++) {
+                for (var j = i + 1; j < equipments.length; j++) {
+                    if (equipments[i].type != equipments[j].type) break;
+                    else {
+                        equipments[i].items.push(...equipments[j].items);
+                        equipments.splice(j, 1);
+                    }
+                }
+            }
+            //We save the members this artist
+            updateFieldsArtistMemberEquipBoard(db, member);
+            // return res.json(member);
+        } else return requestPages(url, currentPage, member, db, res);
+    }).catch((e) => console.log(e));
+};
+var extractDataFromPage = ($) => {
+    return new Promise((resolve, reject) => {
+        var tEquipments = [];
+        //We have several pages
+        const tSections = $(".eb-section");
+        for (var i = 0, l = tSections.length; i < l; i++) {
+            //e.g: Guitars 32 : http://equipboard.com/pros/kirk-hammett/ ou 32 est le nombre de guitare présent pour un artiste
+            var equipmentTitle = $(tSections[i]).find("h2.eb-vip-section-heading").text().trim();
+            var nbEquipment = equipmentTitle.substring(equipmentTitle.lastIndexOf(" ") + 1, equipmentTitle.length).trim();
+            var oEquipment = {
+                "type": equipmentTitle.substring(0, equipmentTitle.lastIndexOf(" ")).trim() || "",
+                "items": []
+            }
+            var tItemDetails = $(tSections[i]).find(".eb-grid-item");
+            for (var j = 0, ll = tItemDetails.length; j < ll; j++) {
+                const container = $(tItemDetails[j]).find("div.eb-grid-item__link-container");
+                oEquipment.items.push({
+                    name: $(tItemDetails[j]).find("div.eb-full-name").text().trim() || "",
+                    description: "",
+                    urlDescription: HOST + $(tItemDetails[j]).find(".eb-pro-item-proof-blurb .eb-more-link").attr('href').trim() || "",
+                    url: HOST + $(container).find("a.eb-grid-item__link").attr('href').trim() || "",
+                    img: $(container).find("img.eb-grid-item__img").attr('data-original').trim() || ""
+                });
+                //if the page is not empty
+            }
+            if (oEquipment.items.length) tEquipments.push(oEquipment);
+        }
+        resolve(tEquipments);
     });
 }
-var updateFieldsArtistMemberEquipBoard = function (objMember, tUrlsMembers) {
-    console.log();
 
+var getAllEquipmentDescription = (req, res) => {
+    var db = req.db,
+        skip = 0,
+        limit = 100;
+    (function loopArtist(skip) {
+        db.collection(COLLECTIONARTIST).aggregate([{
+            $match: {}
+        }, {
+            $unwind: "$members"
+        }, {
+            $match: {
+                $and: [{
+                    "members.equipments": {
+                        $exists: 1
+                    }
+                }, {
+                    "members.equipments": {
+                        $eq: []
+                    }
+                }]
+            }
+        }, {
+            $project: {
+                _id: 1,
+                members: 1
+            }
+        }, {
+            $skip: skip
+        }, {
+            $limit: limit
+        }], (err, tArtists) => {
+            if (err) return res.status(404).json(config.http.error.artist_404)
+            console.log("There are " + tArtists.length + " members");
+            var time = 2000;
+            for (var i = 0; i < tArtists.length; i++) {
+                var member = tArtists[i];
+                ((member, i) => {
+                    setTimeout(() => {
+                        var totalEquipmentsItems = 0;
+                        for (var i = 0; i < member.equipments.length; i++) {
+                            console.log(member.equipments[i].items.length);
+                            totalEquipmentsItems += member.equipments[i].items.length;
+                        }
+                        console.log("-----------------" + totalEquipmentsItems);
+                        if (i == limit - 1) {
+                            console.log("skip = " + skip);
+                            loopArtist(skip += limit);
+                        }
+                    }, i * time)
+                })(member, i);
+            }
+        });
+    })(skip);
+    return res.json(config.http.valid.send_message_ok);
+}
+
+var updateFieldsArtistMemberEquipBoard = function (db, objMember) {
+    db.collection(COLLECTIONARTIST).updateOne({
+        _id: new ObjectId(objMember._id),
+        members: {
+            $elemMatch: {
+                id_member_musicbrainz: objMember.members.id_member_musicbrainz,
+                begin: objMember.members.begin,
+                end: objMember.members.end
+            }
+        }
+    }, {
+        $set: {
+            "members.$.equipments": objMember.members.equipments
+        }
+    }, (err) => {
+        if (err) {
+            console.log("----------FAIL updated =>" + objMember._id + ", " + objMember.members.urlEquipBoard);
+            console.log(err);
+        } else {
+            console.log("updated => " + objMember._id);
+        }
+    });
 }
 var updateUrlArtistMemberEquipBoard = function (objArtist, tUrlsMembers) {
     for (var i = 0, l = objArtist.members.length; i < l; i++) {
@@ -267,6 +385,9 @@ var requestEquipBoard = (urlEquipBoard) => {
         })()
     })
 };
+
+
 exports.tryTor = tryTor;
 exports.getCreateLinkEquipBoard = getCreateLinkEquipBoard;
 exports.getAllEquipmentBoard = getAllEquipmentBoard;
+exports.getAllEquipmentDescription = getAllEquipmentDescription;

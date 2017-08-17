@@ -30,17 +30,10 @@
                 cursor: pointer;
                 color: black;
             }
-            .song_search_bar{
-                background-color: #C0A805;
-            }
             .search_title{
                 position: absolute;
                 margin-top: 10px;
                 margin-left: 10px;
-            }
-            .song_search_bar{
-                border-radius: 4px;
-                padding: 7px;
             }
             .center{
                 text-align: center;
@@ -54,7 +47,7 @@
         <paper-material elevation="1">
             <iron-ajax id="get_content" auto url="/search/award/{{_encodeUri(awardName)}}" last-response="{{awards}}" handleAs="json"> </iron-ajax>
             <iron-ajax id="get_count"   auto url="/search/count/song/award/{{_encodeUri(awardName)}}" last-response="{{countField}}" handleAs="json"> </iron-ajax>
-            <p class="center searchText-info">Nous avons actuellement : {{countField.count}} musiques ayant reçu un award {{awardName}}</p>
+            <p class="center searchText-info">We have {{countField.count}} music(s) with an award "{{awardName}}"</p>
             <template class="flex-wrap" is="dom-repeat" items="{{awards}}" as="award" initial-count="1" >
                 <a href="#/search/artist/{{_encodeUri(award.name)}}/album/{{_encodeUri(award.albumTitle)}}/song/{{_encodeUri(award.title)}}" class="inherit">
                     <paper-card elevation="0" >

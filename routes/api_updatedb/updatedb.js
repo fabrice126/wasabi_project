@@ -384,68 +384,46 @@ router.get('/wordcount/:collection/:_id', function (req, res) {
     var db = req.db,
         collection = req.params.collection,
         id = req.params._id,
-        query;
-    if (!ObjectId.isValid(id)) {
-        return res.status(404).json(config.http.error.objectid_404);
-    }
+        query = {};
+    if (!ObjectId.isValid(id)) return res.status(404).json(config.http.error.objectid_404);
     console.log("Traitement du document " + collection + " ayant l'id=" + id);
     if (collection != COLLECTIONARTIST && collection != COLLECTIONALBUM && collection != COLLECTIONSONG) {
-        return res.status(404).send([{
-            error: "Page not found"
-        }]);
+        return res.status(404).send(config.http.error.global_404);
     }
     db.collection(collection).findOne({
         _id: ObjectId(id)
     }, function (err, obj) {
-        if (obj === null) {
-            return res.status(404).send(config.http.error.global_404);
-        }
-        if (collection == COLLECTIONARTIST) {
-            query = {
-                name: obj.name
-            };
-        } else if (collection == COLLECTIONALBUM) {
-            query = {
-                id_album: obj._id
-            };
-        } else {
-            query = {
-                _id: obj._id
-            };
-        }
+        if (obj === null) return res.status(404).send(config.http.error.global_404);
+        if (collection == COLLECTIONARTIST) query.name = obj.name;
+        else if (collection == COLLECTIONALBUM) query.id_album = obj._id
+        else query._id = obj._id
         var collectionTmp = 'word_count_by_lyrics_tmp';
         db.collection(COLLECTIONSONG).mapReduce(wordCountController.map, wordCountController.reduce, {
             query: query,
             out: collectionTmp
-        }, function (err, results) {
-            if (results === null) {
-                return res.status(404).send([{
-                    error: config.http.error.song_404
-                }]);
-            }
+        }, (err, results) => {
+            if (results === null) return res.status(404).send(config.http.error.global_404);
             var currentWordCountSong = [];
             db.collection(collectionTmp).find({}).sort({
                 value: -1
-            }).toArray(function (err, word) {
-                if (obj === null) {
-                    return res.status(404).send(config.http.error.global_404);
-                }
-                for (var i = 0, l = word.length; i < l; i++) {
-                    currentWordCountSong.push(word[i]);
-                }
-                db.collection(collection).update({
+            }).toArray((err, word) => {
+                if (obj === null) return res.status(404).send(config.http.error.global_404);
+                for (var i = 0, l = word.length; i < l; i++) currentWordCountSong.push(word[i]);
+                db.collection("_word_count_" + collection).update({
                     _id: obj._id
                 }, {
                     $set: {
+                        "_id": obj._id,
                         "wordCount": currentWordCountSong
                     }
-                }, function (resultat) {
+                }, {
+                    upsert: true
+                }, (resultat) => {
                     console.log("le word count pour la collection: " + collection + " est terminé");
                     db.collection(collectionTmp).drop();
-                    res.send("OK");
+                    return res.send("OK");
                 });
             });
-
         });
     });
 });
@@ -582,7 +560,9 @@ router.get('/deezer/album', deezerController.getAllAlbums);
  */
 router.get('/equipboard/try_tor', equipBoardController.tryTor);
 router.get('/equipboard/add/artist/members/url_equipboard', equipBoardController.getCreateLinkEquipBoard);
-router.get('/equipboard/artist', equipBoardController.getAllEquipmentBoard);
+router.get('/equipboard/artist/equipment', equipBoardController.getAllEquipmentBoard);
+router.get('/equipboard/artist/equipment/description', equipBoardController.getAllEquipmentDescription);
+
 
 
 
@@ -639,6 +619,7 @@ router.get('/create_stats/properties/album/count', statsController.updatePropert
  * API mettant à jour la collection _stats_prop_song
  */
 router.get('/create_stats/properties/song/count', statsController.updatePropertiesStatsSong);
+
 
 
 export default router;

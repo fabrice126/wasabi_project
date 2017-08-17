@@ -226,7 +226,7 @@
                 </template>
                 <template id="domIfMember" is="dom-if" if="{{artist.members.length}}">
                     <details>
-                        <summary class="inherit">Voir les membres actuels:</summary>
+                        <summary class="inherit">See members:</summary>
                         <ul class="collapse-content">
                             <template is="dom-repeat" items="{{artist.members}}" as="member">
                                 <template is="dom-if" if="{{!member.ended}}">
@@ -236,7 +236,7 @@
                                             <li>Instrument: {{member.instruments}}</li>
                                         </template>
                                         <template is="dom-if" if="{{member.begin}}">
-                                            <li>Années d'activités: {{member.begin}}</li>
+                                            <li>Years of activities: {{member.begin}}</li>
                                         </template>
                                     </ul>
                                 </template>
@@ -244,7 +244,7 @@
                         </ul>
                     </details>
                     <details>
-                        <summary class="inherit">Voir les ancien(s) membre(s):</summary>
+                        <summary class="inherit">See former members:</summary>
                         <ul class="collapse-content">
                             <template is="dom-repeat" items="{{artist.members}}" as="formerMember">
                                 <template is="dom-if" if="{{formerMember.ended}}">
@@ -254,10 +254,10 @@
                                             <li>Instrument: {{formerMember.instruments}}</li>
                                         </template>
                                         <template is="dom-if" if="{{formerMember.begin}}">
-                                            <li>Début: {{formerMember.begin}}</li>
+                                            <li>Begin: {{formerMember.begin}}</li>
                                         </template>
                                         <template is="dom-if" if="{{formerMember.end}}">
-                                            <li>Fin: {{formerMember.end}}</li>
+                                            <li>End: {{formerMember.end}}</li>
                                         </template>
                                     </ul>
                                 </template>

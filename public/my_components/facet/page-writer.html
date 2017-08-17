@@ -28,17 +28,10 @@
                 cursor: pointer;
                 color: black;
             }
-            .song_search_bar{
-                background-color: #C0A805;
-            }
             .search_title{
                 position: absolute;
                 margin-top: 10px;
                 margin-left: 10px;
-            }
-            .song_search_bar{
-                border-radius: 4px;
-                padding: 7px;
             }
             .center{
                 text-align: center;
@@ -52,7 +45,7 @@
         <paper-material elevation="1">
             <iron-ajax id="get_content" auto url="/search/writer/{{_encodeUri(writerName)}}" last-response="{{writers}}" handleAs="json"> </iron-ajax>
             <iron-ajax id="get_count"   auto url="/search/count/song/writer/{{_encodeUri(writerName)}}" last-response="{{countField}}" handleAs="json"> </iron-ajax>
-            <p class="center searchText-info">Nous avons actuellement : {{countField.count}} musiques écrites par {{writerName}}</p>
+            <p class="center searchText-info">We have {{countField.count}} music(s) written by "{{writerName}}"</p>
             <template class="flex-wrap" is="dom-repeat" items="{{writers}}" as="writer" initial-count="1" >
                 <a href="#/search/artist/{{_encodeUri(writer.name)}}/album/{{_encodeUri(writer.albumTitle)}}/song/{{_encodeUri(writer.title)}}" class="inherit">
                     <paper-card elevation="0" >

@@ -45,7 +45,7 @@
             <paper-toast id="toast" duration=5000 text="Wrong email or password"></paper-toast>
 
             <form is="iron-form" id="form" method="post" action="{{getURLLogin()}}" on-iron-form-response="responseHandler" on-iron-form-error="errorHandler">
-                <paper-input type="email" name="email" label="email" required autofocus auto-validate error-message="Needs a valid email" autocomplete></paper-input>
+                <paper-input type="text" name="email" label="email / username" required autofocus auto-validate error-message="Needs a valid email" autocomplete></paper-input>
                 <paper-input type="password" name="password" label="password" required></paper-input>
                 <paper-button raised on-click="submitForm">Submit</paper-button>
             </form>
