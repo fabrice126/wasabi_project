@@ -1,92 +1,84 @@
 import mongoose from 'mongoose';
-
+var stringSchema = {
+    type: String,
+    trim: true,
+    default: ""
+};
+var arrayOfStringSchema = {
+    type: [String],
+    default: []
+};
+var stringSchemaIndex = {
+    type: String,
+    trim: true,
+    default: "",
+    index: true
+};
 var albumSchema = new mongoose.Schema({
     name: {
-        type: String,
-        trim: true,
+        ...stringSchemaIndex,
         required: [true, 'You must type a name'],
-        index: true
     },
     title: {
-        type: String,
-        trim: true,
+        ...stringSchemaIndex,
         required: [true, 'You must type a title'],
-        index: true
     },
-    //Anciennement publicationDate
-    publicationDate: {
-        type: String,
-        trim: true,
-        default: ""
-    },
-    urlWikipedia: {
-        type: String,
-        trim: true,
-        default: ""
-    },
-    genre: {
-        type: String,
-        trim: true,
-        default: "",
-        index: true
-    },
-    length: {
-        type: String,
-        trim: true,
-        default: ""
-    },
-    urlAlbum: {
-        type: String,
-        trim: true,
-        default: ""
-    },
-    urlITunes: {
-        type: String,
-        trim: true,
-        default: ""
-    },
-    urlAmazon: {
-        type: String,
-        trim: true,
-        default: ""
-    },
-    urlSpotify: {
-        type: String,
-        trim: true,
-        default: ""
-    },
-    urlAllmusic: {
-        type: String,
-        trim: true,
-        default: ""
-    },
-    urlMusicBrainz: {
-        type: String,
-        trim: true,
-        default: ""
-    },
-    urlDiscogs: {
-        type: String,
-        trim: true,
-        default: ""
-    },
+    id_album_deezer: stringSchemaIndex,
+    id_album_discogs: stringSchemaIndex,
+    id_album_musicbrainz: stringSchemaIndex,
     id_artist: {
         type: mongoose.Schema.ObjectId,
         ref: "Artist",
         required: [true, 'You must type an id_artist'],
         index: true
     },
+    //Anciennement publicationDate
+    publicationDate: stringSchema,
+    genre: stringSchemaIndex,
+    barcode: stringSchema,
+    cover: {
+        standard: stringSchema,
+        small: stringSchema,
+        medium: stringSchema,
+        big: stringSchema,
+        xl: stringSchema
+    },
+    country: stringSchema,
+    dateRelease: stringSchema,
+    deezerFans: {
+        type: Number,
+        default: 0,
+    },
+    disambiguation: stringSchema,
+    explicitLyrics: {
+        type: Boolean,
+        default: false,
+    },
+    upc: stringSchema,
+    language: stringSchema,
+    length: stringSchema,
+    rdf: stringSchema,
+    urlWikipedia: stringSchemaIndex,
+    urlAlbum: stringSchema,
+    urlITunes: stringSchema,
+    urlAmazon: stringSchema,
+    urlSpotify: stringSchema,
+    urlAllmusic: stringSchema,
+    urlMusicBrainz: stringSchema,
+    urlDiscogs: stringSchema,
+    urlDeezer: stringSchema,
     //liste des champs pouvant ne pas exister dans un document album
-    song: {
-        type: [Object],
+    songs: {
+        type: [],
+        default: []
     },
-    rdf: {
-        type: String,
-    },
-    wordCount: {
-        type: [Object],
-    }
 }, {
-    collection: 'album'
+    collection: 'album',
+    toObject: {
+        retainKeyOrder: true
+    },
+    toJSON: {
+        retainKeyOrder: true
+    }
 });
 export default mongoose.model('Album', albumSchema);

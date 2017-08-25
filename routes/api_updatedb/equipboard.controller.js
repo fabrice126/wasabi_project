@@ -90,7 +90,11 @@ var getCreateLinkEquipBoard = (req, res) => {
     });
     res.send("ok");
 };
-
+/**
+ * API used for add in our database informations about stuff of band members
+ * @param {*} req 
+ * @param {*} res 
+ */
 var getAllEquipmentBoard = (req, res) => {
     var db = req.db,
         skip = 0,
@@ -138,7 +142,7 @@ var getAllEquipmentBoard = (req, res) => {
                         requestPages(url, 1, member, db, res);
                         if (i == limit - 1) {
                             console.log("skip = " + skip);
-                            //loopArtist(skip += limit);
+                            loopArtist(skip += limit);
                         }
                     }, i * time)
                 })(member, i);
@@ -170,7 +174,6 @@ var loopPages = ($, currentPage, totalPage, url, member, db, res) => {
         member.members.equipments.push(...tEquipments);
         //If totalPage is undefined we are in the last page
         if (!totalPage) {
-            // console.log("\t\t\tAucune page supplémentaire");
             var equipments = member.members.equipments;
             //We merges the types which appears several times
             for (var i = 0; i < equipments.length; i++) {
@@ -191,7 +194,6 @@ var loopPages = ($, currentPage, totalPage, url, member, db, res) => {
 var extractDataFromPage = ($) => {
     return new Promise((resolve, reject) => {
         var tEquipments = [];
-        //We have several pages
         const tSections = $(".eb-section");
         for (var i = 0, l = tSections.length; i < l; i++) {
             //e.g: Guitars 32 : http://equipboard.com/pros/kirk-hammett/ ou 32 est le nombre de guitare présent pour un artiste
@@ -211,22 +213,24 @@ var extractDataFromPage = ($) => {
                     url: HOST + $(container).find("a.eb-grid-item__link").attr('href').trim() || "",
                     img: $(container).find("img.eb-grid-item__img").attr('data-original').trim() || ""
                 });
-                //if the page is not empty
             }
             if (oEquipment.items.length) tEquipments.push(oEquipment);
         }
         resolve(tEquipments);
     });
 }
-
+/**
+ * API used for get description about each stuff of each artists 
+ * @param {*} req 
+ * @param {*} res 
+ */
 var getAllEquipmentDescription = (req, res) => {
     var db = req.db,
-        skip = 0,
-        limit = 100;
-    (function loopArtist(skip) {
+        skip = 3600,
+        limit = 1000;
+    (function loopDescription(skip) {
+        console.log("skip = " + skip);
         db.collection(COLLECTIONARTIST).aggregate([{
-            $match: {}
-        }, {
             $unwind: "$members"
         }, {
             $match: {
@@ -236,7 +240,7 @@ var getAllEquipmentDescription = (req, res) => {
                     }
                 }, {
                     "members.equipments": {
-                        $eq: []
+                        $ne: []
                     }
                 }]
             }
@@ -252,24 +256,42 @@ var getAllEquipmentDescription = (req, res) => {
         }], (err, tArtists) => {
             if (err) return res.status(404).json(config.http.error.artist_404)
             console.log("There are " + tArtists.length + " members");
-            var time = 2000;
-            for (var i = 0; i < tArtists.length; i++) {
-                var member = tArtists[i];
-                ((member, i) => {
-                    setTimeout(() => {
-                        var totalEquipmentsItems = 0;
-                        for (var i = 0; i < member.equipments.length; i++) {
-                            console.log(member.equipments[i].items.length);
-                            totalEquipmentsItems += member.equipments[i].items.length;
-                        }
-                        console.log("-----------------" + totalEquipmentsItems);
-                        if (i == limit - 1) {
-                            console.log("skip = " + skip);
-                            loopArtist(skip += limit);
-                        }
-                    }, i * time)
-                })(member, i);
-            }
+            var i = 0;
+            (function loop(i) {
+                var totalEquipmentsItems = 0,
+                    count = 0,
+                    equipments = tArtists[i].members.equipments;
+                for (var j = 0; j < equipments.length; j++) {
+                    totalEquipmentsItems += equipments[j].items.length;
+                    for (var k = 0; k < equipments[j].items.length; k++) {
+                        var urlDescription = equipments[j].items[k].urlDescription,
+                            item = equipments[j].items[k];
+                        ((item, urlDescription) => {
+                            requestEquipBoard(urlDescription).then((body) => {
+                                const $ = cheerio.load(body);
+                                item.description = $(".eb-blurb").html().trim();
+                                count++;
+                                if (count == totalEquipmentsItems) {
+                                    updateFieldsArtistMemberEquipBoard(db, tArtists[i]);
+                                    console.log(i + skip);
+                                    i++;
+                                    if (i == limit - 1) setTimeout(() => loopDescription(skip += limit), 10000)
+                                    else loop(i);
+                                }
+                            }).catch((error) => {
+                                count++;
+                                if (count == totalEquipmentsItems) {
+                                    updateFieldsArtistMemberEquipBoard(db, tArtists[i]);
+                                    console.log(i + skip);
+                                    i++;
+                                    if (i == limit - 1) setTimeout(() => loopDescription(skip += limit), 10000)
+                                    else loop(i);
+                                }
+                            });
+                        })(item, urlDescription)
+                    }
+                }
+            })(i);
         });
     })(skip);
     return res.json(config.http.valid.send_message_ok);
@@ -293,9 +315,7 @@ var updateFieldsArtistMemberEquipBoard = function (db, objMember) {
         if (err) {
             console.log("----------FAIL updated =>" + objMember._id + ", " + objMember.members.urlEquipBoard);
             console.log(err);
-        } else {
-            console.log("updated => " + objMember._id);
-        }
+        } else console.log("updated => " + objMember._id);
     });
 }
 var updateUrlArtistMemberEquipBoard = function (objArtist, tUrlsMembers) {
@@ -365,6 +385,7 @@ var requestToFindUrlEquipBoard = (urlEquipBoard) => {
 };
 
 var requestEquipBoard = (urlEquipBoard) => {
+    var nbREquestProcess = 0;
     return new Promise((resolve, reject) => {
         (function requestProcess() {
             tor_request.request(urlEquipBoard, {
@@ -374,12 +395,17 @@ var requestEquipBoard = (urlEquipBoard) => {
                 if (!err && res.statusCode == 200) return resolve(body);
                 if (err) {
                     //If request take too much time we relaunch it
-                    if (err.code == "ECONNRESET" || err.code === "ETIMEDOUT") {
+                    console.log("error code = " + err.code);
+                    if (nbREquestProcess != 6 && (err.code == "ECONNRESET" || err.code === "ETIMEDOUT" || err.code === "ESOCKETTIMEDOUT")) {
                         console.log(err.code + " => relance de la requête => " + urlEquipBoard);
-                        requestProcess();
+                        nbREquestProcess++;
+                        setTimeout(() => requestProcess(), 2000);
                     } else return reject(err);
                 } else {
-                    return reject(res);
+                    console.log(nbREquestProcess + " ---------------DANS ELSE REJECT REQUESTEQUIPBOARD--------------- " + urlEquipBoard);
+                    if (nbREquestProcess == 5) return reject(body);
+                    nbREquestProcess++;
+                    setTimeout(() => requestProcess(), 2000);
                 }
             });
         })()

@@ -519,7 +519,7 @@ var put_songLyrics = (req, res) => {
         if (!ObjectId.isValid(idSong)) return res.status(404).json(config.http.error.objectid_404);
         //!\ Il faut supprimer les attributs qui sont de type objectId dans notre base car songBody les récupéres en string
         delete songBody._id;
-        console.log(songBody);
+        //console.log(songBody);
         req.db.collection(COLLECTIONSONG).update({
             _id: ObjectId(idSong)
         }, {
@@ -540,7 +540,7 @@ var put_songIsClassic = (req, res) => {
         if (!ObjectId.isValid(idSong)) return res.status(404).json(config.http.error.objectid_404);
         //!\ Il faut supprimer les attributs qui sont de type objectId dans notre base car songBody les récupéres en string
         delete songBody._id;
-        console.log(songBody)
+        //console.log(songBody)
         req.db.collection(COLLECTIONSONG).update({
             _id: ObjectId(idSong)
         }, {

@@ -10,7 +10,7 @@ import deezerController from './deezer.controller.js';
 import animuxController from './animux.controller.js';
 import equipBoardController from './equipboard.controller.js';
 import statsController from './stats.controller.js';
-
+import lyricsWikiaController from './lyricswikia.controller.js'
 import {
     ObjectId
 } from 'mongoskin';
@@ -619,6 +619,12 @@ router.get('/create_stats/properties/album/count', statsController.updatePropert
  * API mettant à jour la collection _stats_prop_song
  */
 router.get('/create_stats/properties/song/count', statsController.updatePropertiesStatsSong);
+
+/**
+ * Update olds discographies (for an existing artist) or add new discographie (if new artist)
+ */
+router.get('/lyricswikia', lyricsWikiaController.startExtraction);
+router.get('/lyricswikia/try_tor', lyricsWikiaController.tryTor);
 
 
 

@@ -107,12 +107,14 @@ module.exports = {
     },
     "database": {
         "mongodb_connect": "mongodb://localhost:27017/wasabi",
+        "mongodb_connect_v2": "mongodb://localhost:27017/wasabi_v2",
         "mongodb_option": {
             server: {
                 socketOptions: {
                     socketTimeoutMS: 999999,
                     connectTimeoutMS: 999999
-                }
+                },
+                poolSize: 10
             }
         },
         "collection_artist": "artist",

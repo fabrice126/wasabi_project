@@ -1,12 +1,17 @@
 class Song {
     constructor() {
         this.title = "";
+        this.id_album = "";
+        this.id_album_deezer = "";
+        this.id_artist_deezer = "";
+        this.id_song_musicbrainz = "";
         this.urlSong = "";
         this.lyrics = "";
         this.urlWikipedia = "";
         this.urlYouTube = "";
         this.urlITunes = "";
         this.urlAmazon = "";
+        this.urlDeezer = "";
         this.urlGoEar = "";
         this.urlSpotify = "";
         this.urlAllmusic = "";
@@ -15,7 +20,7 @@ class Song {
         this.urlHypeMachine = "";
         this.urlPandora = "";
         this.isClassic = false;
-
+        this.genre = "";
         this.id_song_deezer = "";
         this.isrc = "";
         this.length = "";
@@ -26,6 +31,33 @@ class Song {
         this.gain = "";
         this.preview = "";
         this.availableCountries = [];
+
+        this.abstract = "";
+        this.albumTitle = "";
+        this.animux_content = "";
+        this.animux_path = "";
+        this.award = "";
+        this.begin = "";
+        this.deezer_mapping = [];
+        this.end = "";
+        this.disambiguation = "";
+        this.format = "";
+        this.language = "";
+        this.language_detect = "";
+        this.lengthAlbum = "";
+        this.multitrack_file = "";
+        this.multitrack_path = "";
+        this.name = "";
+        this.position = "";
+        this.producer = "";
+        this.publicationDateAlbum = "";
+        this.rdf = "";
+        this.recordLabel = "";
+        this.recorded = "";
+        this.releaseDate = "";
+        this.subject = "";
+        this.writer = "";
+        this.runtime = "";
     }
 }
 module.exports = Song;

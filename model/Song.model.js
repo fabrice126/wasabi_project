@@ -1,6 +1,32 @@
 import mongoose from 'mongoose';
-
+var stringSchema = {
+    type: String,
+    trim: true,
+    default: ""
+};
+var arrayOfStringSchema = {
+    type: [String],
+    default: []
+};
+var stringSchemaIndex = {
+    type: String,
+    trim: true,
+    default: "",
+    index: true
+};
 var songSchema = new mongoose.Schema({
+    name: {
+        ...stringSchemaIndex,
+        required: [true, 'You must type a name'],
+    },
+    title: {
+        ...stringSchemaIndex,
+        required: [true, 'You must type a title'],
+    },
+    albumTitle: {
+        ...stringSchemaIndex,
+        required: [true, 'You must type an albumTitle'],
+    },
     id_artist: {
         type: mongoose.Schema.ObjectId,
         ref: "Artist",
@@ -13,239 +39,80 @@ var songSchema = new mongoose.Schema({
         required: [true, 'You must type an id_album'],
         index: true
     },
-    name: {
-        type: String,
-        trim: true,
-        required: [true, 'You must type a name'],
-        index: true
-    },
-    title: {
-        type: String,
-        trim: true,
-        required: [true, 'You must type a title'],
-        index: true
-    },
-    albumTitle: {
-        type: String,
-        trim: true,
-        required: [true, 'You must type an albumTitle'],
-        index: true
-    },
+    id_song_musicbrainz: stringSchemaIndex,
+    id_artist_deezer: stringSchemaIndex,
+    id_album_deezer: stringSchemaIndex,
+    id_song_deezer: stringSchemaIndex,
     position: {
         type: Number,
         required: [true, 'You must type a position'],
         index: true
     },
-    lengthAlbum: {
-        type: String,
-        trim: true,
-        default: ""
-    },
-    publicationDateAlbum: {
-        type: String,
-        trim: true,
-        default: ""
-    },
-    lyrics: {
-        type: String,
-        trim: true,
-        default: ""
-    },
-    urlSong: {
-        type: String,
-        trim: true,
-        default: ""
-    },
-    urlWikipedia: {
-        type: String,
-        trim: true,
-        default: ""
-    },
-    urlYouTube: {
-        type: String,
-        trim: true,
-        default: ""
-    },
-    urlITunes: {
-        type: String,
-        trim: true,
-        default: ""
-    },
-    urlAmazon: {
-        type: String,
-        trim: true,
-        default: ""
-    },
-    urlGoEar: {
-        type: String,
-        trim: true,
-        default: ""
-    },
-    urlSpotify: {
-        type: String,
-        trim: true,
-        default: ""
-    },
-    urlAllmusic: {
-        type: String,
-        trim: true,
-        default: ""
-    },
-    urlMusicBrainz: {
-        type: String,
-        trim: true,
-        default: ""
-    },
-    urlLastFm: {
-        type: String,
-        trim: true,
-        default: ""
-    },
-    urlHypeMachine: {
-        type: String,
-        trim: true,
-        default: ""
-    },
-    urlPandora: {
-        type: String,
-        trim: true,
-        default: ""
-    },
-    rdf: {
-        type: String,
-        trim: true,
-        default: ""
-    },
-    format: {
-        type: [String],
-    },
-    genre: {
-        type: [String],
-    },
-    producer: {
-        type: [String],
-    },
-    recordLabel: {
-        type: [String],
-    },
-    writer: {
-        type: [String],
-    },
-    recorded: {
-        type: [String],
-    },
-    abstract: {
-        type: String,
-        trim: true,
-        default: ""
-    },
-    releaseDate: {
-        type: String,
-        trim: true,
-        default: ""
-    },
-    runtime: {
-        type: [String],
-    },
-    award: {
-        type: [String],
-    },
-    subject: {
-        type: [String],
-    },
+    publicationDate: stringSchema,
+    lengthAlbum: stringSchema,
+    publicationDateAlbum: stringSchema,
+    lyrics: stringSchema,
+    format: arrayOfStringSchema,
+    genre: arrayOfStringSchema,
+    producer: arrayOfStringSchema,
+    recordLabel: arrayOfStringSchema,
+    writer: arrayOfStringSchema,
+    recorded: arrayOfStringSchema,
+    abstract: stringSchema,
+    releaseDate: stringSchema,
+    runtime: arrayOfStringSchema,
+    award: arrayOfStringSchema,
+    subject: arrayOfStringSchema,
+    availableCountries: arrayOfStringSchema,
     isClassic: {
         type: Boolean,
         default: false
     },
-    multitrack_file: {
-        type: String,
-        trim: true,
-        default: ""
-    },
-    multitrack_path: {
-        type: String,
-        trim: true,
-        default: ""
-    },
-    wordCount: {
-        type: [],
-        default: []
-    },
-
-    id_song_deezer: {
-        type: String,
-        trim: true,
-        default: ""
-    },
-    isrc: {
-        type: String,
-        trim: true,
-        default: ""
-    },
-    length: {
-        type: String,
-        trim: true,
-        default: ""
-    },
+    isrc: stringSchema,
+    length: stringSchema,
     explicitLyrics: {
         type: Boolean,
         default: false
     },
-    rank: {
-        type: String,
-        trim: true,
-        default: ""
+    rank: stringSchema,
+    bpm: stringSchema,
+    gain: stringSchema,
+    preview: stringSchema,
+    language: stringSchema,
+    language_detect: stringSchema,
+    begin: stringSchema,
+    end: stringSchema,
+    deezer_mapping: {
+        type: [],
+        default: []
     },
-    bpm: {
-        type: String,
-        trim: true,
-        default: ""
-    },
-    gain: {
-        type: String,
-        trim: true,
-        default: ""
-    },
-    publicationDate: {
-        type: String,
-        trim: true,
-        default: ""
-    },
-    preview: {
-        type: String,
-        trim: true,
-        default: ""
-    },
-    availableCountries: {
-        type: [String],
-    },
-    id_song_musicbrainz: {
-        type: String,
-        trim: true,
-        default: ""
-    },
-    disambiguation: {
-        type: String,
-        trim: true,
-        default: ""
-    },
-    language: {
-        type: String,
-        trim: true,
-        default: ""
-    },
-    begin: {
-        type: String,
-        trim: true,
-        default: ""
-    },
-    end: {
-        type: String,
-        trim: true,
-        default: ""
-    },
+    disambiguation: stringSchema,
+    multitrack_file: stringSchema,
+    multitrack_path: stringSchema,
+    animux_content: stringSchema,
+    animux_path: stringSchema,
+    rdf: stringSchema,
+    urlSong: stringSchema,
+    urlWikipedia: stringSchema,
+    urlDeezer: stringSchema,
+    urlYouTube: stringSchema,
+    urlITunes: stringSchema,
+    urlAmazon: stringSchema,
+    urlGoEar: stringSchema,
+    urlSpotify: stringSchema,
+    urlAllmusic: stringSchema,
+    urlMusicBrainz: stringSchema,
+    urlLastFm: stringSchema,
+    urlHypeMachine: stringSchema,
+    urlPandora: stringSchema,
     //liste des champs pouvant ne pas exister dans un document album
 }, {
-    collection: 'song'
+    collection: 'song',
+    toObject: {
+        retainKeyOrder: true
+    },
+    toJSON: {
+        retainKeyOrder: true
+    }
 });
 export default mongoose.model('Song', songSchema);
