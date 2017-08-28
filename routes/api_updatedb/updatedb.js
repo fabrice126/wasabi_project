@@ -379,6 +379,7 @@ router.get('/multitrackspath', function (req, res) {
     res.send("OK");
 });
 
+
 //Cette fonction réalise le word count pour le document ayant l'id :_id dans la collection :collection
 router.get('/wordcount/:collection/:_id', function (req, res) {
     var db = req.db,
@@ -581,6 +582,10 @@ router.get('/animux/create_mapping/artist', animuxController.getDirArtist);
  */
 router.get('/animux/create_mapping/artist/not_found', animuxController.getNotFoundLogArtist);
 /**
+ * API permettant de faire le matching entre les fichiers animux contenant la synchronisation des paroles et nos musique en base de données
+ */
+router.get('/animux/create_mapping/song', animuxController.getFileSong);
+/**
  * API permettant d'avoir le nombre de liens animux présent dans notre base de données
  */
 router.get('/animux/count/artist', animuxController.countArtistAnimuxDirInDB);
@@ -590,10 +595,6 @@ router.get('/animux/count/artist', animuxController.countArtistAnimuxDirInDB);
 router.get('/animux/count/song', animuxController.countSongAnimuxFileInDB);
 
 
-/**
- * API permettant de faire le matching entre les fichiers animux contenant la synchronisation des paroles et nos musique en base de données
- */
-router.get('/animux/create_mapping/song', animuxController.getFileSong);
 
 
 

@@ -37,6 +37,7 @@ exports.startExtraction = async(req, res) => {
         console.error("-----------", e);
     }
 }
+
 ////////////////////////////////////////////////////////////////////////////////////////
 //--------------------await startExtraction.getAllArtistsFromCategorie----------------//
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -44,14 +45,11 @@ var getAllArtistsFromCategorie = () => {
     return new Promise(async(resolve, reject) => {
         try {
             //Nous permet de créer une première arborescence en récupérerant toutes les lyrics d'un abum et tous les album d'un groupe
-            const alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '0-9'],
-                categoryNextPage = "?page=";
+            const alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '0-9'];
             var idxAlphabet = 0;
             (async function loopAlphabet(idxAlphabet) {
-                //contient les liens des artistes de tout l'alphabet qui sont aussi les noms des répertoires sur le disque
-                var url = 'http://lyrics.wikia.com/wiki/Category:Artists_' + alphabet[idxAlphabet] + categoryNextPage;
+                var url = 'http://lyrics.wikia.com/wiki/Category:Artists_' + alphabet[idxAlphabet] + '?page=';
                 var totalPages = await getNbPageFromCategorie(url + "1");
-                // if (!totalPages) totalPages = 1;
                 for (var idxCategoryPage = 1; idxCategoryPage <= totalPages; idxCategoryPage++) {
                     console.log("url = " + (url + idxCategoryPage));
                     var tObjArtist = await getArtistFromCategorie(url + idxCategoryPage);
@@ -76,8 +74,8 @@ var getNbPageFromCategorie = (url) => {
             var body = await requestLyricsWikia(url);
             var $ = cheerio.load(body),
                 totalPages;
-            if (!$("li>.paginator-page:last-child").last().attr("data-page")) totalPages = "1";
-            else totalPages = $("li>.paginator-page:last-child").last().attr("data-page").trim() || "1";
+            if (!$("li>.paginator-page").last().attr("data-page")) totalPages = "1";
+            else totalPages = $("li>.paginator-page").last().attr("data-page").trim() || "1";
             return resolve(totalPages);
         } catch (err) {
             console.error(err.code + ' ===== getNbPageFromCategorie ===== ' + url);
@@ -111,27 +109,23 @@ var getArtistFromCategorie = (url) => {
     });
 };
 var saveArtist = (oArtist) => {
-    var query = {
+    Artist.findOneAndUpdate({
         'name': oArtist.name
-    };
-    Artist.findOneAndUpdate(query, oArtist, {
+    }, oArtist, {
         upsert: true,
         new: true,
     }, (err, updatedArtist) => {
         if (err) return console.error("------------------" + err.message + "------------------");
-        // console.log("\tArtist added or updated = ", updatedArtist.name);
     });
 }
 var saveAlbum = (oAlbum) => {
     oAlbum.save((err, updatedAlbum) => {
         if (err) return console.error("------------------" + err.message + "------------------");
-        // console.log("\tAlbum added or updated = ", updatedAlbum.name, updatedAlbum.title);
     });
 }
 var saveSong = (oSong) => {
     oSong.save((err, updatedSong) => {
         if (err) return console.error("------------------" + err.message + "------------------");
-        // console.log("\t\tSong added or updated = ", updatedSong.name, updatedSong.albumTitle, updatedSong.title);
     });
 }
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -140,25 +134,30 @@ var saveSong = (oSong) => {
 
 var getAllDiscographiesFromAPI = () => {
     return new Promise(async(resolve, reject) => {
-        const limit = 500;
-        var skip = 18000;
+        const limit = 100;
+        var skip = 80220;
         (function loopArtistApi(skip) {
             console.log(`--------------------------------------SKIP = ${skip}--------------------------------------`);
-            Artist.find({}).skip(skip).limit(limit).exec(async(err, tArtists) => {
+            Artist.find({}).skip(skip).limit(limit).exec((err, tArtists) => {
                 if (err) console.error('Error: getAllDiscographiesFromAPI = ', err.message);
-                try {
-                    for (var i = 0, l = tArtists.length; i < l; i++) {
-                        var resolve = await getAPIAlbumsAndSongsOfArtist(tArtists[i]);
-                        console.log((skip + i) + " - " + resolve);
-                        resolve = null;
-                    }
-                } catch (error) {
-                    console.error("'-------------", error.message);
-                } finally {
-                    //on arrive à la fin
-                    if (tArtists.length < limit) return resolve("ok -> getAllDiscographiesFromAPI");
-                    else loopArtistApi(skip += limit);
-                }
+                var i = 0,
+                    count = 0;
+                (function reqS(i) {
+                    setTimeout(async() => {
+                        try {
+                            var url = await getAPIAlbumsAndSongsOfArtist(tArtists[i]);
+                            count++;
+                            console.log((skip + i) + " - " + (skip + count) + " - " + url);
+                            if (count == tArtists.length) {
+                                if (tArtists.length < limit) return resolve("ok -> getAllDiscographiesFromAPI");
+                                if (count == tArtists.length) loopArtistApi(skip += limit);
+                            }
+                        } catch (error) {
+                            console.error("'-------------", error.message);
+                        }
+                    }, 300 * i);
+                    if (i < tArtists.length - 1) reqS(++i);
+                })(i);
             });
         })(skip)
     });
@@ -226,10 +225,11 @@ var requestLyricsWikia = (url) => {
                 if (!err && res.statusCode == 200) return resolve(body);
                 else {
                     if (nbTry == 5) {
+                        console.error("\tError: requestLyricsWikia", err.message, err.code);
                         return reject("Error: requestLyricsWikia", err.message, err.code);
                     }
                     nbTry++;
-                    console.log("\tnbTry" + nbTry);
+                    console.log("\tnbTry = " + nbTry);
                     requestProcess(url);
                 }
             });

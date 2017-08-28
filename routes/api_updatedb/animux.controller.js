@@ -271,6 +271,7 @@ var getFileSong = (req, res) => {
         },
         loggerNotFound = fs.createWriteStream('animux_song_not_found_log.txt', options),
         loggerFound = fs.createWriteStream('animux_song_found_log.txt', options);
+    //We find artist having animux path
     req.db.collection(COLLECTIONARTIST).find({
         animux_path: {
             $exists: 1
@@ -285,12 +286,15 @@ var getFileSong = (req, res) => {
             nbEnd = 0;
         for (var i = 0; i < tArtists.length; i++) {
             for (var ii = 0; ii < tArtists[i].animux_path.length; ii++) {
+                //we are reading files in directory artist
                 let fileArray = readFilesSongs(tArtists[i].animux_path[ii]);
+                //for each songs in the previous directory (artist directory), we are going to find the title of each songs
                 for (var j = 0; j < fileArray.length; j++) {
                     var fileName = fileArray[j].replace(tArtists[i].animux_path[ii] + '/', "").replace(/_Animux.txt/i, "").replace(/\(live\)/i, "").replace("’", "'");
                     fileName = decodeURIComponent(fileName).trim();
                     ((filePathName, fileName) => {
                         nbTotal++;
+                        //We try to match songs with insensitive case
                         req.db.collection(COLLECTIONSONG).find({
                             $and: [{
                                 name: tArtists[i].name
@@ -305,6 +309,7 @@ var getFileSong = (req, res) => {
                                     nbMatch++
                                     console.log(filePathName + " trouvé: " + nbMatch + '/' + (nbTotal));
                                     loggerFound.write(filePathName + "\n");
+                                    //we update each songs for an artist
                                     req.db.collection(COLLECTIONSONG).updateMany({
                                         $and: [{
                                             name: tSongs[0].name
@@ -343,7 +348,6 @@ var getFileSong = (req, res) => {
  */
 var processArtistAddThe = (db, artistName) => {
     return new Promise((resolve, reject) => {
-
         db.collection(COLLECTIONARTIST).findOne({
             $or: [{
                 nameVariations: new RegExp("^" + utilHandler.escapeRegExp("The " + artistName) + "$", "i")
@@ -393,7 +397,8 @@ var processArtistRemoveThe = (db, artistName) => {
 }
 
 /**
- * 
+ * If an artist begin contain ft|feat|featuring|vs we must split it an keep the first artist name 
+ * for example : David Guetta featuring Rihanna => we will only keep David Guetta for find the artist name in wasabi
  * @param {*} db 
  * @param {*} artistName 
  */
@@ -404,11 +409,12 @@ var processArtistFeatVersus = (db, artistName) => {
         var tArtists,
             artistNameReplace,
             splitChar = "|";
+        //for example we will be splitting "David Guetta vs Rihanna feat Steve Aoki" to "David Guetta | Rihanna | Steve Aoki"
         artistNameReplace = artistName.replace(/[\s](ft|feat|featuring|vs)[\s|\.]|[,]/gi, splitChar);
         tArtists = artistNameReplace.split(splitChar);
+        //We only keep the first artist
         var firstArtist = tArtists[0].trim();
         firstArtist = sanitizeFilename(firstArtist);
-
         db.collection(COLLECTIONARTIST).findOne({
             $or: [{
                 nameVariations: new RegExp("^" + utilHandler.escapeRegExp(firstArtist) + "$", "i")
@@ -440,7 +446,7 @@ var processArtistAnd = (db, artistName) => {
         var tArtists,
             artistNameReplace,
             splitChar = "|";
-        //ex: si le nom d'artiste est : "Usher feat.Lil ' Jon & Ludacris" artistNameReplace = 
+        //ex: si le nom d'artiste est : "Usher feat. Lil' Jon & Ludacris" artistNameReplace = Usher | Lil' Jon & Ludacris
         artistNameReplace = artistName.replace(/[\s](ft|feat|featuring|vs)[\s|\.]|[,]/gi, splitChar);
         tArtists = artistNameReplace.split(splitChar);
         var firstArtist = tArtists[0].trim();
@@ -452,7 +458,6 @@ var processArtistAnd = (db, artistName) => {
         //firstArtistName = artist1 on supprime artist2
         var firstArtistName = tArtists[0].trim();
         // on cherche d'abord l'artiste entier (artist1 & artist2). si non trouvé, alors on cherche le artist1 qui est l'artiste principal
-
         db.collection(COLLECTIONARTIST).findOne({
             $or: [{
                 nameVariations: new RegExp("^" + utilHandler.escapeRegExp(firstArtist) + "$", "i")
@@ -529,7 +534,7 @@ var checkIfAnimuxPathExistAndRename = (db, artistName, artist) => {
 /**
  * 
  * @param {*} db 
- * @param {*} artist artist object retrieve from the database
+ * @param {*} artist object retrieve from the database
  * @param {*} artistName directory name decoded ex: The Beatles not The%20Beatles
  */
 var updateArtistAnimuxPath = (db, artist, artistName) => {
