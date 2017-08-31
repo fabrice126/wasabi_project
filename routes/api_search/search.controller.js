@@ -385,7 +385,18 @@ var get_albumById = (req, res) => {
     })(req, res);
 };
 
-
+var get_auth = (req, res) => {
+    passport.authenticate('jwt', config.passport.auth.jwt, (err, user) => {
+        if (!user) {
+            return res.json({
+                isConnected: false
+            });
+        }
+        return res.json({
+            isConnected: true
+        });
+    })(req, res);
+};
 var put_album = (req, res) => {
     passport.authenticate('jwt', config.passport.auth.jwt, (err, user) => {
         if (!user) return res.status(403).json(config.http.error.put.album);
@@ -615,3 +626,4 @@ exports.put_songIsClassic = put_songIsClassic;
 exports.get_member_name_memberName = get_member_name_memberName;
 exports.get_fullTextSearch = get_fullTextSearch;
 exports.get_moreSearchText = get_moreSearchText;
+exports.get_auth = get_auth;

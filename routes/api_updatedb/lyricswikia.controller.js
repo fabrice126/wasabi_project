@@ -27,6 +27,12 @@ var attrAlbums = 'href';
 var selectorLyrics = 'div.lyricbox';
 var selectorName = 'body>h3>a';
 
+const dbMongoose = mongoose.connect(config.database.mongodb_connect_v2, {
+    useMongoClient: true
+}, (err) => {
+    if (err) console.error(err);
+});
+
 exports.startExtraction = async(req, res) => {
     try {
         res.json("OK");
@@ -135,7 +141,7 @@ var saveSong = (oSong) => {
 var getAllDiscographiesFromAPI = () => {
     return new Promise(async(resolve, reject) => {
         const limit = 100;
-        var skip = 80220;
+        var skip = 2000//80220;
         (function loopArtistApi(skip) {
             console.log(`--------------------------------------SKIP = ${skip}--------------------------------------`);
             Artist.find({}).skip(skip).limit(limit).exec((err, tArtists) => {
@@ -218,20 +224,23 @@ var requestLyricsWikia = (url) => {
     return new Promise((resolve, reject) => {
         var nbTry = 0;
         (function requestProcess(url) {
-            tor_request.request(url, {
-                timeout: 60000
-            }, (err, res, body) => {
-                //Voir les condition de reject et resolve
-                if (!err && res.statusCode == 200) return resolve(body);
-                else {
-                    if (nbTry == 5) {
-                        console.error("\tError: requestLyricsWikia", err.message, err.code);
-                        return reject("Error: requestLyricsWikia", err.message, err.code);
+            tor_request.renewTorSession((err) => {
+                if (err) return console.error(err);
+                tor_request.request(url, {
+                    timeout: 60000
+                }, (err, res, body) => {
+                    //Voir les condition de reject et resolve
+                    if (!err && res.statusCode == 200) return resolve(body);
+                    else {
+                        if (nbTry == 5) {
+                            console.error("\tError: requestLyricsWikia", err.message, err.code);
+                            return reject("Error: requestLyricsWikia", err.message, err.code);
+                        }
+                        nbTry++;
+                        console.log("\tnbTry = " + nbTry);
+                        requestProcess(url);
                     }
-                    nbTry++;
-                    console.log("\tnbTry = " + nbTry);
-                    requestProcess(url);
-                }
+                });
             });
         })(url)
     })

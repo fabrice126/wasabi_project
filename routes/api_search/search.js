@@ -867,5 +867,6 @@ router.get('/fulltext/:searchText', searchController.get_fullTextSearch);
 
 router.get('/more/:searchText', new RateLimit(config.http.limit_request.search), searchController.get_moreSearchText);
 
+router.get('/auth', searchController.get_auth);
 
 export default router;

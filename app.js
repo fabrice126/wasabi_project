@@ -54,8 +54,10 @@ config.launch.env.dev_mode ? process.env.NODE_ENV = config.launch.env.dev : proc
 
 
 const server = process.env.NODE_ENV === config.launch.env.dev ? config.database.mongodb_option : {};
-mongoose.Promise = global.Promise;
-const dbMongoose = mongoose.connect(config.database.mongodb_connect, server, (err) => {
+// mongoose.Promise = global.Promise;
+const dbMongoose = mongoose.connect(config.database.mongodb_connect, {
+    useMongoClient: true
+}, (err) => {
     if (err) console.error(err);
 });
 const db = dbMongo(config.database.mongodb_connect, server);
@@ -127,11 +129,11 @@ if (process.env.NODE_ENV === config.launch.env.dev) {
     console.error("/!\\ Projet executé en mode: " + process.env.NODE_ENV + " veuillez le mettre en mode production avant de push sur le git (dans app.js)/!\\");
     if (config.http.limit_request.search.max < 30) console.error("/!\\-------------------------------LE QUOTA DE REQUETE PAR MINUTE N'EST PAS ASSEZ ELEVE------------------------------/!\\");
     console.error("/!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\\");
-    app.use('/graphql', graphqlHTTP({
-        schema: schema,
-        rootValue: root,
-        graphiql: true,
-    }));
+    // app.use('/graphql', graphqlHTTP({
+    //     schema: schema,
+    //     rootValue: root,
+    //     graphiql: true,
+    // }));
     app.use('/updatedb', updatedb);
     app.use('/mergedb', mergedb);
     app.use('/createdb', createdb);

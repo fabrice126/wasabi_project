@@ -34,18 +34,12 @@ router.post('/signup', (req, res) => {
 // });
 router.post('/login', new RateLimit(config.http.limit_request.login), (req, res) => {
     User.findOne({
-        // req.db.collection('user').findOne({
         email: req.body.email.toLowerCase()
     }, (err, user) => {
-        console.log(req.body.email.toLowerCase());
-        console.log(err);
-        console.log(user);
         if (err) return res.status(404).json(config.http.error.user.login_password);
         if (!user) return res.status(404).json(config.http.error.user.login_password);
         // Check if password matches
-        console.log("test");
         user.comparePassword(req.body.password, (err, isMatch) => {
-            console.log("match = ", isMatch);
             if (!isMatch || err) return res.status(404).json(config.http.error.user.login_password);
             // Create token if the password matched and no error was thrown
             delete user.password;

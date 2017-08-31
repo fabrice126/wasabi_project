@@ -151,6 +151,29 @@ var getAllEquipmentBoard = (req, res) => {
     })(skip);
     return res.json(config.http.valid.send_message_ok);
 }
+/**
+ * API used for add in our database informations about stuff of band members
+ * @param {*} req 
+ * @param {*} res 
+ */
+
+var getNbPages = (urlPage) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            var body = await requestEquipBoard(urlPage);
+            const $ = cheerio.load(body);
+            // e.g. : urlLastPage => /pros/kirk-hammett?page=3 this member has 3 pages or "undefined" => only one page
+            const urlLastPage = $("nav.pagination>span.last>a").attr('href');
+            //If urlLastPage is not defined so we set totalPage at 1 because the member has only one page.
+            const totalPage = urlLastPage ? urlLastPage.substring(urlLastPage.lastIndexOf('=') + 1, urlLastPage.length) : null;
+            resolve(totalPage);
+        } catch (error) {
+            console.log("--------------------------");
+            console.log(error)
+        }
+        // loopPages($, currentPage, totalPage, url, member, db, res);
+    });
+}
 
 var requestPages = (url, currentPage, member, db, res) => {
     var urlPage = url + currentPage;

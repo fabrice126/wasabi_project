@@ -44,11 +44,19 @@
         <paper-material elevation="1">
             <paper-toast id="toast" duration=5000 text="Wrong email or password"></paper-toast>
 
-            <form is="iron-form" id="form" method="post" action="{{getURLLogin()}}" on-iron-form-response="responseHandler" on-iron-form-error="errorHandler">
-                <paper-input type="text" name="email" label="email / username" required autofocus auto-validate error-message="Needs a valid email" autocomplete></paper-input>
-                <paper-input type="password" name="password" label="password" required></paper-input>
-                <paper-button raised on-click="submitForm">Submit</paper-button>
-            </form>
+            <iron-ajax auto url="/search/auth" method="GET" headers="[[headers]]" handle-as="json" last-response="{{auth}}"></iron-ajax>
+
+            <template id="templateForm" is="dom-if" if="{{!auth.isConnected}}">
+                <form is="iron-form" id="form" method="post" action="{{getURLLogin()}}" on-iron-form-response="responseHandler" on-iron-form-error="errorHandler">
+                    <paper-input type="text" name="email" label="email / username" required autofocus auto-validate error-message="Needs a valid email" autocomplete></paper-input>
+                    <paper-input type="password" name="password" label="password" required></paper-input>
+                    <paper-button raised on-click="submitForm">Submit</paper-button>
+                </form>
+            </template>
+            <template is="dom-if" if="{{auth.isConnected}}">
+                Se deconnecter
+            </template>
+
         </paper-material>
     </template>
     <script>
@@ -56,14 +64,26 @@
         Polymer({
             is: "page-login",
             // add properties and methods on the element's prototype
-            properties: {},
+            properties: {
+                token: {
+                    type: String,
+                    value: localStorage.getItem("token") || ""
+                },
+                headers: {
+                    computed: '_computeHeader(token)'
+                }
+            },
             ready: function (e) {
+
+                console.log(this.root.querySelector("#form"));
             },
             getURLLogin: function () {
                 return "/jwt/login";
             },
-            submitForm: function () {
-                this.$.form.submit();
+            submitForm: function (e) {
+                this.async(function () {
+                    this.$$('#form').submit();
+                });
             },
             errorHandler: function (e) {
                 this.$.toast.text = e.detail.request.xhr.response.message;
@@ -73,7 +93,13 @@
             responseHandler: function (e) {
                 localStorage.setItem("token", e.detail.response.token);
                 window.history.back();
-            }
+            },
+            _computeHeader: function () {
+                this.token = localStorage.getItem("token") || "";
+                return {
+                    Authorization: this.token
+                };
+            },
         });
     </script>
 </dom-module>
