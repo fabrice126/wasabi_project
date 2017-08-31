@@ -1,3 +1,4 @@
+
 **Conseils**
 =======
 Au cours du développement de wasabi, des nouveaux champs seront certainement ajoutés. Si tel est le cas veillez à ajouter ces champs dans les objets correspondant aux modèles mongoose.
@@ -35,10 +36,10 @@ Il est conseillé de lire ce que fait chaque API avant de l'utiliser notamment c
 *5.2.* /!\ Par souci de sécurité le fichier contenant le login / mot de passe n'est pas sur le git vous devez donc créer le fichier `routes/conf/login.json` . Ce fichier contient le json suivant : `{"login": "ADemanderALAdmin","password": "ADemanderALAdmin"}`. Idem pour le fichier `routes/conf/confJwt.json`  contenant la clé des Tokens JWT ce fichier contient le json suivant :  `{"secretOrKey": "ADemanderALAdmin"}`  . Vous pouvez trouver la listes des fichiers/dossiers non présent sur le git ici : https://github.com/fabrice126/wasabi_project/blob/master/.gitignore  
 *5.3.* Voir la partie : *"<a href="#comment-installer-le-certificat-https">Comment installer un certificat https</a>"*  
 *5.4.* Taper la commande : `npm install`  (cela installera les dépendances du package.json)  
-*5.5.* Taper la commande : `npm start`  (cela exécutera la commande npm start du package.json)
+*5.5.* Taper la commande : `npm start`  (cela exécutera la commande npm start du package.json)  
 *5.6.* Le serveur est maintenant lancé sur *https://localhost/* (dans le navigateur)  
-6. Remplir la base de données d'elasticsearch : 
-*6.1.* Vérifiez dans `/routes/conf/conf.js`  que launch.env.dev_mode soit à true
+6. Remplir la base de données d'elasticsearch :  
+*6.1.* Vérifiez dans `/routes/conf/conf.js`  que launch.env.dev_mode soit à true  
 *6.2.* Lancez ensuite l'api REST pour indexer les artistes : `https://127.0.0.1/createdb/createdbelasticsearchartist` et `https://127.0.0.1/createdb/createdbelasticsearchsong` pour indexer les musiques. Nous pouvons maintenant effectuer des recherches via la barre de recherche du site  
 
 **Comment lancer l'application sous RedHat/Linux Centos 7 (serveur - uniquement en cas de ré-installation)**
@@ -57,12 +58,12 @@ Il est conseillé de lire ce que fait chaque API avant de l'utiliser notamment c
 *5.1.* Infos utiles sur PM2: log, start, restart, associer un compte pm2 à un serveur : *<a href="http://pm2.keymetrics.io/docs/usage/quick-start/" target="_blank">ici</a>* 
 6. Lancer le serveur  
 *6.1.* En ligne de commande : `cd C:/Users/user/Documents/wasabi_project`  
-*6.2.* Dans le dossier `wasabi_project` lancez la commande `npm install` pour installer les dépendances du projet
+*6.2.* Dans le dossier `wasabi_project` lancez la commande `npm install` pour installer les dépendances du projet  
 *6.3.* Taper la commande : `npm run start-pm2`  
 *6.4.* Le serveur est maintenant lancé et accessible sur https://wasabi.i3s.unice.fr
-7. Remplir la base de données d'elasticsearch: 
-*7.1.* Vérifiez dans `/routes/conf/conf.js`que launch.env.dev_mode soit à true
-*7.2.* Utiliser l'API pour indexer les noms des artistes `/createdb/createdbelasticsearchartist`, nous pouvons maintenant chercher les artistes dans la barre de recherche
+7. Remplir la base de données d'elasticsearch:  
+*7.1.* Vérifiez dans `/routes/conf/conf.js`que launch.env.dev_mode soit à true  
+*7.2.* Utiliser l'API pour indexer les noms des artistes `/createdb/createdbelasticsearchartist`, nous pouvons maintenant chercher les artistes dans la barre de recherche  
 *7.3.* Lancer l'API`/createdb/createdbelasticsearchsong` pour indexer les noms des musiques avec les noms des artistes et les noms des albums ainsi nous pourrons chercher une musique par son title + nom d'album + nom d'artiste
 
 **Connexion et gestion du serveur wasabi**
