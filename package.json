@@ -15,8 +15,7 @@
     "start": "nodemon bin/www --exec babel-node --presets es2015 --ignore mongo/",
     "debug": "babel-node --inspect ./bin/www --exec babel-node --presets es2015",
     "test": "mocha --require babel-polyfill --compilers js:babel-register",
-    "apidoc": "apidoc -i routes/api_search routes/api -o apidoc/",
-    "apidoc-dev": "apidoc -i routes/api_createdb routes/api_extractdbpedia routes/api_updatedb -o apidocdev/",    
+    "apidoc": "apidoc -i routes/ -o apidoc/",
     "start-pm2": "pm2 start --interpreter babel-node bin/www --watch --ignore-watch='mongo node_modules' --log-date-format='YYYY-MM-DD HH:mm Z'-f",
     "start-cluster-pm2": "pm2 start --interpreter babel-node bin/www -i max",
     "kill-pm2": "pm2 kill"
