@@ -48,7 +48,7 @@
 
             <template id="templateForm" is="dom-if" if="{{!auth.isConnected}}">
                 <form is="iron-form" id="form" method="post" action="{{getURLLogin()}}" on-iron-form-response="responseHandler" on-iron-form-error="errorHandler">
-                    <paper-input type="text" name="email" label="email / username" required autofocus auto-validate error-message="Needs a valid email" autocomplete></paper-input>
+                    <paper-input type="email" name="email" label="email" required autofocus auto-validate error-message="Needs a valid email" autocomplete></paper-input>
                     <paper-input type="password" name="password" label="password" required></paper-input>
                     <paper-button raised on-click="submitForm">Submit</paper-button>
                 </form>
@@ -74,7 +74,6 @@
                 }
             },
             ready: function (e) {
-
                 console.log(this.root.querySelector("#form"));
             },
             getURLLogin: function () {
@@ -82,13 +81,16 @@
             },
             submitForm: function (e) {
                 this.async(function () {
+                    console.log("submitForm");
                     this.$$('#form').submit();
                 });
             },
             errorHandler: function (e) {
                 this.$.toast.text = e.detail.request.xhr.response.message;
                 this.$.toast.open();
-                this.$.form.reset();
+                this.async(function () {
+                    this.$$('#form').reset();
+                });
             },
             responseHandler: function (e) {
                 localStorage.setItem("token", e.detail.response.token);

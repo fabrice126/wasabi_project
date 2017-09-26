@@ -7,20 +7,23 @@
 
 
 <dom-module id="page-category">
-   <template>
+    <template>
         <style>
             .flex-wrap {
                 @apply(--layout-horizontal);
                 @apply(--layout-wrap);
             }
-            paper-material{
+
+            paper-material {
                 margin-bottom: 5%;
             }
+
             .inherit {
                 color: inherit;
                 background-color: inherit;
             }
-            paper-card{
+
+            paper-card {
                 width: 100%;
                 padding-left: 5%;
                 padding-top: 1%;
@@ -28,15 +31,18 @@
                 cursor: pointer;
                 color: black;
             }
-            .search_title{
+
+            .search_title {
                 position: absolute;
                 margin-top: 10px;
                 margin-left: 10px;
             }
-            .center{
+
+            .center {
                 text-align: center;
             }
-            .searchText-info{
+
+            .searchText-info {
                 font-size: 1.5em;
                 padding: 25px;
                 color: #333333;
@@ -44,33 +50,73 @@
         </style>
         <paper-material elevation="1">
             <iron-ajax id="get_content" auto url="/search/category/{{_encodeUri(collection)}}/{{_encodeUri(categoryName)}}" last-response="{{categories}}" handleAs="json"> </iron-ajax>
-            <iron-ajax id="get_count"   auto url="/search/count/{{_encodeUri(collection)}}/subject/{{_encodeUri(categoryName)}}" last-response="{{countField}}" handleAs="json"> </iron-ajax>
-            <p class="center searchText-info">We have {{countField.count}} music(s) in the category "{{categoryName}}"</p>
-            <template class="flex-wrap" is="dom-repeat" items="{{categories}}" as="categorie" initial-count="1" >
-                <a href="#/search/artist/{{_encodeUri(categorie.name)}}/album/{{_encodeUri(categorie.albumTitle)}}/song/{{_encodeUri(categorie.title)}}" class="inherit">
-                    <paper-card elevation="0" >
-                        <img class="song_search_bar" src="../../img/song_search_bar.svg" alt="Band">
-                        <span class="search_title">{{categorie.title}} - {{categorie.name}} - {{categorie.albumTitle}}</span>
-                        <paper-ripple></paper-ripple>
-                    </paper-card>
-                </a>
+            <iron-ajax id="get_count" auto url="/search/count/{{_encodeUri(collection)}}/subject/{{_encodeUri(categoryName)}}" last-response="{{countField}}" handleAs="json"> </iron-ajax>
+            <p class="center searchText-info">We have {{countField.count}} {{collection}}(s) in the category "{{categoryName}}"</p>
+
+            <template is="dom-if" if="{{_isArtist(collection)}}">
+                <template class="flex-wrap" is="dom-repeat" items="{{categories}}" as="categorie" initial-count="1">
+                    <a href="#/search/artist/{{_encodeUri(categorie.name)}}" class="inherit">
+                        <paper-card elevation="0">
+                            <img src="{{putPictureArtist(categorie)}}" alt="Band">
+                            <span class="search_title">{{categorie.name}}</span>
+                            <paper-ripple></paper-ripple>
+                        </paper-card>
+                    </a>
+                </template>
             </template>
+
+            <template is="dom-if" if="{{_isAlbum(collection)}}">
+                <template class="flex-wrap" is="dom-repeat" items="{{categories}}" as="categorie" initial-count="1">
+                    <a href="#/search/artist/{{_encodeUri(categorie.name)}}/album/{{_encodeUri(categorie.albumTitle)}}" class="inherit">
+                        <paper-card elevation="0">
+                            <img src="{{putPictureAlbum(categorie)}}" alt="Album">
+                            <span class="search_title">{{categorie.title}} - {{categorie.name}}</span>
+                            <paper-ripple></paper-ripple>
+                        </paper-card>
+                    </a>
+                </template>
+            </template>
+
+            <template is="dom-if" if="{{_isSong(collection)}}">
+                <template class="flex-wrap" is="dom-repeat" items="{{categories}}" as="categorie" initial-count="1">
+                    <a href="#/search/artist/{{_encodeUri(categorie.name)}}/album/{{_encodeUri(categorie.albumTitle)}}/song/{{_encodeUri(categorie.title)}}" class="inherit">
+                        <paper-card elevation="0">
+                            <img src="../../img/song_search_bar.svg" alt="Song">
+                            <span class="search_title">{{categorie.title}} - {{categorie.name}} - {{categorie.albumTitle}}</span>
+                            <paper-ripple></paper-ripple>
+                        </paper-card>
+                    </a>
+                </template>
+            </template>
+
         </paper-material>
     </template>
 
-<script>
-  // element registration
-  Polymer({
-    is: "page-category",
-    // add properties and methods on the element's prototype
-    properties: {
-    },
-    ready: function(e){   
-    },
-    _encodeUri : function(obj){
-        return encodeURIComponent(obj);
-    },    
-  });  
-
-</script>   
-</dom-module>    
+    <script>
+        // element registration
+        Polymer({
+            is: "page-category",
+            // add properties and methods on the element's prototype
+            properties: {},
+            ready: function (e) {},
+            _encodeUri: function (obj) {
+                return encodeURIComponent(obj);
+            },
+            _isArtist: function (collection) {
+                return collection == "artist";
+            },
+            _isAlbum: function (collection) {
+                return collection == "album";
+            },
+            _isSong: function (collection) {
+                return collection == "song";
+            },
+            putPictureArtist: function (category) {
+                return category.picture ? category.picture.small : "../../img/band_search_bar.svg";
+            },
+            putPictureAlbum: function (category) {
+                return category.cover ? category.cover.small : "../../img/album_search_bar.svg";
+            }
+        });
+    </script>
+</dom-module>

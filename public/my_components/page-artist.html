@@ -80,6 +80,10 @@
                 flex-wrap: wrap;
             }
 
+            .text_justify {
+                text-align: justify;
+            }
+
             paper-icon-button {
                 /*permet de ne pas déformer les icones*/
                 font-size: 0;
@@ -100,6 +104,31 @@
             .imageArtist {
                 box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.24), 0 1px 7px 0 rgba(0, 0, 0, 0.52), 0 3px 1px -2px rgba(0, 0, 0, 0.3);
                 border-radius: 3px;
+            }
+
+            .nav_subject {
+                flex-wrap: wrap;
+                text-align: center;
+                display: flex;
+                justify-content: center;
+                padding: 5% 0 5% 0;
+            }
+
+            .nav_subject>a>paper-button {
+                padding: 10px;
+                background: rgba(204, 204, 204, 0.34);
+                text-decoration: none;
+                margin: 4px;
+                text-align: center;
+                font-size: 12px;
+                color: #3F51B5;
+                border-radius: 3px;
+                transition: 0.7s;
+                box-shadow: 2px 2px 8px 0px #cfcfcf;
+            }
+
+            .nav_subject>a>paper-button:hover {
+                background-color: #ffffff;
             }
         </style>
         <template is="dom-if" if="{{checkIfPicture(artist.picture.xl)}}">
@@ -200,6 +229,9 @@
             </div>
 
             <div class="infosArtist">
+                <template is="dom-if" if="{{artist.dbp_abstract.length}}">
+                    <div class="text_justify"><b>Abstract:</b> {{artist.abstract}}</div>
+                </template>
                 <template is="dom-if" if="{{artist.lifeSpan.begin}}">
                     <div><b>Begin:</b> {{artist.lifeSpan.begin}}</div>
                 </template>
@@ -218,11 +250,20 @@
                 <template is="dom-if" if="{{artist.genres.length}}">
                     <div><b>Genre:</b> {{artist.genres}}</div>
                 </template>
+                <template is="dom-if" if="{{artist.genres.length}}">
+                    <div><b>Genre (dbpedia):</b> {{artist.dbp_genre}}</div>
+                </template>
                 <template is="dom-if" if="{{artist.labels.length}}">
                     <div><b>Label:</b> {{artist.labels}}</div>
                 </template>
+                <template is="dom-if" if="{{artist.recordLabel.length}}">
+                    <div><b>Label (dbpedia):</b> {{artist.recordLabel}}</div>
+                </template>
                 <template is="dom-if" if="{{artist.deezerFans}}">
                     <div><b>Number of fans:</b> {{artist.deezerFans}}</div>
+                </template>
+                <template is="dom-if" if="{{artist.associatedMusicalArtist}}">
+                    <div><b>Associated artist(s):</b> {{artist.associatedMusicalArtist}} </div>
                 </template>
                 <template id="domIfMember" is="dom-if" if="{{artist.members.length}}">
                     <details>
@@ -268,6 +309,16 @@
             </div>
             <template is="dom-repeat" items="{{artist.albums}}" as="album" initial-count="1">
                 <x-album album={{album}} is-connected={{artist.isConnected}}></x-album>
+            </template>
+
+            <template is="dom-if" if="{{artist.subject.length}}">
+                <nav class="nav_subject">
+                    <template is="dom-repeat" items="{{artist.subject}}" as="subject">
+                        <a href="#/search/category/artist/{{_encodeUri(subject)}}">
+                            <paper-button tabindex="0" role="button" elevation="0">{{subject}}</paper-button>
+                        </a>
+                    </template>
+                </nav>
             </template>
 
         </paper-material>
