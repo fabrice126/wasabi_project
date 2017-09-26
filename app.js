@@ -41,21 +41,21 @@ const app = express();
 app.enable('trust proxy');
 /**
  * -------------------------------------------------------------------------------------------------------
- * ----------------------------------OPTION DE L'ENVIRONNEMENT NODE JS------------------------------------
+ * ----------------------------------ENVIRONMENT OPTION NODE JS------------------------------------
  * -------------------------------------------------------------------------------------------------------
  */
 
 config.launch.env.dev_mode ? process.env.NODE_ENV = config.launch.env.dev : process.env.NODE_ENV = config.launch.env.prod;
 /**
  * -------------------------------------------------------------------------------------------------------
- * -----------------------CONNEXION A LA BASE DE DONNEES MONGODB ET ELASTICSEARCH-------------------------
+ * -------------------------------CONNECTION TO MONGODB AND ELASTICSEARCH---------------------------------
  * -------------------------------------------------------------------------------------------------------
  */
 
 
 const server = process.env.NODE_ENV === config.launch.env.dev ? config.database.mongodb_option : {};
 // mongoose.Promise = global.Promise;
-const dbMongoose = mongoose.connect(config.database.mongodb_connect, {
+const dbMongoose = mongoose.connect(config.launch.env.dev_mode ? config.database.mongodb_connect_v2 : config.database.mongodb_connect, {
     useMongoClient: true
 }, (err) => {
     if (err) console.error(err);
@@ -66,11 +66,11 @@ const elasticsearchClient = new elasticsearch.Client({
 });
 /**
  * -------------------------------------------------------------------------------------------------------
- * ----------------------------------INITIALISATION DE CERTAINS CHAMPS------------------------------------
+ * ------------------------------------------INIT SOME FIELDS --------------------------------------------
  * -------------------------------------------------------------------------------------------------------
  */
 // view cache
-app.set('view cache', process.env.NODE_ENV === config.launch.env.dev ? true : false); // désactivation du cache express
+app.set('view cache', process.env.NODE_ENV === config.launch.env.dev ? true : false); // enable or disable cache
 app.use(helmet());
 app.use(compression());
 
@@ -84,7 +84,7 @@ app.use(bodyParser.urlencoded({
     extended: true
 }));
 app.use((req, res, next) => {
-    //initialisation des variables de l'objet req
+    //init variables inside req
     req.db = db;
     req.dbMongoose = dbMongoose;
     req.jwt = jwt;
@@ -93,7 +93,7 @@ app.use((req, res, next) => {
     req.COLLECTIONALBUM = config.database.collection_album;
     req.COLLECTIONSONG = config.database.collection_song;
     req.elasticsearchClient = elasticsearchClient;
-    //initialisation de passport permettant la connexion via JWT
+    //iinit the passport module allowing the JWT connection
     passport.initialize();
     confPassport(passport);
     //<start> pour MT5
@@ -109,7 +109,7 @@ app.use((req, res, next) => {
 });
 /**
  * -------------------------------------------------------------------------------------------------------
- * --------------------------------------DEFINITION DES ROUTES D'API--------------------------------------
+ * ---------------------------------------------- API ROUTES----------------------------------------------
  * -------------------------------------------------------------------------------------------------------
  */
 app.use('/', express.static(path.join(__dirname, 'public')));
@@ -119,16 +119,17 @@ app.use('/MT5', MT5);
 app.use('/search', search);
 app.use('/api/v1', new RateLimit(config.http.limit_request.api), api_v1);
 app.use('/jwt', jwt_api);
-//permet de s'authentifier, personne ne doit pouvoir accèder à la doc
+//Allows the authentication, at the moment the documentation have to stay private
 app.use(basicAuth(configLogin.login, configLogin.password));
 app.use('/apidoc', express.static(path.join(__dirname, 'apidoc')));
 app.use('/download', download);
-//Placer ici les routes utile uniquement pour le développement
+//Put here the dev routes
+if (config.http.limit_request.search.max < 30) console.error("/!\\-------------------------------PLEASE INCREASE THE NUMBER OF REQUEST/MIN------------------------------/!\\");
 if (process.env.NODE_ENV === config.launch.env.dev) {
-    console.error("/!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\\");
-    console.error("/!\\ Projet executé en mode: " + process.env.NODE_ENV + " veuillez le mettre en mode production avant de push sur le git (dans app.js)/!\\");
-    if (config.http.limit_request.search.max < 30) console.error("/!\\-------------------------------LE QUOTA DE REQUETE PAR MINUTE N'EST PAS ASSEZ ELEVE------------------------------/!\\");
-    console.error("/!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\\");
+    process.setMaxListeners(0);
+    console.error("/!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\\");
+    console.error("/!\\ Project running in " + process.env.NODE_ENV + " mode. Please, turn on the prod mode before pushing your code to github (routes/conf/conf.js)/!\\");
+    console.error("/!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\\");
     // app.use('/graphql', graphqlHTTP({
     //     schema: schema,
     //     rootValue: root,
@@ -143,9 +144,9 @@ if (process.env.NODE_ENV === config.launch.env.dev) {
     app.use(errorHandler());
 }
 // catch 404 and forward to error handler
-//Return la page-404.html via <app-router> dans index.html 
+//Return page-404.html 
 app.get('*', (req, res) => {
-    //On renvoie le chemin tapé par l'utilisateur, ce chemin ne correspondra à rien pour <app-router> ce qui renverra la page 404
+    //We return the path wrote by the user. this path will be not recognize by <app-router> which will display a 404 page
     console.log(req.path);
     res.status(404).redirect('/#/page-404.html');
 });
