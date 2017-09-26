@@ -55,12 +55,7 @@ config.launch.env.dev_mode ? process.env.NODE_ENV = config.launch.env.dev : proc
 
 const server = process.env.NODE_ENV === config.launch.env.dev ? config.database.mongodb_option : {};
 // mongoose.Promise = global.Promise;
-// const dbMongoose = mongoose.connect(config.launch.env.dev_mode ? config.database.mongodb_connect_v2 : config.database.mongodb_connect, {
-//     useMongoClient: true
-// }, (err) => {
-//     if (err) console.error(err);
-// });
-const dbMongoose = mongoose.connect(config.database.mongodb_connect, {
+const dbMongoose = mongoose.connect(config.launch.env.dev_mode ? config.database.mongodb_connect_v2 : config.database.mongodb_connect, {
     useMongoClient: true
 }, (err) => {
     if (err) console.error(err);

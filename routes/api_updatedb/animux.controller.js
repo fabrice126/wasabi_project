@@ -60,9 +60,7 @@ var countSongAnimuxFileInDB = (req, res) => {
 }
 /**
  * 1ère étape pour traiter les fichiers animux
- * Si un nom d'artiste animux match avec un nom d'artiste wasabi alors on renomme le nom de fichier animux avec le nom d'artiste wasabi
- * Le nom d'artiste sera alors le même que sur wasabi 
- * ex: si 
+ * Permet de nettoyer les noms de fichier animux en supprimant des caractères spéciaux : voir sanitizeFilename
  * @param {*} req 
  * @param {*} res 
  */
@@ -70,12 +68,10 @@ var sanitizeAndRenameDirArtist = (req, res) => {
     var dirsArtists = [],
         //récupération des noms d'artistes dans les dossiers : exemple dirsArtists[i] = './mongo/animux/M/Metallica'
         dirsArtists = readDirsArtists(PATH_MAPPING_ANIMUX),
-        l = dirsArtists.length,
-        i = 0,
         nbMatch = 0;
     //on chercher si les noms d'artistes du tableau dirsArtists match avec des noms d'artistes de notre base
     //  (function loopArray(i) {
-    for (i; i < l; i++) {
+    for (var i = 0, l = dirsArtists.length; i < l; i++) {
         var pathArtist = dirsArtists[i],
             letter = pathArtist.substring(0, pathArtist.lastIndexOf("/"));
         //Nous n'avons en DB que des artistes commençant par des lettres
@@ -89,9 +85,7 @@ var sanitizeAndRenameDirArtist = (req, res) => {
             dirsSongs = readDirsSongs(pathToArtist);
             //On va itérer sur les titres des musiques, les sanitize et les renommer
             for (var j = 0, ll = dirsSongs.length; j < ll; j++) {
-                var pathToSongUnsanitize,
-                    pathToSongSanitize,
-                    songNameDecode,
+                var pathToSongUnsanitize, pathToSongSanitize, songNameDecode,
                     pathSong = dirsSongs[j],
                     songName = pathSong.substring(pathSong.lastIndexOf("/") + 1);
                 if (!/%\s/i.test(songName)) {
@@ -110,9 +104,7 @@ var sanitizeAndRenameDirArtist = (req, res) => {
                 fs.renameSync(pathToSongUnsanitize, pathToSongSanitize);
             }
             //On modifie maintenant les noms des artistes (dossier)
-            var pathToArtistUnsanitize,
-                pathToArtistSanitize,
-                newPathArtist;
+            var pathToArtistUnsanitize, pathToArtistSanitize, newPathArtist;
             //Chemin non sanitize pour l'artiste './mongo/animux/M/Metallica' 
             pathToArtistUnsanitize = pathArtist;
             //On récupére './mongo/animux/M/'
@@ -207,7 +199,8 @@ var getDirArtist = (req, res) => {
         }
         if (i < l) {
             i++;
-            loopArray(i)
+            //To avoid leak memory
+            setTimeout(() => loopArray(i), 5);
         }
     })(i)
     res.json(config.http.valid.send_message_ok);
@@ -235,7 +228,6 @@ var getNotFoundLogArtist = (req, res) => {
     fs.readFile(FILENAME_ARTIST_NOT_FOUND, 'utf8', (err, data) => {
         if (err) return res.json(config.http.error.internal_error_404);
         var tArtistAnimux = data.split("\n");
-        //  console.log(tArtistAnimux);
         for (var i = 0; i < tArtistAnimux.length; i++) {
             var artistName = tArtistAnimux[i];
             //We add 'the' before each artist and we find in the DB if the artist exists
@@ -606,6 +598,8 @@ var readDirsSongs = (rootPath) => {
         if (!fs.lstatSync(rootPath + '/' + files[i]).isDirectory()) filesArray.push(rootPath + '/' + files[i]);
     return filesArray;
 }
+
+//We replace characters with a weird encoding by same characters with a normal encoding
 var sanitizeFilename = (filename) => {
     return filename.replace(/é/gi, "é")
         .replace(/ë/gi, "ë")
