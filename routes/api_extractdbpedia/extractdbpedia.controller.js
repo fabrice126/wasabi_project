@@ -213,18 +213,6 @@ var getCountryOfEndpoint = function(country){
     return objCountry;
 };
 
-var mergeRDFAndDBProperties = function(objArtist){
-    
-    if(objArtist.labels.length==0){
-        objArtist.labels = objArtist.recordLabel; 
-    }
-    else{
-
-    }
-    //On supprime les propriétés qui ont été merges
-    delete objArtist.activeYearsStartYear;    
-    return objArtist;
-};
 
 
 var extractInfosFromRDF = function(description,property){
@@ -403,7 +391,6 @@ exports.extractInfosFromURL         = extractInfosFromURL;
 exports.extractInfosFromRDF         = extractInfosFromRDF;
 exports.levenshteinDistance         = levenshteinDistance;
 exports.getRedirectionOfDbpedia     = getRedirectionOfDbpedia;
-exports.mergeRDFAndDBProperties     = mergeRDFAndDBProperties;
 exports.getCountryOfEndpoint        = getCountryOfEndpoint;
 exports.fixedEncodeURIComponent     = fixedEncodeURIComponent;
 exports.constructExtractionRequest  = constructExtractionRequest;

@@ -95,16 +95,26 @@ var get_collectionByCategoryAndLetter = (req, res, next) => {
 var get_category = (req, res) => {
     var collection = req.params.collection;
     if (collection !== COLLECTIONARTIST && collection !== COLLECTIONALBUM && collection !== COLLECTIONSONG) return res.status(404).json(config.http.error.global_404);
-    var categoryName = req.params.categoryName;
+    var categoryName = req.params.categoryName,
+        projection = {
+            name: 1
+        },
+        sort = {};
+    if (collection == COLLECTIONARTIST) {
+        projection["picture.small"] = 1
+        sort.name = 1;
+    } else if (collection == COLLECTIONALBUM) {
+        projection.title = 1;
+        projection["cover.small"] = 1;
+        sort.title = 1;
+    } else {
+        projection.title = 1;
+        projection.albumTitle = 1;
+        sort.title = 1;
+    }
     req.db.collection(collection).find({
         subject: categoryName
-    }, {
-        name: 1,
-        title: 1,
-        albumTitle: 1
-    }).sort({
-        title: 1
-    }).limit(LIMIT).toArray((err, objs) => {
+    }, projection).sort(sort).limit(LIMIT).toArray((err, objs) => {
         return res.json(objs);
     })
 };
@@ -299,24 +309,22 @@ var get_artist = (req, res) => {
                     cnt = 0;
                 //On construit le tableau albums afin d'y ajouter les infos des albums
                 artist.albums = albums;
-                for (var i = 0; i < nbAlbum; i++) {
-                    ((album) => {
-                        db.collection(COLLECTIONSONG).find({
-                            "id_album": album._id
-                        }, config.request.projection.search.get_artist.song).sort({
-                            "position": 1
-                        }).toArray((err, songs) => {
-                            if (err) return res.status(404).json(config.http.error.song_404);
-                            //On construit le tableau songs afin d'y ajouter les infos des musiques
-                            album.songs = songs;
-                            cnt++;
-                            if (nbAlbum == cnt) {
-                                if (!user) artist.isConnected = false;
-                                else artist.isConnected = true;
-                                return res.json(artist);
-                            }
-                        });
-                    })(artist.albums[i]);
+                for (let i = 0; i < nbAlbum; i++) {
+                    db.collection(COLLECTIONSONG).find({
+                        "id_album": artist.albums[i]._id
+                    }, config.request.projection.search.get_artist.song).sort({
+                        "position": 1
+                    }).toArray((err, songs) => {
+                        if (err) return res.status(404).json(config.http.error.song_404);
+                        //On construit le tableau songs afin d'y ajouter les infos des musiques
+                        artist.albums[i].songs = songs;
+                        cnt++;
+                        if (nbAlbum == cnt) {
+                            if (!user) artist.isConnected = false;
+                            else artist.isConnected = true;
+                            return res.json(artist);
+                        }
+                    });
                 }
             })
         });

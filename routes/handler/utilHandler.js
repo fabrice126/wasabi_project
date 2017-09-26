@@ -1,26 +1,6 @@
 import fs from 'fs';
 
 /**
- *
- * @param obj
- * @returns {*}
- */
-var sanitizeProperties = function (obj) {
-    for (var property in obj) {
-        if (obj.hasOwnProperty(property)) {
-            if (property != "rdf") {
-                if (typeof obj[property] == "object") {
-                    sanitizeProperties(obj[property]);
-                } else {
-                    //On supprime les \n\r une fois supprimer on supprime les espaces de fin
-                    obj[property] = obj[property].replace(/^(\s)|(\\n|\\r)/g, '').replace(/(\s+)$/g, '');
-                }
-            }
-        }
-    }
-    return obj;
-};
-/**
  * encode uniquement les caractères présents dans le replace
  * Cette fonction est utilisé pour encoder les caractères spéciaux ne pouvant être présent dans le nom d'un dossier sous windows
  * @param str
@@ -223,7 +203,6 @@ var removeDiacritics = function (str) {
     });
 };
 
-exports.sanitizeProperties = sanitizeProperties;
 exports.encodePathWindows = encodePathWindows;
 exports.decodePathWindows = decodePathWindows;
 exports.writeEncodedFile = writeEncodedFile;
