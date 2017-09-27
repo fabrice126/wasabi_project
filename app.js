@@ -26,17 +26,17 @@ import basicAuth from 'basic-auth-connect';
 import jwt from 'jsonwebtoken';
 import passport from 'passport';
 import bcrypt from 'bcrypt-nodejs';
-//Import routes
+//Import public routes
 import confPassport from './routes/conf/passport';
 import search from './routes/api_search/search';
 import api_v1 from './routes/api/v1/api_v1';
 import MT5 from './routes/api_MT5/MT5';
+import download from './routes/api_download/download';
+import jwt_api from './routes/api_jwt/jwt';
 import updatedb from './routes/api_updatedb/updatedb';
 import mergedb from './routes/api_mergedb/mergedb';
 import createdb from './routes/api_createdb/createdb';
 import extractdbpedia from './routes/api_extractdbpedia/extractdbpedia';
-import jwt_api from './routes/api_jwt/jwt';
-import download from './routes/api_download/download';
 const app = express();
 app.enable('trust proxy');
 /**

@@ -233,16 +233,15 @@ router.get('/add/:collection/:_id', function (req, res) {
 router.get('/createfields/artist', function (req, res) {
     var db = req.db;
     db.collection(COLLECTIONARTIST).find({
-        name: "Metallica"
-        // $and: [{
-        //     rdf: {
-        //         $ne: ""
-        //     }
-        // }, {
-        //     rdf: {
-        //         $exists: true
-        //     }
-        // }]
+        $and: [{
+            rdf: {
+                $ne: ""
+            }
+        }, {
+            rdf: {
+                $exists: true
+            }
+        }]
     }).toArray((err, tObjArtist) => {
         var inc = 0;
         var nbWasabiMember = 0;
@@ -270,36 +269,41 @@ router.get('/createfields/artist', function (req, res) {
                                     }
                                 }
                             } else { //we add news fields to members
-                                var rdfProperties = ['dct:subject', 'dbo:birthDate', 'dbo:abstract'];
-                                var urlDbpediaMember = description['$']['rdf:about'];
-                                var endUrlDbpediaMember = urlDbpediaMember.substring(urlDbpediaMember.lastIndexOf('/') + 1);
-                                var formerOrMember = {};
-                                //On construit le member ou le former member en itérant sur les propriétés rdfProperties
+                                var rdfProperties = ['dct:subject', 'dbo:birthDate', 'dbo:abstract'],
+                                    urlDbpediaMember = description['$']['rdf:about'],
+                                    endUrlDbpediaMember = "";
+                                if (urlDbpediaMember) endUrlDbpediaMember = urlDbpediaMember.substring(urlDbpediaMember.lastIndexOf('/') + 1);
+                                //On construit le member en itérant sur les propriétés rdfProperties
                                 for (var m = 0; m < tObjArtist[i].members.length; m++) {
-                                    var urlWikipediaMember = tObjArtist[i].members[m].urlWikipedia;
-                                    var endUrlWikipediaMember = urlWikipediaMember.substring(urlWikipediaMember.lastIndexOf('/') + 1);
-                                    if (endUrlWikipediaMember == endUrlDbpediaMember || tObjArtist[i].members[m].name == description['rdfs:label'][0]['_']) {
-                                        console.log(tObjArtist[i].members[m].name, description['rdfs:label'][0]['_']);
-                                        console.log(endUrlWikipediaMember, endUrlDbpediaMember);
+                                    var urlWikipediaMember = tObjArtist[i].members[m].urlWikipedia,
+                                        endUrlWikipediaMember = "",
+                                        descriptionLabel = "";
+                                    if (urlWikipediaMember) endUrlWikipediaMember = urlWikipediaMember.substring(urlWikipediaMember.lastIndexOf('/') + 1);
+                                    if (description['rdfs:label'] && description['rdfs:label'][0]) descriptionLabel = description['rdfs:label'][0]['_'];
+                                    if (endUrlWikipediaMember == endUrlDbpediaMember || tObjArtist[i].members[m].name == descriptionLabel) {
                                         for (var j = 0; j < rdfProperties.length; j++) {
+                                            var member = tObjArtist[i].members[m];
                                             //https://en.wikipedia.org/wiki/Ron_McGovney -> Ron_McGovney now we can check with the end of dbpedia url
                                             var currProperty = rdfProperties[j].substring(rdfProperties[j].indexOf(':') + 1); //ex : dct:subject deviendra subject
-                                            //on ajoute des propriétés a l'objet formerOrMember
-                                            formerOrMember[currProperty] = dbpediaHandler.extractInfosFromRDF(description, rdfProperties[j]);
+                                            //on ajoute des propriétés a l'objet member
+                                            if (currProperty == "abstract") {
+                                                member["dbp_" + currProperty] = dbpediaHandler.extractInfosFromRDF(description, rdfProperties[j]);
+                                            } else {
+                                                member[currProperty] = dbpediaHandler.extractInfosFromRDF(description, rdfProperties[j]);
+                                            }
                                         }
                                     }
                                 }
-                                console.log(formerOrMember)
                             }
                         }
                     }
                 });
             }
-            // db.collection(COLLECTIONARTIST).update({
-            //     _id: new ObjectId(tObjArtist[i]._id)
-            // }, {
-            //     $set: tObjArtist[i]
-            // });
+            db.collection(COLLECTIONARTIST).update({
+                _id: new ObjectId(tObjArtist[i]._id)
+            }, {
+                $set: tObjArtist[i]
+            });
         }
         console.log('Fin du traitement');
     });
