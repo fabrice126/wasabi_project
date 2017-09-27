@@ -74,14 +74,12 @@
                 }
             },
             ready: function (e) {
-                console.log(this.root.querySelector("#form"));
             },
             getURLLogin: function () {
                 return "/jwt/login";
             },
             submitForm: function (e) {
                 this.async(function () {
-                    console.log("submitForm");
                     this.$$('#form').submit();
                 });
             },
