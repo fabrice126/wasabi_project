@@ -12,7 +12,7 @@
     "tag": "0.3.6",
     "commit": "e5b70f90df36e2c5bab048eda759153dc1c63a55"
   },
-  "_source": "git://github.com/Polymer/paper-focusable.git",
+  "_source": "https://github.com/Polymer/paper-focusable.git",
   "_target": "^0.3.0",
   "_originalSource": "Polymer/paper-focusable"
 }

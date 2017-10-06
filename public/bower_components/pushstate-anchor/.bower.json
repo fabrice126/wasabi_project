@@ -28,8 +28,7 @@
     "tag": "v0.3.2",
     "commit": "613d6841e4786468aad896dfc6e9fbbf750a28bf"
   },
-  "_source": "git://github.com/erikringsmuth/pushstate-anchor.git",
+  "_source": "https://github.com/erikringsmuth/pushstate-anchor.git",
   "_target": "~0.3.2",
-  "_originalSource": "pushstate-anchor",
-  "_direct": true
+  "_originalSource": "pushstate-anchor"
 }

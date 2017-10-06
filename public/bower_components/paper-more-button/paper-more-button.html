@@ -16,7 +16,7 @@ A material design button to load more items in a list.
 <dom-module id="paper-more-button">
 
 	<template>
-		<paper-button hidden$=[[!_showMore(hasMore,loading)]] on-tap="_tapMore"><content></content></paper-button>
+		<paper-button hidden$=[[!_showMore(hasMore,loading)]] on-tap="_tapMore"><slot></slot></paper-button>
    	    <paper-spinner-lite active=[[loading]]></paper-spinner-lite>
 	</template>
 

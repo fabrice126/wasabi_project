@@ -2,6 +2,7 @@ mongo/backup_mongo/*
 mongo/deezer/*
 mongo/animux/*
 mongo/discogs/*
+mongo/old_animux/*
 
 public/my_components/MT5/multitrack/*
 public/download/*

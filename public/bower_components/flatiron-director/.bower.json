@@ -12,7 +12,7 @@
     "tag": "0.3.0",
     "commit": "dda89ae44cfbeb397d215588a8df22539e461eee"
   },
-  "_source": "git://github.com/PolymerLabs/flatiron-director.git",
+  "_source": "https://github.com/PolymerLabs/flatiron-director.git",
   "_target": "~0.3.0",
   "_originalSource": "PolymerLabs/flatiron-director"
 }
