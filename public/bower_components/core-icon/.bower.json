@@ -13,7 +13,7 @@
     "tag": "0.3.6",
     "commit": "29b8477b09d05907251f4d5168ed8d3a61338f55"
   },
-  "_source": "git://github.com/Polymer/core-icon.git",
+  "_source": "https://github.com/Polymer/core-icon.git",
   "_target": "^0.3.0",
   "_originalSource": "Polymer/core-icon"
 }

@@ -35,8 +35,7 @@
     "tag": "v2.6.1",
     "commit": "c01f7757fddb11523e4273b77ce63a071feb01fd"
   },
-  "_source": "git://github.com/erikringsmuth/app-router.git",
+  "_source": "https://github.com/erikringsmuth/app-router.git",
   "_target": "~2.6.1",
-  "_originalSource": "app-router",
-  "_direct": true
+  "_originalSource": "app-router"
 }

@@ -37,8 +37,7 @@
     "tag": "v1.1.1",
     "commit": "885ba9c0bf163ebac47e730be4bc231f84b3712a"
   },
-  "_source": "git://github.com/PolymerElements/iron-ajax.git",
+  "_source": "https://github.com/PolymerElements/iron-ajax.git",
   "_target": "~1.1.1",
-  "_originalSource": "PolymerElements/iron-ajax",
-  "_direct": true
+  "_originalSource": "PolymerElements/iron-ajax"
 }

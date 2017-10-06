@@ -3,15 +3,16 @@ import config from '../conf/conf';
 import utilHandler from '../handler/utilHandler';
 import fs from 'fs';
 import mv from 'mv';
+const removeAccents = require('remove-accents-diacritics');
 import {
     ObjectId
 } from 'mongoskin';
 const PATH_MAPPING_ANIMUX = "./mongo/animux";
 const FILENAME_ARTIST_NOT_FOUND = "animux_artist_not_found_log.txt";
 const FILENAME_ARTIST_NOT_FOUND_2 = "animux_artist_not_found_log_2.txt";
+const FILENAME_ARTIST_FOUND = "animux_artist_found_several_time_log.txt";
 const COLLECTIONSONG = config.database.collection_song;
 const COLLECTIONARTIST = config.database.collection_artist;
-
 /**
  * 
  * @param {*} req 
@@ -59,6 +60,74 @@ var countSongAnimuxFileInDB = (req, res) => {
     })
 }
 /**
+ * 0.1 étape pour traiter les fichiers animux
+ * Permet de supprimer les accents dans le nom des artistes, cette API créée un nouveau champ : name_accent_fold
+ * @param {*} req 
+ * @param {*} res 
+ */
+var removeAccentArtists = (req, res) => {
+    var db = req.db;
+    req.db.collection(COLLECTIONARTIST).find({}).toArray((err, tArtists) => {
+        for (let i = 0; i < tArtists.length; i++) {
+            var name_folding = sanitizeFilename(tArtists[i].name),
+                nameVariations_folding = [];
+            if (tArtists[i].nameVariations) {
+                for (var j = 0; j < tArtists[i].nameVariations.length; j++) {
+                    nameVariations_folding.push(sanitizeFilename(tArtists[i].nameVariations[j]));
+                }
+            }
+            db.collection(COLLECTIONARTIST).updateOne({
+                name: tArtists[i].name
+            }, {
+                $set: {
+                    name_accent_fold: name_folding,
+                    nameVariations_fold: nameVariations_folding
+                }
+            });
+        }
+        console.log("Traitement terminé");
+    });
+    return res.status(200).send("OK");
+}
+/**
+ * 0.2 étape pour traiter les fichiers animux
+ * Permet de supprimer les accents dans le titre des musiques, cette API créée un nouveau champ : title_accent_fold
+ * @param {*} req 
+ * @param {*} res 
+ */
+var removeAccentSongs = (req, res) => {
+    var db = req.db,
+        SKIP = 0;
+    const LIMIT = 50000;
+    (function loop(SKIP) {
+        console.log(`SKIP=>${SKIP}`);
+        db.collection(COLLECTIONSONG).find({}).skip(SKIP).limit(LIMIT).toArray((err, tSongs) => {
+            var count = 0;
+            for (let i = 0; i < tSongs.length; i++) {
+                var title_folding = sanitizeFilename(tSongs[i].title);
+                db.collection(COLLECTIONSONG).updateOne({
+                    _id: ObjectId(tSongs[i]._id)
+                }, {
+                    $set: {
+                        title_accent_fold: title_folding
+                    }
+                }, (err) => {
+                    count++;
+                    if (count == tSongs.length) {
+                        if (tSongs.length == LIMIT) {
+                            loop(SKIP += LIMIT);
+                        } else {
+                            console.log("Traitement fini");
+                        }
+                    }
+                });
+            }
+        });
+    })(SKIP);
+    return res.status(200).send("OK");
+}
+
+/**
  * 1ère étape pour traiter les fichiers animux
  * Permet de nettoyer les noms de fichier animux en supprimant des caractères spéciaux : voir sanitizeFilename
  * @param {*} req 
@@ -67,76 +136,77 @@ var countSongAnimuxFileInDB = (req, res) => {
 var sanitizeAndRenameDirArtist = (req, res) => {
     var dirsArtists = [],
         //récupération des noms d'artistes dans les dossiers : exemple dirsArtists[i] = './mongo/animux/M/Metallica'
-        dirsArtists = readDirsArtists(PATH_MAPPING_ANIMUX),
-        nbMatch = 0;
+        dirsArtists = readDirsArtists(PATH_MAPPING_ANIMUX);
     //on chercher si les noms d'artistes du tableau dirsArtists match avec des noms d'artistes de notre base
     //  (function loopArray(i) {
-    for (var i = 0, l = dirsArtists.length; i < l; i++) {
-        var pathArtist = dirsArtists[i],
-            letter = pathArtist.substring(0, pathArtist.lastIndexOf("/"));
-        //Nous n'avons en DB que des artistes commençant par des lettres
-        if (/[A-Z]/.test(letter)) {
-            var pathToArtist,
-                dirsSongs = [],
-                //artistName = Metallica On supprime le path ./mongo/animux/M/
-                artistName = pathArtist.substring(pathArtist.lastIndexOf("/") + 1),
-                artistNameDecode = decodeURIComponent(artistName);
-            pathToArtist = PATH_MAPPING_ANIMUX + '/' + artistName[0] + '/' + artistName;
-            dirsSongs = readDirsSongs(pathToArtist);
-            //On va itérer sur les titres des musiques, les sanitize et les renommer
-            for (var j = 0, ll = dirsSongs.length; j < ll; j++) {
-                var pathToSongUnsanitize, pathToSongSanitize, songNameDecode,
-                    pathSong = dirsSongs[j],
-                    songName = pathSong.substring(pathSong.lastIndexOf("/") + 1);
-                if (!/%\s/i.test(songName)) {
-                    songNameDecode = decodeURIComponent(songName);
-                } else {
-                    //permet de traité le cas des noms d'artistes avec un '%' dans le titre ex: 100% Emotional_Animux.txt
-                    //Si on decode une erreur se produit on se décode donc pas ces artistes
-                    songNameDecode = songName;
-                    console.log("Non décodé lors du premier lancement de l'API: " + songName);
-                }
-                //construction du chemin avec le nom de musique non sanitize
-                pathToSongUnsanitize = pathToArtist + '/' + songName;
-                songNameDecode = sanitizeFilename(songNameDecode);
-                songName = encodeURIComponent(songNameDecode);
-                pathToSongSanitize = pathToArtist + '/' + songName.trim();
-                fs.renameSync(pathToSongUnsanitize, pathToSongSanitize);
-            }
-            //On modifie maintenant les noms des artistes (dossier)
-            var pathToArtistUnsanitize, pathToArtistSanitize, newPathArtist;
-            //Chemin non sanitize pour l'artiste './mongo/animux/M/Metallica' 
-            pathToArtistUnsanitize = pathArtist;
-            //On récupére './mongo/animux/M/'
-            newPathArtist = pathArtist.substring(0, pathArtist.lastIndexOf("/"));
-            //On ajoute à './mongo/animux/M/' le nom de l'artiste sanitize 
-            artistNameDecode = sanitizeFilename(artistNameDecode);
-            artistName = encodeURIComponent(artistNameDecode);
-            pathToArtistSanitize = newPathArtist + '/' + artistName.trim();
-            (function (pathToArtistUnsanitize, pathToArtistSanitize) {
-                fs.rename(pathToArtistUnsanitize, pathToArtistSanitize, (err) => {
-                    if (err) {
-                        //ex rename './mongo/animux/D/Destiny´s Child' -> './mongo/animux/D//Destiny's Child' problème d'accent ´s vs 's
-                        //Lorsqu'on veut renommer le premier répertoire avec le nom du second, le second existe.
-                        //Nous devons donc transférer les fichiers du premier répertoire vers le second répertoire et supprimer le 1er répertoire
-                        if (err.code == "ENOTEMPTY") {
-                            console.log("-------------------- ENOTEMPTY --------------------");
-                            var dirsSongs = readDirsSongs(err.path);
-                            for (var i = 0; i < dirsSongs.length; i++) {
-                                var songName = dirsSongs[i].substring(dirsSongs[i].lastIndexOf("/") + 1);
-                                console.log("ENOTEMPTY, attempt to rename = " + pathToArtistSanitize + '/' + songName);
-                                fs.renameSync(dirsSongs[i], pathToArtistSanitize + '/' + songName);
-                            }
-                            //On supprime l'ancien dossier si il n'y a plus de fichier à l'intérieur
-                            if (readDirsSongs(err.path).length == 0) fs.rmdir(pathToArtistUnsanitize);
-                        } else {
-                            console.log(err);
-                            throw err;
-                        }
+    for (let i = 0, l = dirsArtists.length; i < l; i++) {
+        setTimeout(() => {
+            var pathArtist = dirsArtists[i],
+                letter = pathArtist.substring(0, pathArtist.lastIndexOf("/"));
+            //Nous n'avons en DB que des artistes commençant par des lettres
+            if (/[A-Z]/.test(letter)) {
+                var pathToArtist,
+                    dirsSongs = [],
+                    //artistName = Metallica On supprime le path ./mongo/animux/M/
+                    artistName = pathArtist.substring(pathArtist.lastIndexOf("/") + 1),
+                    artistNameDecode = decodeURIComponent(artistName);
+                pathToArtist = PATH_MAPPING_ANIMUX + '/' + artistName[0] + '/' + artistName;
+                dirsSongs = readDirsSongs(pathToArtist);
+                //On va itérer sur les titres des musiques, les sanitize et les renommer
+                for (var j = 0, ll = dirsSongs.length; j < ll; j++) {
+                    var pathToSongUnsanitize, pathToSongSanitize, songNameDecode,
+                        pathSong = dirsSongs[j],
+                        songName = pathSong.substring(pathSong.lastIndexOf("/") + 1);
+                    if (!/%\s/i.test(songName)) {
+                        songNameDecode = decodeURIComponent(songName);
+                    } else {
+                        //permet de traité le cas des noms d'artistes avec un '%' dans le titre ex: 100% Emotional
+                        //Si on decode une erreur se produit on se décode donc pas ces artistes
+                        songNameDecode = songName;
+                        console.log("Non décodé lors du premier lancement de l'API: " + songName);
                     }
-                });
-            })(pathToArtistUnsanitize, pathToArtistSanitize)
-        }
+                    //construction du chemin avec le nom de musique non sanitize
+                    pathToSongUnsanitize = pathToArtist + '/' + songName;
+                    songNameDecode = sanitizeFilename(songNameDecode);
+                    songName = encodeURIComponent(songNameDecode);
+                    pathToSongSanitize = pathToArtist + '/' + songName.trim();
+                    fs.renameSync(pathToSongUnsanitize, pathToSongSanitize);
+                }
+                //On modifie maintenant les noms des artistes (dossier)
+                var pathToArtistUnsanitize, pathToArtistSanitize, newPathArtist;
+                //Chemin non sanitize pour l'artiste './mongo/animux/M/Metallica' 
+                pathToArtistUnsanitize = pathArtist;
+                //On récupére './mongo/animux/M/'
+                newPathArtist = pathArtist.substring(0, pathArtist.lastIndexOf("/"));
+                //On ajoute à './mongo/animux/M/' le nom de l'artiste sanitize 
+                artistNameDecode = sanitizeFilename(artistNameDecode);
+                artistName = encodeURIComponent(artistNameDecode);
+                pathToArtistSanitize = newPathArtist + '/' + artistName.trim();
+                (function (pathToArtistUnsanitize, pathToArtistSanitize) {
+                    fs.rename(pathToArtistUnsanitize, pathToArtistSanitize, (err) => {
+                        if (err) {
+                            //ex rename './mongo/animux/D/Destiny´s Child' -> './mongo/animux/D//Destiny's Child' problème d'accent ´s vs 's
+                            //Lorsqu'on veut renommer le premier répertoire avec le nom du second, le second existe.
+                            //Nous devons donc transférer les fichiers du premier répertoire vers le second répertoire et supprimer le 1er répertoire
+                            if (err.code == "ENOTEMPTY") {
+                                console.log("-------------------- ENOTEMPTY --------------------");
+                                var dirsSongs = readDirsSongs(err.path);
+                                for (var i = 0; i < dirsSongs.length; i++) {
+                                    var songName = dirsSongs[i].substring(dirsSongs[i].lastIndexOf("/") + 1);
+                                    console.log("ENOTEMPTY, attempt to rename = " + pathToArtistSanitize + '/' + songName);
+                                    fs.renameSync(dirsSongs[i], pathToArtistSanitize + '/' + songName);
+                                }
+                                //On supprime l'ancien dossier si il n'y a plus de fichier à l'intérieur
+                                if (readDirsSongs(err.path).length == 0) fs.rmdir(pathToArtistUnsanitize);
+                            } else {
+                                console.log(err);
+                                throw err;
+                            }
+                        }
+                    });
+                })(pathToArtistUnsanitize, pathToArtistSanitize)
+            }
+        }, i * 30);
     }
     console.log("Traitement terminé");
     res.json(config.http.valid.send_message_ok);
@@ -168,6 +238,7 @@ var getDirArtist = (req, res) => {
         var pathName = dirArray[i];
         var escapePath = utilHandler.escapeRegExp(PATH_MAPPING_ANIMUX),
             re = new RegExp(escapePath + "\/[A-Z]\/");
+        //pour la v2 supprimer le if et modifier la variable re avec ("\/[0-9A-Z]\/")
         if (re.test(pathName)) {
             var artistName = pathName.replace(re, ""),
                 artistName = decodeURIComponent(artistName),
@@ -175,11 +246,7 @@ var getDirArtist = (req, res) => {
                 artistRegex = new RegExp('^' + escapePathArtist + '$', 'i');
             nbTotal++;
             req.db.collection(COLLECTIONARTIST).findOne({
-                $or: [{
-                    nameVariations: artistRegex
-                }, {
-                    name: artistRegex
-                }]
+                name_accent_fold: artistRegex
             }, (err, artist) => {
                 if (err) return res.status(404).json(config.http.error.artist_404);
                 if (artist != null) {
@@ -205,6 +272,7 @@ var getDirArtist = (req, res) => {
     })(i)
     res.json(config.http.valid.send_message_ok);
 };
+
 /**
  * 3ème étape pour traiter les fichiers animux
  * Tentative pour trouver les artistes dans le fichier animux_artist_not_found_log.txt
@@ -228,31 +296,39 @@ var getNotFoundLogArtist = (req, res) => {
     fs.readFile(FILENAME_ARTIST_NOT_FOUND, 'utf8', (err, data) => {
         if (err) return res.json(config.http.error.internal_error_404);
         var tArtistAnimux = data.split("\n");
-        for (var i = 0; i < tArtistAnimux.length; i++) {
-            var artistName = tArtistAnimux[i];
-            //We add 'the' before each artist and we find in the DB if the artist exists
-            processArtistAddThe(req.db, artistName).then((artistName) => {
-                //The artist not match so we pass it to the next function
-                return processArtistRemoveThe(req.db, artistName);
-            }).then((artistName) => {
-                //The artist not match so we pass it to the next function
-                return processArtistFeatVersus(req.db, artistName);
-            }).then((artistName) => {
-                //The artist not match so we pass it to the next function
-                return processArtistAnd(req.db, artistName);
-            }).then((artistName) => {
-                console.log(artistName);
-                loggerNotFound.write(artistName + "\n");
-            }, (artistName) => { /*reject, artist found*/ });
-        }
+        var i = 0;
+        (function loop(i) {
+            if (tArtistAnimux.length == i) return console.log("END");
+            var artistName = tArtistAnimux[i].trim();
+            if (artistName.length != 0) {
+                //We add 'the' before each artist and we find in the DB if the artist exists
+                processArtistAddThe(req.db, artistName).then((artistName) => {
+                    //The artist not match so we pass it to the next function
+                    return processArtistRemoveThe(req.db, artistName);
+                }).then((artistName) => {
+                    return processArtistFeatVersus(req.db, artistName);
+                    //The artist not match so we pass it to the next function
+                }).then((artistName) => {
+                    //The artist not match so we pass it to the next function
+                    return processArtistAnd(req.db, artistName);
+                }).then((artistName) => {
+                    return getDirArtistWithNameVariations(req.db, artistName);
+                }).then((artistName) => {
+                    console.log(artistName);
+                    loggerNotFound.write(artistName + "\n");
+                    loop(++i);
+                }, (artistName) => {
+                    loop(++i);
+                });
+            }
+        })(i);
     });
     res.json(config.http.valid.send_message_ok);
 }
 /**
  * 4ème étape pour traiter les fichiers animux
- * Enregistre en DB le nom des répertoires des musiques trouvés dans le champ: animux_path de la collection artist
  * Permet de trouver les répertoires ne matchant pas avec les noms des musiques de notre BD: enregistré dans le fichier animux_song_not_found_log.txt.txt
- * 
+ * Les fichiers matchant avec notre BD
  * @param {*} req 
  * @param {*} res 
  */
@@ -276,59 +352,70 @@ var getFileSong = (req, res) => {
         let nbMatch = 0,
             nbTotal = 0,
             nbEnd = 0;
-        for (var i = 0; i < tArtists.length; i++) {
-            for (var ii = 0; ii < tArtists[i].animux_path.length; ii++) {
-                //we are reading files in directory artist
-                let fileArray = readFilesSongs(tArtists[i].animux_path[ii]);
-                //for each songs in the previous directory (artist directory), we are going to find the title of each songs
-                for (var j = 0; j < fileArray.length; j++) {
-                    var fileName = fileArray[j].replace(tArtists[i].animux_path[ii] + '/', "").replace(/_Animux.txt/i, "").replace(/\(live\)/i, "").replace("’", "'");
-                    fileName = decodeURIComponent(fileName).trim();
-                    ((filePathName, fileName) => {
-                        nbTotal++;
-                        //We try to match songs with insensitive case
-                        req.db.collection(COLLECTIONSONG).find({
-                            $and: [{
-                                name: tArtists[i].name
-                            }, {
-                                title: new RegExp("^" + utilHandler.escapeRegExp(fileName) + "$", "i")
-                            }]
-                        }).toArray((err, tSongs) => {
-                            if (err) return res.status(404).json(config.http.error.song_404);
-                            if (tSongs.length) {
-                                readContentFileSong(filePathName).then((data) => {
-                                    nbEnd++;
-                                    nbMatch++
-                                    console.log(filePathName + " trouvé: " + nbMatch + '/' + (nbTotal));
-                                    loggerFound.write(filePathName + "\n");
-                                    //we update each songs for an artist
-                                    req.db.collection(COLLECTIONSONG).updateMany({
-                                        $and: [{
-                                            name: tSongs[0].name
-                                        }, {
-                                            title: new RegExp("^" + utilHandler.escapeRegExp(fileName) + "$", "i")
-                                        }]
+        for (let i = 0; i < tArtists.length; i++) {
+            setTimeout(() => {
+                for (var ii = 0; ii < tArtists[i].animux_path.length; ii++) {
+                    //we are reading files in directory artist
+                    try {
+                        let fileArray = readFilesSongs(tArtists[i].animux_path[ii]);
+                        //for each songs in the previous directory (artist directory), we are going to find the title of each songs
+                        for (var j = 0; j < fileArray.length; j++) {
+                            var fileName = fileArray[j].replace(tArtists[i].animux_path[ii] + '/', "");
+                            fileName = decodeURIComponent(fileName).trim();
+                            ((filePathName, fileName) => {
+                                nbTotal++;
+                                //We try to match songs with insensitive case
+                                req.db.collection(COLLECTIONSONG).find({
+                                    $and: [{
+                                        name: tArtists[i].name
                                     }, {
-                                        $set: {
-                                            animux_path: filePathName,
-                                            animux_content: data
-                                        }
-                                    });
-                                    if (nbEnd == nbTotal) console.log("END : " + nbMatch + '/' + nbTotal);
-                                }).catch((err) => {
-                                    nbEnd++;
-                                    console.error(err);
-                                    if (nbEnd == nbTotal) console.log("END : " + nbMatch + '/' + nbTotal);
-                                });
-                            } else {
-                                nbEnd++;
-                                loggerNotFound.write(filePathName + "\n");
-                                if (nbEnd == nbTotal) console.log("END : " + nbMatch + '/' + nbTotal);
-                            }
-                        })
-                    })(fileArray[j], fileName);
+                                        title: new RegExp("^" + utilHandler.escapeRegExp(fileName) + "$", "i")
+                                    }]
+                                }).toArray((err, tSongs) => {
+                                    if (err) return res.status(404).json(config.http.error.song_404);
+                                    if (tSongs.length) {
+                                        readContentFileSong(filePathName).then((data) => {
+                                            nbEnd++;
+                                            nbMatch++
+                                            console.log(filePathName + " trouvé: " + nbMatch + '/' + (nbTotal));
+                                            loggerFound.write(filePathName + "\n");
+                                            //we update each songs for an artist
+                                            req.db.collection(COLLECTIONSONG).updateMany({
+                                                $and: [{
+                                                    name: tSongs[0].name
+                                                }, {
+                                                    title: new RegExp("^" + utilHandler.escapeRegExp(fileName) + "$", "i")
+                                                }]
+                                            }, {
+                                                $set: {
+                                                    animux_path: filePathName,
+                                                    animux_content: data
+                                                }
+                                            });
+                                            if (nbEnd == nbTotal) console.log("END : " + nbMatch + '/' + nbTotal);
+                                        }).catch((err) => {
+                                            nbEnd++;
+                                            console.error(err);
+                                            if (nbEnd == nbTotal) console.log("END : " + nbMatch + '/' + nbTotal);
+                                        });
+                                    } else {
+                                        nbEnd++;
+                                        decodeURIComponent(filePathName).substring
+                                        var name = filePathName.split('/')[4];
+                                        var song = fileName;
+                                        loggerNotFound.write(decodeURIComponent(name) + "_-_" + decodeURIComponent(song) + "\n");
+                                        if (nbEnd == nbTotal) console.log("END : " + nbMatch + '/' + nbTotal);
+                                    }
+                                })
+                            })(fileArray[j], fileName);
+                        }
+                    } catch (error) {
+                        console.log(error);
+                    } finally {
+
+                    }
                 }
-            }
+            }, 10 * i)
         }
     });
     res.json(config.http.valid.send_message_ok);
@@ -341,11 +428,7 @@ var getFileSong = (req, res) => {
 var processArtistAddThe = (db, artistName) => {
     return new Promise((resolve, reject) => {
         db.collection(COLLECTIONARTIST).findOne({
-            $or: [{
-                nameVariations: new RegExp("^" + utilHandler.escapeRegExp("The " + artistName) + "$", "i")
-            }, {
-                name: new RegExp("^" + utilHandler.escapeRegExp("The " + artistName) + "$", "i")
-            }]
+            name_accent_fold: new RegExp("^" + utilHandler.escapeRegExp("The " + artistName) + "$", "i")
         }, (err, artist) => {
             if (err) return res.status(404).json(config.http.error.artist_404);
             if (artist != null) {
@@ -369,11 +452,7 @@ var processArtistRemoveThe = (db, artistName) => {
         if (!/^The(\s)/i.test(artistName)) return resolve(artistName);
         var artistNameWithoutThe = artistName.replace(/^The(\s)/i, "");
         db.collection(COLLECTIONARTIST).findOne({
-            $or: [{
-                nameVariations: new RegExp("^" + utilHandler.escapeRegExp(artistNameWithoutThe) + '$', "i")
-            }, {
-                name: new RegExp("^" + utilHandler.escapeRegExp(artistNameWithoutThe) + '$', "i")
-            }]
+            name_accent_fold: new RegExp("^" + utilHandler.escapeRegExp(artistNameWithoutThe) + '$', "i")
         }, (err, artist) => {
             if (err) return res.status(404).json(config.http.error.artist_404);
             if (artist != null) {
@@ -389,7 +468,7 @@ var processArtistRemoveThe = (db, artistName) => {
 }
 
 /**
- * If an artist begin contain ft|feat|featuring|vs we must split it an keep the first artist name 
+ * If an artist contain ft|feat|featuring|vs we must split it an keep the first artist name 
  * for example : David Guetta featuring Rihanna => we will only keep David Guetta for find the artist name in wasabi
  * @param {*} db 
  * @param {*} artistName 
@@ -408,11 +487,7 @@ var processArtistFeatVersus = (db, artistName) => {
         var firstArtist = tArtists[0].trim();
         firstArtist = sanitizeFilename(firstArtist);
         db.collection(COLLECTIONARTIST).findOne({
-            $or: [{
-                nameVariations: new RegExp("^" + utilHandler.escapeRegExp(firstArtist) + "$", "i")
-            }, {
-                name: new RegExp("^" + utilHandler.escapeRegExp(firstArtist) + "$", "i")
-            }]
+            name_accent_fold: new RegExp("^" + utilHandler.escapeRegExp(firstArtist) + "$", "i")
         }, (err, artist) => {
             if (err) return res.status(404).json(config.http.error.artist_404);
             if (artist != null) {
@@ -451,11 +526,7 @@ var processArtistAnd = (db, artistName) => {
         var firstArtistName = tArtists[0].trim();
         // on cherche d'abord l'artiste entier (artist1 & artist2). si non trouvé, alors on cherche le artist1 qui est l'artiste principal
         db.collection(COLLECTIONARTIST).findOne({
-            $or: [{
-                nameVariations: new RegExp("^" + utilHandler.escapeRegExp(firstArtist) + "$", "i")
-            }, {
-                name: new RegExp("^" + utilHandler.escapeRegExp(firstArtist) + "$", "i")
-            }]
+            name_accent_fold: new RegExp("^" + utilHandler.escapeRegExp(firstArtist) + "$", "i")
         }, (err, artist) => {
             if (err) return res.status(404).json(config.http.error.artist_404);
             //On a trouvé le nom d'artiste composé de : artist1 & artist2
@@ -465,11 +536,7 @@ var processArtistAnd = (db, artistName) => {
             } else {
                 //Nous n'avons pas trouvé le nom d'artiste composé de artist1 & artist 2. Nous cherchons donc uniquement avec artist1, qui est l'artiste principal
                 db.collection(COLLECTIONARTIST).findOne({
-                    $or: [{
-                        nameVariations: new RegExp("^" + utilHandler.escapeRegExp(firstArtistName) + "$", "i")
-                    }, {
-                        name: new RegExp("^" + utilHandler.escapeRegExp(firstArtistName) + "$", "i")
-                    }]
+                    name_accent_fold: new RegExp("^" + utilHandler.escapeRegExp(firstArtistName) + "$", "i")
                 }, (err, artist) => {
                     if (artist != null) {
                         updateArtistAnimuxPath(db, artist, artistName);
@@ -484,6 +551,38 @@ var processArtistAnd = (db, artistName) => {
 }
 /**
  * 
+ * @param {*} req 
+ * @param {*} res 
+ */
+var getDirArtistWithNameVariations = (db, artistName) => {
+    return new Promise((resolve, reject) => {
+        db.collection(COLLECTIONARTIST).find({
+            nameVariations_fold: new RegExp("^" + utilHandler.escapeRegExp(artistName) + "$", "i")
+        }).toArray((err, tArtists) => {
+            if (tArtists != null) {
+                let pathToArtist = [];
+                pathToArtist.push(PATH_MAPPING_ANIMUX + '/' + artistName[0].toUpperCase() + '/' + encodeURIComponent(artistName));
+                if (tArtists.length == 1) {
+                    console.log(tArtists.length + "-----" + tArtists[0].name);
+                    db.collection(COLLECTIONARTIST).updateOne({
+                        name: tArtists[0].name
+                    }, {
+                        $addToSet: {
+                            animux_path: pathToArtist
+                        }
+                    });
+                    return reject(artistName);
+                } else {
+                    return resolve(artistName);
+                }
+            }
+        });
+    });
+};
+
+
+/**
+ * 
  * @param {*} artistName 
  * @param {*} artist Object: we will check if artist.animux_path exist
  */
@@ -495,21 +594,29 @@ var checkIfAnimuxPathExistAndRename = (db, artistName, artist) => {
         //On deplace les fichiers de ./mongo/animux/B/Beatles vers le dossier ./mongo/animux/T/The%20Beatles 
         let oldPath = PATH_MAPPING_ANIMUX + '/' + artistName[0].toUpperCase() + '/' + encodeURIComponent(artistName);
         let pathToArtist = artist.animux_path[0];
-        var tFileNameSongs = readFilesSongs(oldPath);
-        //old path = (tFileNameSongs[i] = ./mongo/animux/B/Beatles/You%C2%B4ve%20got%20to%20hide%20your%20love%20away_Animux.txt)
-        for (var i = 0; i < tFileNameSongs.length; i++) {
-            var indexToSplit = tFileNameSongs[i].lastIndexOf('/') + 1;
-            let songName = tFileNameSongs[i].substring(tFileNameSongs[i].length, indexToSplit);
-            // new path = ./mongo/animux/T/The%20Beatles/You%C2%B4ve%20got%20to%20hide%20your%20love%20away_Animux.txt
-            fs.renameSync(tFileNameSongs[i], pathToArtist + '/' + songName);
+        try {
+            var tFileNameSongs = readFilesSongs(oldPath);
+            //old path = (tFileNameSongs[i] = ./mongo/animux/B/Beatles/You%C2%B4ve%20got%20to%20hide%20your%20love%20away)
+            for (var i = 0; i < tFileNameSongs.length; i++) {
+                var indexToSplit = tFileNameSongs[i].lastIndexOf('/') + 1;
+                let songName = tFileNameSongs[i].substring(tFileNameSongs[i].length, indexToSplit);
+                // new path = ./mongo/animux/T/The%20Beatles/You%C2%B4ve%20got%20to%20hide%20your%20love%20away
+                try {
+                    fs.renameSync(tFileNameSongs[i], pathToArtist + '/' + songName);
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+            //On check avant de supprimer l'ancien dossier de l'artiste 
+            //car il se peut que des fichiers existent toujours.
+            if (readFilesSongs(oldPath).length == 0) {
+                console.log("Suppression du dossier: " + oldPath);
+                fs.rmdirSync(oldPath);
+                updateArtistAnimuxPath(db, artist, artistName);
+            } else console.log("Il existe encore des fichiers dans ce dossier: " + oldPath);
+        } catch (error) {
+            console.log(error);
         }
-        //On check avant de supprimer l'ancien dossier de l'artiste 
-        //car il se peut que des fichiers existent toujours.
-        if (readFilesSongs(oldPath).length == 0) {
-            console.log("Suppression du dossier: " + oldPath);
-            fs.rmdirSync(oldPath);
-            updateArtistAnimuxPath(db, artist, artistName);
-        } else console.log("Il existe encore des fichiers dans ce dossier: " + oldPath);
     } else {
         //En ajoutant "The" au début du nom de dossier animux, nous avons trouvé l'artiste en DB. 
         //Il une fois les dossiers deplacé il faudra relancer l'API animux/create_mapping/artist/ pour mettre a jour dans animux_path les nouveaux dossier d'artiste
@@ -601,16 +708,23 @@ var readDirsSongs = (rootPath) => {
 
 //We replace characters with a weird encoding by same characters with a normal encoding
 var sanitizeFilename = (filename) => {
-    return filename.replace(/é/gi, "é")
+    filename = filename.replace(/é/gi, "é")
         .replace(/ë/gi, "ë")
         .replace(/ö/gi, "ö")
         .replace(/á/gi, "á")
         .replace(/í/gi, "i")
         .replace(/ó/gi, "ó")
         .replace(/ú/gi, "ú")
+        .replace(/ü/gi, "ü")
+        .replace(/è/gi, "è")
         .replace(/´/gi, "'")
         .replace(/’/gi, "'")
-        .replace(/è/gi, "è");
+        .replace(/_Animux\.txt/gi, '')
+        .replace(/[\,\-\?\!]/gi, '');
+    if (!filename.startsWith("("))
+        filename = filename.replace(/[\(\[][^\)\]]*[\)\]]/gi, '');
+
+    return removeAccents.remove(filename).trim();
 }
 
 exports.sanitizeAndRenameDirArtist = sanitizeAndRenameDirArtist;
@@ -619,3 +733,6 @@ exports.getNotFoundLogArtist = getNotFoundLogArtist;
 exports.getFileSong = getFileSong;
 exports.countArtistAnimuxDirInDB = countArtistAnimuxDirInDB;
 exports.countSongAnimuxFileInDB = countSongAnimuxFileInDB;
+exports.removeAccentArtists = removeAccentArtists;
+exports.removeAccentSongs = removeAccentSongs;
+exports.getDirArtistWithNameVariations = getDirArtistWithNameVariations;

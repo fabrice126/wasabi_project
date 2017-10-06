@@ -9,7 +9,6 @@ const app = require('../app'),
   config = require('../routes/conf/conf'),
   spdy = require('spdy'),
   http = require('http'),
-  https = require('https'),
   fs = require('fs');
 /**
  * Get port from environment and store in Express.
@@ -38,7 +37,7 @@ serverHttp.on('listening', onListening);
 var serverHttps = spdy.createServer({
   key: fs.readFileSync('./' + config.https.wasabi_key),
   cert: fs.readFileSync('./' + config.https.wasabi_crt),
-  ca : fs.readFileSync('./' + config.https.digi_crt)
+  ca: fs.readFileSync('./' + config.https.digi_crt)
 }, app).listen(portHttps);
 serverHttps.on('error', onErrorHttps);
 serverHttps.on('listening', onListeningHttps);

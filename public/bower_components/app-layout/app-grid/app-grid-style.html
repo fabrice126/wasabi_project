@@ -121,10 +121,11 @@ Custom property                               | Description                     
   <template>
     <style>
 
-      :host {
+      :host,
+      :host ::content {
         /**
          * The width for the expandible item is:
-         * ((100% - subPixelAdjustment) / columns * itemColumns - gutter * (columns - itemColumns)
+         * ((100% - subPixelAdjustment) / columns * itemColumns - gutter
          *
          * - subPixelAdjustment: 0.1px (Required for IE 11)
          * - gutter: var(--app-grid-gutter)
@@ -132,14 +133,14 @@ Custom property                               | Description                     
          * - itemColumn: var(--app-grid-expandible-item-columns)
          */
         --app-grid-expandible-item: {
-          -webkit-flex-basis: calc((100% - 0.1px) / var(--app-grid-columns, 1) * var(--app-grid-expandible-item-columns, 1) - (var(--app-grid-gutter, 0px) * (var(--app-grid-columns, 1) - var(--app-grid-expandible-item-columns, 1)))) !important;
-          flex-basis: calc((100% - 0.1px) / var(--app-grid-columns, 1) * var(--app-grid-expandible-item-columns, 1) - (var(--app-grid-gutter, 0px) * (var(--app-grid-columns, 1) - var(--app-grid-expandible-item-columns, 1)))) !important;
-          max-width: calc((100% - 0.1px) / var(--app-grid-columns, 1) * var(--app-grid-expandible-item-columns, 1) - (var(--app-grid-gutter, 0px) * (var(--app-grid-columns, 1) - var(--app-grid-expandible-item-columns, 1)))) !important;
-
+          -webkit-flex-basis: calc((100% - 0.1px) / var(--app-grid-columns, 1) * var(--app-grid-expandible-item-columns, 1) - var(--app-grid-gutter, 0px)) !important;
+          flex-basis: calc((100% - 0.1px) / var(--app-grid-columns, 1) * var(--app-grid-expandible-item-columns, 1) - var(--app-grid-gutter, 0px)) !important;
+          max-width: calc((100% - 0.1px) / var(--app-grid-columns, 1) * var(--app-grid-expandible-item-columns, 1) - var(--app-grid-gutter, 0px)) !important;
         };
       }
 
-      .app-grid {
+      .app-grid,
+      :host ::content .app-grid {
         display: -ms-flexbox;
         display: -webkit-flex;
         display: flex;
@@ -152,11 +153,13 @@ Custom property                               | Description                     
         -webkit-flex-wrap: wrap;
         flex-wrap: wrap;
 
-        margin-top: var(--app-grid-gutter, 0px);
-        margin-left: var(--app-grid-gutter, 0px);
+        padding-top: var(--app-grid-gutter, 0px);
+        padding-left: var(--app-grid-gutter, 0px);
+        box-sizing: border-box;
       }
 
-      .app-grid > * {
+      .app-grid > *,
+      :host ::content .app-grid > * {
         /* Required for IE 10 */
         -ms-flex: 1 1 100%;
         -webkit-flex: 1;
@@ -173,17 +176,20 @@ Custom property                               | Description                     
         box-sizing: border-box;
       }
 
-      .app-grid[has-aspect-ratio] > * {
+      .app-grid[has-aspect-ratio] > *,
+      :host ::content .app-grid[has-aspect-ratio] > * {
         position: relative;
       }
 
-      .app-grid[has-aspect-ratio] > *::before {
+      .app-grid[has-aspect-ratio] > *::before,
+      :host ::content .app-grid[has-aspect-ratio] > *::before {
         display: block;
         content: "";
         padding-top: var(--app-grid-item-height, 100%);
       }
 
-      .app-grid[has-aspect-ratio] > * > * {
+      .app-grid[has-aspect-ratio] > * > *,
+      :host ::content .app-grid[has-aspect-ratio] > * > * {
         position: absolute;
         top: 0;
         right: 0;

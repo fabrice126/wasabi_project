@@ -17,7 +17,7 @@ thing! https://github.com/PolymerLabs/tedium/issues
 _[Demo and API docs](https://elements.polymer-project.org/elements/iron-list)_
 
 
-##&lt;iron-list&gt;
+## &lt;iron-list&gt;
 
 `iron-list` displays a virtual, 'infinite' list. The template inside
 the iron-list element represents the DOM to create for each list item.
@@ -31,10 +31,100 @@ be reused with a new model at any time. Particularly, any state that may change
 as the result of a user interaction with the list item must be bound to the model
 to avoid view state inconsistency.
 
-__Important:__ `iron-list` must either be explicitly sized, or delegate scrolling to an
+### Sizing iron-list
+
+`iron-list` must either be explicitly sized, or delegate scrolling to an
 explicitly sized parent. By "explicitly sized", we mean it either has an explicit
 CSS `height` property set via a class or inline style, or else is sized by other
 layout means (e.g. the `flex` or `fit` classes).
+
+#### Flexbox - [jsbin](http://jsbin.com/kokaki/edit?html,output)
+
+```html
+<template is="x-list">
+  <style>
+    :host {
+      display: block;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    iron-list {
+      flex: 1 1 auto;
+    }
+  </style>
+  <app-toolbar>App name</app-toolbar>
+  <iron-list items="[[items]]">
+    <template>
+      <div>
+        ...
+      </div>
+    </template>
+  </iron-list>
+</template>
+```
+#### Explicit size - [jsbin](http://jsbin.com/pibefo/edit?html,output)
+```html
+<template is="x-list">
+  <style>
+    :host {
+      display: block;
+    }
+
+    iron-list {
+      height: 100vh; /* don't use % values unless the parent element is sized. */
+    }
+  </style>
+  <iron-list items="[[items]]">
+    <template>
+      <div>
+        ...
+      </div>
+    </template>
+  </iron-list>
+</template>
+```
+#### Main document scrolling - [jsbin](http://jsbin.com/cojuli/edit?html,output)
+```html
+<head>
+  <style>
+    body {
+      height: 100vh;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    app-toolbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+    }
+
+    iron-list {
+      /* add padding since the app-toolbar is fixed at the top */
+      padding-top: 64px;
+    }
+  </style>
+</head>
+<body>
+  <template is="dom-bind">
+    <app-toolbar>App name</app-toolbar>
+    <iron-list scroll-target="document" items="[[items]]">
+      <template>
+        <div>
+          ...
+        </div>
+      </template>
+    </iron-list>
+  </template>
+</body>
+```
+
+`iron-list` must be given a `<template>` which contains exactly one element. In the examples
+above we used a `<div>`, but you can provide any element (including custom elements).
 
 ### Template model
 
@@ -64,10 +154,8 @@ For example, given the following `data` array:
   {"name": "Mike"}
 ]
 ```
-
 The following code would render the list (note the name and checked properties are
 bound from the model object provided to the template scope):
-
 ```html
 <template is="dom-bind">
   <iron-ajax url="data.json" last-response="{{data}}" auto></iron-ajax>
@@ -85,8 +173,7 @@ bound from the model object provided to the template scope):
 
 `iron-list` supports a grid layout in addition to linear layout by setting
 the `grid` attribute.  In this case, the list template item must have both fixed
-width and height (e.g. via CSS), with the desired width of each grid item
-specified by the `width` attribute. Based on this, the number of items
+width and height (e.g. via CSS). Based on this, the number of items
 per row are determined automatically based on the size of the list viewport.
 
 ### Accessibility
@@ -131,17 +218,14 @@ after the list became visible again. For example:
 ```js
 document.querySelector('iron-list').fire('iron-resize');
 ```
-
 ### When should `<iron-list>` be used?
 
 `iron-list` should be used when a page has significantly more DOM nodes than the ones
-visible on the screen. e.g. the page has 500 nodes, but only 20 are visible at the time.
+visible on the screen. e.g. the page has 500 nodes, but only 20 are visible at a time.
 This is why we refer to it as a `virtual` list. In this case, a `dom-repeat` will still
 create 500 nodes which could slow down the web app, but `iron-list` will only create 20.
 
-However, having an `iron-list` does not mean that you can load all the data at once.
-Say, you have a million records in the database, you want to split the data into pages
-so you can bring a page at the time. The page could contain 500 items, and iron-list
-will only render 20.
-
-
+However, having an `iron-list` does not mean that you should load all the data at once.
+For example, if you have a million records in the database, it is better split the data into pages
+so you can bring in a page at a time. The page could contain 500 items, and iron-list
+might only render 20.

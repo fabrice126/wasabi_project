@@ -566,8 +566,8 @@ router.get('/equipboard/artist/equipment/description', equipBoardController.getA
 
 
 
-
-
+router.get('/animux/remove_accent/artist', animuxController.removeAccentArtists);
+router.get('/animux/remove_accent/song', animuxController.removeAccentSongs);
 /**
  * API permettant de rename les noms d'artistes animux avec les noms d'artistes wasabi afin d'utiliser 
  * dans /animux/create_mapping/artist un find sans regex pour améliorer les performances

@@ -280,7 +280,7 @@ var constructNewURLWikipedia = function (urlWikipedia,urlWikipediaToSplit) {
  *  Un traitement spécial est appliqué si artistLocation est un objet appartenant a un artiste francais
  *  PARAM 1 : string, urlWikipédia de l'objet
  *  PARAM 2 : object, objet artiste contenant la localisation de l'artiste et son urlWikipédia
- *  PARAM 3 : string, chaine a couper afin d'avoir le prefix  permettant"http://en.wikipedia.org/wiki/"
+ *  PARAM 3 : string, chaine a couper afin d'avoir le prefix  permettant d'avoir une url de type: "http://en.wikipedia.org/wiki/"
  */
 var extractInfosFromURL = function(url,artistLocation,urlToSplit){
     var tUrl = url.split(urlToSplit);

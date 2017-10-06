@@ -1,5 +1,6 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/iron-icons/social-icons.html">
 <link rel="import" href="../bower_components/paper-toolbar/paper-toolbar.html">
 <link rel="import" href="../bower_components/paper-ripple/paper-ripple.html">
 <link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
@@ -82,15 +83,11 @@
                 <app-toolbar>Menu</app-toolbar>
                 <div class="drawer-contents">
                     <template is="dom-repeat" id="menu" items="[[labelsAppDrawer]]">
-                        <a href="[[item.link]]" class="linkMenu" on-tap="_closeAppDrawer">
+                        <a href="[[item.link]]" class="linkMenu" on-tap="_closeAppDrawer" target="[[item.target]]">
                             <iron-icon class="colorTextMenu" icon="[[item.icon]]" item-icon> </iron-icon> <span class="colorTextMenu">[[item.label]]</span>
                             <paper-ripple></paper-ripple>
                         </a>
                     </template>
-                    <a href="https://github.com/fabrice126/wasabi_project" target="_blank" on-click="_closeAppDrawer" class="linkMenu">
-                        <iron-icon class="colorTextMenu" icon="help" item-icon> </iron-icon> <span class="colorTextMenu">WASABI PROJECT</span>
-                        <paper-ripple></paper-ripple>
-                    </a>
                 </div>
             </app-drawer>
             <div>
@@ -118,15 +115,28 @@
                     value: [{
                             label: "Home",
                             icon: "home",
-                            link: "/#/"
+                            link: "/#/",
+                            target: "_self"
                         }, {
                             label: "Stats",
                             icon: "fingerprint",
-                            link: "#/stats"
+                            link: "#/stats",
+                            target: "_self"
                         }, {
                             label: "API",
                             icon: "swap-vertical-circle",
-                            link: "/apidoc"
+                            link: "/apidoc",
+                            target: "_self"
+                        }, {
+                            label: "Blog",
+                            icon: "today",
+                            link: "http://wasabihome.i3s.unice.fr",
+                            target: "_blank"
+                        }, {
+                            label: "Github - Wasabi",
+                            icon: "social:share",
+                            link: "https://github.com/fabrice126/wasabi_project",
+                            target: "_blank"
                         }
                         // ,{
                         //     label: "Example API",

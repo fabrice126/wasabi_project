@@ -446,9 +446,7 @@
     // it will scroll to the top of the page. let the browser finish the current event loop and scroll to the top of the page
     // before we scroll to the element with id or name `middle`.
     setTimeout(function() {
-      var hashElement = document.querySelector('html ' + hash) || document.querySelector('html [name="' + hash.substring(1) + '"]');
-//              var hashElement = document.querySelector('html /deep/ ' + hash) || document.querySelector('html /deep/ [name="' + hash.substring(1) + '"]');
-
+      var hashElement = document.querySelector('html /deep/ ' + hash) || document.querySelector('html /deep/ [name="' + hash.substring(1) + '"]');
       if (hashElement && hashElement.scrollIntoView) {
         hashElement.scrollIntoView(true);
       }
