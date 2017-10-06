@@ -3,7 +3,7 @@ import config from '../conf/conf';
 import utilHandler from '../handler/utilHandler';
 import fs from 'fs';
 import mv from 'mv';
-const removeAccents = require('remove-accents-diacritics');
+import removeAccents from 'remove-accents-diacritics';
 import {
     ObjectId
 } from 'mongoskin';
