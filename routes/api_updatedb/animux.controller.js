@@ -3,7 +3,6 @@ import config from '../conf/conf';
 import utilHandler from '../handler/utilHandler';
 import fs from 'fs';
 import mv from 'mv';
-import removeAccents from 'remove-accents-diacritics';
 import {
     ObjectId
 } from 'mongoskin';
@@ -723,8 +722,8 @@ var sanitizeFilename = (filename) => {
         .replace(/[\,\-\?\!]/gi, '');
     if (!filename.startsWith("("))
         filename = filename.replace(/[\(\[][^\)\]]*[\)\]]/gi, '');
-
-    return removeAccents.remove(filename).trim();
+    return utilHandler.removeDiacritic(filename).trim()
+    // return removeAccents.remove(filename).trim();
 }
 
 exports.sanitizeAndRenameDirArtist = sanitizeAndRenameDirArtist;
