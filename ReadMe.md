@@ -39,7 +39,7 @@ Il est conseillé de lire ce que fait chaque API avant de l'utiliser notamment c
 *5.5.* Taper la commande : `npm start`  (cela exécutera la commande npm start du package.json)  
 *5.6.* Le serveur est maintenant lancé sur *https://localhost/* (dans le navigateur)  
 6. Remplir la base de données d'elasticsearch :  
-*6.1.* Vérifiez dans `/routes/conf/conf.js`  que launch.env.dev_mode soit à true  
+*6.1.* Vérifiez dans `/routes/conf/conf.js`  que `launch.env.dev_mode` soit à true  
 *6.2.* Lancez ensuite l'api REST pour indexer les artistes : `https://127.0.0.1/createdb/createdbelasticsearchartist` et `https://127.0.0.1/createdb/createdbelasticsearchsong` pour indexer les musiques. Nous pouvons maintenant effectuer des recherches via la barre de recherche du site  
 
 **Comment lancer l'application sous RedHat/Linux Centos 7 (serveur - uniquement en cas de ré-installation)**
@@ -47,8 +47,8 @@ Il est conseillé de lire ce que fait chaque API avant de l'utiliser notamment c
 1. Récupérer l'application sur le GIT  
 *1.1.*  Taper la commande : `sudo yum install git` et vérifier qu'il s'est bien installé : `git --version`  
 *1.2.* Taper la commande : `git clone https://github.com/fabrice126/wasabi_project.git`  
-*1.3.* /!\ Les dumps de la base de données ne sont pas sur le git. Mettre les dumps de la base de données dans le dossier `backup_mongo`. Créer le dossier dans `wasabi_project/mongo/` pour cela rendez-vous dans le bon dossier `cd wasabi_project/mongo/` puis tapez la commande : `mkdir backup_mongo`. Placer les dumps à cet endroit (conseil : envoyer les dumps via filezilla)  
-*1.4.* /!\ Par souci de sécurité le fichier contenant le login / mot de passe n'est pas sur le git vous devez donc créer `routes/conf/login.json` . Ce fichier contient le json suivant : `{"login": "ADemanderALAdmin","password": "ADemanderALAdmin"}`. Idem pour le fichier `routes/conf/confJwt.json` contenant la clé des Tokens JWT ce fichier contient le json suivant :  `{"secretOrKey": "ADemanderALAdmin"}`. Vous pouvez trouver la liste des fichiers/dossiers non présents sur le git ici : https://github.com/fabrice126/wasabi_project/blob/master/.gitignore  
+*1.3.* /!\ Les dumps de la base de données ne sont pas sur le git. Mettre les dumps de la base de données dans le dossier `backup_mongo`. Créer le dossier dans `wasabi_project/mongo/` pour cela rendez-vous dans le bon dossier `cd wasabi_project/mongo/` puis tapez la commande : `mkdir backup_mongo`. Placer les dumps à cet endroit (conseil : envoyer les dumps via *<a href="https://filezilla-project.org/" target="_blank">filezilla</a>*)  
+*1.4.* /!\ Par souci de sécurité le fichier contenant le login / mot de passe n'est pas sur le git. Vous devez donc créer `routes/conf/login.json` . Ce fichier contient le json suivant : `{"login": "ADemanderALAdmin","password": "ADemanderALAdmin"}`. Idem pour le fichier `routes/conf/confJwt.json` contenant la clé des Tokens JWT ce fichier contient le json suivant :  `{"secretOrKey": "ADemanderALAdmin"}`. Vous pouvez trouver la liste des fichiers/dossiers non présents sur le git ici : https://github.com/fabrice126/wasabi_project/blob/master/.gitignore  
 2. Installer Node-JS : *<a href="https://nodejs.org/en/download/package-manager/#enterprise-linux-and-fedora" target="_blank">ici</a>*
 3. Installer mongodb : version >= 3.2 : *<a href="https://docs.mongodb.com/manual/tutorial/install-mongodb-on-red-hat/" target="_blank">ici</a>*  
 *3.1.* Lancer mongodb, voir : *"<a href="#mongodb-sous-linux-redhatcentos-7">Comment lancer les bases de données>MongoDB sous Linux RedHat/Centos 7</a>"*
@@ -57,12 +57,12 @@ Il est conseillé de lire ce que fait chaque API avant de l'utiliser notamment c
 5. Installer le module Node-JS: PM2 dans le répertoire wasabi_project : `npm install pm2 -g`  
 *5.1.* Infos utiles sur PM2: log, start, restart, associer un compte pm2 à un serveur : *<a href="http://pm2.keymetrics.io/docs/usage/quick-start/" target="_blank">ici</a>* 
 6. Lancer le serveur  
-*6.1.* En ligne de commande : `cd C:/Users/user/Documents/wasabi_project`  
+*6.1.* En ligne de commande : `cd /home/user/wasabi_project`  
 *6.2.* Dans le dossier `wasabi_project` lancez la commande `npm install` pour installer les dépendances du projet  
 *6.3.* Taper la commande : `npm run start-pm2`  
 *6.4.* Le serveur est maintenant lancé et accessible sur https://wasabi.i3s.unice.fr
 7. Remplir la base de données d'elasticsearch:  
-*7.1.* Vérifiez dans `/routes/conf/conf.js`que launch.env.dev_mode soit à true  
+*7.1.* Vérifiez dans `/routes/conf/conf.js`que `launch.env.dev_mode` soit à true  
 *7.2.* Utiliser l'API pour indexer les noms des artistes `/createdb/createdbelasticsearchartist`, nous pouvons maintenant chercher les artistes dans la barre de recherche  
 *7.3.* Lancer l'API`/createdb/createdbelasticsearchsong` pour indexer les noms des musiques avec les noms des artistes et les noms des albums ainsi nous pourrons chercher une musique par son title + nom d'album + nom d'artiste
 
@@ -124,16 +124,17 @@ cela générera la documentation des APIs contenues dans le dossier `wasabi_proj
 
 **Comment installer le certificat HTTPS**
 =======
-Un dossier `wasabi_project/cert_https` doit être créé afin d'y ajouter les certificats fournis par le projet. Ces certificats seront utilisés dans le fichier `bin/www` 
-`const options = {
+Un dossier `wasabi_project/cert_https` doit être créé afin d'y ajouter les certificats fournis par le projet. Ces certificats seront utilisés dans le fichier `bin/www`
+`{
 key: fs.readFileSync('./' + config.https.wasabi_key),
 cert: fs.readFileSync('./' + config.https.wasabi_crt)
+ca: fs.readFileSync('./' + config.https.digi_crt)
 }`
 
 **Architecture du code:**
 =======
-## bin/
-**Permet de lancer l'application **    
+## bin/www
+** Permet configurer les listeners du server **    
 
 ## mongo/
 #### mongo/backup_mongo/  
@@ -157,7 +158,7 @@ Le dump courant est le dump avec le numéro le plus élevé `dump_x`, le `dump_x
 #### mongo/request_mongo/  
 **Contient des requêtes utiles**
 Si la base de données est recréée de zéro via le web-service `/createdb` elle contiendra :  
-Une collection artist contenant des documents représentant un artiste avec ses albums et ses musiques, il faudra donc lancer :  
+Une collection artist une collection album et une collection song, il faudra donc lancer :  
 
  1. Les fichiers ci-dessous via la commande mongodb `load("FichierMongoDB.js");` pour cela:  
  	*1.1.* Assurez-vous que mongodb est lancé avec la commande `mongod`  
@@ -165,7 +166,7 @@ Une collection artist contenant des documents représentant un artiste avec ses 
  	*1.3.* Lancer la commande `load("MonFichier.js");` exemple `load("FindSameDocument.js");`  
  	*1.4.* Vous pouvez aussi lancer ces scripts via une interface graphique tel que mongobooster : *<a href="https://mongobooster.com/" target="_blank">ici</a>*  
  
- 2.  Le fichier `FindSameDocument.js` dans mongo afin de trouver les documents en double (ayant le même nom d'artiste car un nom d'artiste est unique en base de données, cf : comme dans lyrics wikia) dans la base de	données
+ 2.  Le fichier `findSameDocument.js` dans mongo afin de trouver les documents en double (ayant le même nom d'artiste car un nom d'artiste est unique en base de données, cf : comme dans lyrics wikia) dans la base de	données
 
  3.  [doit être exécuté après 2.] Le fichier `ConstructBDAfterCreate.js` dans mongodb afin de créer les index des collections `artist`, `album` et `song`  
   
