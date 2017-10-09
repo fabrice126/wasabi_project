@@ -259,11 +259,11 @@ var updateFieldsArtistsMembersDiscogsFromXML = (db, collection, oArtist, oDiscog
 };
 var updateFieldsAlbumsDiscogsFromXML = (db, collection, oAlbum, oDiscogs, nbObject) => {
     console.log("Dans updateFieldsAlbumsDiscogsFromXML");
-    // db.collection(collection).updateOne({
-    //     id_album_discogs: oAlbum.id_album_discogs
-    // }, {
-    //     $set: oAlbum
-    // });
+    db.collection(collection).updateOne({
+        id_album_discogs: oAlbum.id_album_discogs
+    }, {
+        $set: oAlbum
+    });
 };
 
 var parseAndUpdate = (db, collection, updateFieldsCollectionDiscogs, xml, nbObject, loggerNotFound) => {

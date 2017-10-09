@@ -167,57 +167,91 @@ Une collection artist contenant des documents représentant un artiste avec ses 
  
  2.  Le fichier `FindSameDocument.js` dans mongo afin de trouver les documents en double (ayant le même nom d'artiste car un nom d'artiste est unique en base de données, cf : comme dans lyrics wikia) dans la base de	données
 
- 3.  [doit être exécuté après 2.] Le fichier `ConstructBDAfterCreate.js` dans mongodb afin de créer :  
- 	*3.1.* Une collection `artist` contenant uniquement les informations relatives à l'artiste  
-	*3.2.* Une collection `album` contenant les informations relatives à l'album  
- 	*3.3.* Une collection `song` contenant les informations relatives à la musique  
- 	*3.4.* Les index des collections `artist`, `album` et `song`  
+ 3.  [doit être exécuté après 2.] Le fichier `ConstructBDAfterCreate.js` dans mongodb afin de créer les index des collections `artist`, `album` et `song`  
+  
+ 4.  Si besoin - [doit être exécuté après 3.] Le fichier `WordCount_Artist.js` faisant le word count des lyrics pour chaque artist (~3 heures d’exécution)(afin de voir les termes les plus utilisés par artistes)
  
- 4.  [doit être exécuté après 3.] Le fichier `RefArtistInAlbum.js` permettant d'ajouter une référence d'artiste dans un document album(~2 minutes) et de créer l'index sur ce champ
+ 5.  Si besoin - [doit être exécuté après 3.] Le fichier `WordCount_Album.js` faisant le word count des lyrics pour chaque album (~10 heures d’exécution) (afin de voir les termes les plus utilisés dans un album)
  
- 5.  [doit être exécuté après 4.] Le fichier `RefAlbumInSong.js` permettant d'ajouter une référence d'album dans un document song(~20 minutes) et de créer l'index sur ce champ
- 
- 6.  [doit être exécuté après 5.] Le fichier `WordCount_Artist.js` faisant le word count des lyrics pour chaque artist (~3 heures d’exécution)(afin de voir les termes les plus utilisés par artistes)
- 
- 7.  [doit être exécuté après 5.] Le fichier `WordCount_Album.js` faisant le word count des lyrics pour chaque album (~10 heures d’exécution) (afin de voir les termes les plus utilisés dans un album)
- 
- 8.  [doit être exécuté après 5.] Le fichier `WordCount_Song.js` faisant le word count des lyrics pour chaque song (afin de voir les termes les plus utilisés dans une musique)
+ 6.  Si besoin - [doit être exécuté après 3.] Le fichier `WordCount_Song.js` faisant le word count des lyrics pour chaque song (afin de voir les termes les plus utilisés dans une musique)
 
- 9.  [doit être exécuté après 5 et en mode `development`.] Le web service `extractdbpedia/artist` permettant d'extraire le RDF des artistes ayant un lien vers Wikipédia. Ce web service envoie des requêtes SPARQL sur DBpédia afin d'obtenir le RDF de l'artiste. Un champ rdf contenant le RDF de l'artiste est ensuite ajouté en base de données (durée: plusieurs heures)
+ 7.  [doit être exécuté après 3 et en mode `development`.] Le web service `extractdbpedia/artist` permettant d'extraire le RDF des artistes ayant un lien vers Wikipédia. Ce web service envoie des requêtes SPARQL sur DBpédia afin d'obtenir le RDF de l'artiste. Un champ rdf contenant le RDF de l'artiste est ensuite ajouté en base de données (durée: plusieurs heures)
  
- 10.  [doit être exécuté après 5 et en mode `development`.] Le web service `extractdbpedia/album` permettant d'extraire le RDF des musiques ayant un lien vers Wikipédia. Ce web service envoie des requêtes sparql sur DBpédia afin d'obtenir le RDF de la musique. Un champ rdf contenant le RDF de la musique est ensuite ajouté en base de données (durée: plusieurs heures)
+ 8.  [doit être exécuté après 3 et en mode `development`.] Le web service `extractdbpedia/album` permettant d'extraire le RDF des musiques ayant un lien vers Wikipédia. Ce web service envoie des requêtes sparql sur DBpédia afin d'obtenir le RDF de la musique. Un champ rdf contenant le RDF de la musique est ensuite ajouté en base de données (durée: plusieurs heures)
  
- 11.  [doit être exécuté après 5 et en mode `development`.] Le web service `extractdbpedia/song` permettant d'extraire le RDF des albums ayant un lien vers wikipédia. Ce web service envoie des requêtes sparql sur DBpédia afin d'obtenir le RDF de l'album. Un champ rdf contenant le RDF de l'album est ensuite ajouté en base de données (durée: plusieurs heures)
+ 9.  [doit être exécuté après 3 et en mode `development`.] Le web service `extractdbpedia/song` permettant d'extraire le RDF des albums ayant un lien vers wikipédia. Ce web service envoie des requêtes sparql sur DBpédia afin d'obtenir le RDF de l'album. Un champ rdf contenant le RDF de l'album est ensuite ajouté en base de données (durée: plusieurs heures)
  
- 12.  [doit être exécuté après 9 et en mode `development`.] le web service `extractdbpedia/createfields/artist` transforme les propriétés de notre champ RDF en propriétés dans notre base de données
+ 10.  [doit être exécuté après 9 et en mode `development`.] le web service `extractdbpedia/createfields/song` transforme les propriétés de notre champ RDF en propriétés dans notre base de données
  
- 13.  [doit être exécuté après 10 et en mode `development`.] le web service `extractdbpedia/createfields/album` transforme les propriétés de notre champ RDF en propriétés dans notre base de données
+ 11.  [doit être exécuté après 10.] le fichier `CreateIndexAfterDBpediaExtraction` ce fichier permet de créer les index des nouveaux champs insérés dans la base de données
  
- 14.  [doit être exécuté après 11 et en mode `development`.] le web service `extractdbpedia/createfields/song` transforme les propriétés de notre champ RDF en propriétés dans notre base de données
+ 12.  [doit être exécuté après 11.] le fichier `Create_IsClassic_Field` permettant grâce aux subjects des musiques récupérées du rdf de savoir si la musique est un classique
  
- 15.  [doit être exécuté après 14.] le fichier `CreateIndexAfterDBpediaExtraction` ce fichier permet de créer les index des nouveaux champs insérés dans la base de données
+ 13. [doit être exécuté après 12 et en mode `development`.] le web service `updatedb/multitrackspath` ajoute la propriété multitrackspath dans notre base de données. Ce web service a besoin des musiques multitrack sur la machine ou est lancé cette API
  
- 16.  [doit être exécuté après 15.] le fichier `Create_IsClassic_Field` permettant grâce aux subjects des musiques récupérées du rdf de savoir si la musique est un classique
+ 14. [doit être exécuté après 6 et en mode `development` **avec le serveur MusicBrainz local actif**.] Le web service `updatedb/musicbrainz/artist` 
  
- 17. [doit être exécuté après 6 et en mode `development`.] le web service `updatedb/multitrackspath` ajoute la propriété multitrackspath dans notre base de données. Ce web service a besoin des musiques multitrack sur la machine ou est lancé cette API
+ 15. [doit être exécuté après 6 et en mode `development` **avec le serveur MusicBrainz local actif**.] Le web service `updatedb/musicbrainz/album` 
  
- 18. [doit être exécuté après 6 et en mode `development` **avec le serveur MusicBrainz local actif**.] Le web service `updatedb/musicbrainz/artist` 
- 
- 19. [doit être exécuté après 6 et en mode `development` **avec le serveur MusicBrainz local actif**.] Le web service `updatedb/musicbrainz/album` 
- 
- 20. [doit être exécuté après 6 et en mode `development` **avec le serveur MusicBrainz local actif**.] Le web service `updatedb/musicbrainz/song` 
- 
- 21. [doit être exécuté après 6 et en mode `development`.] Vous devez avoir le fichier `mongo/deezer/track_dz_wasabi_viaproduct.csv`  contenant le mapping entre les IDs de nos musiques et les IDs des musiques chez Deezer. Le web service `updatedb/deezer/create_mapping` permettra de créer un champ `deezer_mapping`  dans la collection song.  
- 
- 22. [doit être exécuté après 21 et en mode `development`.] Le web service `updatedb/deezer/song` permet de récupérer des informations sur les musiques ayant un champs deezer_mapping non vide via l'API de Deezer.
+ 16. [doit être exécuté après 6 et en mode `development` **avec le serveur MusicBrainz local actif**.] Le web service `updatedb/musicbrainz/song` 
 
-23. [doit être exécuté après 22 et en mode `development`.] Le web service `/deezer/check_and_update_id/artist` permet d'associer le bon id d'un artist pour une musique donnée
+ 17. [doit être exécuté après 6 et en mode `development` **avec le serveur MusicBrainz local actif**.] Le web service `updatedb/musicbrainz/artist/member` 
+ 
+ 18. [doit être exécuté après 17 et en mode `development`.] Vous devez avoir le fichier `mongo/deezer/track_dz_wasabi_viaproduct.csv`  contenant le mapping entre les IDs de nos musiques et les IDs des musiques chez Deezer. Le web service `updatedb/deezer/create_mapping` permettra de créer un champ `deezer_mapping`  dans la collection song.  
+ 
+ 19. [doit être exécuté après 18 et en mode `development`.] Le web service `updatedb/deezer/song` permet de récupérer des informations sur les musiques ayant un champs deezer_mapping non vide via l'API de Deezer.
 
-24. [doit être exécuté après 23 et en mode `development`.] Le web service `updatedb/deezer/artist` permet de récupérer des informations sur les artistes ayant un champs deezer_mapping non vide via l'API de Deezer.
+ 20. [doit être exécuté après 19 et en mode `development`.] Le web service `/deezer/check_and_update_id/artist` permet d'associer le bon id d'un artist pour une musique donnée
 
-25. [doit être exécuté après 24 et en mode `development`.] Le web service `/deezer/check_and_update_id/album` permet d'associer le bon id d'un album pour une musique donnée
+ 21. [doit être exécuté après 20 et en mode `development`.] Le web service `updatedb/deezer/artist` permet de récupérer des informations sur les artistes ayant un champs deezer_mapping non vide via l'API de Deezer.
 
-26. [doit être exécuté après 25 et en mode `development`.] Le web service `updatedb/deezer/album` permet de récupérer des informations sur les albums ayant un champs deezer_mapping non vide via l'API de Deezer.
+ 22. [doit être exécuté après 21 et en mode `development`.] Le web service `/deezer/check_and_update_id/album` permet d'associer le bon id d'un album pour une musique donnée
+
+ 23. [doit être exécuté après 22 et en mode `development`.] Le web service `updatedb/deezer/album` permet de récupérer des informations sur les albums ayant un champ deezer_mapping non vide via l'API de Deezer.
+
+ 24. [doit être exécuté après 23 et en mode `development`.] Le web service `updatedb/discogs/artist` permet de mettre à jour les artistes ayant un lien vers discogs.
+
+ 25. [doit être exécuté après 24 et en mode `development`.] Le web service `updatedb/discogs/artist/members` permet de mettre à jour les membres ayant un lien vers discogs.
+
+ 26. [doit être exécuté après 25 et en mode `development`.] Le web service `updatedb/discogs/add/artist/id` permet d'ajouter le champ id de discogs correspondant à l'artiste.
+
+ 27. [doit être exécuté après 26 et en mode `development`.] Le web service `updatedb/discogs/add/album/id` permet d'ajouter le champ id de discogs correspondant à l'album.
+
+ 28. [doit être exécuté après 27 et en mode `development`.] Le web service `updatedb/discogs/add/artist/members/id` permet d'ajouter le champ id de discogs correspondant aux membres.
+ 
+ 29. [doit être exécuté après 28 et en mode `development`.] Le web service `updatedb/discogs/album` permet de mettre à jour les albums ayant un lien vers discogs.
+
+ 30. [doit être exécuté après 29 et en mode `development`.] Le web service `updatedb/equipboard/try_tor` permet de tester que la connection vers TOR fonctionne.
+
+ 31. [doit être exécuté après 30 et en mode `development`.] Le web service `updatedb/equipboard/add/artist/members/url_equipboard` permet de créer à partir du nom d'un membre son url vers equipboard.
+
+ 32. [doit être exécuté après 31 et en mode `development`.] Le web service `updatedb/equipboard/artist/equipment` permet de récupérer des informations conernant les equipements des membres.
+
+ 33. [doit être exécuté après 32 et en mode `development`.] Le web service `updatedb/equipboard/artist/equipment/description` permet de récupérer des informations conernant les descriptions.
+
+ 34. [doit être exécuté après 33 et en mode `development`.] Le web service `updatedb/animux/remove_accent/artist` permet de créer un champ contenant le nom de l'artiste sans accent.
+
+ 35. [doit être exécuté après 34 et en mode `development`.] Le web service `updatedb/animux/remove_accent/song` permet de créer un champ contenant le nom de la musique sans accent.
+
+ 36. [doit être exécuté après 35 et en mode `development`.] Le web service `updatedb/animux/sanitize_rename/artist` permet de nettoyer les noms des dossiers et de fichiers de l'arborescence animux.
+
+ 37. [doit être exécuté après 36 et en mode `development`.] Le web service `updatedb/animux/create_mapping/artist` permet de faire le matching entre les artistes wasabi et les artistes animux.
+
+ 38. [doit être exécuté après 37 et en mode `development`.] Le web service `updatedb/animux/create_mapping/artist/not_found` permet d'améliorer le matching entre les artistes wasabi et les artistes animux.
+
+ 39. [doit être exécuté après 38 et en mode `development`.] Le web service `updatedb/lyrics/language_detect` permet de créer un nouveau champ dans la collection 'song' contenant la langue de la musique.
+
+ 40. [doit être exécuté après 39 et en mode `development`.] Le web service `updatedb/create_stats/lyrics/language/popularity` permet de créer une collection recensant les langues les plus utilisées dans wasabi.
+
+ 41. [doit être exécuté après 40 et en mode `development`.] Le web service `updatedb/create_stats/properties/artist/count` permet de créer une collection recensant les propriétés de la collection 'artist'
+
+ 42. [doit être exécuté après 41 et en mode `development`.] Le web service `updatedb/create_stats/properties/album/count` permet de créer une collection recensant les propriétés de la collection 'album'
+
+ 43. [doit être exécuté après 42 et en mode `development`.] Le web service `updatedb/create_stats/properties/song/count` permet de créer une collection recensant les propriétés de la collection 'song'
+
+ 44. [doit être exécuté après 43 et en mode `development`.] le web service `extractdbpedia/createfields/artist` transforme les propriétés de notre champ RDF en propriétés dans notre base de données
+ 
+ 45. TODO [doit être exécuté après 44 et en mode `development`.] le web service `extractdbpedia/createfields/album` transforme les propriétés de notre champ RDF en propriétés dans notre base de données
 
 #### mongo/sparql/
 **Contient les requêtes sparql utilisées par l'application pour l'extraction du RDF pour les :**  

@@ -3,7 +3,7 @@ mongo/deezer/*
 mongo/animux/*
 mongo/discogs/*
 mongo/old_animux/*
-
+animux_*
 public/my_components/MT5/multitrack/*
 public/download/*
 public/AmpSim3/*
