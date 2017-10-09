@@ -119,9 +119,9 @@ app.use('/MT5', MT5);
 app.use('/search', search);
 app.use('/api/v1', new RateLimit(config.http.limit_request.api), api_v1);
 app.use('/jwt', jwt_api);
-//Allows the authentication, at the moment the documentation have to stay private
-app.use(basicAuth(configLogin.login, configLogin.password));
 app.use('/apidoc', express.static(path.join(__dirname, 'apidoc')));
+//Allows the authentication, at the moment the /download api have to stay private
+app.use(basicAuth(configLogin.login, configLogin.password));
 app.use('/download', download);
 //Put here the dev routes
 if (config.http.limit_request.search.max < 30) console.error("/!\\-------------------------------PLEASE INCREASE THE NUMBER OF REQUEST/MIN------------------------------/!\\");
