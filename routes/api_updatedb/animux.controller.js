@@ -562,7 +562,7 @@ var getDirArtistWithNameVariations = (db, artistName) => {
                 let pathToArtist = [];
                 pathToArtist.push(PATH_MAPPING_ANIMUX + '/' + artistName[0].toUpperCase() + '/' + encodeURIComponent(artistName));
                 if (tArtists.length == 1) {
-                    console.log(tArtists.length + "-----" + tArtists[0].name);
+                    console.log(tArtists.length + "-----" + artistName);
                     db.collection(COLLECTIONARTIST).updateOne({
                         name: tArtists[0].name
                     }, {
@@ -571,9 +571,23 @@ var getDirArtistWithNameVariations = (db, artistName) => {
                         }
                     });
                     return reject(artistName);
+                } else if (tArtists.length > 1) {
+                    console.log(tArtists.length + "-----" + artistName);
+                    for (let i = 0; i < tArtists.length; i++) {
+                        db.collection(COLLECTIONARTIST).update({
+                            name: tArtists[i].name
+                        }, {
+                            $addToSet: {
+                                animux_path_ambiguous: pathToArtist
+                            }
+                        });
+                    }
+                    return reject(artistName);
                 } else {
                     return resolve(artistName);
                 }
+            } else {
+                return resolve(artistName);
             }
         });
     });
