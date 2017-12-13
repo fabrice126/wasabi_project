@@ -91,6 +91,7 @@ Il est conseillé de lire ce que fait chaque API avant de l'utiliser notamment c
 - Le serveur contient un site wordpress, pour le démarrer (si lampp n'est pas actif) vous devez vous rendre dans `/opt/lampp` et lancer la commande `./lampp start`
 - Lien utile : http://sharadchhetri.com/2014/03/24/install-xampp-centosrhel-6-5/ 
 - Informations utiles : par défaut, l'accès à la base de données du blog wasabi n'est pas possible depuis le web. Pour changer ce comportement vous devez vous rendre dans `/opt/lampp/etc/extra/httpd-xampp.conf` et remplacer `Require local` par `Require all granted` dans `<LocationMatch>`
+
 **Comment lancer les bases de données**
 =======
 ## MongoDB sous Linux RedHat/Centos 7
